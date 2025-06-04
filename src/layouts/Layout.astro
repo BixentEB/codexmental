@@ -1,0 +1,29 @@
+---
+const { title = "Mon site", lang = "fr" } = Astro.props;
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/fr/index">Accueil</a>
+        <a href="/fr/cv">CV</a>
+        <a href="/fr/projets">Projets</a>
+        <a href="/fr/blog">Blog</a>
+        <a href="/fr/contact">Contact</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>© Vincent Étienne {new Date().getFullYear()}</p>
+    </footer>
+  </body>
+</html>
