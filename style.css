@@ -1,0 +1,26 @@
+body {
+  font-family: sans-serif;
+  background: #111;
+  color: #eee;
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+}
+header, footer {
+  text-align: center;
+}
+h1 {
+  color: #f5c518;
+}
+h2 {
+  margin-top: 2rem;
+  color: #61dafb;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+li::before {
+  content: "★ ";
+  color: #f5c518;
+}
