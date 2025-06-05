@@ -1,26 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
 body {
-  font-family: sans-serif;
-  background: #111;
-  color: #eee;
-  padding: 2rem;
-  max-width: 800px;
-  margin: auto;
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: all 0.3s ease;
+  background-color: #f5faff;
+  color: #003344;
 }
-header, footer {
+
+nav {
+  background-color: #111;
+  padding: 1rem;
   text-align: center;
 }
-h1 {
-  color: #f5c518;
+
+nav a {
+  color: #f9c806;
+  text-decoration: none;
+  margin: 0 1rem;
+  font-weight: bold;
 }
-h2 {
-  margin-top: 2rem;
-  color: #61dafb;
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  text-align: center;
 }
-ul {
-  list-style: none;
-  padding: 0;
+
+.theme-buttons {
+  text-align: center;
+  margin: 2rem 0;
 }
-li::before {
-  content: "★ ";
-  color: #f5c518;
+
+.theme-buttons button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 4rem;
+}
+
+/* Themes */
+
+body.theme-classic {
+  background-color: #f5faff;
+  color: #003344;
+}
+
+body.theme-holo {
+  background: radial-gradient(ellipse at center, #0d1a26 0%, #050c12 100%);
+  color: #00ffff;
+}
+
+body.theme-secret {
+  background-color: #1e1e1e;
+  color: #88ffcc;
+}
+
+body.theme-retro {
+  background-color: #000;
+  color: #00ff00;
 }
