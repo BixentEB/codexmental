@@ -85,3 +85,29 @@ footer {
 body.theme-stellaire #stellaire-stars {
   display: block;
 }
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin: auto;
+}
+form input, form textarea {
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-family: inherit;
+}
+form button {
+  background: var(--accent-color, #555);
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+form button:hover {
+  opacity: 0.9;
+}
+
