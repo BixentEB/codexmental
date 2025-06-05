@@ -5,6 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CV – Codex Mental</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .bloc-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding: 2rem;
+    }
+    .row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .bloc {
+      flex: 1 1 300px;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .bloc:hover {
+      transform: translateY(-5px);
+      opacity: 0.95;
+    }
+    @media (max-width: 768px) {
+      .row {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
   <script src="script.js" defer></script>
 </head>
 <body class="theme-classic">
@@ -23,40 +56,32 @@
   <main class="container">
     <h1>Mon CV</h1>
 
-    <section class="cv-block">
-      <h2>📅 Expérience professionnelle</h2>
-      <ul>
-        <li><strong>2022–2024</strong> – ....</li>
-        <li><strong>2019–2022</strong> – ....</li>
-      </ul>
-    </section>
+    <div class="bloc-container">
+      <div class="row">
+        <div class="bloc">
+          <h2>📅 Expérience</h2>
+          <p><strong>2022–2024</strong> – Chef de projet web chez XYZ</p>
+          <p><strong>2019–2022</strong> – Rédacteur freelance</p>
+        </div>
+        <div class="bloc">
+          <h2>🎓 Formation</h2>
+          <p><strong>2017</strong> – Master Communication</p>
+          <p><strong>2015</strong> – Licence Lettres modernes</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="bloc">
+          <h2>⚖ Compétences</h2>
+          <p>HTML, CSS, JS, Astro<br>Storytelling, gestion de projet</p>
+        </div>
+        <div class="bloc">
+          <h2>📝 Langues</h2>
+          <p>Français (natif)<br>Anglais (C1)</p>
+        </div>
+      </div>
+    </div>
 
-    <section class="cv-block">
-      <h2>🎓 Formation</h2>
-      <ul>
-        <li><strong>2017</strong> – Diplome....</li>
-        <li><strong>2017</strong> – Diplome....</li>
-      </ul>
-    </section>
-
-    <section class="cv-block">
-      <h2>⚖ Compétences</h2>
-      <ul>
-        <li>.....</li>
-        <li>.....</li>
-        <li>.....</li>
-      </ul>
-    </section>
-
-    <section class="cv-block">
-      <h2>📝 Langues</h2>
-      <ul>
-        <li>Français (natif)</li>
-        <li>Anglais (B2)</li>
-      </ul>
-    </section>
-
-    <div class="cv-download">
+    <div class="cv-download" style="text-align:center; margin-top: 2rem;">
       <a href="cv-vincent-etienne.pdf" download class="btn">📄 Télécharger le CV (PDF)</a>
     </div>
   </main>
