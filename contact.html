@@ -19,25 +19,25 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
-  <main class="container">
+ <main class="container">
   <h1>Contact</h1>
-  <form action="https://formspree.io/f/mpwrwnwy" method="POST">
-    <label>
-      Ton prénom :
-      <input type="text" name="name" required>
+  <form id="contactForm" action="https://formspree.io/f/TON_ID_FORM" method="POST" target="hidden_iframe">
+    <label>Ton prénom :
+      <input type="text" name="name" required />
     </label>
-    <label>
-      Ton email :
-      <input type="email" name="email" required>
+    <label>Ton email :
+      <input type="email" name="email" required />
     </label>
-    <label>
-      Ton message :
+    <label>Ton message :
       <textarea name="message" rows="5" required></textarea>
     </label>
     <button type="submit">📨 Envoyer</button>
   </form>
-  <p style="font-size: 0.9em; color: #999; margin-top: 1em;">Ton message sera envoyé sans que mon adresse ne soit visible 💌</p>
+
+  <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
+  <p id="confirmationMessage" style="display:none; margin-top:1rem;">✅ Merci ! Ton message a bien été envoyé. 💌</p>
 </main>
+
 
   <footer>
     &copy; 2025 Vincent Etienne – Tous droits réservés.
