@@ -1,74 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+/* --- BANNIÈRE AVEC IMAGE --- */
 
-body {
-  font-family: 'Orbitron', sans-serif;
-  margin: 0;
-  padding: 0;
-  transition: all 0.3s ease;
-  background-color: #f5faff;
-  color: #003344;
+.banner {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
 }
 
-nav {
-  background-color: #111;
-  padding: 1rem;
-  text-align: center;
+.banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-nav a {
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.4); /* fondu léger sur image */
+}
+
+.site-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #f9c806;
+}
+
+.top-menu a {
   color: #f9c806;
   text-decoration: none;
-  margin: 0 1rem;
+  margin-left: 1rem;
   font-weight: bold;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 2rem;
-  text-align: center;
-}
+/* Responsive (mobile) */
+@media (max-width: 768px) {
+  .banner-overlay {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 
-.theme-buttons {
-  text-align: center;
-  margin: 2rem 0;
-}
-
-.theme-buttons button {
-  margin: 0 0.5rem;
-  padding: 0.5rem 1rem;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  border: none;
-}
-
-footer {
-  text-align: center;
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: 4rem;
-}
-
-/* Themes */
-
-body.theme-classic {
-  background-color: #f5faff;
-  color: #003344;
-}
-
-body.theme-holo {
-  background: radial-gradient(ellipse at center, #0d1a26 0%, #050c12 100%);
-  color: #00ffff;
-}
-
-body.theme-secret {
-  background-color: #1e1e1e;
-  color: #88ffcc;
-}
-
-body.theme-retro {
-  background-color: #000;
-  color: #00ff00;
+  .top-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
 }
