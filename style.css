@@ -91,3 +91,8 @@ body.theme-klimt {
   background: linear-gradient(to bottom right, #f2e3b6, #c69b3b);
   color: #4b2e15;
 }
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Playfair+Display:wght@600&display=swap');
+
+body.theme-klimt {
+  font-family: 'Playfair Display', serif;
+}
