@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vincent Etienne</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codex Mental</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
-<body>
-  <header>
+<body class="theme-classic">
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="blog.html">Blog</a>
+    <a href="projets.html">Projets</a>
+    <a href="cv.html">CV</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="container">
     <h1>Bienvenue sur mon site</h1>
-    <p>Un espace personnel pour partager mes projets, idées et créations.</p>
-  </header>
-  <main>
-    <section>
-      <h2>À propos</h2>
-      <p>Je suis Vincent Étienne. Voici mon coin du web pour mes écrits, mes outils IA, et mes réflexions.</p>
-    </section>
-    <section>
-      <h2>Projets</h2>
-      <ul>
-        <li>🧠 Outil de synchronicités</li>
-        <li>🧪 Expériences IA personnelles</li>
-        <li>📚 Romans en cours</li>
-      </ul>
-    </section>
-  </main>
+    <p>Ce bloc est modifiable. Tu peux ici écrire une introduction, une présentation, ou insérer du contenu dynamique plus tard.</p>
+  </div>
+
+  <div class="theme-buttons">
+    <span>Changer de thème :</span>
+    <button onclick="setTheme('theme-classic')">Classique</button>
+    <button onclick="setTheme('theme-holo')">Holographique</button>
+    <button onclick="setTheme('theme-secret')">Top Secret</button>
+    <button onclick="setTheme('theme-retro')">Rétro Console</button>
+  </div>
+
   <footer>
-    <p>&copy; 2025 Vincent Etienne</p>
+    &copy; 2025 Vincent Etienne - Tous droits réservés.
   </footer>
+
 </body>
 </html>
