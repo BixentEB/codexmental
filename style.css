@@ -5,11 +5,30 @@ body {
   margin: 0;
   padding: 0;
   transition: all 0.3s ease;
+}
+
+/* === Thèmes === */
+body.theme-classic {
   background-color: #f5faff;
   color: #003344;
 }
 
-/* Header simple : titre + menu */
+body.theme-holo {
+  background: radial-gradient(circle, #0d1a26 0%, #050c12 100%);
+  color: #00ffff;
+}
+
+body.theme-secret {
+  background-color: #1e1e1e;
+  color: #88ffcc;
+}
+
+body.theme-stellaire {
+  background-color: #0d1a3f;
+  color: #c7d9ff;
+}
+
+/* === Header === */
 .header {
   display: flex;
   justify-content: space-between;
@@ -31,6 +50,7 @@ body {
   font-weight: bold;
 }
 
+/* === Contenu === */
 .container {
   max-width: 900px;
   margin: auto;
@@ -43,15 +63,15 @@ body {
 }
 
 .theme-buttons button {
-  margin: 0 0.5rem;
+  margin: 0.5rem;
   padding: 0.5rem 1rem;
   font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
   cursor: pointer;
   border-radius: 5px;
   border: none;
 }
 
+/* === Footer === */
 footer {
   text-align: center;
   font-size: 0.8rem;
@@ -59,45 +79,8 @@ footer {
   margin-top: 4rem;
 }
 
-/* Themes */
-
-body.theme-classic {
-  background-color: #f5faff;
-  color: #003344;
-}
-
-body.theme-holo {
-  background: radial-gradient(ellipse at center, #0d1a26 0%, #050c12 100%);
-  color: #00ffff;
-}
-
-body.theme-secret {
-  background-color: #1e1e1e;
-  color: #88ffcc;
-}
-
-body.theme-retro {
-  background-color: #000;
-  color: #00ff00;
-}
-/* --- Van Gogh: bleu nuit étoilé --- */
-body.theme-vangogh {
-  background: radial-gradient(ellipse at top, #0d1a3f, #001123);
-  color: #c7d9ff;
-}
-
-/* --- Klimt : or texturé --- */
-body.theme-klimt {
-  background: linear-gradient(to bottom right, #f2e3b6, #c69b3b);
-  color: #4b2e15;
-}
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Playfair+Display:wght@600&display=swap');
-
-body.theme-klimt {
-  font-family: 'Playfair Display', serif;
-}
-/* Canvas étoiles Van Gogh */
-#vangogh-stars {
+/* === Canvas Étoiles === */
+#stellaire-stars {
   position: fixed;
   top: 0;
   left: 0;
@@ -105,9 +88,8 @@ body.theme-klimt {
   height: 100%;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse at top, #0d1a3f, #001123);
   display: none;
 }
-body.theme-vangogh #vangogh-stars {
+body.theme-stellaire #stellaire-stars {
   display: block;
 }
