@@ -80,3 +80,14 @@ body.theme-retro {
   background-color: #000;
   color: #00ff00;
 }
+/* --- Van Gogh: bleu nuit étoilé --- */
+body.theme-vangogh {
+  background: radial-gradient(ellipse at top, #0d1a3f, #001123);
+  color: #c7d9ff;
+}
+
+/* --- Klimt : or texturé --- */
+body.theme-klimt {
+  background: linear-gradient(to bottom right, #f2e3b6, #c69b3b);
+  color: #4b2e15;
+}
