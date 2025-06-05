@@ -54,3 +54,11 @@ window.addEventListener('resize', () => {
     initStars();
   }
 });
+function formSubmitted() {
+  const msg = document.getElementById("confirmationMessage");
+  const form = document.getElementById("contactForm");
+  if (form && msg) {
+    form.reset();
+    msg.style.display = "block";
+  }
+}
