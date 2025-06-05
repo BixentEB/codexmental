@@ -1,46 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Codex Mental</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 </head>
 <body class="theme-classic">
-
-  <!-- Zone Bannière -->
-  <header class="banner">
-    <img src="arlesienne.jpg" alt="Arlésienne pensante" class="banner-img">
-    <div class="banner-overlay">
-      <div class="site-title">Codex Mental</div>
-      <nav class="top-menu">
-        <a href="index.html">Home</a>
-        <a href="blog/index.html">Blog</a>
-        <a href="projets.html">Projets</a>
-        <a href="cv.html">CV</a>
-        <a href="contact.html">Contact</a>
-      </nav>
-    </div>
+  <header class="header">
+    <div class="site-title">Codex Mental</div>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="blog/index.html">Blog</a>
+      <a href="projets.html">Projets</a>
+      <a href="cv.html">CV</a>
+      <a href="contact.html">Contact</a>
+    </nav>
   </header>
 
-  <!-- Contenu principal -->
-  <div class="container">
+  <main class="container">
     <h1>Bienvenue sur mon site</h1>
-    <p>Ce bloc est modifiable. Tu peux ici écrire une introduction, une présentation, ou insérer du contenu dynamique plus tard.</p>
-  </div>
+    <p>
+      Ce bloc est modifiable. Tu peux ici écrire une introduction, une
+      présentation, ou insérer du contenu dynamique plus tard.
+    </p>
 
-  <div class="theme-buttons">
-    <span>Changer de thème :</span>
-    <button onclick="setTheme('theme-classic')">Classique</button>
-    <button onclick="setTheme('theme-holo')">Holographique</button>
-    <button onclick="setTheme('theme-secret')">Top Secret</button>
-    <button onclick="setTheme('theme-retro')">Rétro Console</button>
-  </div>
+    <div class="theme-buttons">
+      <span>Changer de thème :</span>
+      <button onclick="setTheme('theme-classic')">Classique</button>
+      <button onclick="setTheme('theme-holo')">Holographique</button>
+      <button onclick="setTheme('theme-secret')">Top Secret</button>
+      <button onclick="setTheme('theme-retro')">Rétro Console</button>
+    </div>
+  </main>
 
   <footer>
     &copy; 2025 Vincent Etienne – Tous droits réservés.
   </footer>
-
 </body>
 </html>
