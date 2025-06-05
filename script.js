@@ -1,3 +1,4 @@
+
 function setTheme(theme) {
   document.body.className = theme;
   localStorage.setItem('codexTheme', theme);
@@ -11,13 +12,11 @@ function setTheme(theme) {
   }
 }
 
-// restauration thème sauvegardé
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('codexTheme');
   if (saved) setTheme(saved);
 });
 
-// === étoiles ===
 const canvas = document.getElementById('stellaire-stars');
 const ctx = canvas.getContext('2d');
 let stars = [], rafId;
