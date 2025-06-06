@@ -54,18 +54,23 @@ footer {
   margin-top: 4rem;
 }
 
+/* === Apparition douce du fond étoilé === */
+
 #stellaire-stars {
+  opacity: 0;
+  pointer-events: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  transition: opacity 0.6s ease;
   z-index: -1;
-  pointer-events: none;
-  display: none;
+  background: transparent;
 }
+
 body.theme-stellaire #stellaire-stars {
-  display: block;
+  opacity: 1;
 }
 
 /* === THEMES PERSONNALISÉS === */
@@ -166,4 +171,9 @@ body.theme-galactique form {
 body.theme-galactique form button {
   background-color: #80f0ff;
   color: #0a001f;
+}
+/* === TRANSITIONS DOUCES ENTRE LES THÈMES === */
+
+body {
+  transition: background-color 0.6s ease, color 0.6s ease;
 }
