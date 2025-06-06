@@ -185,3 +185,36 @@ form button:hover {
   text-align: center;
   border: 1px solid rgba(255,255,255,0.1);
 }
+/* DÉBUT DES THÈMES VISUELS */
+.theme-stellaire {
+  background-color: #0b132b;
+  color: #ffffff;
+}
+.theme-stellaire a {
+  color: #ffc300;
+}
+
+.theme-solaire {
+  background-color: #fff8e1;
+  color: #3e2723;
+}
+.theme-solaire a {
+  color: #e65100;
+}
+
+.theme-lunaire {
+  background-color: #1a237e;
+  color: #e0e0e0;
+}
+.theme-lunaire a {
+  color: #c5cae9;
+}
+
+.theme-galactique {
+  background-color: #0d0221;
+  color: #ffffff;
+}
+.theme-galactique a {
+  color: #00e5ff;
+}
+/* FIN DES THÈMES VISUELS */
