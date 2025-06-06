@@ -6,6 +6,49 @@
   <title>Contact – Codex Mental</title>
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
+  <style>
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 10px;
+    }
+    form label {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    form input,
+    form textarea {
+      padding: 0.8rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-family: inherit;
+    }
+    form button {
+      background: #5c7cff;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      align-self: center;
+    }
+    form button:hover {
+      opacity: 0.9;
+    }
+    #confirmationMessage {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+      color: lightgreen;
+    }
+  </style>
 </head>
 <body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
@@ -37,7 +80,7 @@
     </form>
 
     <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
-    <p id="confirmationMessage" style="display:none; margin-top:1rem;">✅ Merci ! Ton message a bien été envoyé. 💌</p>
+    <p id="confirmationMessage" style="display:none;">✅ Merci ! Ton message a bien été envoyé. 💌</p>
   </main>
 
   <footer>
