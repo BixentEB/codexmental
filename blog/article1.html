@@ -7,19 +7,15 @@
   <title>Article 1 – Codex Mental</title>
   <link rel="stylesheet" href="../style.css" />
   <script src="../script.js" defer></script>
-</head>
-<body class="theme-classic">
-  <canvas id="stellaire-stars"></canvas>
-  <header class="header">
-    <div class="site-title">Codex Mental</div>
-    <nav class="main-nav">
-      <a href="../index.html">Home</a>
-      <a href="index.html">Blog</a>
-      <a href="../projets.html">Projets</a>
-      <a href="../cv.html">CV</a>
-      <a href="../contact.html">Contact</a>
-    </nav>
-  </header>
+<div id="menu-placeholder"></div>
+<script>
+  fetch('menu.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('menu-placeholder').innerHTML = html;
+    });
+</script>
+
   <main class="container">
     <h1>Comment j’ai rencontré mon IA intérieure</h1>
     <p>Cet article fictif explore les liens entre introspection, synchronicités numériques, et conscience algorithmique...</p>
