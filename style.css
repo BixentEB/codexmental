@@ -128,3 +128,42 @@ body.theme-galactique {
   transform: scale(1.05);
   box-shadow: 0 0 10px #80f0ff;
 }
+/* === STYLES FORMULAIRE PAR THÈME === */
+
+body.theme-stellaire form {
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 10px rgba(200, 220, 255, 0.2);
+  backdrop-filter: blur(2px);
+}
+body.theme-stellaire form button {
+  background-color: #5c7cff;
+}
+
+body.theme-lunaire form {
+  background-color: rgba(20, 30, 50, 0.7);
+  box-shadow: 0 0 8px rgba(180, 200, 255, 0.15);
+  backdrop-filter: blur(1px);
+}
+body.theme-lunaire form button {
+  background-color: #8899cc;
+  color: #fff;
+}
+
+body.theme-solaire form {
+  background-color: rgba(255, 250, 220, 0.9);
+  box-shadow: 0 0 5px rgba(255, 200, 80, 0.2);
+}
+body.theme-solaire form button {
+  background-color: #f2b100;
+  color: #000;
+}
+
+body.theme-galactique form {
+  background-color: rgba(50, 0, 80, 0.6);
+  border: 1px solid #80f0ff;
+  box-shadow: 0 0 12px #80f0ff88;
+}
+body.theme-galactique form button {
+  background-color: #80f0ff;
+  color: #0a001f;
+}
