@@ -62,3 +62,6 @@ function formSubmitted() {
     msg.style.display = "block";
   }
 }
+function setTheme(themeName) {
+  document.body.className = themeName;
+}
