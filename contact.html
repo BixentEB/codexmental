@@ -7,8 +7,9 @@
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 </head>
-<body class="theme-classic">
+<body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
+
   <header class="header">
     <div class="site-title">Codex Mental</div>
     <nav class="main-nav">
@@ -19,25 +20,25 @@
       <a href="contact.html">Contact</a>
     </nav>
   </header>
- <main class="container">
-  <h1>Contact</h1>
-  <form id="contactForm" action="https://formspree.io/f/mpwrwnwy" method="POST" target="hidden_iframe">
-    <label>Ton prénom :
-      <input type="text" name="name" required />
-    </label>
-    <label>Ton email :
-      <input type="email" name="email" required />
-    </label>
-    <label>Ton message :
-      <textarea name="message" rows="5" required></textarea>
-    </label>
-    <button type="submit">📨 Envoyer</button>
-  </form>
 
-  <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
-  <p id="confirmationMessage" style="display:none; margin-top:1rem;">✅ Merci ! Ton message a bien été envoyé. 💌</p>
-</main>
+  <main class="container">
+    <h1>Contact</h1>
+    <form id="contactForm" action="https://formspree.io/f/mpwrwnwy" method="POST" target="hidden_iframe">
+      <label>Ton prénom :
+        <input type="text" name="name" required />
+      </label>
+      <label>Ton email :
+        <input type="email" name="email" required />
+      </label>
+      <label>Ton message :
+        <textarea name="message" rows="5" required></textarea>
+      </label>
+      <button type="submit">📨 Envoyer</button>
+    </form>
 
+    <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
+    <p id="confirmationMessage" style="display:none; margin-top:1rem;">✅ Merci ! Ton message a bien été envoyé. 💌</p>
+  </main>
 
   <footer>
     &copy; 2025 Vincent Etienne – Tous droits réservés.
