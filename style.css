@@ -1,6 +1,88 @@
-.*
+/* === RÉINITIALISATION === */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+body {
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  padding: 1rem 2rem;
+}
+
+.site-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.main-nav a {
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.theme-buttons {
+  margin-top: 2rem;
+}
+.theme-buttons button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 4rem;
+}
+
+#stellaire-stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  display: none;
+}
+body.theme-stellaire #stellaire-stars {
+  display: block;
+}
 
 /* === THEMES PERSONNALISÉS === */
+
+body.theme-stellaire {
+  background-color: #0d1a3f;
+  color: #c7d9ff;
+}
+.theme-stellaire .main-nav a,
+.theme-stellaire .site-title {
+  color: #9bc9ff;
+}
+.theme-stellaire .theme-buttons button {
+  background-color: #1f2f6d;
+  color: #c7d9ff;
+  border: 1px solid #5c7cff;
+}
 
 body.theme-solaire {
   background-color: #fffceb;
