@@ -5,11 +5,11 @@ function setTheme(theme) {
   document.body.className = theme;
   localStorage.setItem('codexTheme', theme);
 
-  if (theme === 'theme-stellaire') {
-    startStarfield();
-  } else {
-    stopStarfield();
-  }
+if (theme === 'theme-stellaire') {
+  startStarfield(); // <- déclenche d'abord le dessin
+  setTimeout(() => {
+    document.getElementById('stellaire-stars').style.opacity = '1';
+  }, 200); // ne montre que quand les étoiles sont lancées
 }
 
 // Initialisation au chargement
