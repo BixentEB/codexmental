@@ -5,17 +5,24 @@ function setTheme(theme) {
   document.body.className = theme;
   localStorage.setItem('codexTheme', theme);
 
-if (theme === 'theme-stellaire') {
-  startStarfield(); // <- déclenche d'abord le dessin
-  setTimeout(() => {
-    document.getElementById('stellaire-stars').style.opacity = '1';
-  }, 200); // ne montre que quand les étoiles sont lancées
+  if (theme === 'theme-stellaire') {
+    startStarfield();
+    setTimeout(() => {
+      if (canvas) canvas.style.opacity = '1';
+    }, 200);
+  } else {
+    stopStarfield();
+    if (canvas) canvas.style.opacity = '0';
+  }
 }
 
 // Initialisation au chargement
 window.addEventListener('DOMContentLoaded', () => {
   canvas = document.getElementById('stellaire-stars');
-  if (canvas) ctx = canvas.getContext('2d');
+  if (canvas) {
+    ctx = canvas.getContext('2d');
+    canvas.style.opacity = '0'; // au cas où il reste visible
+  }
 
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
