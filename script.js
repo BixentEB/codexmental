@@ -74,12 +74,14 @@ window.addEventListener('DOMContentLoaded', () => {
   setTheme(savedTheme);
 
   // 🌐 Lien actif dans le menu
-  const current = location.pathname.split("/").pop();
-  document.querySelectorAll('.main-nav a').forEach(link => {
-    if (link.getAttribute('href') === current) {
-      link.classList.add('active');
-    }
-  });
+  const current = window.location.pathname.replace(/^.*[\\/]/, ''); // extrait le nom du fichier
+document.querySelectorAll('.main-nav a').forEach(link => {
+  const linkHref = link.getAttribute('href').replace(/^.*[\\/]/, '');
+  if (linkHref === current) {
+    link.classList.add('active');
+  }
+});
+
 
   // ⬆️ Bouton retour haut
   const scrollBtn = document.getElementById('scrollTopBtn');
