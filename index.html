@@ -88,8 +88,8 @@
             const current = location.pathname.endsWith('/') ? 'index.html' : location.pathname.split("/").pop();
             document.querySelectorAll('.main-nav a').forEach(link => {
               const href = link.getAttribute('href') || '';
-              const linkEnd = href.split("/").pop();
-              if (linkEnd === current || (current === 'index.html' && linkEnd === 'index.html')) {
+              const linkLast = href.split("/").pop();
+              if (linkLast === current || (current === 'index.html' && linkLast === 'index.html' && href === 'index.html')) {
                 link.classList.add('active');
               }
             });
