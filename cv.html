@@ -72,10 +72,16 @@
     .then(res => res.text())
     .then(html => {
       document.getElementById('menu-placeholder').innerHTML = html;
+
+      // ⚡ Active automatiquement le lien courant
+      const current = location.pathname.split("/").pop();
+      document.querySelectorAll('.main-nav a').forEach(link => {
+        if (link.getAttribute('href') === current) {
+          link.classList.add('active');
+        }
+      });
     });
 </script>
-
-
   <main class="container">
     <h1 style="text-align:center">ASSISTANT ADMINISTRATIF CRÉATIF<br>Concepteur de solutions hybrides & augmentées</h1>
 
