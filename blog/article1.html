@@ -13,7 +13,7 @@
   <canvas id="stellaire-stars"></canvas>
   <div id="menu-placeholder"></div>
 <script>
-  fetch('menu.html')
+  fetch('../menu.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('menu-placeholder').innerHTML = html;
