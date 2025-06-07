@@ -163,5 +163,13 @@
     injectPartial('menu-placeholder', 'menu.html');
     injectPartial('footer-placeholder', 'footer.html');
   </script>
+  <script>
+  const current = location.pathname.split("/").pop();
+  document.querySelectorAll('.main-nav a').forEach(link => {
+    if (link.getAttribute('href') === current) {
+      link.classList.add('active');
+    }
+  });
+</script>
 </body>
 </html>
