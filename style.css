@@ -29,8 +29,9 @@ body {
 }
 
 .main-nav a.active {
+  color: #ffd700;
   text-decoration: underline;
-  color: #ffffff;
+  font-weight: bold;
 }
 
 .container {
