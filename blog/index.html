@@ -37,11 +37,12 @@
           document.getElementById(id).innerHTML = html;
 
           if (id === 'menu-placeholder') {
-            const current = location.pathname.endsWith('/') ? 'index.html' : location.pathname.split("/").pop();
+            const path = location.pathname;
+            const current = path === '/' || path.endsWith('/index.html') ? 'index.html' : path.split("/").pop();
             document.querySelectorAll('.main-nav a').forEach(link => {
               const href = link.getAttribute('href') || '';
               const linkLast = href.split("/").pop();
-              if (linkLast === current || (current === 'index.html' && linkLast === 'index.html' && href === 'blog/index.html')) {
+              if (linkLast === current && (path.includes('/blog/') === href.includes('blog/'))) {
                 link.classList.add('active');
               }
             });
