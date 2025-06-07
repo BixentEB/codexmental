@@ -89,7 +89,7 @@
             document.querySelectorAll('.main-nav a').forEach(link => {
               const href = link.getAttribute('href') || '';
               const linkEnd = href.split("/").pop();
-              if (linkEnd === current) {
+              if (linkEnd === current || (current === 'index.html' && linkEnd === 'index.html')) {
                 link.classList.add('active');
               }
             });
