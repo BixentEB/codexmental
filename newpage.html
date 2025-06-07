@@ -5,36 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Titre de la page – Codex Mental</title>
   <link rel="stylesheet" href="../style.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    .header, .main-nav a {
+      font-family: 'Orbitron', sans-serif;
+    }
+    .main-nav a.active {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .main-nav a.active:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+    .note-dev {
+      background-color: rgba(255,255,255,0.05);
+      border-left: 4px solid rgba(255,255,255,0.2);
+      padding: 1rem;
+      margin: 2rem 0;
+      font-style: italic;
+      color: #ccc;
+    }
+  </style>
   <script src="../script.js" defer></script>
 </head>
 <body class="theme-stellaire">
-  <!-- Fond étoilé si thème Stellaire -->
   <canvas id="stellaire-stars"></canvas>
 
-  <!-- MENU DYNAMIQUE -->
   <div id="menu-placeholder"></div>
   <script>
-    fetch('../menu.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('menu-placeholder').innerHTML = html;
-      });
+    const cache = {};
+    function injectPartial(id, url, fallback = '') {
+      if (cache[url]) {
+        document.getElementById(id).innerHTML = cache[url];
+        return;
+      }
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
+          return res.text();
+        })
+        .then(html => {
+          cache[url] = html;
+          document.getElementById(id).innerHTML = html;
+
+          if (id === 'menu-placeholder') {
+            const current = location.pathname.split("/").pop();
+            document.querySelectorAll('.main-nav a').forEach(link => {
+              const href = link.getAttribute('href') || '';
+              if (href.endsWith(current)) {
+                link.classList.add('active');
+              }
+            });
+          }
+        })
+        .catch(err => {
+          console.warn(err);
+          document.getElementById(id).innerHTML = fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
+        });
+    }
+
+    injectPartial('menu-placeholder', '../menu.html');
+    injectPartial('footer-placeholder', '../footer.html');
   </script>
 
-  <!-- CONTENU PRINCIPAL -->
   <main class="container">
     <h1>Titre de la page</h1>
     <p>Contenu ici…</p>
+
+    <div class="note-dev">
+      🛠️ Zone de développement : tu peux insérer ici tes blocs de contenu HTML. Par exemple : <code>&lt;div class="bloc"&gt;...&lt;/div&gt;</code><br>
+      Utilise cette section pour tes projets, textes ou mises en page personnalisées.
+    </div>
   </main>
 
-  <!-- FOOTER DYNAMIQUE (optionnel) -->
   <div id="footer-placeholder"></div>
-  <script>
-    fetch('../footer.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('footer-placeholder').innerHTML = html;
-      });
-  </script>
 </body>
 </html>
