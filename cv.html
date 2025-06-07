@@ -21,6 +21,10 @@
       padding: 0.2rem 0.6rem;
       border-radius: 6px;
       text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .main-nav a.active:hover {
+      background-color: rgba(255, 255, 255, 0.15);
     }
     .bloc-container {
       display: flex;
@@ -78,6 +82,7 @@
     <h1 style="text-align:center">ASSISTANT ADMINISTRATIF CRÉATIF<br>Concepteur de solutions hybrides & augmentées</h1>
 
     <div class="bloc-container">
+      <!-- Les blocs de contenu restent inchangés -->
       <div class="row">
         <div class="bloc">
           <h2>😀 PROFIL</h2>
@@ -144,7 +149,8 @@
         document.getElementById('menu-placeholder').innerHTML = html;
         const current = location.pathname.split("/").pop();
         document.querySelectorAll('.main-nav a').forEach(link => {
-          if (link.getAttribute('href') === current) {
+          const href = link.getAttribute('href') || '';
+          if (href.endsWith(current)) {
             link.classList.add('active');
           }
         });
