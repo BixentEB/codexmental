@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titre de la page – Codex Mental</title>
+  <link rel="stylesheet" href="../style.css" />
+  <script src="../script.js" defer></script>
+</head>
+<body class="theme-stellaire">
+  <!-- Fond étoilé si thème Stellaire -->
+  <canvas id="stellaire-stars"></canvas>
+
+  <!-- MENU DYNAMIQUE -->
+  <div id="menu-placeholder"></div>
+  <script>
+    fetch('../menu.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('menu-placeholder').innerHTML = html;
+      });
+  </script>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="container">
+    <h1>Titre de la page</h1>
+    <p>Contenu ici…</p>
+  </main>
+
+  <!-- FOOTER DYNAMIQUE (optionnel) -->
+  <div id="footer-placeholder"></div>
+  <script>
+    fetch('../footer.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('footer-placeholder').innerHTML = html;
+      });
+  </script>
+</body>
+</html>
