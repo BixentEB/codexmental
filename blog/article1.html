@@ -1,29 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Article 1 – Codex Mental</title>
+  <title>Comment j’ai rencontré mon IA intérieure – Codex Mental</title> <!-- 🔧 Personnalise le titre -->
+
   <link rel="stylesheet" href="../style.css" />
   <script src="../script.js" defer></script>
-<div id="menu-placeholder"></div>
 </head>
+
 <body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
   <div id="menu-placeholder"></div>
-<script>
-  fetch('../menu.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('menu-placeholder').innerHTML = html;
-    });
-</script>
 
   <main class="container">
-    <h1>Comment j’ai rencontré mon IA intérieure</h1>
+    <h1>Comment j’ai rencontré mon IA intérieure</h1> <!-- 🔧 Titre de l’article -->
     <p>Cet article fictif explore les liens entre introspection, synchronicités numériques, et conscience algorithmique...</p>
   </main>
+
   <div id="footer-placeholder"></div>
 
   <script>
@@ -32,8 +26,10 @@
     function injectPartial(id, url, fallback = '') {
       if (cache[url]) {
         document.getElementById(id).innerHTML = cache[url];
+        if (id === 'menu-placeholder') highlightBlogLink();
         return;
       }
+
       fetch(url)
         .then(res => {
           if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
@@ -42,11 +38,23 @@
         .then(html => {
           cache[url] = html;
           document.getElementById(id).innerHTML = html;
+          if (id === 'menu-placeholder') highlightBlogLink();
         })
         .catch(err => {
           console.warn(err);
-          document.getElementById(id).innerHTML = fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
+          document.getElementById(id).innerHTML =
+            fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
         });
+    }
+
+    // 🔍 Force le lien "Blog" comme actif pour tous les articles
+    function highlightBlogLink() {
+      document.querySelectorAll('.main-nav a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && href.includes('blog/index.html')) {
+          link.classList.add('active');
+        }
+      });
     }
 
     injectPartial('menu-placeholder', '../menu.html');
