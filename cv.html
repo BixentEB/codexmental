@@ -7,12 +7,17 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
     body {
       font-family: 'Roboto', sans-serif;
     }
     .header, .main-nav a {
       font-family: 'Orbitron', sans-serif;
+    }
+    .main-nav a.active {
+      text-decoration: underline;
+      color: #ffffff;
     }
     .bloc-container {
       display: flex;
@@ -27,16 +32,15 @@
       flex-wrap: wrap;
     }
     .bloc {
-  flex: 1 1 300px;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  border-radius: 10px;
-  text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  font-weight: 400;
-  font-size: 0.95rem; /* Ajout ici */
-      
+      flex: 1 1 300px;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      font-weight: 400;
+      font-size: 0.95rem;
     }
     .bloc:hover {
       transform: translateY(-5px);
@@ -64,24 +68,10 @@
   </style>
   <script src="script.js" defer></script>
 </head>
-<body class="theme-stellaire">
+<body class="theme-stellaire" id="top">
   <canvas id="stellaire-stars"></canvas>
-<div id="menu-placeholder"></div>
-<script>
-  fetch('menu.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('menu-placeholder').innerHTML = html;
+  <div id="menu-placeholder"></div>
 
-      // ⚡ Active automatiquement le lien courant
-      const current = location.pathname.split("/").pop();
-      document.querySelectorAll('.main-nav a').forEach(link => {
-        if (link.getAttribute('href') === current) {
-          link.classList.add('active');
-        }
-      });
-    });
-</script>
   <main class="container">
     <h1 style="text-align:center">ASSISTANT ADMINISTRATIF CRÉATIF<br>Concepteur de solutions hybrides & augmentées</h1>
 
@@ -107,13 +97,13 @@
         </div>
       </div>
 
-  <div class="row">
+      <div class="row">
         <div class="bloc">
           <h2>QUALITÉS</h2>
           <p>Esprit d’analyse, rigueur, adaptabilité, sens du détail</p>
         </div>
       </div>
-      
+
       <div class="row">
         <div class="bloc">
           <h2>🎓 Formation</h2>
@@ -121,10 +111,10 @@
           <p><strong>2017</strong> Anglais B2 (cecrl)<br>Acfal formation, Vienne</p>
           <p><strong>2001</strong> Bac Economique et Social (ES)<br>Institution Robin, Vienne</p>
         </div>
-        <div class="bloc special-font">
-  <h2>📝 Langues</h2>
-  <p>Français (natif)<br>Anglais (B2)</p>
-</div>
+        <div class="bloc">
+          <h2>📝 Langues</h2>
+          <p>Français (natif)<br>Anglais (B2)</p>
+        </div>
       </div>
 
       <div class="row">
@@ -141,11 +131,25 @@
     <div class="cv-download" style="text-align:center; margin-top: 2rem;">
       <a href="arc/cv-vincent-etienne.pdf" download class="btn">📄 Télécharger le CV (PDF)</a>
     </div>
-  </main>  <div id="footer-placeholder"></div>
+  </main>
+
+  <div id="footer-placeholder"></div>
 
   <script>
-    const cache = {};
+    fetch('menu.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('menu-placeholder').innerHTML = html;
 
+        const current = location.pathname.split("/").pop();
+        document.querySelectorAll('.main-nav a').forEach(link => {
+          if (link.getAttribute('href') === current) {
+            link.classList.add('active');
+          }
+        });
+      });
+
+    const cache = {};
     function injectPartial(id, url, fallback = '') {
       if (cache[url]) {
         document.getElementById(id).innerHTML = cache[url];
@@ -166,16 +170,7 @@
         });
     }
 
-    injectPartial('menu-placeholder', 'menu.html');
     injectPartial('footer-placeholder', 'footer.html');
   </script>
-  <script>
-  const current = location.pathname.split("/").pop();
-  document.querySelectorAll('.main-nav a').forEach(link => {
-    if (link.getAttribute('href') === current) {
-      link.classList.add('active');
-    }
-  });
-</script>
 </body>
 </html>
