@@ -73,15 +73,21 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
 
-  // 🌐 Lien actif dans le menu
-  const current = window.location.pathname.replace(/^.*[\\/]/, ''); // extrait le nom du fichier
-document.querySelectorAll('.main-nav a').forEach(link => {
-  const linkHref = link.getAttribute('href').replace(/^.*[\\/]/, '');
-  if (linkHref === current) {
-    link.classList.add('active');
-  }
-});
+  // 🌐 Lien actif dans le menu (corrigé)
+  const menuLinks = document.querySelectorAll("nav a");
+  const path = window.location.pathname;
 
+  menuLinks.forEach((link) => {
+    const href = link.getAttribute("href");
+
+    if ((path === "/" || path === "/index.html") && href === "index.html") {
+      link.classList.add("active");
+    } else if ((path === "/blog/" || path === "/blog/index.html") && href === "blog/index.html") {
+      link.classList.add("active");
+    } else if (path.endsWith(href)) {
+      link.classList.add("active");
+    }
+  });
 
   // ⬆️ Bouton retour haut
   const scrollBtn = document.getElementById('scrollTopBtn');
