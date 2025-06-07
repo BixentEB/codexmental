@@ -90,3 +90,18 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Ajoute un bouton retour en haut dans le footer
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTopBtn');
+  if (btn) btn.style.display = window.scrollY > 100 ? 'block' : 'none';
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('scrollTopBtn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+});
