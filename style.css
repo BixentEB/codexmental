@@ -186,6 +186,18 @@ body {
   padding: 0.3rem 0.6rem;
 }
 
+.main-nav a.active {
+  text-decoration: underline;
+  font-weight: bold;
+  color: #ffffff !important; /* ou une couleur de contraste selon le thème */
+}
+
+.theme-stellaire .main-nav a.active { color: #ffffff; }
+.theme-lunaire .main-nav a.active { color: #d0d5e3; }
+.theme-solaire .main-nav a.active { color: #5a4500; }
+.theme-galactique .main-nav a.active { color: #80f0ff; }
+
+
 #scrollTopBtn {
   display: none;
   position: fixed;
