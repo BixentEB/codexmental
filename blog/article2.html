@@ -22,8 +22,33 @@
     <h1>L’étrange silence des chiffres</h1>
     <p>Que se passe-t-il quand les coïncidences numériques deviennent trop nombreuses pour être ignorées ? Une exploration...</p>
   </main>
-  <footer>
-    &copy; 2025 Vincent Etienne – Tous droits réservés.
-  </footer>
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const cache = {};
+
+    function injectPartial(id, url, fallback = '') {
+      if (cache[url]) {
+        document.getElementById(id).innerHTML = cache[url];
+        return;
+      }
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
+          return res.text();
+        })
+        .then(html => {
+          cache[url] = html;
+          document.getElementById(id).innerHTML = html;
+        })
+        .catch(err => {
+          console.warn(err);
+          document.getElementById(id).innerHTML = fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
+        });
+    }
+
+    injectPartial('menu-placeholder', '../menu.html');
+    injectPartial('footer-placeholder', '../footer.html');
+  </script>
 </body>
 </html>
