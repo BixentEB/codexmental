@@ -1,5 +1,4 @@
-/* === RÉINITIALISATION === */
-
+/* 🌐 FONTES ET RÉINITIALISATION DE BASE */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
 body {
@@ -7,8 +6,11 @@ body {
   margin: 0;
   padding: 0;
   transition: all 0.3s ease;
+  background-color: #0b001a;
+  transition: background-color 0.6s ease, color 0.6s ease;
 }
 
+/* 🧱 STRUCTURE GÉNÉRALE */
 .header {
   display: flex;
   justify-content: space-between;
@@ -16,31 +18,66 @@ body {
   background-color: #111;
   padding: 1rem 2rem;
 }
-
 .site-title {
   font-size: 1.5rem;
   font-weight: bold;
 }
-
-.main-nav a {
-  text-decoration: none;
-  margin-left: 1rem;
-  font-weight: bold;
-}
-
-.main-nav a.active {
-  color: #ffd700;
-  text-decoration: underline;
-  font-weight: bold;
-}
-
 .container {
   max-width: 900px;
   margin: auto;
   padding: 2rem;
   text-align: center;
 }
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 4rem;
+}
 
+/* 🧭 NAVIGATION */
+.main-nav a {
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+.main-nav a.active {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.main-nav a.active:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 🎨 COULEURS DÉCLINÉES PAR THÈME POUR .active */
+.theme-stellaire .main-nav a.active { color: #ffffff; }
+.theme-lunaire .main-nav a.active   { color: #d0d5e3; }
+.theme-solaire .main-nav a.active   { color: #5a4500; }
+.theme-galactique .main-nav a.active{ color: #80f0ff; }
+
+/* 🌌 EFFET STELLAIRE */
+#stellaire-stars {
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: transparent;
+  transition: opacity 0.4s ease 0.2s;
+}
+body.theme-stellaire #stellaire-stars {
+  opacity: 1;
+}
+
+/* 🎛️ BOUTONS DE THÈME */
 .theme-buttons {
   margin-top: 2rem;
 }
@@ -53,34 +90,9 @@ body {
   border: none;
 }
 
-footer {
-  text-align: center;
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: 4rem;
-}
+/* 🌈 THÈMES VISUELS */
 
-/* === Apparition douce du fond étoilé === */
-
-#stellaire-stars {
-  opacity: 0;
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: transparent;
-  transition: opacity 0.4s ease 0.2s; /* délai de 0.2s */
-}
-
-body.theme-stellaire #stellaire-stars {
-  opacity: 1;
-}
-
-/* === THEMES PERSONNALISÉS === */
-
+/* ✨ Thème Stellaire */
 body.theme-stellaire {
   background-color: #0d1a3f;
   color: #c7d9ff;
@@ -95,6 +107,7 @@ body.theme-stellaire {
   border: 1px solid #5c7cff;
 }
 
+/* ☀️ Thème Solaire */
 body.theme-solaire {
   background-color: #fffceb;
   color: #5a4500;
@@ -108,6 +121,7 @@ body.theme-solaire {
   color: #5a4500;
 }
 
+/* 🌙 Thème Lunaire */
 body.theme-lunaire {
   background-color: #0b1c2d;
   color: #d0d5e3;
@@ -121,6 +135,7 @@ body.theme-lunaire {
   color: #e0eafc;
 }
 
+/* 🪐 Thème Galactique */
 body.theme-galactique {
   background: linear-gradient(145deg, #0b001a, #1c0038);
   color: #d3bfff;
@@ -139,8 +154,10 @@ body.theme-galactique {
   transform: scale(1.05);
   box-shadow: 0 0 10px #80f0ff;
 }
-/* === STYLES FORMULAIRE PAR THÈME === */
 
+/* 📝 FORMULAIRES PAR THÈME */
+
+/* Stellaire */
 body.theme-stellaire form {
   background-color: rgba(255, 255, 255, 0.05);
   box-shadow: 0 0 10px rgba(200, 220, 255, 0.2);
@@ -150,6 +167,7 @@ body.theme-stellaire form button {
   background-color: #5c7cff;
 }
 
+/* Lunaire */
 body.theme-lunaire form {
   background-color: rgba(20, 30, 50, 0.7);
   box-shadow: 0 0 8px rgba(180, 200, 255, 0.15);
@@ -160,6 +178,7 @@ body.theme-lunaire form button {
   color: #fff;
 }
 
+/* Solaire */
 body.theme-solaire form {
   background-color: rgba(255, 250, 220, 0.9);
   box-shadow: 0 0 5px rgba(255, 200, 80, 0.2);
@@ -169,6 +188,7 @@ body.theme-solaire form button {
   color: #000;
 }
 
+/* Galactique */
 body.theme-galactique form {
   background-color: rgba(50, 0, 80, 0.6);
   border: 1px solid #80f0ff;
@@ -178,41 +198,8 @@ body.theme-galactique form button {
   background-color: #80f0ff;
   color: #0a001f;
 }
-/* === TRANSITIONS DOUCES ENTRE LES THÈMES === */
 
-body {
-  background-color: #0b001a; /* même base que Galaxia */
-  transition: background-color 0.6s ease, color 0.6s ease;
-}
-
-.nav-link.active {
-  background-color: #5c7cff;
-  color: white;
-  border-radius: 5px;
-  padding: 0.3rem 0.6rem;
-}
-
-.main-nav a.active {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.main-nav a.active:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Si tu veux varier par thème, tu peux juste changer le fond OU la couleur ici */
-.theme-stellaire .main-nav a.active { color: #ffffff; }
-.theme-lunaire .main-nav a.active { color: #d0d5e3; }
-.theme-solaire .main-nav a.active { color: #5a4500; }
-.theme-galactique .main-nav a.active { color: #80f0ff; }
-
-
+/* 🔼 BOUTON RETOUR HAUT */
 #scrollTopBtn {
   display: none;
   position: fixed;
@@ -229,6 +216,7 @@ body {
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
+/* ✨ DIVERS */
 .special-font {
   font-family: 'Orbitron', sans-serif;
 }
