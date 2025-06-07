@@ -10,14 +10,6 @@
 <body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
   <div id="menu-placeholder"></div>
-<script>
-  fetch('../menu.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('menu-placeholder').innerHTML = html;
-    });
-</script>
-
   <main class="container">
     <h1>🧠 Le Blog</h1>
     <ul style="list-style: none; padding-left: 0;">
@@ -43,6 +35,17 @@
         .then(html => {
           cache[url] = html;
           document.getElementById(id).innerHTML = html;
+
+          if (id === 'menu-placeholder') {
+            const current = location.pathname.endsWith('/') ? 'index.html' : location.pathname.split("/").pop();
+            document.querySelectorAll('.main-nav a').forEach(link => {
+              const href = link.getAttribute('href') || '';
+              const linkLast = href.split("/").pop();
+              if (linkLast === current || (current === 'index.html' && linkLast === 'index.html' && href === 'blog/index.html')) {
+                link.classList.add('active');
+              }
+            });
+          }
         })
         .catch(err => {
           console.warn(err);
