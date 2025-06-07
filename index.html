@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accueil – Codex Mental</title>
+  <title>Projets – Codex Mental</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
@@ -26,48 +26,21 @@
     .main-nav a.active:hover {
       background-color: rgba(255, 255, 255, 0.15);
     }
-    .theme-buttons {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .theme-buttons span {
-      margin-right: 1rem;
-    }
-    .theme-buttons button {
-      margin: 0.3rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 6px;
+    .note-dev {
       background-color: rgba(255,255,255,0.05);
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .theme-buttons button:hover {
-      background-color: rgba(255,255,255,0.15);
+      border-left: 4px solid rgba(255,255,255,0.2);
+      padding: 1rem;
+      margin: 2rem 0;
+      font-style: italic;
+      color: #ccc;
     }
   </style>
   <script src="script.js" defer></script>
 </head>
 <body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
+
   <div id="menu-placeholder"></div>
-
-  <main class="container">
-    <h1 style="text-align:center">Bienvenue sur mon site</h1>
-    <p style="text-align:center">Ce bloc est modifiable. Tu peux ici écrire une introduction, une présentation, ou insérer du contenu dynamique plus tard.</p>
-
-    <div class="theme-buttons">
-      <span>Changer de thème :</span>
-      <button onclick="setTheme('theme-solaire')">Solaire</button>
-      <button onclick="setTheme('theme-lunaire')">Lunaire</button>
-      <button onclick="setTheme('theme-galactique')">Galactique</button>
-      <button onclick="setTheme('theme-stellaire')">Stellaire</button>
-    </div>
-  </main>
-
-  <div id="footer-placeholder"></div>
-
   <script>
     const cache = {};
     function injectPartial(id, url, fallback = '') {
@@ -85,10 +58,10 @@
           document.getElementById(id).innerHTML = html;
 
           if (id === 'menu-placeholder') {
-            const current = location.pathname.split("/").pop();
+            const current = location.pathname.split("/").pop() || "index.html";
             document.querySelectorAll('.main-nav a').forEach(link => {
-              const href = link.getAttribute('href') || '';
-              if (href.endsWith(current)) {
+              const href = link.getAttribute('href')?.split("/").pop();
+              if (href === current) {
                 link.classList.add('active');
               }
             });
@@ -103,5 +76,17 @@
     injectPartial('menu-placeholder', 'menu.html');
     injectPartial('footer-placeholder', 'footer.html');
   </script>
+
+  <main class="container">
+    <h1>Projets</h1>
+    <p>Voici une présentation de mes projets en cours, passés ou à venir.</p>
+
+    <div class="note-dev">
+    BIENVENUE SUR MON SITE
+<br>  🛠️ Zone en développement 
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
 </body>
 </html>
