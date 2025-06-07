@@ -73,18 +73,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
 
-  // 🌐 Lien actif dans le menu (corrigé)
-  const menuLinks = document.querySelectorAll("nav a");
-  const path = window.location.pathname;
+  // 🌐 Lien actif dans le menu (corrigé pour Home ≠ Blog)
+  const path = window.location.pathname.replace(/\/+$/, ''); // retire les "/" de fin
+  const links = document.querySelectorAll("nav a");
 
-  menuLinks.forEach((link) => {
+  links.forEach(link => {
     const href = link.getAttribute("href");
+    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
 
-    if ((path === "/" || path === "/index.html") && href === "index.html") {
-      link.classList.add("active");
-    } else if ((path === "/blog/" || path === "/blog/index.html") && href === "blog/index.html") {
-      link.classList.add("active");
-    } else if (path.endsWith(href)) {
+    if (linkPath === path) {
       link.classList.add("active");
     }
   });
