@@ -80,3 +80,13 @@ function animateStars() {
   }
   rafId = requestAnimationFrame(animateStars);
 }
+
+// Met en surbrillance le lien actif du menu
+window.addEventListener('DOMContentLoaded', () => {
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    if (link.getAttribute('href') === currentPath) {
+      link.classList.add('active');
+    }
+  });
+});
