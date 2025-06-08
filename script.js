@@ -1,23 +1,8 @@
+// === 🌌 FOND STELLAIRE ===
 let canvas, ctx, stars = [], rafId;
-
-function setTheme(theme) {
-  document.body.className = theme;
-  localStorage.setItem('codexTheme', theme);
-
-  if (theme === 'theme-stellaire') {
-    startStarfield();
-    setTimeout(() => {
-      if (canvas) canvas.style.opacity = '1';
-    }, 200);
-  } else {
-    stopStarfield();
-    if (canvas) canvas.style.opacity = '0';
-  }
-}
 
 function startStarfield() {
   if (!canvas || !ctx) return;
-
   resizeCanvas();
   initStars();
   animateStars();
@@ -63,41 +48,84 @@ function animateStars() {
   rafId = requestAnimationFrame(animateStars);
 }
 
+// === 🎨 THÈME ===
+function setTheme(theme) {
+  document.body.className = theme;
+  localStorage.setItem('codexTheme', theme);
+
+  if (theme === 'theme-stellaire') {
+    startStarfield();
+    setTimeout(() => {
+      if (canvas) canvas.style.opacity = '1';
+    }, 200);
+  } else {
+    stopStarfield();
+    if (canvas) canvas.style.opacity = '0';
+  }
+}
+
+// === 🧩 INJECTION MENU / FOOTER ===
+function injectPartial(id, url) {
+  const target = document.getElementById(id);
+  if (!target) return;
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error(`Erreur chargement ${url}`);
+      return response.text();
+    })
+    .then(html => {
+      target.innerHTML = html;
+    })
+    .catch(err => {
+      console.error("❌ Injection échouée :", err);
+    });
+}
+
+// === ⬆️ RETOUR HAUT ===
+function setupScrollButton() {
+  const scrollBtn = document.getElementById('scrollTopBtn');
+  if (!scrollBtn) return;
+
+  scrollBtn.style.display = 'none';
+
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  window.addEventListener('scroll', () => {
+    scrollBtn.style.display = window.scrollY > 100 ? 'block' : 'none';
+  });
+}
+
+// === 🚀 INITIALISATION ===
 window.addEventListener('DOMContentLoaded', () => {
-  // 🌌 Animation stellaire
+  // Fond stellaire
   canvas = document.getElementById('stellaire-stars');
   if (canvas) {
     ctx = canvas.getContext('2d');
     canvas.style.opacity = '0';
   }
+
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
 
-  // 🌐 Lien actif dans le menu (corrigé pour Home ≠ Blog)
-  const path = window.location.pathname.replace(/\/+$/, ''); // retire les "/" de fin
+  // Menu actif
+  const path = window.location.pathname.replace(/\/+$/, '');
   const links = document.querySelectorAll("nav a");
 
   links.forEach(link => {
     const href = link.getAttribute("href");
     const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-
     if (linkPath === path) {
       link.classList.add("active");
     }
   });
 
-  // ⬆️ Bouton retour haut
-  const scrollBtn = document.getElementById('scrollTopBtn');
-  if (scrollBtn) {
-    scrollBtn.style.display = 'none';
-    scrollBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
+  // Scroll top
+  setupScrollButton();
 
-  window.addEventListener('scroll', () => {
-    if (scrollBtn) {
-      scrollBtn.style.display = window.scrollY > 100 ? 'block' : 'none';
-    }
-  });
+  // Injection HTML
+  injectPartial('menu-placeholder', 'menu.html');
+  injectPartial('footer-placeholder', 'footer.html');
 });
