@@ -1,25 +1,20 @@
-/* 🌐 FONTES ET RÉINITIALISATION DE BASE */
+/* 🌐 FONTES */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&display=swap');
 
-/* 🎨 VARIABLES CSS POUR LES THÈMES */
+/* 🔁 VARIABLES GLOBALES */
 :root {
-  /* Transitions communes */
   --transition-base: all 0.3s ease;
   --transition-transform: transform 0.3s ease, opacity 0.3s ease;
-  
-  /* Espacements */
   --padding-base: 1rem;
   --padding-large: 2rem;
   --gap-base: 2rem;
   --gap-large: 4rem;
-  
-  /* Bordures */
   --border-radius-small: 6px;
   --border-radius-medium: 10px;
   --border-radius-large: 12px;
 }
 
-/* Variables pour thème stellaire */
+/* 🌌 THÈMES */
 body.theme-stellaire {
   --bg-primary: #030617;
   --text-primary: #e0ecff;
@@ -33,8 +28,6 @@ body.theme-stellaire {
   --bloc-shadow-hover: rgba(180, 220, 255, 0.2);
   --text-shadow: rgba(100, 160, 255, 0.3);
 }
-
-/* Variables pour thème galactique */
 body.theme-galactique {
   --bg-primary: #05050F;
   --text-primary: #d0faff;
@@ -48,8 +41,6 @@ body.theme-galactique {
   --bloc-shadow-hover: rgba(160, 250, 255, 0.2);
   --text-shadow: rgba(128, 240, 255, 0.3);
 }
-
-/* Variables pour thème lunaire */
 body.theme-lunaire {
   --bg-primary: #dce3ec;
   --text-primary: #222;
@@ -63,10 +54,8 @@ body.theme-lunaire {
   --bloc-shadow-hover: rgba(150, 160, 170, 0.2);
   --text-shadow: transparent;
 }
-
-/* Variables pour thème solaire */
 body.theme-solaire {
-  --bg-primary: #fcde72;
+  --bg-primary: #fff6e5;
   --text-primary: #4a3200;
   --text-secondary: #4a3200;
   --accent-primary: #f0a000;
@@ -79,138 +68,65 @@ body.theme-solaire {
   --text-shadow: transparent;
 }
 
-/* 🎯 RÉINITIALISATION ET BASE */
+/* ✨ GÉNÉRAL */
 * {
   box-sizing: border-box;
 }
-
 body {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  line-height: 1.6;
   margin: 0;
   padding: 0;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.4s ease, color 0.4s ease;
+  min-height: 100vh;
 }
-
-/* ✨ TYPOGRAPHIE */
-h1, h2, h3, h4, h5, h6 {
+h1, h2 {
   font-family: 'Orbitron', sans-serif;
-  margin: 0 0 1rem 0;
   color: var(--text-secondary);
+  text-align: center;
   text-shadow: 0 0 6px var(--text-shadow);
-  transition: var(--transition-base);
 }
-
 h1 { font-size: 2.5rem; }
 h2 { font-size: 2rem; }
-
 a {
   color: var(--link-color);
   text-decoration: none;
   transition: var(--transition-base);
 }
-
 a:hover {
   color: var(--text-secondary);
 }
 
-/* 🧱 STRUCTURE GÉNÉRALE */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #111;
-  padding: var(--padding-base) var(--padding-large);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.site-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #ffffff;
-  margin: 0;
-}
-
-.main-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--padding-base);
-}
-
-.main-nav a {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: var(--border-radius-small);
-  transition: var(--transition-base);
-  color: #ccc;
-}
-
-.main-nav a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-}
-
-.main-nav a.active {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  font-weight: 700;
-}
-
+/* 🧱 STRUCTURE */
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: var(--padding-large);
 }
-
-.container h1,
-.container h2,
-.cv-download {
-  text-align: center;
-}
-
-/* 🌌 EFFET STELLAIRE */
-#stellaire-stars {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: transparent;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease 0.2s;
-}
-
-body.theme-stellaire #stellaire-stars,
-body.theme-galactique #stellaire-stars,
-body.theme-lunaire #stellaire-stars,
-body.theme-solaire #stellaire-stars {
-  opacity: 1;
-}
-
-/* 📦 STRUCTURE DES BLOCS */
 .bloc-container {
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: var(--gap-large);
   padding: var(--padding-large);
 }
-
 .row {
   display: flex;
   justify-content: center;
-  gap: 4rem;
+  gap: var(--gap-large);
   flex-wrap: wrap;
 }
+.row-single .bloc {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+.row-double .bloc {
+  flex: 1;
+  min-width: 0;
+}
 
+/* 📦 BLOCS */
 .bloc {
   flex: 1 1 280px;
   min-width: 280px;
@@ -220,218 +136,104 @@ body.theme-solaire #stellaire-stars {
   text-align: left;
   font-size: 0.95rem;
   backdrop-filter: blur(4px);
-  
-  /* Utilisation des variables CSS */
   background-color: var(--bloc-bg);
   border: 1px solid var(--bloc-border);
   box-shadow: 0 0 15px var(--bloc-shadow);
   color: var(--text-primary);
-  
   transition: var(--transition-transform);
 }
-
 .bloc:hover {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 0 20px var(--bloc-shadow-hover);
 }
-
-/* 🎯 BOUTONS */
-.btn,
-.cv-download .btn,
-.contact-form button[type="submit"] {
-  display: inline-block;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: var(--border-radius-small);
-  font-size: 1rem;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition: var(--transition-base);
-  
-  background-color: var(--accent-primary);
-  color: white;
+.bloc h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
 }
-
-.btn:hover,
-.cv-download .btn:hover,
-.contact-form button[type="submit"]:hover {
-  background-color: var(--accent-hover);
-  transform: translateY(-2px);
-}
-
-.cv-download {
-  margin: var(--gap-base) 0;
+.bloc-icon {
+  font-size: 1.5rem;
 }
 
 /* 📬 FORMULAIRE */
 .contact-form {
   max-width: 500px;
-  margin: var(--gap-base) auto;
-  padding: var(--padding-large);
+  margin: 2rem auto;
+  padding: 2rem;
   border-radius: var(--border-radius-large);
-  backdrop-filter: blur(4px);
   background-color: var(--bloc-bg);
   border: 1px solid var(--bloc-border);
+  box-shadow: 0 0 10px var(--bloc-shadow);
+  backdrop-filter: blur(4px);
 }
-
 .contact-form label {
   display: block;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: inherit;
+  font-weight: bold;
 }
-
-.contact-form .form-group {
-  margin-bottom: 1.5rem;
-}
-
 .contact-form input,
 .contact-form textarea {
   width: 100%;
   padding: 0.8rem;
   border-radius: var(--border-radius-small);
-  border: 2px solid transparent;
+  border: none;
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.9);
   color: #000;
-  transition: var(--transition-base);
 }
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(var(--accent-primary), 0.1);
-}
-
-.contact-form textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
 .contact-form button[type="submit"] {
   display: block;
   margin: 1.5rem auto 0;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  font-weight: bold;
+  background-color: var(--accent-primary);
+  color: white;
+}
+.contact-form button[type="submit"]:hover {
+  background-color: var(--accent-hover);
 }
 
-/* 🦶 FOOTER */
-footer {
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--text-primary);
-  opacity: 0.7;
-  margin-top: var(--gap-large);
-  padding: var(--padding-large);
+/* 🌌 ÉTOILES */
+#stellaire-stars {
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: transparent;
+  transition: opacity 0.4s ease 0.2s;
+}
+body.theme-stellaire #stellaire-stars,
+body.theme-galactique #stellaire-stars,
+body.theme-lunaire #stellaire-stars,
+body.theme-solaire #stellaire-stars {
+  opacity: 1;
 }
 
-/* 📱 RESPONSIVE DESIGN */
+/* 📱 RESPONSIVE */
 @media (max-width: 1024px) {
-  .container {
-    padding: 1.5rem;
-  }
-  
-  .bloc {
-    flex: 1 1 250px;
-    min-width: 250px;
-  }
+  .container { padding: 1.5rem; }
+  .bloc { flex: 1 1 250px; min-width: 250px; }
 }
-
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    gap: var(--padding-base);
-    padding: var(--padding-base);
-  }
-  
-  .main-nav {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .row {
-    flex-direction: column;
-    align-items: center;
-    gap: 3rem;
-  }
-  
-  .bloc {
-    flex: none;
-    width: 100%;
-    min-width: auto;
-    max-width: none;
-  }
-  
-  .bloc-container {
-    padding: var(--padding-base);
-    gap: 3rem;
-  }
-  
+  .row { flex-direction: column; align-items: center; gap: 3rem; }
+  .bloc { width: 100%; max-width: none; min-width: auto; }
   h1 { font-size: 2rem; }
   h2 { font-size: 1.5rem; }
 }
-
 @media (max-width: 480px) {
-  .container {
-    padding: 1rem;
-  }
-  
-  .contact-form {
-    margin: var(--padding-base) auto;
-    padding: var(--padding-base);
-  }
-  
-  .main-nav a {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-  }
-  
+  .container { padding: 1rem; }
   h1 { font-size: 1.8rem; }
   h2 { font-size: 1.3rem; }
-}
-
-/* 🎨 AMÉLIORATIONS VISUELLES */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Focus visible pour l'accessibilité */
-*:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
-}
-
-/* Amélioration de la lisibilité */
-p {
-  margin-bottom: 1rem;
-  line-height: 1.7;
-}
-
-/* Styles pour les listes */
-ul, ol {
-  margin-bottom: 1rem;
-  padding-left: 1.5rem;
-}
-
-li {
-  margin-bottom: 0.5rem;
-}
-
-/* Pour les blocs qui doivent prendre toute la largeur */
-.row-single .bloc {
-  flex: 1 1 100%;
-  max-width: 100%;
-}
-
-/* Pour les blocs en duo */
-.row-double .bloc {
-  flex: 1;
-  min-width: 0;
 }
