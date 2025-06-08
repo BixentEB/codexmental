@@ -423,3 +423,8 @@ ul, ol {
 li {
   margin-bottom: 0.5rem;
 }
+
+/* Pour les blocs qui doivent prendre toute la largeur */
+.row-single .bloc {
+  flex: 1 1 100%;
+}
