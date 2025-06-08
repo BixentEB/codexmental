@@ -130,6 +130,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setupScrollButton();
 
   // Injections menu + footer
-  injectPartial('menu-placeholder', 'menu.html');
-  injectPartial('footer-placeholder', 'footer.html');
+  injectPartial('menu-placeholder', '/menu.html');
+  injectPartial('footer-placeholder', '/footer.html');
 });
