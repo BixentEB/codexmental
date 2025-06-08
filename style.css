@@ -7,7 +7,7 @@ body {
   padding: 0;
 }
 
-/* TITRES & TRANSITIONS */
+/* ✨ TITRES & TRANSITIONS */
 .header, .main-nav a, h1, h2, .site-title {
   font-family: 'Orbitron', sans-serif;
   margin: 0;
@@ -61,7 +61,6 @@ footer {
   color: #ffffff;
   padding: 0.2rem 0.6rem;
   border-radius: 6px;
-  text-decoration: none;
   font-weight: bold;
 }
 
@@ -69,13 +68,7 @@ footer {
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* 🎨 COULEURS PAR THÈME POUR .active */
-.theme-stellaire .main-nav a.active   { color: #ffffff; }
-.theme-lunaire .main-nav a.active     { color: #d0d5e3; }
-.theme-solaire .main-nav a.active     { color: #5a4500; }
-.theme-galactique .main-nav a.active  { color: #80f0ff; }
-
-/* 🌌 EFFET STELLAIRE */
+/* 🌌 EFFET STELLAIRE (pour tous les thèmes visuels) */
 #stellaire-stars {
   opacity: 0;
   pointer-events: none;
@@ -88,8 +81,11 @@ footer {
   background: transparent;
   transition: opacity 0.4s ease 0.2s;
 }
+
 body.theme-stellaire #stellaire-stars,
-body.theme-galactique #stellaire-stars {
+body.theme-galactique #stellaire-stars,
+body.theme-lunaire #stellaire-stars,
+body.theme-solaire #stellaire-stars {
   opacity: 1;
 }
 
@@ -110,22 +106,14 @@ body.theme-galactique #stellaire-stars {
 
 .bloc {
   flex: 1 1 300px;
-  background-color: rgba(255, 255, 255, 0.05);
   padding: 1.5rem;
   border-radius: 10px;
   text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: transform 0.3s ease, opacity 0.3s ease;
   font-weight: 400;
   font-size: 0.95rem;
   backdrop-filter: blur(3px);
-  box-shadow: 0 0 10px rgba(200, 220, 255, 0.1);
   color: inherit;
-}
-
-.bloc:hover {
-  transform: translateY(-5px);
-  opacity: 0.95;
 }
 
 /* 🎯 BOUTON CV */
@@ -139,6 +127,7 @@ body.theme-galactique #stellaire-stars {
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
+
 .cv-download .btn:hover {
   background-color: #1c6ed2;
 }
@@ -151,92 +140,22 @@ body.theme-galactique #stellaire-stars {
   }
 }
 
-/* ✨ THEME STELLAIRE – BLEU COSMOS */
-body.theme-stellaire {
-  background-color: #030617;
-  color: #e0ecff;
-}
-.theme-stellaire .bloc {
-  background-color: rgba(10, 20, 60, 0.75);
-  color: #e0ecff;
-  border: 1px solid rgba(100, 160, 255, 0.2);
-  box-shadow: 0 0 15px rgba(120, 180, 255, 0.12);
-}
-.theme-stellaire .bloc:hover {
-  transform: translateY(-5px) scale(1.01);
-  opacity: 1;
-  box-shadow: 0 0 20px rgba(180, 220, 255, 0.2);
-}
-.theme-stellaire h1,
-.theme-stellaire h2 {
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(100, 160, 255, 0.3);
-}
-.theme-stellaire a {
-  color: #8bbfff;
-}
-.theme-stellaire a:hover {
-  color: #ffffff;
-}
-.theme-stellaire .cv-download .btn {
-  background-color: #2d88ff;
-  color: white;
-}
-.theme-stellaire .cv-download .btn:hover {
-  background-color: #68aaff;
-}
-
-/* 💜 THEME GALACTIQUE – VIOLET COSMIQUE */
-body.theme-galactique {
-  background-color: #05050F;
-  color: #d0faff;
-}
-.theme-galactique .bloc {
-  background-color: rgba(30, 20, 60, 0.6);
-  color: #d8faff;
-  border: 1px solid rgba(128, 240, 255, 0.2);
-  box-shadow: 0 0 15px rgba(128, 240, 255, 0.12);
-}
-.theme-galactique .bloc:hover {
-  transform: translateY(-5px) scale(1.01);
-  opacity: 1;
-  box-shadow: 0 0 20px rgba(160, 250, 255, 0.2);
-}
-.theme-galactique h1,
-.theme-galactique h2 {
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(128, 240, 255, 0.3);
-}
-.theme-galactique a {
-  color: #80f0ff;
-}
-.theme-galactique a:hover {
-  color: #ffffff;
-}
-.theme-galactique .cv-download .btn {
-  background-color: #00d0ff;
-  color: white;
-}
-.theme-galactique .cv-download .btn:hover {
-  background-color: #5efeff;
-}
-
-/* 📬 FORMULAIRE DE CONTACT */
+/* 📬 FORMULAIRE */
 .contact-form {
   max-width: 500px;
   margin: 2rem auto;
-  background-color: rgba(20, 30, 60, 0.5);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 0 15px rgba(180, 200, 255, 0.1);
   backdrop-filter: blur(4px);
 }
+
 .contact-form label {
   display: block;
   margin-bottom: 1.2rem;
   color: inherit;
   font-weight: bold;
 }
+
 .contact-form input,
 .contact-form textarea {
   width: 100%;
@@ -250,16 +169,16 @@ body.theme-galactique {
   box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.2s ease;
 }
+
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #80f0ff;
+  box-shadow: 0 0 0 2px #5c66ff;
 }
+
 .contact-form button[type="submit"] {
   display: block;
   margin: 1.5rem auto 0;
-  background-color: #80f0ff;
-  color: #000;
   padding: 0.6rem 1.5rem;
   font-size: 1rem;
   border: none;
@@ -268,6 +187,135 @@ body.theme-galactique {
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
-.contact-form button[type="submit"]:hover {
-  background-color: #b0ffff;
+
+/* 🌠 THÈME STELLAIRE (bleu nuit) */
+body.theme-stellaire {
+  background-color: #030617;
+  color: #e0ecff;
+}
+.theme-stellaire .bloc {
+  background-color: rgba(10, 20, 60, 0.75);
+  border: 1px solid rgba(100, 160, 255, 0.2);
+  box-shadow: 0 0 15px rgba(120, 180, 255, 0.12);
+}
+.theme-stellaire .bloc:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 0 20px rgba(180, 220, 255, 0.2);
+}
+.theme-stellaire h1, .theme-stellaire h2 {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(100, 160, 255, 0.3);
+}
+.theme-stellaire a {
+  color: #8bbfff;
+}
+.theme-stellaire a:hover {
+  color: #ffffff;
+}
+.theme-stellaire .cv-download .btn,
+.theme-stellaire .contact-form button[type="submit"] {
+  background-color: #2d88ff;
+  color: white;
+}
+.theme-stellaire .cv-download .btn:hover,
+.theme-stellaire .contact-form button[type="submit"]:hover {
+  background-color: #68aaff;
+}
+
+/* 💜 THÈME GALACTIQUE (violet spatial) */
+body.theme-galactique {
+  background-color: #05050F;
+  color: #d0faff;
+}
+.theme-galactique .bloc {
+  background-color: rgba(30, 20, 60, 0.6);
+  border: 1px solid rgba(128, 240, 255, 0.2);
+  box-shadow: 0 0 15px rgba(128, 240, 255, 0.12);
+}
+.theme-galactique .bloc:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 0 20px rgba(160, 250, 255, 0.2);
+}
+.theme-galactique h1, .theme-galactique h2 {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(128, 240, 255, 0.3);
+}
+.theme-galactique a {
+  color: #80f0ff;
+}
+.theme-galactique a:hover {
+  color: #ffffff;
+}
+.theme-galactique .cv-download .btn,
+.theme-galactique .contact-form button[type="submit"] {
+  background-color: #00d0ff;
+  color: white;
+}
+.theme-galactique .cv-download .btn:hover,
+.theme-galactique .contact-form button[type="submit"]:hover {
+  background-color: #5efeff;
+}
+
+/* 🌕 THÈME LUNAIRE (bleu gris clair) */
+body.theme-lunaire {
+  background-color: #dce3ec;
+  color: #222;
+}
+.theme-lunaire .bloc {
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(150, 160, 170, 0.1);
+}
+.theme-lunaire .bloc:hover {
+  transform: translateY(-5px) scale(1.01);
+}
+.theme-lunaire h1, .theme-lunaire h2 {
+  color: #111;
+}
+.theme-lunaire a {
+  color: #1a4e80;
+}
+.theme-lunaire a:hover {
+  color: #000;
+}
+.theme-lunaire .cv-download .btn,
+.theme-lunaire .contact-form button[type="submit"] {
+  background-color: #4a69ad;
+  color: white;
+}
+.theme-lunaire .cv-download .btn:hover,
+.theme-lunaire .contact-form button[type="submit"]:hover {
+  background-color: #385a99;
+}
+
+/* ☀️ THÈME SOLAIRE (doré chaud) */
+body.theme-solaire {
+  background-color: #fff6e5;
+  color: #4a3200;
+}
+.theme-solaire .bloc {
+  background-color: rgba(255, 236, 180, 0.8);
+  border: 1px solid rgba(90, 69, 0, 0.2);
+  box-shadow: 0 0 10px rgba(150, 100, 0, 0.1);
+}
+.theme-solaire .bloc:hover {
+  transform: translateY(-5px) scale(1.01);
+}
+.theme-solaire h1, .theme-solaire h2 {
+  color: #4a3200;
+}
+.theme-solaire a {
+  color: #a25a00;
+}
+.theme-solaire a:hover {
+  color: #000;
+}
+.theme-solaire .cv-download .btn,
+.theme-solaire .contact-form button[type="submit"] {
+  background-color: #f0a000;
+  color: white;
+}
+.theme-solaire .cv-download .btn:hover,
+.theme-solaire .contact-form button[type="submit"]:hover {
+  background-color: #ffbe40;
 }
