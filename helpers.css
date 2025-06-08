@@ -84,16 +84,21 @@
 /* === GRILLE BLOCS RESPONSIVE === */
 .grid-blocs {
   display: grid;
-  justify-content: center;
+  gap: var(--bloc-spacing, 2rem);
   margin-bottom: var(--bloc-spacing, 2rem);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .grid-cols-1 {
   grid-template-columns: 1fr;
 }
+
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
