@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #111;
+  background-color: var(--nav-bg, #111);
   padding: 1rem 2rem;
   position: relative;
   z-index: 2;
@@ -12,7 +12,7 @@
 .site-title {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.4rem;
-  color: white;
+  color: var(--logo-color, white);
 }
 
 .main-nav {
@@ -23,7 +23,7 @@
 .nav-link {
   font-family: 'Orbitron', sans-serif;
   font-size: 1rem;
-  color: #4eaaff;
+  color: var(--nav-link-color, #4eaaff);
   text-decoration: none;
   padding: 0.3rem 0.6rem;
   border-radius: 4px;
@@ -37,12 +37,12 @@
 }
 
 .nav-link.active {
-  background-color: #4eaaff;
-  color: #111;
+  background-color: var(--nav-link-active-bg, #4eaaff);
+  color: var(--nav-link-active-color, #111);
   font-weight: bold;
 }
 
-/* 🎨 TYPOGRAPHIE */
+/* === TYPOGRAPHIE === */
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -52,21 +52,20 @@ body {
   line-height: 1.6;
 }
 
-/* TITRES */
 h1, h2, h3, h4 {
   font-family: 'Orbitron', sans-serif;
   margin-top: 0;
   line-height: 1.2;
 }
 
-/* CONTAINER CENTRAL */
+/* === CONTENEUR PRINCIPAL === */
 main {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
-/* LIENS */
+/* === LIENS === */
 a {
   color: var(--link-color, #00bfff);
   text-decoration: none;
@@ -75,12 +74,11 @@ a:hover {
   text-decoration: none;
 }
 
-/* SECTIONS */
+/* === BLOCS === */
 section {
   margin-bottom: 3rem;
 }
 
-/* BLOCS (boîtes de contenu) */
 .bloc {
   background-color: var(--bloc-bg, rgba(255,255,255,0.05));
   border: 1px solid var(--bloc-border, rgba(255,255,255,0.2));
@@ -93,7 +91,6 @@ section {
   box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
 }
 
-/* TITRES DE BLOCS */
 .bloc h2 {
   display: flex;
   align-items: center;
@@ -102,36 +99,9 @@ section {
   margin-bottom: 1rem;
 }
 
-/* RESPONSIVE BASE */
-@media (max-width: 768px) {
-  main {
-    padding: 1rem;
-  }
-  .bloc {
-    padding: 1rem;
-  }
-}
-
-/* === 🎨 DYNAMIC THEME VARIABLES === */
-
-.site-title {
-  color: var(--logo-color, white);
-}
-
-.header {
-  background-color: var(--nav-bg, #111);
-}
-
-.nav-link {
-  color: var(--nav-link-color, #4eaaff);
-}
-
-.nav-link.active {
-  background-color: var(--nav-link-active-bg, #4eaaff);
-  color: var(--nav-link-active-color, #111);
-}
-
-.theme-buttons button {
+/* === BOUTONS === */
+.theme-buttons button,
+.btn-primary {
   background-color: var(--btn-bg, #4eaaff);
   color: var(--btn-text, #fff);
   border: none;
@@ -143,26 +113,12 @@ section {
   transition: background-color 0.3s ease;
 }
 
-.theme-buttons button:hover {
+.theme-buttons button:hover,
+.btn-primary:hover {
   background-color: var(--btn-hover, #74c4ff);
 }
 
-.btn-primary {
-  background-color: #4eaaff;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: none;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-  background-color: #74c4ff;
-}
-
+/* === FOOTER === */
 footer {
   text-align: center;
   padding: 2rem 1rem;
@@ -171,9 +127,9 @@ footer {
 }
 
 footer .theme-buttons {
-  margin-top: 1rem;
-}
-
-footer .theme-buttons button {
-  margin: 0.3rem;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
