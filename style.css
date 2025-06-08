@@ -14,6 +14,42 @@
   --border-radius-large: 12px;
 }
 
+/* 🎨 NAVIGATION */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  padding: 1rem 2rem;
+}
+
+.site-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.main-nav a {
+  font-family: 'Orbitron', sans-serif;
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: bold;
+  transition: var(--transition-base);
+  color: var(--link-color);
+}
+
+.main-nav a.active {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--border-radius-small);
+}
+
+.main-nav a.active:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
 /* 🌌 THÈMES */
 body.theme-stellaire {
   --bg-primary: #030617;
