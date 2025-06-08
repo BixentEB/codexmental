@@ -430,8 +430,8 @@ li {
   max-width: 100%;
 }
 
-/* Pour les blocs en duo, qu'ils prennent plus d'espace */
+/* Pour les blocs en duo */
 .row-double .bloc {
-  flex: 1 1 45%;
-  min-width: 400px;
+  flex: 1;
+  min-width: 0;
 }
