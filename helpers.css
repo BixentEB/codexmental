@@ -1,0 +1,57 @@
+/* 📁 helpers.css : classes utilitaires de positionnement, alignement, espacements */
+
+/* 📐 ALIGNEMENT TEXTE */
+.text-left    { text-align: left !important; }
+.text-center  { text-align: center !important; }
+.text-right   { text-align: right !important; }
+
+/* 📦 FLEX UTILES */
+.flex         { display: flex !important; }
+.flex-row     { flex-direction: row !important; }
+.flex-column  { flex-direction: column !important; }
+.flex-wrap    { flex-wrap: wrap !important; }
+.flex-center  { justify-content: center !important; align-items: center !important; }
+.flex-between { justify-content: space-between !important; }
+.flex-end     { justify-content: flex-end !important; }
+.items-start  { align-items: flex-start !important; }
+.items-center { align-items: center !important; }
+.items-end    { align-items: flex-end !important; }
+
+/* 🧲 MARGES RAPIDES */
+.m-0  { margin: 0 !important; }
+.mt-1 { margin-top: 1rem !important; }
+.mb-1 { margin-bottom: 1rem !important; }
+.ml-1 { margin-left: 1rem !important; }
+.mr-1 { margin-right: 1rem !important; }
+.my-1 { margin-top: 1rem !important; margin-bottom: 1rem !important; }
+.mx-1 { margin-left: 1rem !important; margin-right: 1rem !important; }
+
+.mt-2 { margin-top: 2rem !important; }
+.mb-2 { margin-bottom: 2rem !important; }
+
+/* 📏 PADDINGS RAPIDES */
+.p-0  { padding: 0 !important; }
+.pt-1 { padding-top: 1rem !important; }
+.pb-1 { padding-bottom: 1rem !important; }
+.pl-1 { padding-left: 1rem !important; }
+.pr-1 { padding-right: 1rem !important; }
+.py-1 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+.px-1 { padding-left: 1rem !important; padding-right: 1rem !important; }
+
+/* 📏 WIDTH UTILES */
+.w-100 { width: 100% !important; }
+.w-50  { width: 50% !important; }
+.max-w-full { max-width: 100% !important; }
+
+/* 🧍 POSITION UTILES */
+.relative { position: relative !important; }
+.absolute { position: absolute !important; }
+.fixed    { position: fixed !important; }
+
+/* 🔲 CENTRAGE ABSOLU */
+.center-absolute {
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
