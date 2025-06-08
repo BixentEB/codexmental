@@ -1,28 +1,29 @@
 /* 🎨 THÈMES : couleurs et styles dynamiques */
 
-body.theme-solaire {
-  --bg-primary: #ffef9c;
-  --text-primary: #4a3200;
-  --text-secondary: #4a3200;
-  --accent-primary: #f0a000;
-  --accent-hover: #ffbe40;
-  --link-color: #a25a00;
-  --bloc-bg: rgba(252, 240, 177, 0.9);
-  --bloc-border: rgba(90, 69, 0, 0.2);
-  --bloc-shadow: rgba(150, 100, 0, 0.15);
-  --bloc-shadow-hover: rgba(150, 100, 0, 0.25);
-  --logo-color: #4a3200;
+body.theme-lunaire {
+  --bg-primary: #0b1a33;
+  --text-primary: #dceeff;
+  --text-secondary: #aaccee;
+  --accent-primary: #3b7dd8;
+  --accent-hover: #5da3ff;
+  --link-color: #77aaff;
+
+  --bloc-bg: rgba(20, 30, 60, 0.95);
+  --bloc-border: rgba(150, 200, 255, 0.1);
+  --bloc-shadow: rgba(150, 200, 255, 0.08);
+  --bloc-shadow-hover: rgba(150, 200, 255, 0.2);
+
+  --logo-color: #77aaff;
   --nav-bg: #111;
-  --nav-link-color: #4a3200;
-  --nav-link-active-bg: #4a3200;
+  --nav-link-color: #aaccee;
+  --nav-link-active-bg: #3b7dd8;
   --nav-link-active-color: #fff;
-  --btn-bg: #f1c40f;
-  --btn-text: #111;
-  --btn-hover: #f39c12;
 
-  /* 👇 nouvelle variable d'espacement entre blocs */
+  --btn-bg: #5da3ff;
+  --btn-text: #fff;
+  --btn-hover: #3b7dd8;
+
   --bloc-spacing: 2rem;
-
 }
 
 body.theme-galactique {
