@@ -111,3 +111,40 @@ section {
     padding: 1rem;
   }
 }
+
+/* === 🎨 DYNAMIC THEME VARIABLES === */
+
+.site-title {
+  color: var(--logo-color, white);
+}
+
+.header {
+  background-color: var(--nav-bg, #111);
+}
+
+.nav-link {
+  color: var(--nav-link-color, #4eaaff);
+}
+
+.nav-link.active {
+  background-color: var(--nav-link-active-bg, #4eaaff);
+  color: var(--nav-link-active-color, #111);
+}
+
+button,
+.theme-buttons button {
+  background-color: var(--btn-bg, #4eaaff);
+  color: var(--btn-text, #fff);
+  border: none;
+  padding: 0.5rem 1rem;
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover,
+.theme-buttons button:hover {
+  background-color: var(--btn-hover, #74c4ff);
+}
