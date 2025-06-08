@@ -28,9 +28,26 @@
   transition: color 0.3s;
 }
 
-.nav-link:hover,
-.nav-link.active {
+.nav-link {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  color: #4eaaff;
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
   color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+.nav-link.active {
+  background-color: #4eaaff;
+  color: #111;
+  font-weight: bold;
 }
 
 /* 🎨 TYPOGRAPHIE */
@@ -63,7 +80,7 @@ a {
   text-decoration: none;
 }
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* SECTIONS */
