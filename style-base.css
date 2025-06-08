@@ -1,243 +1,69 @@
-/* 📁 style-base.css : structure, typographie, layout */
-
-/* 🌐 FONTES */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&display=swap');
-
-/* 🔁 VARIABLES GLOBALES */
-:root {
-  --transition-base: all 0.3s ease;
-  --transition-transform: transform 0.3s ease, opacity 0.3s ease;
-  --padding-base: 1rem;
-  --padding-large: 2rem;
-  --gap-base: 2rem;
-  --gap-large: 4rem;
-  --border-radius-small: 6px;
-  --border-radius-medium: 10px;
-  --border-radius-large: 12px;
-}
-
-/* 🎨 NAVIGATION */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #111;
-  padding: 1rem 2rem;
-}
-
-.site-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--text-secondary);
-}
-
-.main-nav {
-  display: flex;
-  gap: 1rem;
-}
-
-.main-nav a {
-  font-family: 'Orbitron', sans-serif;
-  text-decoration: none;
-  font-weight: bold;
-  transition: var(--transition-base);
-  color: var(--link-color);
-}
-
-.main-nav a.active {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: var(--text-secondary);
-  padding: 0.2rem 0.6rem;
-  border-radius: var(--border-radius-small);
-}
-
-.main-nav a.active:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* 🌌 ÉTOILES */
-#stellaire-stars {
-  opacity: 0;
-  pointer-events: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: transparent;
-  transition: opacity 0.4s ease 0.2s;
-}
-
-body.theme-stellaire #stellaire-stars,
-body.theme-galactique #stellaire-stars,
-body.theme-lunaire #stellaire-stars,
-body.theme-solaire #stellaire-stars {
-  opacity: 1;
-}
-
-/* 🧱 STRUCTURE */
+/* 🎨 TYPOGRAPHIE */
 body {
   font-family: 'Roboto', sans-serif;
-  font-weight: 400;
   margin: 0;
   padding: 0;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  transition: background-color 0.4s ease, color 0.4s ease;
-  min-height: 100vh;
+  background-color: var(--bg-primary, #000);
+  color: var(--text-primary, #fff);
+  line-height: 1.6;
 }
 
-h1, h2 {
+/* TITRES */
+h1, h2, h3, h4 {
   font-family: 'Orbitron', sans-serif;
-  color: var(--text-secondary);
-  text-align: center;
-  text-shadow: 0 0 6px var(--text-shadow);
+  margin-top: 0;
+  line-height: 1.2;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-
-a {
-  color: var(--link-color);
-  text-decoration: none;
-  transition: var(--transition-base);
-}
-
-a:hover {
-  color: var(--text-secondary);
-}
-
-.container {
+/* CONTAINER CENTRAL */
+main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--padding-large);
+  padding: 2rem 1rem;
 }
 
-.bloc-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-large);
-  padding: var(--padding-large);
+/* LIENS */
+a {
+  color: var(--link-color, #00bfff);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--gap-large);
-  flex-wrap: wrap;
+/* SECTIONS */
+section {
+  margin-bottom: 3rem;
 }
 
-.row-single .bloc {
-  flex: 1 1 100%;
-  max-width: 100%;
-}
-
-.row-double .bloc {
-  flex: 1 1 calc(50% - var(--gap-base));
-  min-width: 400px;
-  max-width: 600px;
-}
-
-/* 📦 BLOCS */
+/* BLOCS (boîtes de contenu) */
 .bloc {
-  flex: 1 1 400px;
-  min-width: 400px;
-  max-width: 600px;
+  background-color: var(--bloc-bg, rgba(255,255,255,0.05));
+  border: 1px solid var(--bloc-border, rgba(255,255,255,0.2));
+  border-radius: 1rem;
   padding: 1.5rem;
-  border-radius: var(--border-radius-medium);
-  text-align: left;
-  font-size: 0.95rem;
-  backdrop-filter: blur(4px);
-  background-color: var(--bloc-bg);
-  border: 1px solid var(--bloc-border);
-  box-shadow: 0 0 15px var(--bloc-shadow);
-  color: var(--text-primary);
-  transition: var(--transition-transform);
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
+  transition: box-shadow 0.3s ease;
 }
-
 .bloc:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 0 20px var(--bloc-shadow-hover);
+  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
 }
 
-.bloc h3 {
+/* TITRES DE BLOCS */
+.bloc h2 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 1.3rem;
   margin-bottom: 1rem;
-  font-size: 1.2rem;
 }
 
-.bloc-icon {
-  font-size: 1.5rem;
-}
-
-/* 📬 FORMULAIRE */
-.contact-form {
-  max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border-radius: var(--border-radius-large);
-  background-color: var(--bloc-bg);
-  border: 1px solid var(--bloc-border);
-  box-shadow: 0 0 10px var(--bloc-shadow);
-  backdrop-filter: blur(4px);
-}
-
-.contact-form label {
-  display: block;
-  margin-bottom: 1.2rem;
-  color: inherit;
-  font-weight: bold;
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 0.8rem;
-  border-radius: var(--border-radius-small);
-  border: none;
-  font-family: 'Roboto', sans-serif;
-  font-size: 1rem;
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #000;
-}
-
-.contact-form button[type="submit"] {
-  display: block;
-  margin: 1.5rem auto 0;
-  padding: 0.6rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: var(--border-radius-small);
-  cursor: pointer;
-  font-weight: bold;
-  background-color: var(--accent-primary);
-  color: white;
-}
-
-.contact-form button[type="submit"]:hover {
-  background-color: var(--accent-hover);
-}
-
-/* 📱 RESPONSIVE */
-@media (max-width: 1024px) {
-  .container { padding: 1.5rem; }
-  .bloc { flex: 1 1 300px; min-width: 300px; max-width: 100%; }
-}
-
+/* RESPONSIVE BASE */
 @media (max-width: 768px) {
-  .row { flex-direction: column; align-items: center; gap: 3rem; }
-  .bloc { width: 100%; max-width: none; min-width: auto; }
-  .main-nav { flex-direction: column; align-items: flex-end; }
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
-}
-
-@media (max-width: 480px) {
-  .container { padding: 1rem; }
-  h1 { font-size: 1.8rem; }
-  h2 { font-size: 1.3rem; }
+  main {
+    padding: 1rem;
+  }
+  .bloc {
+    padding: 1rem;
+  }
 }
