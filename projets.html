@@ -3,6 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accueil – Codex Mental</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/main.css" />
+  <style>
+    .theme-buttons {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .theme-buttons span {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .theme-buttons button {
+      margin: 0.3rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .theme-buttons button:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+  </style>
+
+  <!-- Scripts -->
+  <script src="/script.js" defer></script>
+</head>
+<body class="theme-stellaire">
+  <canvas id="stellaire-stars" style="position: fixed; z-index: -1;"></canvas>
+
+  <!-- Injection menu -->
+  <div id="menu-placeholder"></div>
+
+ <!-- Contenu -->
+  <main class="container">
+    <h1>Projets</h1>
+    <p>Voici une présentation de mes projets en cours, passés ou à venir.</p>
+  </main>
+
+  <!-- Injection footer -->
+  <div id="footer-placeholder"></div>
+</body>
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projets – Codex Mental</title>
 <link rel="stylesheet" href="main.css" />
   <script src="script.js" defer></script>
