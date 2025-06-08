@@ -285,7 +285,7 @@ form.contact-form button:hover {
 .bloc-container {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 4rem;
   padding: 2rem;
 }
 
