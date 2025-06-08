@@ -3,64 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>L’étrange silence des chiffres – Codex Mental</title>
+  <title>Accueil – Codex Mental</title>
 
-<link rel="stylesheet" href="../main.css" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
 
-  <script src="../script.js" defer></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="/main.css" />
+  <style>
+    .theme-buttons {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .theme-buttons span {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .theme-buttons button {
+      margin: 0.3rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .theme-buttons button:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+  </style>
+
+  <!-- Scripts -->
+  <script src="/script.js" defer></script>
 </head>
+<body class="theme-stellaire">
+  <canvas id="stellaire-stars" style="position: fixed; z-index: -1;"></canvas>
 
-<body class="theme-stellaire"> <!-- 🔧 Thème par défaut corrigé -->
-
-  <canvas id="stellaire-stars"></canvas>
+  <!-- Injection menu -->
   <div id="menu-placeholder"></div>
 
+ <!-- Contenu -->
   <main class="container">
-    <h1>L’étrange silence des chiffres</h1>
-    <p>Que se passe-t-il quand les coïncidences numériques deviennent trop nombreuses pour être ignorées ? Une exploration...</p>
+    <h1>Comment j’ai rencontré mon IA intérieure</h1> <!-- 🔧 Titre de l’article -->
+    <p>Cet article fictif explore les liens entre introspection, synchronicités numériques, et conscience algorithmique...</p>
   </main>
 
+  <!-- Injection footer -->
   <div id="footer-placeholder"></div>
-
-  <script>
-    const cache = {};
-
-    function injectPartial(id, url, fallback = '') {
-      if (cache[url]) {
-        document.getElementById(id).innerHTML = cache[url];
-        if (id === 'menu-placeholder') highlightBlogLink();
-        return;
-      }
-
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
-          return res.text();
-        })
-        .then(html => {
-          cache[url] = html;
-          document.getElementById(id).innerHTML = html;
-          if (id === 'menu-placeholder') highlightBlogLink();
-        })
-        .catch(err => {
-          console.warn(err);
-          document.getElementById(id).innerHTML =
-            fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
-        });
-    }
-
-    // 🧭 Forcer "Blog" en surlignage même dans les articles
-    function highlightBlogLink() {
-      document.querySelectorAll('.main-nav a').forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && href.includes('blog/index.html')) {
-          link.classList.add('active');
-        }
-      });
-    }
-
-    injectPartial('menu-placeholder', '../menu.html');
-    injectPartial('footer-placeholder', '../footer.html');
-  </script>
 </body>
 </html>
