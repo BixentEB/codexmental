@@ -80,3 +80,41 @@
   min-width: 250px;
   max-width: 400px;
 }
+
+/* === GRILLE BLOCS RESPONSIVE === */
+.grid-blocs {
+  display: grid;
+  justify-content: center;
+  margin-bottom: var(--bloc-spacing, 2rem);
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* === GAP === */
+.gap-1 { gap: 1rem; }
+.gap-2 { gap: 2rem; }
+.gap-3 { gap: 3rem; }
+.gap-x-2 { column-gap: 2rem; }
+.gap-y-2 { row-gap: 2rem; }
+
+/* === ALIGNEMENT === */
+.align-start { text-align: start; }
+.text-justify { text-align: justify; }
+
+/* === STYLE DE BLOC GÉNÉRIQUE === */
+.bloc {
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: var(--bg-secondary, #222);
+  color: var(--text-primary, #fff);
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
