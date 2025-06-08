@@ -57,7 +57,7 @@ body.theme-galactique {
 }
 
 body.theme-lunaire {
-  --bg-primary: #030617;
+  --bg-primary: #000f1a;
   --text-primary: #1a237e;
   --text-secondary: #3949ab;
   --accent-primary: #3f51b5;
@@ -81,7 +81,7 @@ body.theme-lunaire {
 }
 
 body.theme-stellaire {
-  --bg-primary: #000f1a;
+  --bg-primary: #030617;
   --text-primary: #ffffff;
   --text-secondary: #88ccff;
   --accent-primary: #4eaaff;
