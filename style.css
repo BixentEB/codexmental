@@ -192,3 +192,59 @@ body.theme-stellaire {
 .theme-stellaire .cv-download .btn:hover {
   background-color: #68aaff;
 }
+
+/* 📬 FORMULAIRE DE CONTACT - STYLE UNIVERSEL */
+.contact-form {
+  max-width: 500px;
+  margin: 2rem auto;
+  background-color: rgba(20, 30, 60, 0.5);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(180, 200, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.contact-form label {
+  display: block;
+  margin-bottom: 1.2rem;
+  color: inherit;
+  font-weight: bold;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #5c66ff;
+}
+
+.contact-form button[type="submit"] {
+  display: block;
+  margin: 1.5rem auto 0;
+  background-color: #5c66ff;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.contact-form button[type="submit"]:hover {
+  background-color: #7f8cff;
+}
