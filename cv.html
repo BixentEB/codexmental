@@ -1,123 +1,376 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CV – Codex Mental</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Assistant Administratif Créatif</title>
+    <style>
+        /* 🌐 FONTES ET RÉINITIALISATION DE BASE */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&display=swap');
 
-<body class="theme-stellaire">
-  <canvas id="stellaire-stars"></canvas>
-  <div id="menu-placeholder"></div>
-  <main class="container">
-    <h1>ASSISTANT ADMINISTRATIF CRÉATIF<br>Concepteur de solutions hybrides & augmentées</h1>
-
-    <!-- 1️⃣ LIGNE 1 : 1 bloc (PROFIL) -->
-    <div class="row row-single">
-      <div class="bloc">
-        <h2>😀 PROFIL</h2>
-        <p>Hybride entre organisation, culture et numérique, j'allie rigueur, curiosité intellectuelle et pensée en arborescence. Mon parcours atypique m'a amené à créer des outils originaux mêlant structuration, narration et logique. Je conçois des solutions utiles, modulables et intuitives, en collaboration avec des IA génératives ou des outils numériques. Autonome, rigoureux, profondément créatif.</p>
-      </div>
-    </div>
-
-    <!-- 2️⃣ LIGNE 2 : 2 blocs (EXPÉRIENCE + COMPÉTENCES) -->
-    <div class="row row-double">
-      <div class="bloc">
-        <h2>🔕 EXPÉRIENCE</h2>
-        <p><strong>2025</strong> Co-programmation avec IA spécialisée en code<br>Réalisation d'un site web personnel sur Github<br>Création de différentes applications windows personnelles (voir Projets)</p>
-        <p><strong>2024</strong> Assistant administratif<br>Mairie de Vienne - Service Vie Associative<br>Réservations de salles et matériel<br>Lien avec les associations locales</p>
-        <p><strong>2023</strong> Assistant administratif<br>Centre Hospitalier Lucien Hussel de Vienne - Admissions & urgences<br>Accueil public<br>Traitement de dossiers en back office</p>
-      </div>
-      <div class="bloc">
-        <h2>⚖ COMPÉTENCES</h2>
-        <p><strong>ADMINISTRATIF & ACCUEIL</strong><br>Structuration de contenus, organisation documentaire, classement<br>Création de supports : tableaux, guides, fiches pratiques, roadbooks<br>Accueil physique et téléphonique, relation à la personne, écoute active<br>Saisie rapide, mise en forme, relecture, correction<br>Traitement de courriers, e-mails, et demandes diverses<br>Suivi de plannings, réservations, coordination d'activités</p>
-        <p><strong>INFORMATIQUE & INTERNET</strong><br>Bureautique (Office, Google)<br>Outils collaboratifs et intranet<br>Usage réfléchi d'IA génératives<br>Exploration numérique appliquée</p>
-      </div>
-    </div>
-
-    <!-- 3️⃣ LIGNE 3 : 1 bloc (QUALITÉS) -->
-    <div class="row row-single">
-      <div class="bloc">
-        <h2>✨ QUALITÉS</h2>
-        <p>Esprit d'analyse, rigueur, adaptabilité, sens du détail</p>
-      </div>
-    </div>
-
-    <!-- 4️⃣ LIGNE 4 : 2 blocs (FORMATION + LANGUES) -->
-    <div class="row row-double">
-      <div class="bloc">
-        <h2>🎓 FORMATION</h2>
-        <p><strong>2023</strong> Titre Pro Employé Administratif et Accueil (EAA)<br>Platinium formation, Lyon</p>
-        <p><strong>2017</strong> Anglais B2 (cecrl)<br>Acfal formation, Vienne</p>
-        <p><strong>2001</strong> Bac Economique et Social (ES)<br>Institution Robin, Vienne</p>
-      </div>
-      <div class="bloc">
-        <h2>📝 LANGUES</h2>
-        <p>Français (natif)<br>Anglais (B2)</p>
-      </div>
-    </div>
-
-    <!-- 5️⃣ LIGNE 5 : 1 bloc (CENTRES D'INTÉRÊT) -->
-    <div class="row row-single">
-      <div class="bloc">
-        <h2>🧹 CENTRES D'INTÉRÊT</h2>
-        <p><strong>Langues & interculturel</strong><br>Apprentissage autodirigé de l'espagnol et de l'italien. Goût pour l'exploration des cultures via les langues et l'expérience directe (séjours significatifs au Canada et au Brésil). Intérêt pour les nuances linguistiques et les ponts culturels.</p>
-        <p><strong>Narration & écriture créative</strong><br>Rédaction d'essais, développement de fictions personnelles et exploration des structures narratives. La narration est envisagée comme un outil de compréhension du monde, un levier d'organisation mentale et un cadre pour la création.</p>
-        <p><strong>Jeux vidéo & analyse de gameplay</strong><br>Passion pour les jeux de stratégie, de gestion et les MMO. Lecture comportementale des mécaniques de jeu, observation de la coopération et analyse des systèmes d'interaction. Les jeux deviennent des laboratoires d'expériences humaines et cognitives.</p>
-        <p><strong>Exploration numérique & introspection</strong><br>Utilisation d'outils digitaux (logiciels, IA, interfaces) pour créer, réfléchir, structurer et documenter ses processus internes. Pratique quotidienne de l'auto-observation augmentée, alliant technologie, mémoire personnelle et sens symbolique.</p>
-      </div>
-    </div>
-
-    <!-- 📄 Bouton CV -->
-    <div class="cv-download" style="text-align:center; margin-top: 2rem;">
-      <a href="arc/cv-vincent-etienne.pdf" download class="btn">📄 Télécharger le CV (PDF)</a>
-    </div>
-  </main>
-
-  <div id="footer-placeholder"></div>
-
-  <script>
-    const cache = {};
-
-    function injectPartial(id, url, fallback = '') {
-      if (cache[url]) {
-        document.getElementById(id).innerHTML = cache[url];
-        if (id === 'menu-placeholder') highlightActiveLink();
-        return;
-      }
-
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
-          return res.text();
-        })
-        .then(html => {
-          cache[url] = html;
-          document.getElementById(id).innerHTML = html;
-          if (id === 'menu-placeholder') highlightActiveLink();
-        })
-        .catch(err => {
-          console.warn(err);
-          document.getElementById(id).innerHTML =
-            fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
-        });
-    }
-
-    function highlightActiveLink() {
-      const currentPath = location.pathname.replace(/\/+$/, '');
-      document.querySelectorAll('.main-nav a').forEach(link => {
-        const href = link.getAttribute('href');
-        const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-        if (linkPath === currentPath) {
-          link.classList.add('active');
+        /* 🎨 VARIABLES CSS POUR LES THÈMES */
+        :root {
+          /* Transitions communes */
+          --transition-base: all 0.3s ease;
+          --transition-transform: transform 0.3s ease, opacity 0.3s ease;
+          
+          /* Espacements */
+          --padding-base: 1rem;
+          --padding-large: 2rem;
+          --gap-base: 2rem;
+          --gap-large: 4rem;
+          
+          /* Bordures */
+          --border-radius-small: 6px;
+          --border-radius-medium: 10px;
+          --border-radius-large: 12px;
         }
-      });
-    }
 
-    injectPartial('menu-placeholder', 'menu.html');
-    injectPartial('footer-placeholder', 'footer.html');
-  </script>
+        /* Variables pour thème stellaire */
+        body.theme-stellaire {
+          --bg-primary: #030617;
+          --text-primary: #e0ecff;
+          --text-secondary: #ffffff;
+          --accent-primary: #2d88ff;
+          --accent-hover: #68aaff;
+          --link-color: #8bbfff;
+          --bloc-bg: rgba(10, 20, 60, 0.75);
+          --bloc-border: rgba(100, 160, 255, 0.2);
+          --bloc-shadow: rgba(120, 180, 255, 0.12);
+          --bloc-shadow-hover: rgba(180, 220, 255, 0.2);
+          --text-shadow: rgba(100, 160, 255, 0.3);
+        }
+
+        /* Variables pour thème galactique */
+        body.theme-galactique {
+          --bg-primary: #05050F;
+          --text-primary: #d0faff;
+          --text-secondary: #ffffff;
+          --accent-primary: #00d0ff;
+          --accent-hover: #5efeff;
+          --link-color: #80f0ff;
+          --bloc-bg: rgba(30, 20, 60, 0.6);
+          --bloc-border: rgba(128, 240, 255, 0.2);
+          --bloc-shadow: rgba(128, 240, 255, 0.12);
+          --bloc-shadow-hover: rgba(160, 250, 255, 0.2);
+          --text-shadow: rgba(128, 240, 255, 0.3);
+        }
+
+        /* Variables pour thème lunaire */
+        body.theme-lunaire {
+          --bg-primary: #dce3ec;
+          --text-primary: #222;
+          --text-secondary: #111;
+          --accent-primary: #4a69ad;
+          --accent-hover: #385a99;
+          --link-color: #1a4e80;
+          --bloc-bg: rgba(255, 255, 255, 0.85);
+          --bloc-border: rgba(0, 0, 0, 0.1);
+          --bloc-shadow: rgba(150, 160, 170, 0.1);
+          --bloc-shadow-hover: rgba(150, 160, 170, 0.2);
+          --text-shadow: transparent;
+        }
+
+        /* Variables pour thème solaire */
+        body.theme-solaire {
+          --bg-primary: #fff6e5;
+          --text-primary: #4a3200;
+          --text-secondary: #4a3200;
+          --accent-primary: #f0a000;
+          --accent-hover: #ffbe40;
+          --link-color: #a25a00;
+          --bloc-bg: rgba(255, 236, 180, 0.8);
+          --bloc-border: rgba(90, 69, 0, 0.2);
+          --bloc-shadow: rgba(150, 100, 0, 0.1);
+          --bloc-shadow-hover: rgba(150, 100, 0, 0.2);
+          --text-shadow: transparent;
+        }
+
+        /* 🎯 RÉINITIALISATION ET BASE */
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Roboto', sans-serif;
+          font-weight: 400;
+          line-height: 1.6;
+          margin: 0;
+          padding: 0;
+          background-color: var(--bg-primary);
+          color: var(--text-primary);
+          transition: background-color 0.4s ease, color 0.4s ease;
+          min-height: 100vh;
+          background-image: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                            radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.2) 0%, transparent 50%);
+        }
+
+        /* ✨ TYPOGRAPHIE */
+        h1, h2, h3, h4, h5, h6 {
+          font-family: 'Orbitron', sans-serif;
+          margin: 0 0 1rem 0;
+          color: var(--text-secondary);
+          text-shadow: 0 0 6px var(--text-shadow);
+          transition: var(--transition-base);
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+
+        a {
+          color: var(--link-color);
+          text-decoration: none;
+          transition: var(--transition-base);
+        }
+
+        a:hover {
+          color: var(--text-secondary);
+        }
+
+        /* 🧱 STRUCTURE GÉNÉRALE */
+        .container {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: var(--padding-large);
+        }
+
+        .container h1,
+        .container h2 {
+          text-align: center;
+        }
+
+        /* 📦 STRUCTURE DES BLOCS */
+        .bloc-container {
+          display: flex;
+          flex-direction: column;
+          gap: 4rem;
+          padding: var(--padding-large);
+        }
+
+        .row {
+          display: flex;
+          justify-content: center;
+          gap: 4rem;
+          flex-wrap: wrap;
+        }
+
+        .bloc {
+          flex: 1 1 280px;
+          min-width: 280px;
+          max-width: 400px;
+          padding: 1.5rem;
+          border-radius: var(--border-radius-medium);
+          text-align: left;
+          font-size: 0.95rem;
+          backdrop-filter: blur(4px);
+          
+          /* Utilisation des variables CSS */
+          background-color: var(--bloc-bg);
+          border: 1px solid var(--bloc-border);
+          box-shadow: 0 0 15px var(--bloc-shadow);
+          color: var(--text-primary);
+          
+          transition: var(--transition-transform);
+        }
+
+        .bloc:hover {
+          transform: translateY(-5px) scale(1.02);
+          box-shadow: 0 0 20px var(--bloc-shadow-hover);
+        }
+
+        .bloc h3 {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 1rem;
+          font-size: 1.2rem;
+        }
+
+        .bloc-icon {
+          font-size: 1.5rem;
+        }
+
+        /* Pour les blocs qui doivent prendre toute la largeur */
+        .row-single .bloc {
+          flex: 1 1 100%;
+          max-width: 100%;
+        }
+
+        /* Pour les blocs en duo */
+        .row-double .bloc {
+          flex: 1;
+          min-width: 0;
+        }
+
+        /* 📱 RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+          .container {
+            padding: 1.5rem;
+          }
+          
+          .bloc {
+            flex: 1 1 250px;
+            min-width: 250px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .row {
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+          }
+          
+          .bloc {
+            flex: none;
+            width: 100%;
+            min-width: auto;
+            max-width: none;
+          }
+          
+          .bloc-container {
+            padding: var(--padding-base);
+            gap: 3rem;
+          }
+          
+          h1 { font-size: 2rem; }
+          h2 { font-size: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+          .container {
+            padding: 1rem;
+          }
+          
+          h1 { font-size: 1.8rem; }
+          h2 { font-size: 1.3rem; }
+        }
+
+        /* 🎨 AMÉLIORATIONS VISUELLES */
+        @media (prefers-reduced-motion: reduce) {
+          *,
+          *::before,
+          *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+
+        /* Focus visible pour l'accessibilité */
+        *:focus-visible {
+          outline: 2px solid var(--accent-primary);
+          outline-offset: 2px;
+        }
+
+        /* Amélioration de la lisibilité */
+        p {
+          margin-bottom: 1rem;
+          line-height: 1.7;
+        }
+
+        /* Styles pour les listes */
+        ul, ol {
+          margin-bottom: 1rem;
+          padding-left: 1.5rem;
+        }
+
+        li {
+          margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="theme-stellaire">
+    <div class="container">
+        <h1>ASSISTANT ADMINISTRATIF CRÉATIF</h1>
+        <h2>Concepteur de solutions hybrides & augmentées</h2>
+        
+        <div class="bloc-container">
+            <!-- Section Profil -->
+            <div class="row row-single">
+                <div class="bloc">
+                    <h3><span class="bloc-icon">😊</span> PROFIL</h3>
+                    <p>Hybride entre organisation, culture et numérique, j'allie rigueur, curiosité intellectuelle et pensée en arborescence.</p>
+                    <p>Mon parcours atypique m'a amené à créer des outils originaux mêlant structuration, narration et logique. Je conçois des solutions utiles, modulables et intuitives, en collaboration avec des IA génératives ou des outils numériques.</p>
+                    <p><strong>Autonome, rigoureux, profondément créatif.</strong></p>
+                </div>
+            </div>
+
+            <!-- Section Expérience et Compétences -->
+            <div class="row row-double">
+                <div class="bloc">
+                    <h3><span class="bloc-icon">🔥</span> EXPÉRIENCE</h3>
+                    
+                    <p><strong>2025</strong> Co-programmation avec IA spécialisée en code</p>
+                    <ul>
+                        <li>Réalisation d'un site web personnel sur GitHub</li>
+                        <li>Création de différentes applications windows personnelles (voir Projets)</li>
+                    </ul>
+                    
+                    <p><strong>2024</strong> Assistant administratif</p>
+                    <p>Mairie de Vienne - Service Vie Associative</p>
+                    <ul>
+                        <li>Réservations de salles et matériel</li>
+                        <li>Lien avec les associations locales</li>
+                    </ul>
+                    
+                    <p><strong>2023</strong> Assistant administratif</p>
+                    <p>Centre Hospitalier Lucien Hussel de Vienne - Admissions & urgences</p>
+                    <ul>
+                        <li>Accueil public</li>
+                        <li>Traitement de dossiers en back office</li>
+                    </ul>
+                </div>
+
+                <div class="bloc">
+                    <h3><span class="bloc-icon">🏗️</span> COMPÉTENCES</h3>
+                    
+                    <p><strong>ADMINISTRATIF & ACCUEIL</strong></p>
+                    <ul>
+                        <li>Structuration de contenus, organisation documentaire, classement</li>
+                        <li>Création de supports : tableaux, guides, fiches pratiques, roadbooks</li>
+                        <li>Accueil physique et téléphonique, relation à la personne, écoute active</li>
+                        <li>Saisie rapide, mise en forme, relecture, correction</li>
+                        <li>Traitement de courriers, e-mails, et demandes diverses</li>
+                        <li>Suivi de plannings, réservations, coordination d'activités</li>
+                    </ul>
+                    
+                    <p><strong>INFORMATIQUE & INTERNET</strong></p>
+                    <ul>
+                        <li>Bureautique (Office, Google)</li>
+                        <li>Outils collaboratifs et Internet</li>
+                        <li>Usage réfléchi d'IA génératives</li>
+                        <li>Exploration numérique appliquée</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Section Qualités -->
+            <div class="row row-single">
+                <div class="bloc">
+                    <h3><span class="bloc-icon">✨</span> QUALITÉS</h3>
+                    <p>Esprit d'analyse, rigueur, adaptabilité, sens du détail</p>
+                </div>
+            </div>
+
+            <!-- Section Formation et Langues -->
+            <div class="row row-double">
+                <div class="bloc">
+                    <h3><span class="bloc-icon">🎓</span> FORMATION</h3>
+                    <p><strong>2023</strong> Titre Pro Employé Administratif et Accueil (EAA)</p>
+                    <p>Platinium formation, Lyon</p>
+                    <br>
+                    <p><strong>2017</strong> Anglais B2 (CECR)</p>
+                </div>
+
+                <div class="bloc">
+                    <h3><span class="bloc-icon">🗣️</span> LANGUES</h3>
+                    <p><strong>Français</strong> (natif)</p>
+                    <p><strong>Anglais</strong> (B2)</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
