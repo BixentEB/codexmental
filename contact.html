@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accueil – Codex Mental</title>
+  <title>Contact – Codex Mental</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
@@ -11,32 +11,59 @@
   <!-- Styles -->
   <link rel="stylesheet" href="/main.css" />
   <style>
-    .theme-buttons {
-      text-align: center;
-      margin-top: 2rem;
+    .contact-form {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: var(--bloc-bg, rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.2));
+      border-radius: 1rem;
+      box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
     }
 
-    .theme-buttons span {
-      display: inline-block;
-      margin-bottom: 0.5rem;
+    .contact-form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
       font-family: 'Orbitron', sans-serif;
+      color: var(--text-primary, #fff);
     }
 
-    .theme-buttons button {
-      margin: 0.3rem;
-      padding: 0.5rem 1rem;
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.3rem;
       border: none;
       border-radius: 6px;
-      background-color: rgba(255, 255, 255, 0.05);
-      color: #fff;
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #111;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .contact-form button {
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #4eaaff;
+      color: #111;
       font-family: 'Orbitron', sans-serif;
       font-weight: bold;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
 
-    .theme-buttons button:hover {
-      background-color: rgba(255, 255, 255, 0.15);
+    .contact-form button:hover {
+      background-color: #74c4ff;
+    }
+
+    #confirmationMessage {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-family: 'Roboto', sans-serif;
+      color: #00ffcc;
     }
   </style>
 
@@ -50,18 +77,23 @@
   <div id="menu-placeholder"></div>
 
   <main class="container">
-    <h1 style="text-align:center">📬 Contact</h1>
+    <h1 class="text-center">📬 Contact</h1>
 
-    <form id="contactForm" action="https://formspree.io/f/mpwrwnwy" method="POST" target="hidden_iframe" class="contact-form">
-      <label><p style="text-align: left;">Nom :</p>
-        <input type="text" name="name" required />
-      </label>
-      <label><p style="text-align: left;">Email :</p>
-        <input type="email" name="email" required />
-      </label>
-      <label><p style="text-align: left;">Message :</p>
-        <textarea name="message" rows="5" required></textarea>
-      </label>
+    <form id="contactForm"
+          action="https://formspree.io/f/mpwrwnwy"
+          method="POST"
+          target="hidden_iframe"
+          class="contact-form">
+
+      <label for="name">Nom :</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email :</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="message">Message :</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
+
       <button type="submit">📨 Envoyer</button>
     </form>
 
@@ -71,5 +103,13 @@
 
   <!-- Injection footer -->
   <div id="footer-placeholder"></div>
+
+  <!-- Confirmation logic -->
+  <script>
+    function formSubmitted() {
+      const msg = document.getElementById('confirmationMessage');
+      if (msg) msg.style.display = 'block';
+    }
+  </script>
 </body>
 </html>
