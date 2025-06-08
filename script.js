@@ -18,7 +18,7 @@ function resizeCanvas() {
 
 function initParticles(type = 'stars', count = 120) {
   particles = Array.from({ length: count }, () => {
-    const r = Math.random() * 1.5 + 0.3;
+    const r = (type === 'dust') ? Math.random() * 3 + 1.2 : Math.random() * 1.5 + 0.3;
     return {
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -32,6 +32,7 @@ function initParticles(type = 'stars', count = 120) {
 
 function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   for (let p of particles) {
     p.alpha += p.delta;
     if (p.alpha <= 0 || p.alpha >= 1) p.delta *= -1;
@@ -39,18 +40,26 @@ function animateParticles() {
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
 
-    ctx.fillStyle = (p.type === 'dust')
-      ? `rgba(200, 150, 255, ${p.alpha})`
-      : `rgba(255, 255, 255, ${p.alpha})`;
+    if (p.type === 'dust') {
+      const hue = 240 + Math.random() * 40; // Violet à bleu
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = `rgba(180, 130, 255, ${p.alpha})`;
+      ctx.fillStyle = `hsla(${hue}, 100%, 85%, ${p.alpha})`;
+    } else {
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+    }
 
     ctx.fill();
   }
+
   rafId = requestAnimationFrame(animateParticles);
 }
 
 function stopParticles() {
   if (rafId) cancelAnimationFrame(rafId);
   if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.shadowBlur = 0;
   particles = [];
   if (canvas) canvas.style.opacity = '0';
 }
@@ -119,9 +128,7 @@ function highlightActiveLink() {
   document.querySelectorAll("nav a").forEach(link => {
     const href = link.getAttribute("href");
     const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-    if (linkPath === currentPath) {
-      link.classList.add("active");
-    }
+    if (linkPath === currentPath) link.classList.add("active");
   });
 }
 
