@@ -89,7 +89,7 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-}
+  ;
 
 .grid-cols-1 {
   grid-template-columns: 1fr;
@@ -122,4 +122,11 @@
   color: var(--text-primary, #fff);
   text-align: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  width: 100%; /* utile pour du flex ou du mobile */
+  max-width: 100%;
+}
+
+/* ✅ Surchage uniquement dans un parent grid */
+.grid-blocs .bloc {
+  width: auto;
 }
