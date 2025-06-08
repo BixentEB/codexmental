@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test injection</title>
+</head>
+<body>
+  <div id="menu-placeholder">[menu]</div>
+  <main>
+    <h1>Test</h1>
+    <p>Si tu vois ce texte, le `main` fonctionne.</p>
+  </main>
+  <div id="footer-placeholder">[footer]</div>
+
+  <script>
+    function injectPartial(id, url) {
+      fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById(id).innerHTML = html;
+        })
+        .catch(err => console.error('Erreur injection :', err));
+    }
+
+    injectPartial('menu-placeholder', 'menu.html');
+    injectPartial('footer-placeholder', 'footer.html');
+  </script>
+</body>
+</html>
