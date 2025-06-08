@@ -163,3 +163,17 @@ section {
   background-color: #74c4ff;
 }
 
+footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-primary, #fff);
+  font-size: 0.9rem;
+}
+
+footer .theme-buttons {
+  margin-top: 1rem;
+}
+
+footer .theme-buttons button {
+  margin: 0.3rem;
+}
