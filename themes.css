@@ -55,3 +55,8 @@ body.theme-solaire {
   --bloc-shadow-hover: rgba(150, 100, 0, 0.25);
   --text-shadow: transparent;
 }
+
+:root.theme-stellaire {
+  /* ... tes variables existantes ... */
+  --bloc-spacing: 2rem;
+}
