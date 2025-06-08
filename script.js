@@ -1,4 +1,4 @@
-// === 🌌 CANVAS UNIFIÉ : EFFETS STELLAIRE & GALACTIQUE ===
+// === 🌌 CANVAS UNIFIÉ : STELLAIRE & GALACTIQUE ===
 let canvas, ctx, rafId;
 let particles = [];
 
@@ -39,11 +39,9 @@ function animateParticles() {
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
 
-    if (p.type === 'stars') {
-      ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-    } else if (p.type === 'dust') {
-      ctx.fillStyle = `rgba(200, 150, 255, ${p.alpha})`;
-    }
+    ctx.fillStyle = (p.type === 'dust')
+      ? `rgba(200, 150, 255, ${p.alpha})`
+      : `rgba(255, 255, 255, ${p.alpha})`;
 
     ctx.fill();
   }
@@ -57,12 +55,34 @@ function stopParticles() {
   if (canvas) canvas.style.opacity = '0';
 }
 
+// === 🌙 GESTION DU WIDGET LUNAIRE ===
+function getMoonPhaseIndex(date = new Date()) {
+  const base = new Date('2001-01-01T00:00:00Z');
+  const diff = (date - base) / (1000 * 60 * 60 * 24);
+  const lunations = 0.20439731 + diff * 0.03386319269;
+  return Math.floor((lunations % 1) * 8);
+}
+
+function updateLunarWidget(theme) {
+  const existing = document.getElementById('lune-widget');
+  if (existing) existing.remove();
+
+  if (theme === 'theme-lunaire') {
+    const phase = getMoonPhaseIndex();
+    const lune = document.createElement('div');
+    lune.id = 'lune-widget';
+    lune.style.backgroundImage = `url('/img/lune-${phase}.png')`;
+    document.body.appendChild(lune);
+  }
+}
+
 // === 🎨 THÈME ===
 function setTheme(theme) {
   document.body.className = theme;
   localStorage.setItem('codexTheme', theme);
 
   stopParticles();
+  updateLunarWidget(theme);
 
   if (!canvas) return;
 
@@ -85,25 +105,18 @@ function injectPartial(id, url) {
   if (!target) return;
 
   fetch(url)
-    .then(response => {
-      if (!response.ok) throw new Error(`Erreur chargement ${url}`);
-      return response.text();
-    })
+    .then(res => res.ok ? res.text() : Promise.reject(`Erreur chargement ${url}`))
     .then(html => {
       target.innerHTML = html;
       if (id === 'menu-placeholder') highlightActiveLink();
     })
-    .catch(err => {
-      console.error("❌ Injection échouée :", err);
-    });
+    .catch(err => console.error("❌ Injection échouée :", err));
 }
 
 // === 🌐 LIEN ACTIF DANS LE MENU ===
 function highlightActiveLink() {
   const currentPath = location.pathname.replace(/\/+$/, '');
-  const links = document.querySelectorAll("nav a");
-
-  links.forEach(link => {
+  document.querySelectorAll("nav a").forEach(link => {
     const href = link.getAttribute("href");
     const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
     if (linkPath === currentPath) {
@@ -114,17 +127,13 @@ function highlightActiveLink() {
 
 // === ⬆️ BOUTON RETOUR HAUT ===
 function setupScrollButton() {
-  const scrollBtn = document.getElementById('scrollTopBtn');
-  if (!scrollBtn) return;
+  const btn = document.getElementById('scrollTopBtn');
+  if (!btn) return;
 
-  scrollBtn.style.display = 'none';
-
-  scrollBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
+  btn.style.display = 'none';
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   window.addEventListener('scroll', () => {
-    scrollBtn.style.display = window.scrollY > 100 ? 'block' : 'none';
+    btn.style.display = window.scrollY > 100 ? 'block' : 'none';
   });
 }
 
@@ -142,25 +151,4 @@ window.addEventListener('DOMContentLoaded', () => {
   setupScrollButton();
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
-});
-
-// === 🌙 LUNE PHASES ===
-function getMoonPhaseIndex(date = new Date()) {
-  const baseDate = new Date('2001-01-01T00:00:00Z');
-  const diffTime = date - baseDate;
-  const days = diffTime / (1000 * 60 * 60 * 24);
-  const lunations = 0.20439731 + (days * 0.03386319269);
-  return Math.floor((lunations % 1) * 8);
-}
-
-function updateLunarWidget() {
-  if (!document.body.classList.contains('theme-lunaire')) return;
-
-  const phase = getMoonPhaseIndex();
-  const lune = document.getElementById('lune-widget');
-  lune.style.backgroundImage = `url('/img/lune-${phase}.png')`;
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  updateLunarWidget(); // appel au chargement
 });
