@@ -1,3 +1,38 @@
+/* === BANDEAU DE NAVIGATION === */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  padding: 1rem 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.site-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  color: white;
+}
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  color: #4eaaff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #ffffff;
+}
+
 /* 🎨 TYPOGRAPHIE */
 body {
   font-family: 'Roboto', sans-serif;
