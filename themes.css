@@ -1,5 +1,30 @@
 /* 🎨 THÈMES : couleurs et styles dynamiques */
 
+body.theme-solaire {
+  --bg-primary: #ffef9c;
+  --text-primary: #4a3200;
+  --text-secondary: #4a3200;
+  --accent-primary: #f0a000;
+  --accent-hover: #ffbe40;
+  --link-color: #a25a00;
+  --bloc-bg: rgba(252, 240, 177, 0.9);
+  --bloc-border: rgba(90, 69, 0, 0.2);
+  --bloc-shadow: rgba(150, 100, 0, 0.15);
+  --bloc-shadow-hover: rgba(150, 100, 0, 0.25);
+  --logo-color: #4a3200;
+  --nav-bg: #111;
+  --nav-link-color: #4a3200;
+  --nav-link-active-bg: #4a3200;
+  --nav-link-active-color: #fff;
+  --btn-bg: #f1c40f;
+  --btn-text: #111;
+  --btn-hover: #f39c12;
+
+  /* 👇 nouvelle variable d'espacement entre blocs */
+  --bloc-spacing: 2rem;
+
+}
+
 body.theme-galactique {
   --bg-primary: #0a0e2a;
   --text-primary: #f2f0ff;
@@ -29,30 +54,6 @@ body.theme-galactique {
 
   --bloc-spacing: 2rem;
 
-}
-
-body.theme-galactique {
-  --bg-primary: #0b3d91;
-  --text-primary: #ffffff;
-  --text-secondary: #bbbbff;
-  --accent-primary: #7c4dff;
-  --accent-hover: #b388ff;
-  --link-color: #82b1ff;
-  --bloc-bg: rgba(12, 44, 104, 0.9);
-  --bloc-border: rgba(130, 177, 255, 0.2);
-  --bloc-shadow: rgba(130, 177, 255, 0.1);
-  --bloc-shadow-hover: rgba(130, 177, 255, 0.25);
-  --logo-color: #82b1ff;
-  --nav-bg: #111;
-  --nav-link-color: #82b1ff;
-  --nav-link-active-bg: #82b1ff;
-  --nav-link-active-color: #111;
-  --btn-bg: #2979ff;
-  --btn-text: #fff;
-  --btn-hover: #448aff;
-
-  /* 👇 nouvelle variable d'espacement entre blocs */
-  --bloc-spacing: 2rem;
 }
 
 body.theme-lunaire {
