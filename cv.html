@@ -10,7 +10,7 @@
 <body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
 
-  <!-- Menu (injection si besoin) -->
+  <!-- Menu injecté dynamiquement -->
   <div id="menu-placeholder"></div>
 
   <main>
@@ -19,22 +19,60 @@
 
     <section class="bloc">
       <h2>😊 PROFIL</h2>
-      <p>Hybride entre organisation, culture et numérique…</p>
+      <p>
+        Hybride entre organisation, culture et numérique, j’allie rigueur, curiosité intellectuelle et pensée en arborescence.<br>
+        Mon parcours atypique m’a amené à créer des outils originaux mêlant structuration, narration et logique.<br>
+        <strong>Autonome, rigoureux, profondément créatif.</strong>
+      </p>
     </section>
 
     <section class="bloc">
       <h2>🔥 EXPÉRIENCE</h2>
-      <p>2025 – Co-développement IA…</p>
+      <ul>
+        <li><strong>2025</strong> – Co-programmation avec IA spécialisée en code</li>
+        <li>Réalisation d’un site web personnel sur GitHub</li>
+        <li>Création d’applications Windows personnelles</li>
+        <li><strong>2024</strong> – Assistant administratif – Mairie de Vienne</li>
+        <li><strong>2023</strong> – Assistant administratif – CH Lucien Hussel</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>🛠️ COMPÉTENCES</h2>
+      <ul>
+        <li>Organisation documentaire, gestion administrative</li>
+        <li>Suite Office, outils collaboratifs, IA génératives</li>
+        <li>Accueil physique et téléphonique, écoute active</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>✨ QUALITÉS</h2>
+      <p>Esprit d’analyse, rigueur, adaptabilité, sens du détail</p>
     </section>
 
     <section class="bloc">
       <h2>🎓 FORMATION</h2>
-      <p>2023 – Titre Pro EAA…</p>
+      <ul>
+        <li><strong>2023</strong> – Titre Pro Employé Administratif et Accueil (EAA)</li>
+        <li>Platinum Formation, Lyon</li>
+        <li><strong>2017</strong> – Anglais B2 (CECR)</li>
+      </ul>
     </section>
 
-    <!-- etc. -->
+    <section class="bloc">
+      <h2>🗣️ LANGUES</h2>
+      <p><strong>Français</strong> (natif)<br>
+         <strong>Anglais</strong> (B2)</p>
+    </section>
   </main>
 
+  <!-- Pied de page injecté -->
   <div id="footer-placeholder"></div>
+
+  <script>
+    injectPartial('menu-placeholder', 'menu.html');
+    injectPartial('footer-placeholder', 'footer.html');
+  </script>
 </body>
 </html>
