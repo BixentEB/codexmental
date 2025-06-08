@@ -10,17 +10,8 @@
 <body class="theme-stellaire">
   <canvas id="stellaire-stars" style="position:fixed; z-index:-1;"></canvas>
 
-  <!-- 👇 MENU EN DUR -->
-  <header style="padding: 1rem;">
-    <div class="site-title">Codex Mental</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="blog/index.html">Blog</a>
-      <a href="projets.html">Projets</a>
-      <a href="cv.html" class="active">CV</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </header>
+  <!-- Menu injecté dynamiquement -->
+  <div id="menu-placeholder"></div>
 
   <main>
     <h1>ASSISTANT ADMINISTRATIF CRÉATIF</h1>
@@ -28,8 +19,10 @@
 
     <section class="bloc">
       <h2>😊 PROFIL</h2>
-      <p>Hybride entre organisation, culture et numérique…<br>
-      <strong>Autonome, rigoureux, profondément créatif.</strong></p>
+      <p>
+        Hybride entre organisation, culture et numérique…<br>
+        <strong>Autonome, rigoureux, profondément créatif.</strong>
+      </p>
     </section>
 
     <section class="bloc">
@@ -41,13 +34,34 @@
       </ul>
     </section>
 
-    <!-- etc. -->
+    <section class="bloc">
+      <h2>🛠️ COMPÉTENCES</h2>
+      <ul>
+        <li>Organisation, Suite Office, IA génératives</li>
+        <li>Accueil physique & téléphonique</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>🎓 FORMATION</h2>
+      <ul>
+        <li>2023 – Titre Pro EAA (Platinum, Lyon)</li>
+        <li>2017 – Anglais B2</li>
+      </ul>
+    </section>
+
+    <section class="bloc">
+      <h2>🗣️ LANGUES</h2>
+      <p>Français (natif)<br>Anglais (B2)</p>
+    </section>
   </main>
 
-  <!-- 👇 FOOTER EN DUR -->
-  <footer style="padding: 1rem; text-align: center;">
-    <p>© 2025 Vincent Etienne – Tous droits réservés.</p>
-    <p>Site propulsé par 🧠 Codex Mental</p>
-  </footer>
+  <!-- Footer injecté dynamiquement -->
+  <div id="footer-placeholder"></div>
+
+  <script>
+    injectPartial('menu-placeholder', 'menu.html');
+    injectPartial('footer-placeholder', 'footer.html');
+  </script>
 </body>
 </html>
