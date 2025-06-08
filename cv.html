@@ -5,155 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CV – Codex Mental</title>
   <link rel="stylesheet" href="main.css" />
-  <link rel="stylesheet" href="helpers.css" />
   <script src="script.js" defer></script>
 </head>
-
 <body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
 
-  <!-- Menu dynamique -->
+  <!-- Menu (injection si besoin) -->
   <div id="menu-placeholder"></div>
 
-  <main class="container">
+  <main>
     <h1>ASSISTANT ADMINISTRATIF CRÉATIF</h1>
     <h2>Concepteur de solutions hybrides & augmentées</h2>
 
-    <div class="bloc-container">
-
-      <!-- PROFIL -->
-   
-      <div class="bloc-row bloc-1">
-        <div class="bloc">
-          <h3><span class="bloc-icon">😊</span> PROFIL</h3>
-          <p>Hybride entre organisation, culture et numérique, j'allie rigueur, curiosité intellectuelle et pensée en arborescence.</p>
-          <p>Mon parcours atypique m'a amené à créer des outils originaux mêlant structuration, narration et logique. Je conçois des solutions utiles, modulables et intuitives, en collaboration avec des IA génératives ou des outils numériques.</p>
-          <p><strong>Autonome, rigoureux, profondément créatif.</strong></p>
-        </div>
-      </div>
-
-      <!-- EXPÉRIENCE -->
-    <section class="bloc text-center mt-2">
-  <h2><span>🎯</span> Objectif</h2>
-  <p>Créer une base web saine, claire et élégante.</p>
+    <section class="bloc">
+      <h2>😊 PROFIL</h2>
+      <p>Hybride entre organisation, culture et numérique…</p>
     </section>
 
-          <section class="bloc text-center mt-2">
-  <h2><span>🎯</span> Objectif</h2>
-  <p>Créer une base web saine, claire et élégante.</p>
+    <section class="bloc">
+      <h2>🔥 EXPÉRIENCE</h2>
+      <p>2025 – Co-développement IA…</p>
     </section>
 
-      
-      <div class="bloc-row bloc-2">
-        <div class="bloc">
-          <h3><span class="bloc-icon">🔥</span> EXPÉRIENCE</h3>
-          <p><strong>2025</strong> Co-programmation avec IA spécialisée en code</p>
-          <ul>
-            <li>Réalisation d’un site web personnel sur GitHub</li>
-            <li>Création d’applications Windows personnelles</li>
-          </ul>
-          <p><strong>2024</strong> Assistant administratif – Mairie de Vienne</p>
-          <ul>
-            <li>Réservations de salles et matériel</li>
-            <li>Lien avec les associations locales</li>
-          </ul>
-          <p><strong>2023</strong> Assistant administratif – CH Lucien Hussel</p>
-          <ul>
-            <li>Accueil public</li>
-            <li>Traitement de dossiers en back office</li>
-          </ul>
-        </div>
+    <section class="bloc">
+      <h2>🎓 FORMATION</h2>
+      <p>2023 – Titre Pro EAA…</p>
+    </section>
 
-        <div class="bloc">
-          <h3><span class="bloc-icon">🏗️</span> COMPÉTENCES</h3>
-          <p><strong>ADMINISTRATIF & ACCUEIL</strong></p>
-          <ul>
-            <li>Organisation documentaire, classement, structuration</li>
-            <li>Création de supports : tableaux, guides, fiches pratiques</li>
-            <li>Accueil physique et téléphonique, écoute active</li>
-            <li>Saisie rapide, mise en forme, correction</li>
-            <li>Gestion de courriers, e-mails, demandes diverses</li>
-            <li>Suivi de plannings, réservations, coordination</li>
-          </ul>
-          <p><strong>INFORMATIQUE & INTERNET</strong></p>
-          <ul>
-            <li>Suite Office & Google</li>
-            <li>Outils collaboratifs</li>
-            <li>Utilisation d’IA génératives</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- QUALITÉS -->
-      <div class="bloc-row bloc-1">
-        <div class="bloc">
-          <h3><span class="bloc-icon">✨</span> QUALITÉS</h3>
-          <p>Esprit d'analyse, rigueur, adaptabilité, sens du détail</p>
-        </div>
-      </div>
-
-      <!-- FORMATION & LANGUES -->
-      <div class="bloc-row bloc-2">
-        <div class="bloc">
-          <h3><span class="bloc-icon">🎓</span> FORMATION</h3>
-          <p><strong>2023</strong> Titre Pro Employé Administratif et Accueil (EAA)</p>
-          <p>Platinium formation, Lyon</p>
-          <br>
-          <p><strong>2017</strong> Anglais B2 (CECR)</p>
-        </div>
-        <div class="bloc">
-          <h3><span class="bloc-icon">🗣️</span> LANGUES</h3>
-          <p><strong>Français</strong> (natif)</p>
-          <p><strong>Anglais</strong> (B2)</p>
-        </div>
-      </div>
-
-    </div>
+    <!-- etc. -->
   </main>
 
-  <!-- Pied de page dynamique -->
   <div id="footer-placeholder"></div>
-
-  <!-- Script injection dynamique -->
-  <script>
-    const cache = {};
-
-    function injectPartial(id, url, fallback = '') {
-      if (cache[url]) {
-        document.getElementById(id).innerHTML = cache[url];
-        if (id === 'menu-placeholder') highlightActiveLink();
-        return;
-      }
-
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
-          return res.text();
-        })
-        .then(html => {
-          cache[url] = html;
-          document.getElementById(id).innerHTML = html;
-          if (id === 'menu-placeholder') highlightActiveLink();
-        })
-        .catch(err => {
-          console.warn(err);
-          document.getElementById(id).innerHTML = fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
-        });
-    }
-
-    function highlightActiveLink() {
-      const currentPath = location.pathname.replace(/\/+$/, '');
-      document.querySelectorAll('.main-nav a').forEach(link => {
-        const href = link.getAttribute('href');
-        const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-        if (linkPath === currentPath) {
-          link.classList.add('active');
-        }
-      });
-    }
-
-    injectPartial('menu-placeholder', 'menu.html');
-    injectPartial('footer-placeholder', 'footer.html');
-  </script>
 </body>
 </html>
