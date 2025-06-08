@@ -65,6 +65,7 @@ function setTheme(theme) {
   stopParticles();
 
   if (!canvas) return;
+
   if (theme === 'theme-stellaire') {
     setupCanvas();
     initParticles('stars', 120);
@@ -129,21 +130,16 @@ function setupScrollButton() {
 
 // === 🚀 INITIALISATION ===
 window.addEventListener('DOMContentLoaded', () => {
-  // Canvas unifié
   canvas = document.getElementById('theme-canvas');
   if (canvas) {
     ctx = canvas.getContext('2d');
     canvas.style.opacity = '0';
   }
 
-  // Appliquer thème
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
 
-  // Bouton scroll
   setupScrollButton();
-
-  // Injections
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
 });
