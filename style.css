@@ -427,4 +427,11 @@ li {
 /* Pour les blocs qui doivent prendre toute la largeur */
 .row-single .bloc {
   flex: 1 1 100%;
+  max-width: 100%;
+}
+
+/* Pour les blocs en duo, qu'ils prennent plus d'espace */
+.row-double .bloc {
+  flex: 1 1 45%;
+  min-width: 400px;
 }
