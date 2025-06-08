@@ -55,3 +55,28 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* 📚 DISPOSITION DES BLOCS */
+.bloc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-large);
+  margin-bottom: var(--gap-large);
+}
+
+.bloc-1 .bloc {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+.bloc-2 .bloc {
+  flex: 1 1 calc(50% - var(--gap-base));
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.bloc-3 .bloc {
+  flex: 1 1 calc(33.333% - var(--gap-base));
+  min-width: 250px;
+  max-width: 400px;
+}
