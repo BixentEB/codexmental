@@ -152,30 +152,43 @@ body.theme-stellaire #stellaire-stars {
   }
 }
 
-/* ✨ PATCH THÈME STELLAIRE */
+/* ✨ THEME STELLAIRE – BLEU COSMOS */
 body.theme-stellaire {
-  background-color: #05050f;
-  color: #eaeaff;
+  background-color: #030617;
+  color: #e0ecff;
 }
 
 .theme-stellaire .bloc {
-  background-color: rgba(20, 20, 40, 0.7);
-  color: #e8e8ff;
-  border: 1px solid rgba(180, 200, 255, 0.1);
-  box-shadow: 0 0 12px rgba(120, 150, 255, 0.08);
+  background-color: rgba(10, 20, 60, 0.75);
+  color: #e0ecff;
+  border: 1px solid rgba(100, 160, 255, 0.2);
+  box-shadow: 0 0 15px rgba(120, 180, 255, 0.12);
 }
 
 .theme-stellaire .bloc:hover {
   transform: translateY(-5px) scale(1.01);
   opacity: 1;
-  box-shadow: 0 0 20px rgba(200, 220, 255, 0.15);
+  box-shadow: 0 0 20px rgba(180, 220, 255, 0.2);
+}
+
+.theme-stellaire h1,
+.theme-stellaire h2 {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(100, 160, 255, 0.3);
+}
+
+.theme-stellaire a {
+  color: #8bbfff;
+}
+.theme-stellaire a:hover {
+  color: #ffffff;
 }
 
 .theme-stellaire .cv-download .btn {
-  background-color: #5c66ff;
+  background-color: #2d88ff;
   color: white;
 }
 
 .theme-stellaire .cv-download .btn:hover {
-  background-color: #7f8cff;
+  background-color: #68aaff;
 }
