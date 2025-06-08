@@ -12,6 +12,9 @@ body.theme-stellaire {
   --bloc-shadow: rgba(120, 180, 255, 0.12);
   --bloc-shadow-hover: rgba(180, 220, 255, 0.2);
   --text-shadow: rgba(100, 160, 255, 0.3);
+
+  /* 👇 nouvelle variable d'espacement entre blocs */
+  --bloc-spacing: 2rem;
 }
 
 body.theme-galactique {
@@ -26,6 +29,9 @@ body.theme-galactique {
   --bloc-shadow: rgba(128, 240, 255, 0.12);
   --bloc-shadow-hover: rgba(160, 250, 255, 0.2);
   --text-shadow: rgba(128, 240, 255, 0.3);
+
+  /* 👇 nouvelle variable d'espacement entre blocs */
+  --bloc-spacing: 2rem;
 }
 
 body.theme-lunaire {
@@ -40,6 +46,9 @@ body.theme-lunaire {
   --bloc-shadow: rgba(150, 160, 170, 0.15);
   --bloc-shadow-hover: rgba(150, 160, 170, 0.25);
   --text-shadow: transparent;
+
+  /* 👇 nouvelle variable d'espacement entre blocs */
+  --bloc-spacing: 2rem;
 }
 
 body.theme-solaire {
@@ -49,14 +58,13 @@ body.theme-solaire {
   --accent-primary: #f0a000;
   --accent-hover: #ffbe40;
   --link-color: #a25a00;
+
   --bloc-bg: rgba(255, 239, 190, 0.9);
   --bloc-border: rgba(90, 69, 0, 0.2);
   --bloc-shadow: rgba(150, 100, 0, 0.15);
   --bloc-shadow-hover: rgba(150, 100, 0, 0.25);
   --text-shadow: transparent;
-}
 
-:root.theme-stellaire {
-  /* ... tes variables existantes ... */
+  /* 👇 nouvelle variable d'espacement entre blocs */
   --bloc-spacing: 2rem;
 }
