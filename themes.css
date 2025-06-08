@@ -7,7 +7,7 @@ body.theme-solaire {
   --accent-primary: #f0a000;
   --accent-hover: #ffbe40;
   --link-color: #a25a00;
-  --bloc-bg: rgba(255, 239, 156, 0.9);
+  --bloc-bg: rgba(252, 240, 177, 0.9);
   --bloc-border: rgba(90, 69, 0, 0.2);
   --bloc-shadow: rgba(150, 100, 0, 0.15);
   --bloc-shadow-hover: rgba(150, 100, 0, 0.25);
@@ -49,7 +49,7 @@ body.theme-galactique {
 }
 
 body.theme-lunaire {
-  --bg-primary: #e8eaf6;
+  --bg-primary: #030617;
   --text-primary: #1a237e;
   --text-secondary: #3949ab;
   --accent-primary: #3f51b5;
