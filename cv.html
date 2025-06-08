@@ -7,8 +7,11 @@
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
 </head>
+
 <body class="theme-stellaire">
   <canvas id="stellaire-stars"></canvas>
+
+  <!-- Menu dynamique -->
   <div id="menu-placeholder"></div>
 
   <main class="container">
@@ -16,8 +19,8 @@
     <h2>Concepteur de solutions hybrides & augmentées</h2>
 
     <div class="bloc-container">
-      
-      <!-- Bloc Profil -->
+
+      <!-- PROFIL -->
       <div class="row row-single">
         <div class="bloc">
           <h3><span class="bloc-icon">😊</span> PROFIL</h3>
@@ -27,14 +30,14 @@
         </div>
       </div>
 
-      <!-- Bloc Expérience & Compétences -->
+      <!-- EXPÉRIENCE & COMPÉTENCES -->
       <div class="row row-double">
         <div class="bloc">
           <h3><span class="bloc-icon">🔥</span> EXPÉRIENCE</h3>
           <p><strong>2025</strong> Co-programmation avec IA spécialisée en code</p>
           <ul>
-            <li>Réalisation d'un site web personnel sur GitHub</li>
-            <li>Création de différentes applications windows personnelles (voir Projets)</li>
+            <li>Réalisation d’un site web personnel sur GitHub</li>
+            <li>Création d’applications Windows personnelles</li>
           </ul>
           <p><strong>2024</strong> Assistant administratif – Mairie de Vienne</p>
           <ul>
@@ -68,7 +71,7 @@
         </div>
       </div>
 
-      <!-- Bloc Qualités -->
+      <!-- QUALITÉS -->
       <div class="row row-single">
         <div class="bloc">
           <h3><span class="bloc-icon">✨</span> QUALITÉS</h3>
@@ -76,7 +79,7 @@
         </div>
       </div>
 
-      <!-- Bloc Formation & Langues -->
+      <!-- FORMATION & LANGUES -->
       <div class="row row-double">
         <div class="bloc">
           <h3><span class="bloc-icon">🎓</span> FORMATION</h3>
@@ -85,7 +88,6 @@
           <br>
           <p><strong>2017</strong> Anglais B2 (CECR)</p>
         </div>
-
         <div class="bloc">
           <h3><span class="bloc-icon">🗣️</span> LANGUES</h3>
           <p><strong>Français</strong> (natif)</p>
@@ -95,9 +97,47 @@
     </div>
   </main>
 
+  <!-- Pied de page dynamique -->
   <div id="footer-placeholder"></div>
 
+  <!-- Script injection dynamique -->
   <script>
+    const cache = {};
+
+    function injectPartial(id, url, fallback = '') {
+      if (cache[url]) {
+        document.getElementById(id).innerHTML = cache[url];
+        if (id === 'menu-placeholder') highlightActiveLink();
+        return;
+      }
+
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
+          return res.text();
+        })
+        .then(html => {
+          cache[url] = html;
+          document.getElementById(id).innerHTML = html;
+          if (id === 'menu-placeholder') highlightActiveLink();
+        })
+        .catch(err => {
+          console.warn(err);
+          document.getElementById(id).innerHTML = fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
+        });
+    }
+
+    function highlightActiveLink() {
+      const currentPath = location.pathname.replace(/\/+$/, '');
+      document.querySelectorAll('.main-nav a').forEach(link => {
+        const href = link.getAttribute('href');
+        const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
+        if (linkPath === currentPath) {
+          link.classList.add('active');
+        }
+      });
+    }
+
     injectPartial('menu-placeholder', 'menu.html');
     injectPartial('footer-placeholder', 'footer.html');
   </script>
