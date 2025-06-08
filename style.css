@@ -1,5 +1,6 @@
+
 /* 🌐 FONTES ET RÉINITIALISATION DE BASE */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
 
 body {
   font-family: 'Roboto', sans-serif;
@@ -28,8 +29,13 @@ body {
   max-width: 900px;
   margin: auto;
   padding: 2rem;
+}
+.container h1,
+.container h2,
+.cv-download {
   text-align: center;
 }
+
 footer {
   text-align: center;
   font-size: 0.8rem;
@@ -79,209 +85,7 @@ body.theme-stellaire #stellaire-stars {
   opacity: 1;
 }
 
-/* 🎛️ BOUTONS DE THÈME */
-.theme-buttons {
-  margin-top: 2rem;
-}
-.theme-buttons button {
-  margin: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-family: 'Orbitron', sans-serif;
-  cursor: pointer;
-  border-radius: 5px;
-  border: none;
-}
-
-/* 🌈 THÈMES VISUELS */
-
-/* ✨ Thème Stellaire */
-body.theme-stellaire {
-  background-color: #0d1a3f;
-  color: #c7d9ff;
-}
-.theme-stellaire .main-nav a,
-.theme-stellaire .site-title {
-  color: #9bc9ff;
-}
-.theme-stellaire .theme-buttons button {
-  background-color: #1f2f6d;
-  color: #c7d9ff;
-  border: 1px solid #5c7cff;
-}
-
-/* ☀️ Thème Solaire */
-body.theme-solaire {
-  background-color: #fffceb;
-  color: #5a4500;
-}
-.theme-solaire .main-nav a,
-.theme-solaire .site-title {
-  color: #d19400;
-}
-.theme-solaire .theme-buttons button {
-  background-color: #ffe299;
-  color: #5a4500;
-}
-
-/* 🌙 Thème Lunaire */
-body.theme-lunaire {
-  background-color: #0b1c2d;
-  color: #d0d5e3;
-}
-.theme-lunaire .main-nav a,
-.theme-lunaire .site-title {
-  color: #c0c9dd;
-}
-.theme-lunaire .theme-buttons button {
-  background-color: #2e3a4f;
-  color: #e0eafc;
-}
-
-/* 🪐 Thème Galactique */
-body.theme-galactique {
-  background: linear-gradient(145deg, #0b001a, #1c0038);
-  color: #d3bfff;
-}
-.theme-galactique .main-nav a,
-.theme-galactique .site-title {
-  color: #80f0ff;
-}
-.theme-galactique .theme-buttons button {
-  background-color: #2b0055;
-  color: #80f0ff;
-  box-shadow: 0 0 5px #80f0ff;
-  transition: all 0.3s ease;
-}
-.theme-galactique .theme-buttons button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px #80f0ff;
-}
-
-/* 📝 FORMULAIRES PAR THÈME */
-
-/* Stellaire */
-body.theme-stellaire form {
-  background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 10px rgba(200, 220, 255, 0.2);
-  backdrop-filter: blur(2px);
-}
-body.theme-stellaire form button {
-  background-color: #5c7cff;
-}
-
-/* Lunaire */
-body.theme-lunaire form {
-  background-color: rgba(20, 30, 50, 0.7);
-  box-shadow: 0 0 8px rgba(180, 200, 255, 0.15);
-  backdrop-filter: blur(1px);
-}
-body.theme-lunaire form button {
-  background-color: #8899cc;
-  color: #fff;
-}
-
-/* Solaire */
-body.theme-solaire form {
-  background-color: rgba(255, 250, 220, 0.9);
-  box-shadow: 0 0 5px rgba(255, 200, 80, 0.2);
-}
-body.theme-solaire form button {
-  background-color: #f2b100;
-  color: #000;
-}
-
-/* Galactique */
-body.theme-galactique form {
-  background-color: rgba(50, 0, 80, 0.6);
-  border: 1px solid #80f0ff;
-  box-shadow: 0 0 12px #80f0ff88;
-}
-body.theme-galactique form button {
-  background-color: #80f0ff;
-  color: #0a001f;
-}
-
-/* 🔼 BOUTON RETOUR HAUT */
-#scrollTopBtn {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 999;
-  font-size: 1.2rem;
-  background-color: #5c7cff;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  padding: 0.5rem 0.7rem;
-  cursor: pointer;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
-}
-
-/* ✨ DIVERS */
-.special-font {
-  font-family: 'Orbitron', sans-serif;
-}
-
-/* 📬 FORMULAIRE DE CONTACT – Style uniforme */
-
-form.contact-form {
-  max-width: 550px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 15px rgba(180, 220, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  backdrop-filter: blur(3px);
-}
-
-form.contact-form label {
-  display: flex;
-  flex-direction: column;
-  font-weight: bold;
-  color: inherit;
-}
-
-form.contact-form input,
-form.contact-form textarea {
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-family: inherit;
-  background-color: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  resize: vertical;
-}
-
-form.contact-form button {
-  align-self: center;
-  background-color: #5c7cff;
-  color: white;
-  padding: 0.7rem 1.4rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-form.contact-form button:hover {
-  background-color: #6d88ff;
-}
-
-#confirmationMessage {
-  text-align: center;
-  margin-top: 1rem;
-  font-weight: bold;
-  color: lightgreen;
-}
-
-/* 📦 Blocs du CV */
-
+/* Blocs CV */
 .bloc-container {
   display: flex;
   flex-direction: column;
