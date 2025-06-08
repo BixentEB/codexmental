@@ -76,13 +76,28 @@ function injectPartial(id, url) {
     })
     .then(html => {
       target.innerHTML = html;
+      if (id === 'menu-placeholder') highlightActiveLink();
     })
     .catch(err => {
       console.error("❌ Injection échouée :", err);
     });
 }
 
-// === ⬆️ RETOUR HAUT ===
+// === 🌐 LIEN ACTIF DANS LE MENU ===
+function highlightActiveLink() {
+  const currentPath = location.pathname.replace(/\/+$/, '');
+  const links = document.querySelectorAll("nav a");
+
+  links.forEach(link => {
+    const href = link.getAttribute("href");
+    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
+    if (linkPath === currentPath) {
+      link.classList.add("active");
+    }
+  });
+}
+
+// === ⬆️ BOUTON RETOUR HAUT ===
 function setupScrollButton() {
   const scrollBtn = document.getElementById('scrollTopBtn');
   if (!scrollBtn) return;
@@ -100,32 +115,21 @@ function setupScrollButton() {
 
 // === 🚀 INITIALISATION ===
 window.addEventListener('DOMContentLoaded', () => {
-  // Fond stellaire
+  // Canvas étoilé
   canvas = document.getElementById('stellaire-stars');
   if (canvas) {
     ctx = canvas.getContext('2d');
     canvas.style.opacity = '0';
   }
 
+  // Thème au démarrage
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
 
-  // Menu actif
-  const path = window.location.pathname.replace(/\/+$/, '');
-  const links = document.querySelectorAll("nav a");
-
-  links.forEach(link => {
-    const href = link.getAttribute("href");
-    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-    if (linkPath === path) {
-      link.classList.add("active");
-    }
-  });
-
-  // Scroll top
+  // Bouton retour haut
   setupScrollButton();
 
-  // Injection HTML
+  // Injections menu + footer
   injectPartial('menu-placeholder', 'menu.html');
   injectPartial('footer-placeholder', 'footer.html');
 });
