@@ -42,7 +42,6 @@
 
   <!-- Scripts -->
   <script src="/script.js" defer></script>
-
 </head>
 <body class="theme-stellaire">
   <canvas id="stellaire-stars" style="position: fixed; z-index: -1;"></canvas>
@@ -50,7 +49,7 @@
   <!-- Injection menu -->
   <div id="menu-placeholder"></div>
 
-  <!-- Contenu -->
+ <!-- Contenu -->
   <main class="container">
     <h1>🧠 Le Blog</h1>
     <ul style="list-style: none; padding-left: 0;">
@@ -59,14 +58,7 @@
     </ul>
   </main>
 
-<!-- Injection footer -->
-<div id="footer-placeholder"></div>
-
-<!-- Appel injection dynamique -->
-<script>
-  injectPartial('menu-placeholder', '/menu.html');
-  injectPartial('footer-placeholder', '/footer.html');
-</script>
-
+  <!-- Injection footer -->
+  <div id="footer-placeholder"></div>
 </body>
 </html>
