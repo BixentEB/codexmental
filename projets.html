@@ -49,74 +49,12 @@
   <!-- Injection menu -->
   <div id="menu-placeholder"></div>
 
- <!-- Contenu -->
-  <main class="container">
+ <main class="container">
     <h1>Projets</h1>
     <p>Voici une présentation de mes projets en cours, passés ou à venir.</p>
   </main>
 
   <!-- Injection footer -->
   <div id="footer-placeholder"></div>
-</body>
-</html><!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projets – Codex Mental</title>
-<link rel="stylesheet" href="main.css" />
-  <script src="script.js" defer></script>
-</head>
-<body class="theme-stellaire">
-  <canvas id="stellaire-stars"></canvas>
-  <div id="menu-placeholder"></div>
-
-  <main class="container">
-    <h1>Projets</h1>
-    <p>Voici une présentation de mes projets en cours, passés ou à venir.</p>
-  </main>
-
-  <div id="footer-placeholder"></div>
-
-  <script>
-    const cache = {};
-
-    function injectPartial(id, url, fallback = '') {
-      if (cache[url]) {
-        document.getElementById(id).innerHTML = cache[url];
-        if (id === 'menu-placeholder') highlightActiveLink();
-        return;
-      }
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
-          return res.text();
-        })
-        .then(html => {
-          cache[url] = html;
-          document.getElementById(id).innerHTML = html;
-          if (id === 'menu-placeholder') highlightActiveLink();
-        })
-        .catch(err => {
-          console.warn(err);
-          document.getElementById(id).innerHTML =
-            fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
-        });
-    }
-
-    function highlightActiveLink() {
-      const currentPath = location.pathname.replace(/\/+$/, '');
-      document.querySelectorAll('.main-nav a').forEach(link => {
-        const href = link.getAttribute('href');
-        const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-        if (linkPath === currentPath) {
-          link.classList.add('active');
-        }
-      });
-    }
-
-    injectPartial('menu-placeholder', 'menu.html');
-    injectPartial('footer-placeholder', 'footer.html');
-  </script>
 </body>
 </html>
