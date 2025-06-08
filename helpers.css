@@ -4,6 +4,8 @@
 .text-left    { text-align: left !important; }
 .text-center  { text-align: center !important; }
 .text-right   { text-align: right !important; }
+.align-start  { text-align: start; }
+.text-justify { text-align: justify; }
 
 /* 📦 FLEX UTILES */
 .flex         { display: flex !important; }
@@ -25,7 +27,6 @@
 .mr-1 { margin-right: 1rem !important; }
 .my-1 { margin-top: 1rem !important; margin-bottom: 1rem !important; }
 .mx-1 { margin-left: 1rem !important; margin-right: 1rem !important; }
-
 .mt-2 { margin-top: 2rem !important; }
 .mb-2 { margin-bottom: 2rem !important; }
 
@@ -56,7 +57,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* 📚 DISPOSITION DES BLOCS */
+/* 📚 DISPOSITION DES BLOCS FLEX */
 .bloc-row {
   display: flex;
   flex-wrap: wrap;
@@ -89,7 +90,7 @@
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  ;
+}
 
 .grid-cols-1 {
   grid-template-columns: 1fr;
@@ -110,10 +111,6 @@
 .gap-x-2 { column-gap: 2rem; }
 .gap-y-2 { row-gap: 2rem; }
 
-/* === ALIGNEMENT === */
-.align-start { text-align: start; }
-.text-justify { text-align: justify; }
-
 /* === STYLE DE BLOC GÉNÉRIQUE === */
 .bloc {
   padding: 1rem;
@@ -122,11 +119,11 @@
   color: var(--text-primary, #fff);
   text-align: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  width: 100%; /* utile pour du flex ou du mobile */
+  width: 100%;
   max-width: 100%;
 }
 
-/* ✅ Surchage uniquement dans un parent grid */
-.grid-blocs .bloc {
+/* ✅ Surcharge uniquement dans un parent grid */
+.grid-blocs > .bloc {
   width: auto;
 }
