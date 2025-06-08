@@ -4,110 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CV – Codex Mental</title>
-  <style>
-    /* Style de base pour la démo */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      color: white;
-      min-height: 100vh;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-      font-size: 1.8rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-    
-    .row {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    
-    .bloc {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 1.5rem;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-    
-    /* Ligne avec 1 bloc (pleine largeur) */
-    .row-single .bloc {
-      flex: 1;
-    }
-    
-    /* Ligne avec 2 blocs (chacun 50% de largeur) */
-    .row-double .bloc {
-      flex: 1;
-      min-width: 300px;
-    }
-    
-    h2 {
-      margin-top: 0;
-      color: #FFD700;
-      font-size: 1.2rem;
-      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
-      padding-bottom: 0.5rem;
-    }
-    
-    p {
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-    
-    strong {
-      color: #FFD700;
-    }
-    
-    .cv-download {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    
-    .btn {
-      display: inline-block;
-      background: rgba(255, 215, 0, 0.2);
-      color: #FFD700;
-      padding: 12px 24px;
-      text-decoration: none;
-      border-radius: 25px;
-      border: 2px solid #FFD700;
-      transition: all 0.3s ease;
-      font-weight: bold;
-    }
-    
-    .btn:hover {
-      background: #FFD700;
-      color: #1e3c72;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
-    }
-    
-    @media (max-width: 768px) {
-      .row {
-        flex-direction: column;
-      }
-      
-      .bloc {
-        min-width: auto;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
 </head>
 
-<body>
+<body class="theme-stellaire">
+  <canvas id="stellaire-stars"></canvas>
+  <div id="menu-placeholder"></div>
   <main class="container">
     <h1>ASSISTANT ADMINISTRATIF CRÉATIF<br>Concepteur de solutions hybrides & augmentées</h1>
 
@@ -168,9 +71,53 @@
     </div>
 
     <!-- 📄 Bouton CV -->
-    <div class="cv-download">
+    <div class="cv-download" style="text-align:center; margin-top: 2rem;">
       <a href="arc/cv-vincent-etienne.pdf" download class="btn">📄 Télécharger le CV (PDF)</a>
     </div>
   </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const cache = {};
+
+    function injectPartial(id, url, fallback = '') {
+      if (cache[url]) {
+        document.getElementById(id).innerHTML = cache[url];
+        if (id === 'menu-placeholder') highlightActiveLink();
+        return;
+      }
+
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
+          return res.text();
+        })
+        .then(html => {
+          cache[url] = html;
+          document.getElementById(id).innerHTML = html;
+          if (id === 'menu-placeholder') highlightActiveLink();
+        })
+        .catch(err => {
+          console.warn(err);
+          document.getElementById(id).innerHTML =
+            fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
+        });
+    }
+
+    function highlightActiveLink() {
+      const currentPath = location.pathname.replace(/\/+$/, '');
+      document.querySelectorAll('.main-nav a').forEach(link => {
+        const href = link.getAttribute('href');
+        const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
+        if (linkPath === currentPath) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    injectPartial('menu-placeholder', 'menu.html');
+    injectPartial('footer-placeholder', 'footer.html');
+  </script>
 </body>
 </html>
