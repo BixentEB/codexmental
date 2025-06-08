@@ -4,61 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accueil – Codex Mental</title>
-<link rel="stylesheet" href="main.css" />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-    body {
-      font-family: 'Roboto', sans-serif;
-    }
-    .header, .main-nav a {
-      font-family: 'Orbitron', sans-serif;
-    }
-    .main-nav a.active {
-      background-color: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-      padding: 0.2rem 0.6rem;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-    }
-    .main-nav a.active:hover {
-      background-color: rgba(255, 255, 255, 0.15);
-    }
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="main.css" />
+  <style>
     .theme-buttons {
       text-align: center;
       margin-top: 2rem;
     }
+
     .theme-buttons span {
-      margin-right: 1rem;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-family: 'Orbitron', sans-serif;
     }
+
     .theme-buttons button {
       margin: 0.3rem;
       padding: 0.5rem 1rem;
       border: none;
       border-radius: 6px;
-      background-color: rgba(255,255,255,0.05);
+      background-color: rgba(255, 255, 255, 0.05);
       color: #fff;
+      font-family: 'Orbitron', sans-serif;
       font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
+
     .theme-buttons button:hover {
-      background-color: rgba(255,255,255,0.15);
+      background-color: rgba(255, 255, 255, 0.15);
     }
   </style>
+
+  <!-- Scripts -->
   <script src="script.js" defer></script>
 </head>
 <body class="theme-stellaire">
-  <canvas id="stellaire-stars"></canvas>
+  <canvas id="stellaire-stars" style="position: fixed; z-index: -1;"></canvas>
+
+  <!-- Injection menu -->
   <div id="menu-placeholder"></div>
 
   <main class="container">
-    <h1 style="text-align:center">Bienvenue sur mon site</h1>
-    <p style="text-align:center">Ce bloc est modifiable. Tu peux ici écrire une introduction, une présentation, ou insérer du contenu dynamique plus tard.</p>
+    <h1 class="text-center">Bienvenue sur mon site</h1>
+    <p class="text-center">Ce bloc est modifiable. Tu peux ici écrire une introduction, une présentation, ou insérer du contenu dynamique plus tard.</p>
 
     <div class="theme-buttons">
-      <span>Changer de thème :</span>
+      <span>Changer de thème :</span><br />
       <button onclick="setTheme('theme-solaire')">Solaire</button>
       <button onclick="setTheme('theme-lunaire')">Lunaire</button>
       <button onclick="setTheme('theme-galactique')">Galactique</button>
@@ -66,48 +62,7 @@
     </div>
   </main>
 
+  <!-- Injection footer -->
   <div id="footer-placeholder"></div>
-
-  <script>
-    const cache = {};
-
-    function injectPartial(id, url, fallback = '') {
-      if (cache[url]) {
-        document.getElementById(id).innerHTML = cache[url];
-        if (id === 'menu-placeholder') highlightActiveLink();
-        return;
-      }
-
-      fetch(url)
-        .then(res => {
-          if (!res.ok) throw new Error(`Erreur chargement : ${url}`);
-          return res.text();
-        })
-        .then(html => {
-          cache[url] = html;
-          document.getElementById(id).innerHTML = html;
-
-          if (id === 'menu-placeholder') highlightActiveLink();
-        })
-        .catch(err => {
-          console.warn(err);
-          document.getElementById(id).innerHTML = fallback || `<div style="color:red;text-align:center;">⚠️ ${id.replace('-placeholder', '')} non chargé.</div>`;
-        });
-    }
-
-    function highlightActiveLink() {
-      const currentPath = location.pathname.replace(/\/+$/, '');
-      document.querySelectorAll('.main-nav a').forEach(link => {
-        const href = link.getAttribute('href');
-        const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-        if (linkPath === currentPath) {
-          link.classList.add('active');
-        }
-      });
-    }
-
-    injectPartial('menu-placeholder', 'menu.html');
-    injectPartial('footer-placeholder', 'footer.html');
-  </script>
 </body>
 </html>
