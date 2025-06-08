@@ -1,78 +1,96 @@
 /* 🎨 THÈMES : couleurs et styles dynamiques */
 
-body.theme-stellaire {
-  --bg-primary: #030617;
-  --text-primary: #e0ecff;
-  --text-secondary: #ffffff;
-  --accent-primary: #2d88ff;
-  --accent-hover: #68aaff;
-  --link-color: #8bbfff;
-  --bloc-bg: rgba(10, 20, 60, 0.75);
-  --bloc-border: rgba(100, 160, 255, 0.2);
-  --bloc-shadow: rgba(120, 180, 255, 0.12);
-  --bloc-shadow-hover: rgba(180, 220, 255, 0.2);
-  --text-shadow: rgba(100, 160, 255, 0.3);
+body.theme-solaire {
+  --bg-primary: #ffef9c;
+  --text-primary: #4a3200;
+  --text-secondary: #4a3200;
+  --accent-primary: #f0a000;
+  --accent-hover: #ffbe40;
+  --link-color: #a25a00;
+  --bloc-bg: rgba(255, 239, 156, 0.9);
+  --bloc-border: rgba(90, 69, 0, 0.2);
+  --bloc-shadow: rgba(150, 100, 0, 0.15);
+  --bloc-shadow-hover: rgba(150, 100, 0, 0.25);
+  --logo-color: #4a3200;
+  --nav-bg: #111;
+  --nav-link-color: #4a3200;
+  --nav-link-active-bg: #4a3200;
+  --nav-link-active-color: #fff;
+  --btn-bg: #f1c40f;
+  --btn-text: #111;
+  --btn-hover: #f39c12;
 
   /* 👇 nouvelle variable d'espacement entre blocs */
   --bloc-spacing: 2rem;
 }
 
 body.theme-galactique {
-  --bg-primary: #05050F;
-  --text-primary: #d0faff;
-  --text-secondary: #ffffff;
-  --accent-primary: #00d0ff;
-  --accent-hover: #5efeff;
-  --link-color: #80f0ff;
-  --bloc-bg: rgba(30, 20, 60, 0.6);
-  --bloc-border: rgba(128, 240, 255, 0.2);
-  --bloc-shadow: rgba(128, 240, 255, 0.12);
-  --bloc-shadow-hover: rgba(160, 250, 255, 0.2);
-  --text-shadow: rgba(128, 240, 255, 0.3);
+  --bg-primary: #0b3d91;
+  --text-primary: #ffffff;
+  --text-secondary: #bbbbff;
+  --accent-primary: #7c4dff;
+  --accent-hover: #b388ff;
+  --link-color: #82b1ff;
+  --bloc-bg: rgba(12, 44, 104, 0.9);
+  --bloc-border: rgba(130, 177, 255, 0.2);
+  --bloc-shadow: rgba(130, 177, 255, 0.1);
+  --bloc-shadow-hover: rgba(130, 177, 255, 0.25);
+  --logo-color: #82b1ff;
+  --nav-bg: #111;
+  --nav-link-color: #82b1ff;
+  --nav-link-active-bg: #82b1ff;
+  --nav-link-active-color: #111;
+  --btn-bg: #2979ff;
+  --btn-text: #fff;
+  --btn-hover: #448aff;
 
   /* 👇 nouvelle variable d'espacement entre blocs */
   --bloc-spacing: 2rem;
 }
 
 body.theme-lunaire {
-  --bg-primary: #0061a2;
-  --text-primary: #060f1f;
-  --text-secondary: #060f1f;
-  --accent-primary: #4a69ad;
-  --accent-hover: #385a99;
-  --link-color: #1a4e80;
-  --bloc-bg: rgba(255, 255, 255, 0.95);
-  --bloc-border: rgba(0, 0, 0, 0.1);
-  --bloc-shadow: rgba(150, 160, 170, 0.15);
-  --bloc-shadow-hover: rgba(150, 160, 170, 0.25);
-  --text-shadow: transparent;
+  --bg-primary: #e8eaf6;
+  --text-primary: #1a237e;
+  --text-secondary: #3949ab;
+  --accent-primary: #3f51b5;
+  --accent-hover: #5c6bc0;
+  --link-color: #1a237e;
+  --bloc-bg: rgba(255, 255, 255, 0.9);
+  --bloc-border: rgba(50, 50, 120, 0.2);
+  --bloc-shadow: rgba(50, 50, 120, 0.1);
+  --bloc-shadow-hover: rgba(50, 50, 120, 0.25);
+  --logo-color: #1a237e;
+  --nav-bg: #111;
+  --nav-link-color: #1a237e;
+  --nav-link-active-bg: #1a237e;
+  --nav-link-active-color: #fff;
+  --btn-bg: #7986cb;
+  --btn-text: #fff;
+  --btn-hover: #5c6bc0;
 
   /* 👇 nouvelle variable d'espacement entre blocs */
   --bloc-spacing: 2rem;
 }
 
-body.theme-solaire {
-  --bg-primary: #fff9ef;
-  --text-primary: #4a3200;
-  --text-secondary: #4a3200;
-  --accent-primary: #f0a000;
-  --accent-hover: #ffbe40;
-  --link-color: #a25a00;
-
-  --bloc-bg: rgba(255, 239, 190, 0.9);
-  --bloc-border: rgba(90, 69, 0, 0.2);
-  --bloc-shadow: rgba(150, 100, 0, 0.15);
-  --bloc-shadow-hover: rgba(150, 100, 0, 0.25);
-
-  --logo-color: #4a3200;
+body.theme-stellaire {
+  --bg-primary: #000f1a;
+  --text-primary: #ffffff;
+  --text-secondary: #88ccff;
+  --accent-primary: #4eaaff;
+  --accent-hover: #74c4ff;
+  --link-color: #00bfff;
+  --bloc-bg: rgba(255, 255, 255, 0.05);
+  --bloc-border: rgba(255, 255, 255, 0.2);
+  --bloc-shadow: rgba(0, 0, 0, 0.2);
+  --bloc-shadow-hover: rgba(255, 255, 255, 0.3);
+  --logo-color: #4eaaff;
   --nav-bg: #111;
-  --nav-link-color: #4a3200;
-  --nav-link-active-bg: #4a3200;
-  --nav-link-active-color: #fff;
-
-  --btn-bg: #f0a000;
+  --nav-link-color: #4eaaff;
+  --nav-link-active-bg: #4eaaff;
+  --nav-link-active-color: #111;
+  --btn-bg: #4eaaff;
   --btn-text: #fff;
-  --btn-hover: #ffbe40;
+  --btn-hover: #74c4ff;
 }
 
   /* 👇 nouvelle variable d'espacement entre blocs */
