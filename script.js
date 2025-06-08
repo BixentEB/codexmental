@@ -1,51 +1,60 @@
-// === 🌌 FOND STELLAIRE ===
-let canvas, ctx, stars = [], rafId;
+// === 🌌 CANVAS UNIFIÉ : EFFETS STELLAIRE & GALACTIQUE ===
+let canvas, ctx, rafId;
+let particles = [];
 
-function startStarfield() {
-  if (!canvas || !ctx) return;
+function setupCanvas() {
+  canvas = document.getElementById("theme-canvas");
+  if (!canvas) return;
+  ctx = canvas.getContext("2d");
+  canvas.style.opacity = '0';
   resizeCanvas();
-  initStars();
-  animateStars();
   window.addEventListener('resize', resizeCanvas);
-}
-
-function stopStarfield() {
-  if (rafId) cancelAnimationFrame(rafId);
-  if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
-  window.removeEventListener('resize', resizeCanvas);
 }
 
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  initStars();
 }
 
-function initStars(count = 120) {
-  stars = [];
-  for (let i = 0; i < count; i++) {
-    stars.push({
+function initParticles(type = 'stars', count = 120) {
+  particles = Array.from({ length: count }, () => {
+    const r = Math.random() * 1.5 + 0.3;
+    return {
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 1.5 + 0.3,
+      r,
       alpha: Math.random(),
-      delta: (Math.random() * 0.02) * (Math.random() < 0.5 ? 1 : -1)
-    });
-  }
+      delta: (Math.random() * 0.02) * (Math.random() < 0.5 ? 1 : -1),
+      type
+    };
+  });
 }
 
-function animateStars() {
+function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let s of stars) {
-    s.alpha += s.delta;
-    if (s.alpha <= 0 || s.alpha >= 1) s.delta *= -1;
+  for (let p of particles) {
+    p.alpha += p.delta;
+    if (p.alpha <= 0 || p.alpha >= 1) p.delta *= -1;
 
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
-    ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+    ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+
+    if (p.type === 'stars') {
+      ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+    } else if (p.type === 'dust') {
+      ctx.fillStyle = `rgba(200, 150, 255, ${p.alpha})`;
+    }
+
     ctx.fill();
   }
-  rafId = requestAnimationFrame(animateStars);
+  rafId = requestAnimationFrame(animateParticles);
+}
+
+function stopParticles() {
+  if (rafId) cancelAnimationFrame(rafId);
+  if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles = [];
+  if (canvas) canvas.style.opacity = '0';
 }
 
 // === 🎨 THÈME ===
@@ -53,14 +62,19 @@ function setTheme(theme) {
   document.body.className = theme;
   localStorage.setItem('codexTheme', theme);
 
+  stopParticles();
+
+  if (!canvas) return;
   if (theme === 'theme-stellaire') {
-    startStarfield();
-    setTimeout(() => {
-      if (canvas) canvas.style.opacity = '1';
-    }, 200);
-  } else {
-    stopStarfield();
-    if (canvas) canvas.style.opacity = '0';
+    setupCanvas();
+    initParticles('stars', 120);
+    canvas.style.opacity = '1';
+    animateParticles();
+  } else if (theme === 'theme-galactique') {
+    setupCanvas();
+    initParticles('dust', 100);
+    canvas.style.opacity = '1';
+    animateParticles();
   }
 }
 
@@ -115,21 +129,21 @@ function setupScrollButton() {
 
 // === 🚀 INITIALISATION ===
 window.addEventListener('DOMContentLoaded', () => {
-  // Canvas étoilé
-  canvas = document.getElementById('stellaire-stars');
+  // Canvas unifié
+  canvas = document.getElementById('theme-canvas');
   if (canvas) {
     ctx = canvas.getContext('2d');
     canvas.style.opacity = '0';
   }
 
-  // Thème au démarrage
+  // Appliquer thème
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
 
-  // Bouton retour haut
+  // Bouton scroll
   setupScrollButton();
 
-  // Injections menu + footer
+  // Injections
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
 });
