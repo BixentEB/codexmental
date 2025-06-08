@@ -1,18 +1,120 @@
 /* 🌐 FONTES ET RÉINITIALISATION DE BASE */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400;700&display=swap');
+
+/* 🎨 VARIABLES CSS POUR LES THÈMES */
+:root {
+  /* Transitions communes */
+  --transition-base: all 0.3s ease;
+  --transition-transform: transform 0.3s ease, opacity 0.3s ease;
+  
+  /* Espacements */
+  --padding-base: 1rem;
+  --padding-large: 2rem;
+  --gap-base: 2rem;
+  --gap-large: 4rem;
+  
+  /* Bordures */
+  --border-radius-small: 6px;
+  --border-radius-medium: 10px;
+  --border-radius-large: 12px;
+}
+
+/* Variables pour thème stellaire */
+body.theme-stellaire {
+  --bg-primary: #030617;
+  --text-primary: #e0ecff;
+  --text-secondary: #ffffff;
+  --accent-primary: #2d88ff;
+  --accent-hover: #68aaff;
+  --link-color: #8bbfff;
+  --bloc-bg: rgba(10, 20, 60, 0.75);
+  --bloc-border: rgba(100, 160, 255, 0.2);
+  --bloc-shadow: rgba(120, 180, 255, 0.12);
+  --bloc-shadow-hover: rgba(180, 220, 255, 0.2);
+  --text-shadow: rgba(100, 160, 255, 0.3);
+}
+
+/* Variables pour thème galactique */
+body.theme-galactique {
+  --bg-primary: #05050F;
+  --text-primary: #d0faff;
+  --text-secondary: #ffffff;
+  --accent-primary: #00d0ff;
+  --accent-hover: #5efeff;
+  --link-color: #80f0ff;
+  --bloc-bg: rgba(30, 20, 60, 0.6);
+  --bloc-border: rgba(128, 240, 255, 0.2);
+  --bloc-shadow: rgba(128, 240, 255, 0.12);
+  --bloc-shadow-hover: rgba(160, 250, 255, 0.2);
+  --text-shadow: rgba(128, 240, 255, 0.3);
+}
+
+/* Variables pour thème lunaire */
+body.theme-lunaire {
+  --bg-primary: #dce3ec;
+  --text-primary: #222;
+  --text-secondary: #111;
+  --accent-primary: #4a69ad;
+  --accent-hover: #385a99;
+  --link-color: #1a4e80;
+  --bloc-bg: rgba(255, 255, 255, 0.85);
+  --bloc-border: rgba(0, 0, 0, 0.1);
+  --bloc-shadow: rgba(150, 160, 170, 0.1);
+  --bloc-shadow-hover: rgba(150, 160, 170, 0.2);
+  --text-shadow: transparent;
+}
+
+/* Variables pour thème solaire */
+body.theme-solaire {
+  --bg-primary: #fff6e5;
+  --text-primary: #4a3200;
+  --text-secondary: #4a3200;
+  --accent-primary: #f0a000;
+  --accent-hover: #ffbe40;
+  --link-color: #a25a00;
+  --bloc-bg: rgba(255, 236, 180, 0.8);
+  --bloc-border: rgba(90, 69, 0, 0.2);
+  --bloc-shadow: rgba(150, 100, 0, 0.1);
+  --bloc-shadow-hover: rgba(150, 100, 0, 0.2);
+  --text-shadow: transparent;
+}
+
+/* 🎯 RÉINITIALISATION ET BASE */
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
   margin: 0;
   padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* ✨ TITRES & TRANSITIONS */
-.header, .main-nav a, h1, h2, .site-title {
+/* ✨ TYPOGRAPHIE */
+h1, h2, h3, h4, h5, h6 {
   font-family: 'Orbitron', sans-serif;
-  margin: 0;
-  padding: 0;
-  transition: all 0.3s ease;
+  margin: 0 0 1rem 0;
+  color: var(--text-secondary);
+  text-shadow: 0 0 6px var(--text-shadow);
+  transition: var(--transition-base);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+a:hover {
+  color: var(--text-secondary);
 }
 
 /* 🧱 STRUCTURE GÉNÉRALE */
@@ -21,18 +123,50 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: #111;
-  padding: 1rem 2rem;
+  padding: var(--padding-base) var(--padding-large);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .site-title {
+  font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-base);
+}
+
+.main-nav a {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-small);
+  transition: var(--transition-base);
+  color: #ccc;
+}
+
+.main-nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.main-nav a.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .container {
   max-width: 900px;
-  margin: auto;
-  padding: 2rem;
+  margin: 0 auto;
+  padding: var(--padding-large);
 }
 
 .container h1,
@@ -41,37 +175,8 @@ body {
   text-align: center;
 }
 
-footer {
-  text-align: center;
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: 4rem;
-}
-
-/* 🧭 NAVIGATION */
-.main-nav a {
-  text-decoration: none;
-  margin-left: 1rem;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.main-nav a.active {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-.main-nav a.active:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* 🌌 EFFET STELLAIRE (pour tous les thèmes visuels) */
+/* 🌌 EFFET STELLAIRE */
 #stellaire-stars {
-  opacity: 0;
-  pointer-events: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -79,6 +184,8 @@ footer {
   height: 100%;
   z-index: -1;
   background: transparent;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity 0.4s ease 0.2s;
 }
 
@@ -93,229 +200,225 @@ body.theme-solaire #stellaire-stars {
 .bloc-container {
   display: flex;
   flex-direction: column;
-  gap: 4rem;
-  padding: 2rem;
+  gap: var(--gap-large);
+  padding: var(--padding-large);
 }
 
 .row {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: var(--gap-base);
   flex-wrap: wrap;
 }
 
 .bloc {
-  flex: 1 1 300px;
+  flex: 1 1 280px;
+  min-width: 280px;
+  max-width: 400px;
   padding: 1.5rem;
-  border-radius: 10px;
+  border-radius: var(--border-radius-medium);
   text-align: left;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  font-weight: 400;
   font-size: 0.95rem;
-  backdrop-filter: blur(3px);
-  color: inherit;
+  backdrop-filter: blur(4px);
+  
+  /* Utilisation des variables CSS */
+  background-color: var(--bloc-bg);
+  border: 1px solid var(--bloc-border);
+  box-shadow: 0 0 15px var(--bloc-shadow);
+  color: var(--text-primary);
+  
+  transition: var(--transition-transform);
 }
 
-/* 🎯 BOUTON CV */
-.cv-download .btn {
-  background-color: #2d88ff;
-  color: white;
+.bloc:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 0 20px var(--bloc-shadow-hover);
+}
+
+/* 🎯 BOUTONS */
+.btn,
+.cv-download .btn,
+.contact-form button[type="submit"] {
+  display: inline-block;
   padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 5px;
-  text-decoration: none;
+  border-radius: var(--border-radius-small);
   font-size: 1rem;
-  transition: background-color 0.3s ease;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition-base);
+  
+  background-color: var(--accent-primary);
+  color: white;
 }
 
-.cv-download .btn:hover {
-  background-color: #1c6ed2;
+.btn:hover,
+.cv-download .btn:hover,
+.contact-form button[type="submit"]:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
 }
 
-/* 📱 RESPONSIVE */
-@media (max-width: 768px) {
-  .row {
-    flex-direction: column;
-    align-items: center;
-  }
+.cv-download {
+  margin: var(--gap-base) 0;
 }
 
 /* 📬 FORMULAIRE */
 .contact-form {
   max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 12px;
+  margin: var(--gap-base) auto;
+  padding: var(--padding-large);
+  border-radius: var(--border-radius-large);
   backdrop-filter: blur(4px);
+  background-color: var(--bloc-bg);
+  border: 1px solid var(--bloc-border);
 }
 
 .contact-form label {
   display: block;
-  margin-bottom: 1.2rem;
-  color: inherit;
-  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.contact-form .form-group {
+  margin-bottom: 1.5rem;
 }
 
 .contact-form input,
 .contact-form textarea {
   width: 100%;
   padding: 0.8rem;
-  border-radius: 8px;
-  border: none;
+  border-radius: var(--border-radius-small);
+  border: 2px solid transparent;
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   color: #000;
-  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s ease;
+  transition: var(--transition-base);
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #5c66ff;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary), 0.1);
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 120px;
 }
 
 .contact-form button[type="submit"] {
   display: block;
   margin: 1.5rem auto 0;
-  padding: 0.6rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
 }
 
-/* 🌠 THÈME STELLAIRE (bleu nuit) */
-body.theme-stellaire {
-  background-color: #030617;
-  color: #e0ecff;
-}
-.theme-stellaire .bloc {
-  background-color: rgba(10, 20, 60, 0.75);
-  border: 1px solid rgba(100, 160, 255, 0.2);
-  box-shadow: 0 0 15px rgba(120, 180, 255, 0.12);
-}
-.theme-stellaire .bloc:hover {
-  transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 0 20px rgba(180, 220, 255, 0.2);
-}
-.theme-stellaire h1, .theme-stellaire h2 {
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(100, 160, 255, 0.3);
-}
-.theme-stellaire a {
-  color: #8bbfff;
-}
-.theme-stellaire a:hover {
-  color: #ffffff;
-}
-.theme-stellaire .cv-download .btn,
-.theme-stellaire .contact-form button[type="submit"] {
-  background-color: #2d88ff;
-  color: white;
-}
-.theme-stellaire .cv-download .btn:hover,
-.theme-stellaire .contact-form button[type="submit"]:hover {
-  background-color: #68aaff;
+/* 🦶 FOOTER */
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  opacity: 0.7;
+  margin-top: var(--gap-large);
+  padding: var(--padding-large);
 }
 
-/* 💜 THÈME GALACTIQUE (violet spatial) */
-body.theme-galactique {
-  background-color: #05050F;
-  color: #d0faff;
-}
-.theme-galactique .bloc {
-  background-color: rgba(30, 20, 60, 0.6);
-  border: 1px solid rgba(128, 240, 255, 0.2);
-  box-shadow: 0 0 15px rgba(128, 240, 255, 0.12);
-}
-.theme-galactique .bloc:hover {
-  transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 0 20px rgba(160, 250, 255, 0.2);
-}
-.theme-galactique h1, .theme-galactique h2 {
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(128, 240, 255, 0.3);
-}
-.theme-galactique a {
-  color: #80f0ff;
-}
-.theme-galactique a:hover {
-  color: #ffffff;
-}
-.theme-galactique .cv-download .btn,
-.theme-galactique .contact-form button[type="submit"] {
-  background-color: #00d0ff;
-  color: white;
-}
-.theme-galactique .cv-download .btn:hover,
-.theme-galactique .contact-form button[type="submit"]:hover {
-  background-color: #5efeff;
+/* 📱 RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .bloc {
+    flex: 1 1 250px;
+    min-width: 250px;
+  }
 }
 
-/* 🌕 THÈME LUNAIRE (bleu gris clair) */
-body.theme-lunaire {
-  background-color: #dce3ec;
-  color: #222;
-}
-.theme-lunaire .bloc {
-  background-color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0 10px rgba(150, 160, 170, 0.1);
-}
-.theme-lunaire .bloc:hover {
-  transform: translateY(-5px) scale(1.01);
-}
-.theme-lunaire h1, .theme-lunaire h2 {
-  color: #111;
-}
-.theme-lunaire a {
-  color: #1a4e80;
-}
-.theme-lunaire a:hover {
-  color: #000;
-}
-.theme-lunaire .cv-download .btn,
-.theme-lunaire .contact-form button[type="submit"] {
-  background-color: #4a69ad;
-  color: white;
-}
-.theme-lunaire .cv-download .btn:hover,
-.theme-lunaire .contact-form button[type="submit"]:hover {
-  background-color: #385a99;
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: var(--padding-base);
+    padding: var(--padding-base);
+  }
+  
+  .main-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .row {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .bloc {
+    flex: none;
+    width: 100%;
+    min-width: auto;
+    max-width: none;
+  }
+  
+  .bloc-container {
+    padding: var(--padding-base);
+    gap: var(--gap-base);
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
 }
 
-/* ☀️ THÈME SOLAIRE (doré chaud) */
-body.theme-solaire {
-  background-color: #fff6e5;
-  color: #4a3200;
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .contact-form {
+    margin: var(--padding-base) auto;
+    padding: var(--padding-base);
+  }
+  
+  .main-nav a {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.3rem; }
 }
-.theme-solaire .bloc {
-  background-color: rgba(255, 236, 180, 0.8);
-  border: 1px solid rgba(90, 69, 0, 0.2);
-  box-shadow: 0 0 10px rgba(150, 100, 0, 0.1);
+
+/* 🎨 AMÉLIORATIONS VISUELLES */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
-.theme-solaire .bloc:hover {
-  transform: translateY(-5px) scale(1.01);
+
+/* Focus visible pour l'accessibilité */
+*:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
-.theme-solaire h1, .theme-solaire h2 {
-  color: #4a3200;
+
+/* Amélioration de la lisibilité */
+p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
 }
-.theme-solaire a {
-  color: #a25a00;
+
+/* Styles pour les listes */
+ul, ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
 }
-.theme-solaire a:hover {
-  color: #000;
-}
-.theme-solaire .cv-download .btn,
-.theme-solaire .contact-form button[type="submit"] {
-  background-color: #f0a000;
-  color: white;
-}
-.theme-solaire .cv-download .btn:hover,
-.theme-solaire .contact-form button[type="submit"]:hover {
-  background-color: #ffbe40;
+
+li {
+  margin-bottom: 0.5rem;
 }
