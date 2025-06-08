@@ -35,9 +35,9 @@ body.theme-galactique {
 }
 
 body.theme-lunaire {
-  --bg-primary: #f3f6fa;
-  --text-primary: #111;
-  --text-secondary: #000;
+  --bg-primary: #0061a2;
+  --text-primary: #060f1f;
+  --text-secondary: #060f1f;
   --accent-primary: #4a69ad;
   --accent-hover: #385a99;
   --link-color: #1a4e80;
