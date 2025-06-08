@@ -57,27 +57,29 @@ body.theme-galactique {
 
 }
 
-body.theme-lunaire {
-  --bg-primary: #000f1a;
-  --text-primary: #1a237e;
-  --text-secondary: #3949ab;
-  --accent-primary: #3f51b5;
-  --accent-hover: #5c6bc0;
-  --link-color: #1a237e;
-  --bloc-bg: rgba(255, 255, 255, 0.9);
-  --bloc-border: rgba(50, 50, 120, 0.2);
-  --bloc-shadow: rgba(50, 50, 120, 0.1);
-  --bloc-shadow-hover: rgba(50, 50, 120, 0.25);
-  --logo-color: #1a237e;
-  --nav-bg: #111;
-  --nav-link-color: #1a237e;
-  --nav-link-active-bg: #1a237e;
-  --nav-link-active-color: #fff;
-  --btn-bg: #7986cb;
-  --btn-text: #fff;
-  --btn-hover: #5c6bc0;
+body.theme-solaire {
+  --bg-primary: #fff8e1;                   /* fond crème très pâle */
+  --text-primary: #4e3200;                 /* texte brun profond */
+  --text-secondary: #a25a00;               /* texte secondaire ambré */
+  --accent-primary: #f57f17;               /* orange profond */
+  --accent-hover: #ffb300;                 /* jaune ambré vif */
+  --link-color: #bf360c;                   /* rouge brûlé pour les liens */
 
-  /* 👇 nouvelle variable d'espacement entre blocs */
+  --bloc-bg: rgba(255, 236, 179, 0.95);    /* beige chaud et opaque */
+  --bloc-border: rgba(210, 140, 20, 0.2);  /* bord doré léger */
+  --bloc-shadow: rgba(210, 140, 20, 0.1);
+  --bloc-shadow-hover: rgba(210, 140, 20, 0.25);
+
+  --logo-color: #e65100;                   /* orange foncé pour le logo */
+  --nav-bg: #111;                          /* navigation toujours sombre */
+  --nav-link-color: #ff9800;               /* orange lumineux */
+  --nav-link-active-bg: #ff9800;
+  --nav-link-active-color: #111;
+
+  --btn-bg: #ffb300;                       /* bouton jaune ambré */
+  --btn-text: #111;
+  --btn-hover: #f57f17;
+
   --bloc-spacing: 2rem;
 }
 
