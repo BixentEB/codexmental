@@ -143,3 +143,24 @@ window.addEventListener('DOMContentLoaded', () => {
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
 });
+
+// === 🌙 LUNE PHASES ===
+function getMoonPhaseIndex(date = new Date()) {
+  const baseDate = new Date('2001-01-01T00:00:00Z');
+  const diffTime = date - baseDate;
+  const days = diffTime / (1000 * 60 * 60 * 24);
+  const lunations = 0.20439731 + (days * 0.03386319269);
+  return Math.floor((lunations % 1) * 8);
+}
+
+function updateLunarWidget() {
+  if (!document.body.classList.contains('theme-lunaire')) return;
+
+  const phase = getMoonPhaseIndex();
+  const lune = document.getElementById('lune-widget');
+  lune.style.backgroundImage = `url('/img/lune-${phase}.png')`;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateLunarWidget(); // appel au chargement
+});
