@@ -140,3 +140,7 @@ body.theme-stellaire #stellaire-stars {
     align-items: center;
   }
 }
+body {
+  background-color: #000 !important;
+  color: #fff !important;
+}
