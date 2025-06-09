@@ -90,14 +90,15 @@ function followScrollLune() {
   if (!lune) return;
 
   const padding = 10;
-  const windowHeight = window.innerHeight;
   const scrollTop = window.scrollY;
+  const windowHeight = window.innerHeight;
   const luneHeight = lune.offsetHeight;
 
-  // position idéale (10px depuis le bas de l'écran visible)
+  // Coin inférieur droit qui suit le scroll
   const idealTop = scrollTop + windowHeight - luneHeight - padding;
-
-  lune.style.top = `${idealTop}px`;
+  lune.style.left = 'unset';            // assure qu'elle ne reste pas centrée
+  lune.style.right = `${padding}px`;
+  lune.style.top = `${idealTop}px`;     // toujours "ancrée" bas droite
 }
 
 
