@@ -1,4 +1,9 @@
-/* === BANDEAU DE NAVIGATION === */
+/* ==========================================================
+   🎨 BASE CSS POUR CODEX MENTAL
+   Structure claire avec commentaires pour chaque section.
+========================================================== */
+
+/* === 🎛️ BANDEAU DE NAVIGATION (header) === */
 .header {
   display: flex;
   justify-content: space-between;
@@ -42,7 +47,7 @@
   font-weight: bold;
 }
 
-/* === TYPOGRAPHIE === */
+/* === ✍️ TYPOGRAPHIE GÉNÉRALE === */
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -58,27 +63,18 @@ h1, h2, h3, h4 {
   line-height: 1.2;
 }
 
-/* === CONTENEUR PRINCIPAL === */
+/* === 🧱 CONTENEUR PRINCIPAL === */
 main {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
-/* === LIENS === */
-a {
-  color: var(--link-color, #00bfff);
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: none;
-}
-
-/* === BLOCS === */
 section {
   margin-bottom: 3rem;
 }
 
+/* === 🪨 BLOCS DE CONTENU === */
 .bloc {
   background-color: var(--bloc-bg, rgba(255,255,255,0.05));
   border: 1px solid var(--bloc-border, rgba(255,255,255,0.2));
@@ -87,6 +83,7 @@ section {
   box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
   transition: box-shadow 0.3s ease;
 }
+
 .bloc:hover {
   box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
 }
@@ -99,7 +96,17 @@ section {
   margin-bottom: 1rem;
 }
 
-/* === BOUTONS === */
+/* === 🔗 LIENS === */
+a {
+  color: var(--link-color, #00bfff);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* === 🧩 BOUTONS GÉNÉRAUX ET THÈME === */
 .theme-buttons button,
 .btn-primary {
   background-color: var(--btn-bg, #4eaaff);
@@ -118,7 +125,7 @@ section {
   background-color: var(--btn-hover, #74c4ff);
 }
 
-/* === FOOTER === */
+/* === 🦶 FOOTER === */
 footer {
   text-align: center;
   padding: 2rem 1rem;
@@ -134,7 +141,7 @@ footer .theme-buttons {
   gap: 0.5rem;
 }
 
-/* === ☰ MENU MOBILE SLIDE === */
+/* === 📱 MENU MOBILE SLIDE === */
 .menu-toggle {
   position: fixed;
   top: 1rem;
@@ -194,7 +201,7 @@ footer .theme-buttons {
   cursor: pointer;
 }
 
-/* Affiche le bouton seulement en petit écran */
+/* === 📏 RESPONSIVE – Affichage mobile === */
 @media screen and (max-width: 768px) {
   .menu-toggle {
     display: block;
