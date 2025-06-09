@@ -8,28 +8,18 @@
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- 🎨 Styles -->
+  <!-- 🎨 Styles principaux -->
   <link rel="stylesheet" href="/main.css" />
   <link rel="stylesheet" href="/lune.css" />
+  <!-- Tu pourras ajouter ici un fichier supplémentaire si la page a un style dédié -->
 
   <!-- ⚙️ Script principal -->
   <script src="/script.js" defer></script>
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas (effets galactiques) -->
+  <!-- 🌌 Canvas animé -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
-
-  <!-- 🧠 Menu principal injecté -->
-  <div id="menu-placeholder"></div>
-
-  <!-- ☰ Bouton menu mobile -->
-  <button id="menu-toggle" class="menu-toggle">☰</button>
-
-  <!-- 📱 Menu mobile dynamique -->
-  <nav id="mobile-menu" class="mobile-menu">
-    <ul id="mobile-menu-items"><!-- rempli par script.js --></ul>
-  </nav>
 
   <!-- 🧱 Contenu principal -->
 <main class="container">
@@ -70,22 +60,6 @@
       const msg = document.getElementById('confirmationMessage');
       if (msg) msg.style.display = 'block';
     }
-  </script>
-
-  <!-- ☰ Script ouverture menu mobile -->
-  <script>
-    const toggleBtn = document.getElementById("menu-toggle");
-    const menu = document.getElementById("mobile-menu");
-
-    toggleBtn.addEventListener("click", () => {
-      menu.classList.toggle("open");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && e.target !== toggleBtn) {
-        menu.classList.remove("open");
-      }
-    });
   </script>
 </body>
 </html>
