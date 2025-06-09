@@ -3,25 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact – Codex Mental</title>
+  <title>Accueil – Codex Mental</title>
 
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- 🎨 Styles principaux -->
+  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/main.css" />
   <link rel="stylesheet" href="/lune.css" />
-  <!-- Tu pourras ajouter ici un fichier supplémentaire si la page a un style dédié -->
 
   <!-- ⚙️ Script principal -->
   <script src="/script.js" defer></script>
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas animé -->
+  <!-- 🌌 Canvas de fond -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧱 Contenu principal -->
+  <!-- 🧠 Menu injecté dynamiquement -->
+  <div id="menu-placeholder"></div>
+
+  <!-- ☰ Bouton menu mobile -->
+  <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
+
+ <!-- 🧱 Contenu principal -->
 <main class="container">
   <h1 class="text-center">📬 Contact</h1>
 
