@@ -1,4 +1,7 @@
 body.theme-lunaire #lune-widget {
+  right: 20px;
+  top: unset;
+  bottom: 20px;
   position: absolute;
   width: 120px;
   height: 120px;
