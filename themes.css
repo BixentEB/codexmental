@@ -116,3 +116,13 @@ body.theme-solaire nav a {
 body.theme-solaire nav a:hover {
   color: #fff8e1 !important;
 }
+
+/* ✅ Correction spéciale pour les liens de changement de thème (menu mobile) en thème solaire */
+body.theme-solaire .mobile-nav .theme-selector a {
+  color: #ffe082 !important;
+}
+
+body.theme-solaire .mobile-nav .theme-selector a:hover {
+  color: #fff8e1 !important;
+}
+
