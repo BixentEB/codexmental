@@ -1,13 +1,14 @@
 body.theme-lunaire #lune-widget {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 80px;
-  height: 80px;
+  bottom: 20px;
+  right: 20px;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+  width: 120px;
+  height: 120px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  opacity: 0.7;
+  opacity: 0.8;
   pointer-events: none;
   z-index: 0;
 }
