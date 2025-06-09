@@ -145,10 +145,10 @@ function injectPartial(id, url) {
 
 // === 🌐 LIEN ACTIF DANS LE MENU ===
 function highlightActiveLink() {
-  const currentPath = location.pathname.replace(/\/+/g, '');
+  const currentPath = location.pathname.replace(/\/+$/, '');
   document.querySelectorAll("nav a").forEach(link => {
     const href = link.getAttribute("href");
-    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+/g, '');
+    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
     if (linkPath === currentPath) link.classList.add("active");
   });
 }
@@ -171,18 +171,14 @@ window.addEventListener('DOMContentLoaded', () => {
     ctx = canvas.getContext('2d');
     canvas.style.opacity = '0';
   }
+
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
   setupScrollButton();
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
-  if (savedTheme === 'theme-lunaire') {
-    window.addEventListener('scroll', followScrollLune);
-    window.addEventListener('resize', followScrollLune);
-  }
-  lancerIntroAstro();
 
-  // 🔧 Sécurité : Activer le bouton menu mobile (si injecté ne le fait pas)
+  // Sécurité (si menu mobile était déjà présent au chargement, ex. sur index.html)
   const toggleBtn = document.getElementById("menu-toggle");
   const menu = document.getElementById("mobile-menu");
   if (toggleBtn && menu) {
@@ -195,6 +191,13 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  if (savedTheme === 'theme-lunaire') {
+    window.addEventListener('scroll', followScrollLune);
+    window.addEventListener('resize', followScrollLune);
+  }
+
+  lancerIntroAstro();
 });
 
 // === 🌠 ASTRONOMIE & INTRO ===
