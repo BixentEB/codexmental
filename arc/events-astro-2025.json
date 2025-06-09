@@ -1,116 +1,338 @@
-{
-  "events": [
-    {
-      "date": "2025-06-09",
-      "type": "🌕",
-      "message": "Pleine lune ce soir !"
-    }
-  ]
-}
-
-{
-  "phases": [
-    {
-      "date": "2025-01-13",
-      "type": "Nouvelle lune"
-    },
-    {
-      "date": "2025-01-21",
-      "type": "Premier quartier"
-    },
-    {
-      "date": "2025-01-28",
-      "type": "Pleine lune"
-    },
-    {
-      "date": "2025-02-04",
-      "type": "Dernier quartier"
-    },
-    {
-      "date": "2025-02-11",
-      "type": "Nouvelle lune"
-    },
-    {
-      "date": "2025-02-19",
-      "type": "Premier quartier"
-    },
-    {
-      "date": "2025-02-25",
-      "type": "Pleine lune"
-    },
-    {
-      "date": "2025-03-04",
-      "type": "Dernier quartier"
-    },
-    {
-      "date": "2025-03-13",
-      "type": "Nouvelle lune"
-    },
-    {
-      "date": "2025-03-21",
-      "type": "Premier quartier"
-    },
-    {
-      "date": "2025-03-28",
-      "type": "Pleine lune"
-    },
-    {
-      "date": "2025-04-03",
-      "type": "Dernier quartier"
-    }
-  ],
-  "eclipses": [
-    {
-      "date": "2025-03-14",
-      "type": "Éclipse solaire totale",
-      "zones": "Nord de l’Afrique, Europe"
-    },
-    {
-      "date": "2025-09-07",
-      "type": "Éclipse lunaire partielle",
-      "zones": "Amériques, Europe"
-    },
-    {
-      "date": "2025-09-21",
-      "type": "Éclipse solaire partielle",
-      "zones": "Asie, Pacifique"
-    }
-  ],
-  "meteorShowers": [
-    {
-      "name": "Quadrantides",
-      "peak": "2025-01-04",
-      "activity": "Forte"
-    },
-    {
-      "name": "Lyrides",
-      "peak": "2025-04-22",
-      "activity": "Modérée"
-    },
-    {
-      "name": "Perséides",
-      "peak": "2025-08-12",
-      "activity": "Très forte"
-    },
-    {
-      "name": "Draconides",
-      "peak": "2025-10-09",
-      "activity": "Variable"
-    },
-    {
-      "name": "Orionides",
-      "peak": "2025-10-21",
-      "activity": "Modérée"
-    },
-    {
-      "name": "Léonides",
-      "peak": "2025-11-17",
-      "activity": "Modérée"
-    },
-    {
-      "name": "Géminides",
-      "peak": "2025-12-14",
-      "activity": "Exceptionnelle"
-    }
-  ]
-}
+[
+  {
+    "date": "2025-01-06",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-01-13",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-01-21",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-01-28",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-02-04",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-02-11",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-02-19",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-02-25",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-03-04",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-03-13",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-03-21",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-03-28",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-04-03",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-04-11",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-04-19",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-04-27",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-05-02",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-05-11",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-05-19",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-05-26",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-06-01",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-06-09",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-06-17",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-06-24",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-07-01",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-07-09",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-07-17",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-07-24",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-08-07",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-08-15",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-08-22",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-08-30",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-09-06",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-09-13",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-09-20",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-09-28",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-10-06",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-10-13",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-10-20",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-10-28",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-11-05",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-11-12",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-11-19",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-11-27",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  },
+  {
+    "date": "2025-12-05",
+    "type": "moon_phase",
+    "phase": "Nouvelle lune",
+    "message": "🌕 Phase lunaire : Nouvelle lune",
+    "themeEffect": "moon_nouvelle_lune"
+  },
+  {
+    "date": "2025-12-11",
+    "type": "moon_phase",
+    "phase": "Premier quartier",
+    "message": "🌕 Phase lunaire : Premier quartier",
+    "themeEffect": "moon_premier_quartier"
+  },
+  {
+    "date": "2025-12-19",
+    "type": "moon_phase",
+    "phase": "Pleine lune",
+    "message": "🌕 Phase lunaire : Pleine lune",
+    "themeEffect": "moon_pleine_lune"
+  },
+  {
+    "date": "2025-12-26",
+    "type": "moon_phase",
+    "phase": "Dernier quartier",
+    "message": "🌕 Phase lunaire : Dernier quartier",
+    "themeEffect": "moon_dernier_quartier"
+  }
+]
