@@ -47,24 +47,14 @@
 }
 
 /* === style discret pour l’alerte intégrée === */
-.astro-banner {
-  background: rgba(255, 255, 255, 0.1); /* semi-transparent */
+#astro-info {
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
   border-left: 4px solid var(--accent-primary);
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   margin: 1rem auto;
   border-radius: 0.5rem;
   font-size: 0.95rem;
   max-width: 600px;
   text-align: center;
-}
-.astro-banner {
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.3s ease-in-out;
-}
-
-.astro-banner.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
