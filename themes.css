@@ -1,4 +1,4 @@
-/* 🎨 THÈMES : couleurs et styles dynamiques */
+/* 🎨 THÈMES : variables de couleurs */
 
 body.theme-lunaire {
   --bg-primary: #0b1a33;
@@ -22,18 +22,14 @@ body.theme-lunaire {
   --btn-bg: #5da3ff;
   --btn-text: #fff;
   --btn-hover: #3b7dd8;
-
-  --bloc-spacing: 2rem;
 }
 
 body.theme-galactique {
   --bg-primary: #0a0e2a;
   --text-primary: #f2f0ff;
   --text-secondary: #c3bdf5;
-
   --accent-primary: #b388ff;
   --accent-hover: #d1b3ff;
-
   --link-color: #c6a6ff;
 
   --bloc-bg: rgba(30, 20, 60, 0.9);
@@ -43,7 +39,6 @@ body.theme-galactique {
   --text-shadow: rgba(179, 136, 255, 0.3);
 
   --logo-color: #c6a6ff;
-
   --nav-bg: #111;
   --nav-link-color: #c6a6ff;
   --nav-link-active-bg: #c6a6ff;
@@ -52,8 +47,6 @@ body.theme-galactique {
   --btn-bg: #7c4dff;
   --btn-text: #fff;
   --btn-hover: #a982ff;
-
-  --bloc-spacing: 2rem;
 }
 
 body.theme-solaire {
@@ -78,8 +71,6 @@ body.theme-solaire {
   --btn-bg: #ffb300;
   --btn-text: #111;
   --btn-hover: #f57f17;
-
-  --bloc-spacing: 2rem;
 }
 
 body.theme-stellaire {
@@ -104,33 +95,64 @@ body.theme-stellaire {
   --btn-bg: #4eaaff;
   --btn-text: #fff;
   --btn-hover: #74c4ff;
-
-  --bloc-spacing: 2rem;
 }
 
-/* ✅ Correction spéciale pour menu mobile en thème solaire */
-body.theme-solaire nav a {
-  color: #ffe082 !important; /* plus doré et visible sur fond sombre */
-}
-
-body.theme-solaire nav a:hover {
-  color: #fff8e1 !important;
-}
-
-/* 🌞 Thème solaire : lisibilité + style boutons thème (menu mobile) */
-body.theme-solaire .mobile-nav .theme-buttons button {
-  color: #ffe082 !important;
+/* ✅ STYLE GLOBAL POUR LES BOUTONS DE CHANGEMENT DE THÈME (MOBILE) */
+.mobile-nav .theme-buttons button {
   background: transparent;
   border: none;
-  text-align: left;
   padding: 0.4rem 1rem;
   font-family: inherit;
   font-size: 1rem;
-  text-shadow: 0 0 2px rgba(255, 193, 7, 0.4); /* glow discret */
+  text-align: left;
   transition: color 0.3s ease, text-shadow 0.3s ease;
+  cursor: pointer;
 }
 
+/* 🌙 LUNAIRE */
+body.theme-lunaire .mobile-nav .theme-buttons button {
+  color: #aaccee;
+  text-shadow: 0 0 2px rgba(150, 200, 255, 0.2);
+}
+body.theme-lunaire .mobile-nav .theme-buttons button:hover {
+  color: #dceeff;
+  text-shadow: 0 0 4px rgba(220, 238, 255, 0.5);
+}
+
+/* 💫 GALACTIQUE */
+body.theme-galactique .mobile-nav .theme-buttons button {
+  color: #c6a6ff;
+  text-shadow: 0 0 2px rgba(200, 160, 255, 0.2);
+}
+body.theme-galactique .mobile-nav .theme-buttons button:hover {
+  color: #f2f0ff;
+  text-shadow: 0 0 4px rgba(242, 240, 255, 0.4);
+}
+
+/* ☀️ SOLAIRE */
+body.theme-solaire .mobile-nav .theme-buttons button {
+  color: #ffe082;
+  text-shadow: 0 0 2px rgba(255, 193, 7, 0.4);
+}
 body.theme-solaire .mobile-nav .theme-buttons button:hover {
-  color: #fff8e1 !important;
+  color: #fff8e1;
   text-shadow: 0 0 4px rgba(255, 255, 200, 0.6);
+}
+
+/* ✨ STELLAIRE */
+body.theme-stellaire .mobile-nav .theme-buttons button {
+  color: #4eaaff;
+  text-shadow: 0 0 2px rgba(78, 170, 255, 0.2);
+}
+body.theme-stellaire .mobile-nav .theme-buttons button:hover {
+  color: #ffffff;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+/* ✅ CORRECTION LECTURE LIENS NAVIGATION EN THÈME SOLAIRE */
+body.theme-solaire nav a {
+  color: #ffe082 !important;
+}
+body.theme-solaire nav a:hover {
+  color: #fff8e1 !important;
 }
