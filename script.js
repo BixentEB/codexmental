@@ -76,13 +76,14 @@ function updateLunarWidget(theme) {
   const existing = document.getElementById('lune-widget');
   if (existing) existing.remove();
 
-  if (theme === 'theme-lunaire') {
-    const phase = getMoonPhaseIndex();
-    const lune = document.createElement('div');
-    lune.id = 'lune-widget';
-    lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
-    document.body.appendChild(lune);
-  }
+ if (theme === 'theme-lunaire') {
+  const phase = getMoonPhaseIndex();
+  const lune = document.createElement('div');
+  lune.id = 'lune-widget';
+  lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
+  document.body.appendChild(lune);
+
+  followScrollLune(); // ← 🆕 ajoute cette ligne ici
 }
 
 function followScrollLune() {
