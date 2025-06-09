@@ -5,77 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact – Codex Mental</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- Styles -->
+  <!-- 🎨 Styles principaux -->
   <link rel="stylesheet" href="/main.css" />
-  <style>
-    .contact-form {
-      max-width: 600px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background-color: var(--bloc-bg, rgba(255, 255, 255, 0.05));
-      border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.2));
-      border-radius: 1rem;
-      box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
-    }
+  <link rel="stylesheet" href="/lune.css" />
 
-    .contact-form label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-      font-family: 'Orbitron', sans-serif;
-      color: var(--text-primary, #fff);
-    }
-
-    .contact-form input,
-    .contact-form textarea {
-      width: 100%;
-      padding: 0.8rem;
-      margin-top: 0.3rem;
-      border: none;
-      border-radius: 6px;
-      background-color: rgba(255, 255, 255, 0.95);
-      color: #111;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    .contact-form button {
-      margin-top: 1.5rem;
-      padding: 0.6rem 1.2rem;
-      background-color: #4eaaff;
-      color: #111;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .contact-form button:hover {
-      background-color: #74c4ff;
-    }
-
-    #confirmationMessage {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-family: 'Roboto', sans-serif;
-      color: #00ffcc;
-    }
-  </style>
-
-  <!-- Scripts -->
+  <!-- ⚙️ Script principal -->
   <script src="/script.js" defer></script>
 </head>
-<body class="theme-stellaire">
-<canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- Injection menu -->
+<body class="theme-stellaire">
+  <!-- 🌌 Canvas galactique -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu dynamique -->
   <div id="menu-placeholder"></div>
 
+  <!-- ☰ Menu mobile -->
+  <button id="menu-toggle" class="menu-toggle">☰</button>
+  <nav id="mobile-menu" class="mobile-menu">
+    <ul id="mobile-menu-items"><!-- injecté dynamiquement --></ul>
+  </nav>
+
+  <!-- 🧱 Contenu principal -->
   <main class="container">
     <h1 class="text-center">📬 Contact</h1>
 
@@ -99,17 +53,38 @@
 
     <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
     <p id="confirmationMessage" style="display:none;">✅ Merci ! Ton message a bien été envoyé. 💌</p>
+
+    <!-- 🌠 Message astro -->
+    <div id="astro-info" class="astro-info" style="all: unset; display: block; text-align: center; font-size: .9rem; color: var(--text-primary); margin: 1rem auto;">
+      Chargement des événements astronomiques...
+    </div>
   </main>
 
-  <!-- Injection footer -->
+  <!-- 🦶 Footer -->
   <div id="footer-placeholder"></div>
 
-  <!-- Confirmation logic -->
+  <!-- ✅ Message après soumission -->
   <script>
     function formSubmitted() {
       const msg = document.getElementById('confirmationMessage');
       if (msg) msg.style.display = 'block';
     }
+  </script>
+
+  <!-- ☰ Menu mobile toggle -->
+  <script>
+    const toggleBtn = document.getElementById("menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+
+    toggleBtn.addEventListener("click", () => {
+      menu.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && e.target !== toggleBtn) {
+        menu.classList.remove("open");
+      }
+    });
   </script>
 </body>
 </html>
