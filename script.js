@@ -181,6 +181,20 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', followScrollLune);
   }
   lancerIntroAstro();
+
+  // 🔧 Sécurité : Activer le bouton menu mobile (si injecté ne le fait pas)
+  const toggleBtn = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  if (toggleBtn && menu) {
+    toggleBtn.addEventListener("click", () => {
+      menu.classList.toggle("open");
+    });
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && e.target !== toggleBtn) {
+        menu.classList.remove("open");
+      }
+    });
+  }
 });
 
 // === 🌠 ASTRONOMIE & INTRO ===
