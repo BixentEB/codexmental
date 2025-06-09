@@ -1,4 +1,14 @@
 {
+  "events": [
+    {
+      "date": "2025-06-09",
+      "type": "🌕",
+      "message": "Pleine lune ce soir !"
+    }
+  ]
+}
+
+{
   "phases": [
     {
       "date": "2025-01-13",
