@@ -85,6 +85,22 @@ function updateLunarWidget(theme) {
   }
 }
 
+function followScrollLune() {
+  const lune = document.getElementById('lune-widget');
+  if (!lune) return;
+
+  const padding = 10;
+  const windowHeight = window.innerHeight;
+  const scrollTop = window.scrollY;
+  const luneHeight = lune.offsetHeight;
+
+  // position idéale (10px depuis le bas de l'écran visible)
+  const idealTop = scrollTop + windowHeight - luneHeight - padding;
+
+  lune.style.top = `${idealTop}px`;
+}
+
+
 // === 🎨 THÈME ===
 function setTheme(theme) {
   document.body.className = theme;
@@ -158,4 +174,10 @@ window.addEventListener('DOMContentLoaded', () => {
   setupScrollButton();
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
+
+  // 🌙 Suivi de la lune
+  if (savedTheme === 'theme-lunaire') {
+    window.addEventListener('scroll', followScrollLune);
+    window.addEventListener('resize', followScrollLune);
+  }
 });
