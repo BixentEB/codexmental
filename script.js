@@ -227,7 +227,7 @@ function afficherNoteAstro(data) {
     alertText = "Aucun événement astronomique aujourd’hui.";
   }
 
-  lancerIntroAstro(alertText);
+  lancerIntroAstro(alertText); // Affiche intro + ajoute l’alerte ensuite (non tapée)
 }
 
 fetch('./arc/events-astro-2025.json')
@@ -264,30 +264,18 @@ function lancerIntroAstro(alertText = "") {
   setTimeout(() => {
     clearInterval(clignoteInterval);
     bloc.textContent = '';
-    const typerIntro = setInterval(() => {
+    const typer = setInterval(() => {
       bloc.textContent += entry.text.charAt(i);
       i++;
       if (i === entry.text.length) {
-        clearInterval(typerIntro);
+        clearInterval(typer);
+        // ✅ Affiche directement l’alerte après le message tapé
+        bloc.textContent += ' ' + alertText;
 
-        if (alertText && alertText.length > 0) {
-          let j = 0;
-          bloc.textContent += ' ';
-          const typerAlert = setInterval(() => {
-            bloc.textContent += alertText.charAt(j);
-            j++;
-            if (j === alertText.length) {
-              clearInterval(typerAlert);
-              setTimeout(() => {
-                lancerIntroAstro(alertText);
-              }, 10000);
-            }
-          }, 45);
-        } else {
-          setTimeout(() => {
-            lancerIntroAstro();
-          }, 10000);
-        }
+        // 🔁 Relancer la boucle après un délai
+        setTimeout(() => {
+          lancerIntroAstro(alertText);
+        }, 10000);
       }
     }, 45);
   }, 2000);
