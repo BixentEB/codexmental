@@ -194,20 +194,20 @@ function isToday(dateStr) {
   );
 }
 
-function afficherAlerte(data) {
+function afficherNoteAstro(data) {
+  const bloc = document.getElementById('astro-info');
+  if (!bloc) return;
+
   const todayAlerts = data.events.filter(ev => isToday(ev.date));
-  if (!todayAlerts.length) return;
-
-  const banner = document.getElementById('astro-alert');
-  if (!banner) return;
-
-  banner.removeAttribute('hidden');
-  banner.classList.add('visible');
-  banner.innerHTML = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' &bull; ');
+  if (todayAlerts.length > 0) {
+    bloc.textContent = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' • ');
+  } else {
+    bloc.textContent = "🔭 Aucun événement astronomique ces prochains jours.";
+  }
 }
 
-fetch('/arc/events-astro-2025.json')
+fetch('./arc/events-astro-2025.json')
   .then(res => res.json())
-  .then(data => afficherAlerte(data))
+  .then(data => afficherNoteAstro(data))
   .catch(err => console.error("Erreur chargement astro.json", err));
 
