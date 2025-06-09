@@ -183,6 +183,30 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-fetch("https://github.com/BixentEB/codexmental/blob/main/arc/events-astro-2025.json")
+// === 🌠 ALERTE ASTRONOMIQUE ===
+function isToday(dateStr) {
+  const today = new Date();
+  const date = new Date(dateStr);
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+}
+
+function afficherAlerte(data) {
+  const todayAlerts = data.events.filter(ev => isToday(ev.date));
+
+  if (!todayAlerts.length) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'astro-alert';
+  banner.innerHTML = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' &bull; ');
+  document.body.prepend(banner);
+}
+
+fetch('/arc/events-astro-2025.json')
   .then(res => res.json())
-  .then(data => afficherAlerte(data));
+  .then(data => afficherAlerte(data))
+  .catch(err => console.error("Erreur chargement astro.json", err));
+
