@@ -1,0 +1,106 @@
+{
+  "phases": [
+    {
+      "date": "2025-01-13",
+      "type": "Nouvelle lune"
+    },
+    {
+      "date": "2025-01-21",
+      "type": "Premier quartier"
+    },
+    {
+      "date": "2025-01-28",
+      "type": "Pleine lune"
+    },
+    {
+      "date": "2025-02-04",
+      "type": "Dernier quartier"
+    },
+    {
+      "date": "2025-02-11",
+      "type": "Nouvelle lune"
+    },
+    {
+      "date": "2025-02-19",
+      "type": "Premier quartier"
+    },
+    {
+      "date": "2025-02-25",
+      "type": "Pleine lune"
+    },
+    {
+      "date": "2025-03-04",
+      "type": "Dernier quartier"
+    },
+    {
+      "date": "2025-03-13",
+      "type": "Nouvelle lune"
+    },
+    {
+      "date": "2025-03-21",
+      "type": "Premier quartier"
+    },
+    {
+      "date": "2025-03-28",
+      "type": "Pleine lune"
+    },
+    {
+      "date": "2025-04-03",
+      "type": "Dernier quartier"
+    }
+  ],
+  "eclipses": [
+    {
+      "date": "2025-03-14",
+      "type": "Éclipse solaire totale",
+      "zones": "Nord de l’Afrique, Europe"
+    },
+    {
+      "date": "2025-09-07",
+      "type": "Éclipse lunaire partielle",
+      "zones": "Amériques, Europe"
+    },
+    {
+      "date": "2025-09-21",
+      "type": "Éclipse solaire partielle",
+      "zones": "Asie, Pacifique"
+    }
+  ],
+  "meteorShowers": [
+    {
+      "name": "Quadrantides",
+      "peak": "2025-01-04",
+      "activity": "Forte"
+    },
+    {
+      "name": "Lyrides",
+      "peak": "2025-04-22",
+      "activity": "Modérée"
+    },
+    {
+      "name": "Perséides",
+      "peak": "2025-08-12",
+      "activity": "Très forte"
+    },
+    {
+      "name": "Draconides",
+      "peak": "2025-10-09",
+      "activity": "Variable"
+    },
+    {
+      "name": "Orionides",
+      "peak": "2025-10-21",
+      "activity": "Modérée"
+    },
+    {
+      "name": "Léonides",
+      "peak": "2025-11-17",
+      "activity": "Modérée"
+    },
+    {
+      "name": "Géminides",
+      "peak": "2025-12-14",
+      "activity": "Exceptionnelle"
+    }
+  ]
+}
