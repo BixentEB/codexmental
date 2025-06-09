@@ -182,3 +182,7 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', followScrollLune);
   }
 });
+
+fetch("https://github.com/BixentEB/codexmental/blob/main/arc/events-astro-2025.json")
+  .then(res => res.json())
+  .then(data => afficherAlerte(data));
