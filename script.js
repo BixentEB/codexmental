@@ -124,18 +124,20 @@ function injectPartial(id, url) {
       target.innerHTML = html;
       if (id === 'menu-placeholder') {
         highlightActiveLink();
-        const toggleBtn = document.getElementById("menu-toggle");
-        const menu = document.getElementById("mobile-menu");
-        if (toggleBtn && menu) {
-          toggleBtn.addEventListener("click", () => {
-            menu.classList.toggle("open");
-          });
-          document.addEventListener("click", (e) => {
-            if (!menu.contains(e.target) && e.target !== toggleBtn) {
-              menu.classList.remove("open");
-            }
-          });
-        }
+        setTimeout(() => {
+          const toggleBtn = document.getElementById("menu-toggle");
+          const menu = document.getElementById("mobile-menu");
+          if (toggleBtn && menu) {
+            toggleBtn.addEventListener("click", () => {
+              menu.classList.toggle("open");
+            });
+            document.addEventListener("click", (e) => {
+              if (!menu.contains(e.target) && e.target !== toggleBtn) {
+                menu.classList.remove("open");
+              }
+            });
+          }
+        }, 100);
       }
     })
     .catch(err => console.error("❌ Injection échouée :", err));
