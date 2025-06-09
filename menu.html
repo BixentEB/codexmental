@@ -1,6 +1,6 @@
 <!-- 🧭 MENU GLOBAL -->
 
-<!-- 🖥️ Menu principal (bureau) -->
+<!-- 🖥️ Menu principal (desktop) -->
 <header class="header">
   <div class="site-title">Codex Mental</div>
   <nav class="main-nav">
@@ -12,11 +12,10 @@
   </nav>
 </header>
 
-<!-- 📱 Menu mobile (bouton + menu slide) -->
-<!-- 🔘 Bouton ouverture menu -->
+<!-- ☰ Bouton menu mobile -->
 <button id="menu-toggle" class="menu-toggle">☰</button>
 
-<!-- 📱 Menu slide (mobile) -->
+<!-- 📱 Menu mobile slide -->
 <nav id="mobile-menu" class="mobile-menu">
   <ul>
     <li><a href="/index.html">Home</a></li>
@@ -32,19 +31,3 @@
     <li><button onclick="setTheme('theme-stellaire')">Stellaire</button></li>
   </ul>
 </nav>
-
-<!-- 🧠 Script menu mobile -->
-<script>
-  const toggleBtn = document.getElementById("menu-toggle");
-  const menu = document.getElementById("mobile-menu");
-
-  toggleBtn.addEventListener("click", () => {
-    menu.classList.toggle("open");
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!menu.contains(e.target) && e.target !== toggleBtn) {
-      menu.classList.remove("open");
-    }
-  });
-</script>
