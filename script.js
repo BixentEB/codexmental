@@ -214,11 +214,30 @@ function isToday(dateStr) {
 function afficherNoteAstro(data) {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
-const todayAlerts = data.filter(ev => isToday(ev.date));
+
+  const todayAlerts = data.filter(ev => isToday(ev.date));
+  const introMessages = [
+    "🛰️ Connexion au satellite Codex établie",
+    "🌌 Balayage du ciel nocturne",
+    "🌙 Réception des données lunaires",
+    "📡 Synchronisation orbitale en cours",
+    "🪐 Décodage des messages interstellaires",
+    "🔭 Connexion à l’observatoire quantique",
+    "💫 Analyse des anomalies cosmiques",
+    "📁 Accès aux archives célestes",
+    "🔌 Mise à jour du protocole astrologique"
+  ];
+
+  const intro = introMessages[Math.floor(Math.random() * introMessages.length)];
+
   if (todayAlerts.length > 0) {
-    bloc.textContent = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' • ');
+    const alerts = todayAlerts.map(ev => ev.message).join(' • ');
+    bloc.textContent = `${intro}... ${alerts}`;
+    todayAlerts.forEach(ev => {
+      if (ev.themeEffect) lancerAnimation(ev.themeEffect);
+    });
   } else {
-    bloc.textContent = "🔭 Aucun événement astronomique ces prochains jours.";
+    bloc.textContent = `${intro}... Aucun événement astronomique aujourd’hui.`;
   }
 }
 
