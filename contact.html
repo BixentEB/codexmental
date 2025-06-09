@@ -8,7 +8,7 @@
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- 🎨 Styles principaux -->
+  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/main.css" />
   <link rel="stylesheet" href="/lune.css" />
 
@@ -17,53 +17,61 @@
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas galactique -->
+  <!-- 🌌 Canvas (effets galactiques) -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧠 Menu dynamique -->
+  <!-- 🧠 Menu principal injecté -->
   <div id="menu-placeholder"></div>
 
-  <!-- ☰ Menu mobile -->
+  <!-- ☰ Bouton menu mobile -->
   <button id="menu-toggle" class="menu-toggle">☰</button>
+
+  <!-- 📱 Menu mobile dynamique -->
   <nav id="mobile-menu" class="mobile-menu">
-    <ul id="mobile-menu-items"><!-- injecté dynamiquement --></ul>
+    <ul id="mobile-menu-items"><!-- rempli par script.js --></ul>
   </nav>
 
   <!-- 🧱 Contenu principal -->
   <main class="container">
     <h1 class="text-center">📬 Contact</h1>
 
-    <form id="contactForm"
-          action="https://formspree.io/f/mpwrwnwy"
-          method="POST"
-          target="hidden_iframe"
-          class="contact-form">
+    <section class="bloc">
+      <form id="contactForm"
+            action="https://formspree.io/f/mpwrwnwy"
+            method="POST"
+            target="hidden_iframe"
+            class="contact-form">
 
-      <label for="name">Nom :</label>
-      <input type="text" id="name" name="name" required />
+        <label for="name">Nom :</label>
+        <input type="text" id="name" name="name" required />
 
-      <label for="email">Email :</label>
-      <input type="email" id="email" name="email" required />
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" required />
 
-      <label for="message">Message :</label>
-      <textarea id="message" name="message" rows="5" required></textarea>
+        <label for="message">Message :</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
 
-      <button type="submit" class="btn-primary">📨 Envoyer</button>
-    </form>
+        <div style="text-align:center; margin-top: 1.2rem;">
+          <button type="submit" class="btn-primary">📨 Envoyer</button>
+        </div>
+      </form>
 
-    <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
-    <p id="confirmationMessage" style="display:none;">✅ Merci ! Ton message a bien été envoyé. 💌</p>
+      <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
+      <p id="confirmationMessage" style="display:none; text-align:center; margin-top:1rem;">✅ Merci ! Ton message a bien été envoyé.</p>
+    </section>
 
-    <!-- 🌠 Message astro -->
+    <!-- 🌠 Alerte dynamique -->
     <div id="astro-info" class="astro-info" style="all: unset; display: block; text-align: center; font-size: .9rem; color: var(--text-primary); margin: 1rem auto;">
       Chargement des événements astronomiques...
     </div>
   </main>
 
-  <!-- 🦶 Footer -->
+  <!-- 🌙 Lune injectée automatiquement si thème lunaire -->
+
+  <!-- 🦶 Footer dynamique -->
   <div id="footer-placeholder"></div>
 
-  <!-- ✅ Message après soumission -->
+  <!-- ✅ Confirmation soumission -->
   <script>
     function formSubmitted() {
       const msg = document.getElementById('confirmationMessage');
@@ -71,7 +79,7 @@
     }
   </script>
 
-  <!-- ☰ Menu mobile toggle -->
+  <!-- ☰ Script ouverture menu mobile -->
   <script>
     const toggleBtn = document.getElementById("menu-toggle");
     const menu = document.getElementById("mobile-menu");
