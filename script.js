@@ -214,7 +214,7 @@ function isToday(dateStr) {
 function afficherNoteAstro(data) {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
-  const todayAlerts = data.events.filter(ev => isToday(ev.date));
+const todayAlerts = data.filter(ev => isToday(ev.date));
   if (todayAlerts.length > 0) {
     bloc.textContent = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' • ');
   } else {
