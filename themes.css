@@ -117,12 +117,20 @@ body.theme-solaire nav a:hover {
   color: #fff8e1 !important;
 }
 
-/* ✅ Correction spéciale pour les liens de changement de thème (menu mobile) en thème solaire */
-body.theme-solaire .mobile-nav .theme-selector a {
+/* 🌞 Thème solaire : lisibilité + style boutons thème (menu mobile) */
+body.theme-solaire .mobile-nav .theme-buttons button {
   color: #ffe082 !important;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 0.4rem 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  text-shadow: 0 0 2px rgba(255, 193, 7, 0.4); /* glow discret */
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-body.theme-solaire .mobile-nav .theme-selector a:hover {
+body.theme-solaire .mobile-nav .theme-buttons button:hover {
   color: #fff8e1 !important;
+  text-shadow: 0 0 4px rgba(255, 255, 200, 0.6);
 }
-
