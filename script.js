@@ -211,34 +211,24 @@ function isToday(dateStr) {
   );
 }
 
+let currentAlertText = ""; // stocke les alertes pour l'utiliser dans le message
+
 function afficherNoteAstro(data) {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
 
   const todayAlerts = data.filter(ev => isToday(ev.date));
-  const introMessages = [
-    "🛰️ Connexion au satellite Codex établie",
-    "🌌 Balayage du ciel nocturne",
-    "🌙 Réception des données lunaires",
-    "📡 Synchronisation orbitale en cours",
-    "🪐 Décodage des messages interstellaires",
-    "🔭 Connexion à l’observatoire quantique",
-    "💫 Analyse des anomalies cosmiques",
-    "📁 Accès aux archives célestes",
-    "🔌 Mise à jour du protocole astrologique"
-  ];
-
-  const intro = introMessages[Math.floor(Math.random() * introMessages.length)];
 
   if (todayAlerts.length > 0) {
-    const alerts = todayAlerts.map(ev => ev.message).join(' • ');
-    bloc.textContent = `${intro}... ${alerts}`;
+    currentAlertText = todayAlerts.map(ev => ev.message).join(' • ');
     todayAlerts.forEach(ev => {
       if (ev.themeEffect) lancerAnimation(ev.themeEffect);
     });
   } else {
-    bloc.textContent = `${intro}... Aucun événement astronomique aujourd’hui.`;
+    currentAlertText = "Aucun événement astronomique aujourd’hui.";
   }
+
+  lancerIntroAstro(currentAlertText); // démarrer avec alerte
 }
 
 fetch('./arc/events-astro-2025.json')
@@ -246,9 +236,10 @@ fetch('./arc/events-astro-2025.json')
   .then(data => afficherNoteAstro(data))
   .catch(err => console.error("Erreur chargement astro.json", err));
 
-function lancerIntroAstro() {
+function lancerIntroAstro(alertText = "") {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
+
   const messages = [
     { icon: '🛰️', text: 'Connexion au satellite Codex établie.' },
     { icon: '🌌', text: 'Balayage du ciel nocturne...' },
@@ -260,21 +251,36 @@ function lancerIntroAstro() {
     { icon: '📁', text: 'Accès aux archives célestes...' },
     { icon: '🔌', text: 'Mise à jour du protocole astrologique...' }
   ];
+
   const entry = messages[Math.floor(Math.random() * messages.length)];
   let i = 0;
   bloc.textContent = entry.icon;
   let clignote = true;
+
   const clignoteInterval = setInterval(() => {
     bloc.textContent = clignote ? entry.icon : '';
     clignote = !clignote;
   }, 400);
+
   setTimeout(() => {
     clearInterval(clignoteInterval);
     bloc.textContent = '';
     const typer = setInterval(() => {
       bloc.textContent += entry.text.charAt(i);
       i++;
-      if (i === entry.text.length) clearInterval(typer);
+      if (i === entry.text.length) {
+        clearInterval(typer);
+
+        // Ajout de l'alerte après le message
+        setTimeout(() => {
+          bloc.textContent += ' ' + currentAlertText;
+
+          // Boucle : relancer tout dans 10 secondes
+          setTimeout(() => {
+            lancerIntroAstro(currentAlertText);
+          }, 10000);
+        }, 500);
+      }
     }, 45);
   }, 2000);
 }
