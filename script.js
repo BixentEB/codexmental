@@ -32,7 +32,6 @@ function initParticles(type = 'stars', count = 120) {
 
 function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   for (let p of particles) {
     p.alpha += p.delta;
     if (p.alpha <= 0 || p.alpha >= 1) p.delta *= -1;
@@ -41,7 +40,7 @@ function animateParticles() {
     ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
 
     if (p.type === 'dust') {
-      const hue = 240 + Math.random() * 40; // Violet à bleu
+      const hue = 240 + Math.random() * 40;
       ctx.shadowBlur = 8;
       ctx.shadowColor = `rgba(180, 130, 255, ${p.alpha})`;
       ctx.fillStyle = `hsla(${hue}, 100%, 85%, ${p.alpha})`;
@@ -52,7 +51,6 @@ function animateParticles() {
 
     ctx.fill();
   }
-
   rafId = requestAnimationFrame(animateParticles);
 }
 
@@ -76,14 +74,14 @@ function updateLunarWidget(theme) {
   const existing = document.getElementById('lune-widget');
   if (existing) existing.remove();
 
- if (theme === 'theme-lunaire') {
-  const phase = getMoonPhaseIndex();
-  const lune = document.createElement('div');
-  lune.id = 'lune-widget';
-  lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
-  document.body.appendChild(lune);
-
-  followScrollLune(); // ← 🆕 ajoute cette ligne ici
+  if (theme === 'theme-lunaire') {
+    const phase = getMoonPhaseIndex();
+    const lune = document.createElement('div');
+    lune.id = 'lune-widget';
+    lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
+    document.body.appendChild(lune);
+    followScrollLune();
+  }
 }
 
 function followScrollLune() {
@@ -95,13 +93,11 @@ function followScrollLune() {
   const windowHeight = window.innerHeight;
   const luneHeight = lune.offsetHeight;
 
-  // Coin inférieur droit qui suit le scroll
   const idealTop = scrollTop + windowHeight - luneHeight - padding;
-  lune.style.left = 'unset';            // assure qu'elle ne reste pas centrée
+  lune.style.left = 'unset';
   lune.style.right = `${padding}px`;
-  lune.style.top = `${idealTop}px`;     // toujours "ancrée" bas droite
+  lune.style.top = `${idealTop}px`;
 }
-
 
 // === 🎨 THÈME ===
 function setTheme(theme) {
@@ -177,7 +173,6 @@ window.addEventListener('DOMContentLoaded', () => {
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
 
-  // 🌙 Suivi de la lune
   if (savedTheme === 'theme-lunaire') {
     window.addEventListener('scroll', followScrollLune);
     window.addEventListener('resize', followScrollLune);
@@ -211,4 +206,3 @@ fetch('./arc/events-astro-2025.json')
   .then(res => res.json())
   .then(data => afficherNoteAstro(data))
   .catch(err => console.error("Erreur chargement astro.json", err));
-
