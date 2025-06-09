@@ -8,7 +8,7 @@
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- 🎨 Styles principaux -->
+  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/main.css" />
   <link rel="stylesheet" href="/lune.css" />
 
@@ -17,10 +17,10 @@
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas pour les effets galactique / stellaire -->
+  <!-- 🌌 Canvas pour effets galactique / stellaire -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧠 Menu injecté dynamiquement -->
+  <!-- 🧠 Menu injecté -->
   <div id="menu-placeholder"></div>
 
   <!-- 🧱 Contenu principal -->
@@ -51,15 +51,9 @@
     </div>
   </main>
 
-  <!-- 🌙 Le widget de lune s’injecte automatiquement en thème-lunaire -->
+  <!-- 🌙 Le widget de lune s’injecte automatiquement -->
 
-  <!-- 🦶 Footer injecté dynamiquement -->
+  <!-- 🦶 Footer injecté -->
   <div id="footer-placeholder"></div>
-
-  <!-- 🔁 Injection dynamique -->
-  <script>
-    injectPartial('menu-placeholder', '/menu.html');
-    injectPartial('footer-placeholder', '/footer.html');
-  </script>
 </body>
 </html>
