@@ -1,5 +1,9 @@
-/* 🎨 THÈMES : variables de couleurs */
+/* ==========================================================
+   🎨 THÈMES : Variables de couleurs dynamiques par thème
+   Utilisées dans style-base.css via les variables CSS personnalisées
+========================================================== */
 
+/* === 🌙 THÈME LUNAIRE === */
 body.theme-lunaire {
   --bg-primary: #0b1a33;
   --text-primary: #dceeff;
@@ -24,6 +28,7 @@ body.theme-lunaire {
   --btn-hover: #3b7dd8;
 }
 
+/* === 💫 THÈME GALACTIQUE === */
 body.theme-galactique {
   --bg-primary: #0a0e2a;
   --text-primary: #f2f0ff;
@@ -49,6 +54,7 @@ body.theme-galactique {
   --btn-hover: #a982ff;
 }
 
+/* === ☀️ THÈME SOLAIRE === */
 body.theme-solaire {
   --bg-primary: #fff8e1;
   --text-primary: #4e3200;
@@ -73,6 +79,7 @@ body.theme-solaire {
   --btn-hover: #f57f17;
 }
 
+/* === ✨ THÈME STELLAIRE === */
 body.theme-stellaire {
   --bg-primary: #030617;
   --text-primary: #ffffff;
@@ -97,7 +104,9 @@ body.theme-stellaire {
   --btn-hover: #74c4ff;
 }
 
-/* ✅ STYLE GLOBAL POUR LES BOUTONS DE CHANGEMENT DE THÈME (MOBILE) */
+/* ==========================================================
+   🧩 STYLE GLOBAL : boutons de thème mobile
+========================================================== */
 .mobile-nav .theme-buttons button {
   background: transparent;
   border: none;
@@ -149,7 +158,7 @@ body.theme-stellaire .mobile-nav .theme-buttons button:hover {
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
-/* ✅ CORRECTION LECTURE LIENS NAVIGATION EN THÈME SOLAIRE */
+/* ✅ CORRECTION : lisibilité des liens du menu en thème solaire */
 body.theme-solaire nav a {
   color: #ffe082 !important;
 }
