@@ -196,14 +196,14 @@ function isToday(dateStr) {
 
 function afficherAlerte(data) {
   const todayAlerts = data.events.filter(ev => isToday(ev.date));
-
   if (!todayAlerts.length) return;
 
-  const banner = document.createElement('div');
-  banner.removeAttribute('hidden'); // 👈 
-  banner.id = 'astro-alert';
+  const banner = document.getElementById('astro-alert');
+  if (!banner) return;
+
+  banner.removeAttribute('hidden');
+  banner.classList.add('visible');
   banner.innerHTML = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' &bull; ');
-  document.body.prepend(banner);
 }
 
 fetch('/arc/events-astro-2025.json')
