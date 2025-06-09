@@ -35,10 +35,8 @@ function animateParticles() {
   for (let p of particles) {
     p.alpha += p.delta;
     if (p.alpha <= 0 || p.alpha >= 1) p.delta *= -1;
-
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
-
     if (p.type === 'dust') {
       const hue = 240 + Math.random() * 40;
       ctx.shadowBlur = 8;
@@ -48,7 +46,6 @@ function animateParticles() {
       ctx.shadowBlur = 0;
       ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
     }
-
     ctx.fill();
   }
   rafId = requestAnimationFrame(animateParticles);
@@ -87,12 +84,10 @@ function updateLunarWidget(theme) {
 function followScrollLune() {
   const lune = document.getElementById('lune-widget');
   if (!lune) return;
-
   const padding = 10;
   const scrollTop = window.scrollY;
   const windowHeight = window.innerHeight;
   const luneHeight = lune.offsetHeight;
-
   const idealTop = scrollTop + windowHeight - luneHeight - padding;
   lune.style.left = 'unset';
   lune.style.right = `${padding}px`;
@@ -103,12 +98,9 @@ function followScrollLune() {
 function setTheme(theme) {
   document.body.className = theme;
   localStorage.setItem('codexTheme', theme);
-
   stopParticles();
   updateLunarWidget(theme);
-
   if (!canvas) return;
-
   if (theme === 'theme-stellaire') {
     setupCanvas();
     initParticles('stars', 120);
@@ -126,7 +118,6 @@ function setTheme(theme) {
 function injectPartial(id, url) {
   const target = document.getElementById(id);
   if (!target) return;
-
   fetch(url)
     .then(res => res.ok ? res.text() : Promise.reject(`Erreur chargement ${url}`))
     .then(html => {
@@ -150,7 +141,6 @@ function highlightActiveLink() {
 function setupScrollButton() {
   const btn = document.getElementById('scrollTopBtn');
   if (!btn) return;
-
   btn.style.display = 'none';
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   window.addEventListener('scroll', () => {
@@ -168,7 +158,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
-
   setupScrollButton();
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
@@ -177,6 +166,9 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', followScrollLune);
     window.addEventListener('resize', followScrollLune);
   }
+
+  // 🌠 Lance l'intro typée
+  lancerIntroAstro();
 });
 
 // === 🌠 ALERTE ASTRONOMIQUE ===
@@ -206,3 +198,42 @@ fetch('./arc/events-astro-2025.json')
   .then(res => res.json())
   .then(data => afficherNoteAstro(data))
   .catch(err => console.error("Erreur chargement astro.json", err));
+
+// === 🛰️ INTRO ANIMÉE ALÉATOIRE ===
+function lancerIntroAstro() {
+  const bloc = document.getElementById('astro-info');
+  if (!bloc) return;
+
+  const messages = [
+    { icon: '🛰️', text: 'Connexion au satellite Codex établie.' },
+    { icon: '🌌', text: 'Balayage du ciel nocturne...' },
+    { icon: '🌙', text: 'Réception des données lunaires...' },
+    { icon: '📡', text: 'Synchronisation orbitale en cours...' },
+    { icon: '🪐', text: 'Décodage des messages interstellaires...' },
+    { icon: '🔭', text: 'Connexion à l’observatoire quantique...' },
+    { icon: '💫', text: 'Analyse des anomalies cosmiques...' },
+    { icon: '📁', text: 'Accès aux archives célestes...' },
+    { icon: '🔌', text: 'Mise à jour du protocole astrologique...' }
+  ];
+
+  const entry = messages[Math.floor(Math.random() * messages.length)];
+  let i = 0;
+
+  bloc.textContent = entry.icon;
+  let clignote = true;
+
+  const clignoteInterval = setInterval(() => {
+    bloc.textContent = clignote ? entry.icon : '';
+    clignote = !clignote;
+  }, 400);
+
+  setTimeout(() => {
+    clearInterval(clignoteInterval);
+    bloc.textContent = '';
+    const typer = setInterval(() => {
+      bloc.textContent += entry.text.charAt(i);
+      i++;
+      if (i === entry.text.length) clearInterval(typer);
+    }, 45);
+  }, 2000);
+}
