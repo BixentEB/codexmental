@@ -5,27 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accueil – Codex Mental</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- Styles -->
+  <!-- 🎨 Styles principaux -->
   <link rel="stylesheet" href="/main.css" />
+  <link rel="stylesheet" href="/lune.css" />
 
-  <!-- Scripts -->
+  <!-- ⚙️ Script principal -->
   <script src="/script.js" defer></script>
 </head>
-<body class="theme-stellaire">
-<canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- Injection menu -->
+<body class="theme-stellaire">
+  <!-- 🌌 Effet stellaire / galactique -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Injection du menu desktop (menu.html) -->
   <div id="menu-placeholder"></div>
 
-   <main class="container">
-    <h1>titre</h1>
-    <p>contenu</p>
+  <!-- ☰ Bouton menu mobile -->
+  <button id="menu-toggle" class="menu-toggle">☰</button>
+
+  <!-- 📱 Menu mobile injecté dynamiquement par script.js -->
+  <nav id="mobile-menu" class="mobile-menu">
+    <ul id="mobile-menu-items">
+      <!-- rempli automatiquement -->
+    </ul>
+  </nav>
+
+  <!-- 🧱 Contenu principal -->
+  <main class="container">
+    <h1 class="text-center">Bienvenue sur mon site</h1>
+
+    <!-- 💡 Bloc prêt à remplir -->
+    <section class="bloc">
+      <h2>Titre de section</h2>
+      <p>Contenu à ajouter ici…</p>
+    </section>
+
+    <!-- 🔧 Exemple de second bloc -->
+    <section class="bloc">
+      <h2>Autre section</h2>
+      <p>Utilise ce modèle pour organiser ton contenu sur les autres pages.</p>
+    </section>
+
+    <!-- 🌠 Alerte événement astronomique (remplie dynamiquement) -->
+    <div id="astro-info" class="astro-info" style="all: unset; display: block; text-align: center; font-size: .9rem; color: var(--text-primary); margin: 1rem auto;">
+      Chargement des événements astronomiques...
+    </div>
   </main>
 
-  <!-- Injection footer -->
+  <!-- 🌙 Le widget de lune s’injecte automatiquement si thème lunaire -->
+
+  <!-- 🦶 Injection dynamique du footer -->
   <div id="footer-placeholder"></div>
+
+  <!-- 📜 Script ouverture / fermeture du menu mobile -->
+  <script>
+    const toggleBtn = document.getElementById("menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+
+    toggleBtn.addEventListener("click", () => {
+      menu.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && e.target !== toggleBtn) {
+        menu.classList.remove("open");
+      }
+    });
+  </script>
 </body>
 </html>
