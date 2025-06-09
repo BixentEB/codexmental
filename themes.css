@@ -165,3 +165,17 @@ body.theme-solaire nav a {
 body.theme-solaire nav a:hover {
   color: #fff8e1 !important;
 }
+
+/* ✅ Amélioration lisibilité texte mobile (menu latéral) en thème solaire */
+body.theme-solaire .mobile-menu a,
+body.theme-solaire .mobile-menu button {
+  color: #ffda99 !important; /* doré pâle bien lisible sur fond sombre */
+  text-shadow: 0 0 2px rgba(255, 220, 150, 0.3);
+}
+
+body.theme-solaire .mobile-menu a:hover,
+body.theme-solaire .mobile-menu button:hover {
+  color: #fff8e1 !important;
+  text-shadow: 0 0 4px rgba(255, 255, 220, 0.6);
+}
+
