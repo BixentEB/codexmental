@@ -32,39 +32,32 @@
   </nav>
 
   <!-- 🧱 Contenu principal -->
-  <main class="container">
-    <h1 class="text-center">📬 Contact</h1>
+<main class="container">
+  <h1 class="text-center">📬 Contact</h1>
 
-    <section class="bloc">
-      <form id="contactForm"
-            action="https://formspree.io/f/mpwrwnwy"
-            method="POST"
-            target="hidden_iframe"
-            class="contact-form">
+  <section class="bloc bloc-contact">
+    <form id="contactForm"
+          action="https://formspree.io/f/mpwrwnwy"
+          method="POST"
+          target="hidden_iframe"
+          class="contact-form">
 
-        <label for="name">Nom :</label>
-        <input type="text" id="name" name="name" required />
+      <label for="name">Nom :</label>
+      <input type="text" id="name" name="name" required />
 
-        <label for="email">Email :</label>
-        <input type="email" id="email" name="email" required />
+      <label for="email">Email :</label>
+      <input type="email" id="email" name="email" required />
 
-        <label for="message">Message :</label>
-        <textarea id="message" name="message" rows="5" required></textarea>
+      <label for="message">Message :</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
 
-        <div style="text-align:center; margin-top: 1.2rem;">
-          <button type="submit" class="btn-primary">📨 Envoyer</button>
-        </div>
-      </form>
+      <button type="submit" class="btn-primary">📨 Envoyer</button>
+    </form>
 
-      <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
-      <p id="confirmationMessage" style="display:none; text-align:center; margin-top:1rem;">✅ Merci ! Ton message a bien été envoyé.</p>
-    </section>
-
-    <!-- 🌠 Alerte dynamique -->
-    <div id="astro-info" class="astro-info" style="all: unset; display: block; text-align: center; font-size: .9rem; color: var(--text-primary); margin: 1rem auto;">
-      Chargement des événements astronomiques...
-    </div>
-  </main>
+    <iframe name="hidden_iframe" style="display:none;" onload="formSubmitted()"></iframe>
+    <p id="confirmationMessage" style="display:none; text-align:center; margin-top:1rem;">✅ Merci ! Ton message a bien été envoyé.</p>
+  </section>
+</main>
 
   <!-- 🌙 Lune injectée automatiquement si thème lunaire -->
 
