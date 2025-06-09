@@ -94,5 +94,23 @@
     injectPartial('menu-placeholder', 'menu.html');
     injectPartial('footer-placeholder', 'footer.html');
   </script>
+  
+  <script>
+  // Menu mobile : ouverture/fermeture
+  const toggleBtn = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+
+  toggleBtn.addEventListener("click", () => {
+    menu.classList.toggle("open");
+  });
+
+  // Fermer le menu si on clique ailleurs
+  document.addEventListener("click", (e) => {
+    if (!menu.contains(e.target) && e.target !== toggleBtn) {
+      menu.classList.remove("open");
+    }
+  });
+</script>
+
 </body>
 </html>
