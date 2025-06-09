@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CV – Codex Mental</title>
-  
+
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
@@ -25,26 +24,27 @@
   <div id="menu-placeholder"></div>
 
   <!-- ☰ Bouton menu mobile -->
-<button id="menu-toggle" class="menu-toggle">☰</button>
+  <button id="menu-toggle" class="menu-toggle">☰</button>
 
-<!-- 📱 Menu mobile slide -->
-<nav id="mobile-menu" class="mobile-menu">
-  <ul>
-    <li><a href="/index.html">Home</a></li>
-    <li><a href="/blog.html">Blog</a></li>
-    <li><a href="/projets.html">Projets</a></li>
-    <li><a href="/cv.html">CV</a></li>
-    <li><a href="/contact.html">Contact</a></li>
-    <li><hr></li>
-    <li><strong>🎨 Thèmes</strong></li>
-    <li><button onclick="setTheme('theme-solaire')">Solaire</button></li>
-    <li><button onclick="setTheme('theme-lunaire')">Lunaire</button></li>
-    <li><button onclick="setTheme('theme-galactique')">Galactique</button></li>
-    <li><button onclick="setTheme('theme-stellaire')">Stellaire</button></li>
-  </ul>
-</nav>
+  <!-- 📱 Menu mobile slide -->
+  <nav id="mobile-menu" class="mobile-menu">
+    <ul>
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/blog.html">Blog</a></li>
+      <li><a href="/projets.html">Projets</a></li>
+      <li><a href="/cv.html">CV</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><hr></li>
+      <li><strong>🎨 Thèmes</strong></li>
+      <li><button onclick="setTheme('theme-solaire')">Solaire</button></li>
+      <li><button onclick="setTheme('theme-lunaire')">Lunaire</button></li>
+      <li><button onclick="setTheme('theme-galactique')">Galactique</button></li>
+      <li><button onclick="setTheme('theme-stellaire')">Stellaire</button></li>
+    </ul>
+  </nav>
 
-    <main>
+  <!-- 🧾 Contenu principal -->
+  <main>
     <h1>ASSISTANT ADMINISTRATIF CRÉATIF</h1>
     <h2>Concepteur de solutions hybrides & augmentées</h2>
 
@@ -87,30 +87,12 @@
     </section>
   </main>
 
-  <!-- Footer injecté dynamiquement -->
+  <!-- 🦶 Footer dynamique -->
   <div id="footer-placeholder"></div>
 
   <script>
-    injectPartial('menu-placeholder', 'menu.html');
-    injectPartial('footer-placeholder', 'footer.html');
+    injectPartial('menu-placeholder', '/menu.html');
+    injectPartial('footer-placeholder', '/footer.html');
   </script>
-  
-  <script>
-  // Menu mobile : ouverture/fermeture
-  const toggleBtn = document.getElementById("menu-toggle");
-  const menu = document.getElementById("mobile-menu");
-
-  toggleBtn.addEventListener("click", () => {
-    menu.classList.toggle("open");
-  });
-
-  // Fermer le menu si on clique ailleurs
-  document.addEventListener("click", (e) => {
-    if (!menu.contains(e.target) && e.target !== toggleBtn) {
-      menu.classList.remove("open");
-    }
-  });
-</script>
-
 </body>
 </html>
