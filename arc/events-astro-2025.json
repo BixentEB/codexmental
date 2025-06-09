@@ -1,5 +1,13 @@
 [
   {
+  "date": "2025-06-10",
+  "type": "moon_phase",
+  "phase": "Nouvelle lune",
+  "message": "🌑 Super lune test app",
+  "themeEffect": "moon_nouvelle_lune"
+}
+
+  {
     "date": "2025-01-06",
     "type": "moon_phase",
     "phase": "Dernier quartier",
