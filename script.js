@@ -1,4 +1,3 @@
-
 // === 🌌 CANVAS UNIFIÉ : STELLAIRE & GALACTIQUE ===
 let canvas, ctx, rafId;
 let particles = [];
@@ -123,17 +122,31 @@ function injectPartial(id, url) {
     .then(res => res.ok ? res.text() : Promise.reject(`Erreur chargement ${url}`))
     .then(html => {
       target.innerHTML = html;
-      if (id === 'menu-placeholder') highlightActiveLink();
+      if (id === 'menu-placeholder') {
+        highlightActiveLink();
+        const toggleBtn = document.getElementById("menu-toggle");
+        const menu = document.getElementById("mobile-menu");
+        if (toggleBtn && menu) {
+          toggleBtn.addEventListener("click", () => {
+            menu.classList.toggle("open");
+          });
+          document.addEventListener("click", (e) => {
+            if (!menu.contains(e.target) && e.target !== toggleBtn) {
+              menu.classList.remove("open");
+            }
+          });
+        }
+      }
     })
     .catch(err => console.error("❌ Injection échouée :", err));
 }
 
 // === 🌐 LIEN ACTIF DANS LE MENU ===
 function highlightActiveLink() {
-  const currentPath = location.pathname.replace(/\/+$/, '');
+  const currentPath = location.pathname.replace(/\/+/g, '');
   document.querySelectorAll("nav a").forEach(link => {
     const href = link.getAttribute("href");
-    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
+    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+/g, '');
     if (linkPath === currentPath) link.classList.add("active");
   });
 }
@@ -156,38 +169,19 @@ window.addEventListener('DOMContentLoaded', () => {
     ctx = canvas.getContext('2d');
     canvas.style.opacity = '0';
   }
-
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   setTheme(savedTheme);
   setupScrollButton();
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
-
-  const toggleBtn = document.getElementById("menu-toggle");
-  const menu = document.getElementById("mobile-menu");
-
-  if (toggleBtn && menu) {
-    toggleBtn.addEventListener("click", () => {
-      menu.classList.toggle("open");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && e.target !== toggleBtn) {
-        menu.classList.remove("open");
-      }
-    });
-  }
-
   if (savedTheme === 'theme-lunaire') {
     window.addEventListener('scroll', followScrollLune);
     window.addEventListener('resize', followScrollLune);
   }
-
   lancerIntroAstro();
 });
 
 // === 🌠 ASTRONOMIE & INTRO ===
-
 function isToday(dateStr) {
   const today = new Date();
   const date = new Date(dateStr);
@@ -201,7 +195,6 @@ function isToday(dateStr) {
 function afficherNoteAstro(data) {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
-
   const todayAlerts = data.events.filter(ev => isToday(ev.date));
   if (todayAlerts.length > 0) {
     bloc.textContent = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' • ');
@@ -218,7 +211,6 @@ fetch('./arc/events-astro-2025.json')
 function lancerIntroAstro() {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
-
   const messages = [
     { icon: '🛰️', text: 'Connexion au satellite Codex établie.' },
     { icon: '🌌', text: 'Balayage du ciel nocturne...' },
@@ -230,18 +222,14 @@ function lancerIntroAstro() {
     { icon: '📁', text: 'Accès aux archives célestes...' },
     { icon: '🔌', text: 'Mise à jour du protocole astrologique...' }
   ];
-
   const entry = messages[Math.floor(Math.random() * messages.length)];
   let i = 0;
-
   bloc.textContent = entry.icon;
   let clignote = true;
-
   const clignoteInterval = setInterval(() => {
     bloc.textContent = clignote ? entry.icon : '';
     clignote = !clignote;
   }, 400);
-
   setTimeout(() => {
     clearInterval(clignoteInterval);
     bloc.textContent = '';
