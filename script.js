@@ -80,7 +80,7 @@ function updateLunarWidget(theme) {
     const phase = getMoonPhaseIndex();
     const lune = document.createElement('div');
     lune.id = 'lune-widget';
-    lune.style.backgroundImage = `url('/img/lune-${phase}.png')`;
+    lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
     document.body.appendChild(lune);
   }
 }
