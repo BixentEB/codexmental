@@ -75,5 +75,22 @@
   <!-- 🦶 Footer dynamique -->
   <div id="footer-placeholder"></div>
 
+  <script>
+  const toggleBtn = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+
+  toggleBtn.addEventListener("click", () => {
+    menu.classList.toggle("open");
+  });
+
+  // Fermer le menu quand on clique ailleurs
+  document.addEventListener("click", (e) => {
+    if (!menu.contains(e.target) && e.target !== toggleBtn) {
+      menu.classList.remove("open");
+    }
+  });
+</script>
+
+
 </body>
 </html>
