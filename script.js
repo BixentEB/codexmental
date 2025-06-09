@@ -200,6 +200,7 @@ function afficherAlerte(data) {
   if (!todayAlerts.length) return;
 
   const banner = document.createElement('div');
+  banner.removeAttribute('hidden'); // 👈 
   banner.id = 'astro-alert';
   banner.innerHTML = todayAlerts.map(ev => `${ev.icon} ${ev.message}`).join(' &bull; ');
   document.body.prepend(banner);
