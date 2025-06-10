@@ -4,66 +4,82 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Page – Codex Mental</title>
-
+  
   <!-- 🌞 Favicon -->
-  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" />
 
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- 🎨 Styles -->
-  <link rel="stylesheet" href="/main.css" />
-  <link rel="stylesheet" href="/lune.css" />
+  <!-- 🎨 Styles globaux -->
+  <link rel="stylesheet" href="/style-base.css" />
+  <!-- 🎨 Styles spécifiques au CV -->
+  <link rel="stylesheet" href="/cv.css" />
 
   <!-- ⚙️ Script principal -->
   <script src="/script.js" defer></script>
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas de fond -->
+  <!-- 🌌 Fond animé -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧠 Menu injecté dynamiquement -->
+  <!-- 🧠 Menu dynamique -->
   <div id="menu-placeholder"></div>
 
-  <!-- ☰ Bouton menu mobile -->
+  <!-- ☰ Menu mobile -->
   <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
 
-  <!-- 🌟 Badge alerte astronomique flottant -->
-<div id="astro-badge" style="display:none;"></div>
- 
-  <!-- 🧾 Contenu principal -->
-<main class="container">
+  <!-- 📄 Contenu principal -->
+  <main class="container">
 
-  <!-- 🧩 Bloc pleine largeur (1/1) -->
-  <section class="bloc bloc-full">
-    <h2>[Titre principal]</h2>
-    <p>[Texte d’introduction ou résumé]</p>
-  </section>
+    <!-- 🔷 En-tête CV -->
+    <section class="cv-section cv-bloc-full">
+      <h1>Vincent Étienne</h1>
+      <p><em>Explorateur créatif, développeur indépendant, architecte de mondes mentaux.</em></p>
+    </section>
 
-  <!-- 🧩 Bloc demi-gauche (1/2) -->
-  <section class="bloc bloc-half bloc-left">
-    <h3>[Titre gauche]</h3>
-    <ul>
-      <li>[Élément 1]</li>
-      <li>[Élément 2]</li>
-    </ul>
-  </section>
+    <!-- 🔷 Première ligne en 2 colonnes -->
+    <section class="cv-section">
+      <div class="cv-bloc-half">
+        <h2>🧠 Compétences</h2>
+        <ul>
+          <li>HTML, CSS, JavaScript, Astro</li>
+          <li>Python (scripts personnels, outils synchronicité)</li>
+          <li>UX/UI design, animation web</li>
+        </ul>
+      </div>
+      <div class="cv-bloc-half">
+        <h2>🎓 Formation</h2>
+        <ul>
+          <li>Licence en sciences cognitives</li>
+          <li>Certifications IA, développement web et UI design</li>
+        </ul>
+      </div>
+    </section>
 
-  <!-- 🧩 Bloc demi-droit (1/2) -->
-  <section class="bloc bloc-half bloc-right">
-    <h3>[Titre droit]</h3>
-    <ul>
-      <li>[Élément 1]</li>
-      <li>[Élément 2]</li>
-    </ul>
-  </section>
+    <!-- 🔷 Bloc pleine largeur -->
+    <section class="cv-section cv-bloc-full">
+      <h2>🚀 Projets récents</h2>
+      <p>Création du site <strong>CodexMental.com</strong> avec thèmes dynamiques, introduction animée, API céleste intégrée, et design responsive multithèmes.</p>
+    </section>
 
-  <!-- 🧩 Bloc pleine largeur (1/1) -->
-  <section class="bloc bloc-full">
-    <h3>[Autre section plein écran]</h3>
-    <p>[Contenu…]</p>
-  </section>
+    <!-- 🔷 Deuxième ligne en 2 colonnes -->
+    <section class="cv-section">
+      <div class="cv-bloc-half">
+        <h2>💡 Centres d’intérêt</h2>
+        <ul>
+          <li>IA et philosophie de la conscience</li>
+          <li>Écriture créative, thrillers psychologiques</li>
+          <li>Design immersif et narratif interactif</li>
+        </ul>
+      </div>
+      <div class="cv-bloc-half">
+        <h2>📫 Contact</h2>
+        <p>Email : [adresse ici]</p>
+        <p>Site : <a href="https://codexmental.com" target="_blank">codexmental.com</a></p>
+      </div>
+    </section>
 
 </main>
 
