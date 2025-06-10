@@ -1,4 +1,4 @@
-// === 🌌 CANVAS UNIFIÉ : STELLAIRE & GALACTIQUE ===
+// === 🌌 CANVAS UNIFIÉ : STELLAIRE & GALACTIQUE ===More actions
 let canvas, ctx, rafId;
 let particles = [];
 
@@ -211,9 +211,30 @@ function isToday(dateStr) {
   );
 }
 
+function afficherNoteAstro(data) {
+  const bloc = document.getElementById('astro-info');
+  if (!bloc) return;
+
+  const todayAlerts = data.filter(ev => isToday(ev.date));
+  let alertText = "";
+
+  if (todayAlerts.length > 0) {
+    alertText = todayAlerts.map(ev => ev.message).join(' • ');
+    todayAlerts.forEach(ev => {
+      if (ev.themeEffect) lancerAnimation(ev.themeEffect);
+    });
+  } else {
+    alertText = "Aucun événement astronomique aujourd’hui.";
+  }
+
+  lancerIntroAstro(alertText);
+}
+
+// 💡 Cette fonction remplace le fetch unique
 function chargerEtAfficherAstro() {
   fetch('./arc/events-astro-2025.json')
     .then(res => res.json())
+    .then(data => afficherNoteAstro(data))
     .then(data => {
       const todayAlerts = data.filter(ev => isToday(ev.date));
       let alertText = "";
@@ -261,33 +282,24 @@ function lancerIntroAstro(alertText = "") {
   setTimeout(() => {
     clearInterval(clignoteInterval);
     bloc.textContent = '';
-    const typerIntro = setInterval(() => {
+    const typer = setInterval(() => {
       bloc.textContent += entry.text.charAt(i);
       i++;
       if (i === entry.text.length) {
-        clearInterval(typerIntro);
+        clearInterval(typer);
+        bloc.textContent += ' ' + alertText;
 
-        // ⌨️ Puis taper l’alerte astronomique après une petite pause
-        if (alertText && alertText.length > 0) {
-          let j = 0;
-          bloc.textContent += ' ';
-          const typerAlert = setInterval(() => {
-            bloc.textContent += alertText.charAt(j);
-            j++;
-            if (j === alertText.length) {
-              clearInterval(typerAlert);
-              // 🔁 Relancer tout au bout de 10 sec
-              setTimeout(() => {
-                lancerIntroAstro(alertText);
-              }, 10000);
-            }
-          }, 45);
-        } else {
-          // 🔁 S’il n’y a pas d’alerte, relancer tout au bout de 10 sec
-          setTimeout(() => {
-            lancerIntroAstro();
-          }, 10000);
-        }
+        // ✅ Et maintenant on relance tout le fetch après délai
+        // 🔁 Reboucle complète après 10s
+        setTimeout(() => {
+          chargerEtAfficherAstro(); // 🔁 pas juste la boucle
+          chargerEtAfficherAstro();
+        }, 10000);
       }
     }, 45);
   }, 2000);
+}
+
+// 👇 Lancement initial
+// 🚀 Démarrage initial
+chargerEtAfficherAstro();
