@@ -261,21 +261,33 @@ function lancerIntroAstro(alertText = "") {
   setTimeout(() => {
     clearInterval(clignoteInterval);
     bloc.textContent = '';
-    const typer = setInterval(() => {
+    const typerIntro = setInterval(() => {
       bloc.textContent += entry.text.charAt(i);
       i++;
       if (i === entry.text.length) {
-        clearInterval(typer);
-        bloc.textContent += ' ' + alertText;
+        clearInterval(typerIntro);
 
-        // 🔁 Reboucle complète après 10s
-        setTimeout(() => {
-          chargerEtAfficherAstro();
-        }, 10000);
+        // ⌨️ Puis taper l’alerte astronomique après une petite pause
+        if (alertText && alertText.length > 0) {
+          let j = 0;
+          bloc.textContent += ' ';
+          const typerAlert = setInterval(() => {
+            bloc.textContent += alertText.charAt(j);
+            j++;
+            if (j === alertText.length) {
+              clearInterval(typerAlert);
+              // 🔁 Relancer tout au bout de 10 sec
+              setTimeout(() => {
+                lancerIntroAstro(alertText);
+              }, 10000);
+            }
+          }, 45);
+        } else {
+          // 🔁 S’il n’y a pas d’alerte, relancer tout au bout de 10 sec
+          setTimeout(() => {
+            lancerIntroAstro();
+          }, 10000);
+        }
       }
     }, 45);
   }, 2000);
-}
-
-// 🚀 Démarrage initial
-chargerEtAfficherAstro();
