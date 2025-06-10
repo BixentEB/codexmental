@@ -290,3 +290,32 @@ function lancerIntroAstro() {
     });
   }, 2000);
 }
+
+// === 🌠 BADGE ASTRONOMIE ===
+function isToday(dateStr) {
+  const today = new Date();
+  const date = new Date(dateStr);
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+}
+
+function activerBadgeAstro() {
+  fetch('./arc/events-astro-2025.json')
+    .then(res => res.json())
+    .then(data => {
+      const todayEvents = data.filter(ev => isToday(ev.date));
+      if (todayEvents.length > 0) {
+        const badge = document.getElementById('astro-badge');
+        if (badge) {
+          badge.textContent = todayEvents.map(ev => ev.message).join(' • ');
+          badge.style.display = 'block';
+        }
+      }
+    })
+    .catch(err => console.error("Erreur chargement astro.json (badge)", err));
+}
+
+activerBadgeAstro();
