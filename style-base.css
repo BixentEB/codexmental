@@ -249,13 +249,13 @@ footer .theme-buttons {
   right: 18px;
   background: rgba(0, 0, 0, 0.6);
   color: white;
-  font-size: 0.85rem;
-  padding: 6px 14px;
-  border-radius: 20px;
+  font-size: 0.75rem;        /* était 0.85rem */
+  padding: 4px 10px;         /* était 6px 14px */
+  border-radius: 16px;       /* était 20px */
   font-family: 'Orbitron', sans-serif;
   z-index: 9999;
   backdrop-filter: blur(4px);
-  box-shadow: 0 0 10px rgba(255,255,255,0.15);
+  box-shadow: 0 0 8px rgba(255,255,255,0.12); /* plus doux */
   transition: opacity 0.3s ease;
 }
 
