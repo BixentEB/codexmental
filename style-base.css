@@ -265,3 +265,8 @@ footer .theme-buttons {
   color: #fffbe6;
   box-shadow: 0 0 16px rgba(255, 230, 255, 0.4);
 }
+
+/* Pour tous les thèmes sauf le lunaire */
+body:not(.theme-lunaire) #astro-badge {
+  bottom: 18px !important;
+}
