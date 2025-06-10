@@ -13,7 +13,7 @@
 .cv-bloc-half {
   flex: 1 1 300px;
   max-width: calc(50% - 1rem); /* 2rem de gap divisée entre deux blocs */
-  padding: 1.5rem;
+  padding: 1.2rem;
   border-radius: 1rem;
   background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
@@ -29,13 +29,13 @@
 
 .cv-bloc-full {
   width: 100%;
-  padding: 1.5rem;
+  padding: 1.2rem;
   border-radius: 1rem;
   background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
   box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
   color: var(--text-primary, #fff);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   transition: box-shadow 0.3s ease;
   box-sizing: border-box;
 }
