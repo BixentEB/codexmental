@@ -52,3 +52,12 @@
     margin-bottom: 1rem;
   }
 }
+
+.cv-perso {
+  max-width: 900px;
+  margin: 2rem auto;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #ccc;
+  font-style: italic;
+}
