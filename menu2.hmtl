@@ -1,0 +1,18 @@
+<header class="header">
+  <div class="site-title">Codex Mental</div>
+
+  <nav class="main-nav">
+    <a href="/index.html" class="nav-link">Accueil</a>
+    <a href="/fr/blog" class="nav-link">Blog</a>
+    <a href="/fr/projets" class="nav-link">Projets</a>
+    <a href="/fr/cv" class="nav-link">CV</a>
+    <a href="/fr/contact" class="nav-link">Contact</a>
+  </nav>
+
+  <div class="theme-switcher">
+    <button onclick="setTheme('stellaire')">🌌</button>
+    <button onclick="setTheme('galactique')">✨</button>
+    <button onclick="setTheme('lunaire')">🌙</button>
+    <button onclick="setTheme('solaire')">☀️</button>
+  </div>
+</header>
