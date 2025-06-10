@@ -304,8 +304,13 @@ body:not(.theme-lunaire) #astro-badge {
   bottom: 18px !important;
 }
 
-#astro-info-space {
-  height: 3.5rem; /* ou la hauteur réelle de ton bloc #astro-info */
-  visibility: hidden;
-  pointer-events: none;
+#astro-info {
+  position: absolute;
+  bottom: 90px; /* ou plus, selon la hauteur souhaitée */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  z-index: 999;
 }
