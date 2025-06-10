@@ -61,3 +61,26 @@
   color: #ccc;
   font-style: italic;
 }
+
+.cv-bloc-full h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  line-height: 1.3;
+}
+
+.cv-bloc-full p {
+  margin-bottom: 1.2rem;
+  line-height: 1.6;
+}
+
+.cv-bloc-full p:last-child {
+  margin-bottom: 0;
+}
+
+.cv-bloc-full p strong {
+  display: inline-block;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+  color: var(--accent-color, #ffcc70);
+}
+
