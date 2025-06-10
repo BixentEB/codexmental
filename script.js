@@ -228,13 +228,25 @@ function afficherNoteAstro(data) {
     currentAlertText = "Aucun événement astronomique aujourd’hui.";
   }
 
-  lancerIntroAstro(); // ne transmet plus en argument
+  lancerIntroAstro(); // déclenche le cycle animé
 }
 
 fetch('./arc/events-astro-2025.json')
   .then(res => res.json())
   .then(data => afficherNoteAstro(data))
   .catch(err => console.error("Erreur chargement astro.json", err));
+
+function typewriter(element, text, speed = 45, callback) {
+  let i = 0;
+  const interval = setInterval(() => {
+    element.textContent += text.charAt(i);
+    i++;
+    if (i >= text.length) {
+      clearInterval(interval);
+      if (callback) callback();
+    }
+  }, speed);
+}
 
 function lancerIntroAstro() {
   const bloc = document.getElementById('astro-info');
@@ -253,7 +265,6 @@ function lancerIntroAstro() {
   ];
 
   const entry = messages[Math.floor(Math.random() * messages.length)];
-  let i = 0;
   bloc.textContent = entry.icon;
   let clignote = true;
 
@@ -265,17 +276,17 @@ function lancerIntroAstro() {
   setTimeout(() => {
     clearInterval(clignoteInterval);
     bloc.textContent = '';
-    const typer = setInterval(() => {
-      bloc.textContent += entry.text.charAt(i);
-      i++;
-      if (i === entry.text.length) {
-        clearInterval(typer);
-        bloc.textContent += ' ' + currentAlertText;
-
-        setTimeout(() => {
-          lancerIntroAstro();
-        }, 10000);
-      }
-    }, 45);
+    typewriter(bloc, entry.text, 45, () => {
+      // ⌛ courte pause avant de taper l’alerte
+      setTimeout(() => {
+        bloc.textContent += ' ';
+        typewriter(bloc, currentAlertText, 45, () => {
+          // 🔁 Et on recommence après 10 secondes
+          setTimeout(() => {
+            lancerIntroAstro();
+          }, 10000);
+        });
+      }, 500);
+    });
   }, 2000);
 }
