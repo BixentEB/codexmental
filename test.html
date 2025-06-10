@@ -3,60 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Test Menu – Codex Mental</title>
+  <title>Test Sticky Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #0b0e1b;
+      color: white;
+    }
 
-  <link rel="stylesheet" href="/menu-test.css" />
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      background-color: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .site-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: #4eaaff;
+      font-family: 'Orbitron', sans-serif;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    .theme-switcher button {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+  </style>
 </head>
-<body class="theme-stellaire">
-  <!-- Menu test injecté dynamiquement -->
-  <div id="menu-placeholder"></div>
 
-  <main class="container">
-    <h1>Page de test</h1>
-    <section class="bloc">
-  <h2>Lorem Ipsum</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
-  <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.</p>
-  <p>Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-</section>
-    <section class="bloc">
-  <h2>Lorem Ipsum</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
-  <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.</p>
-  <p>Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-</section>
-    <section class="bloc">
-  <h2>Lorem Ipsum</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
-  <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.</p>
-  <p>Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-</section>
-    <section class="bloc">
-  <h2>Lorem Ipsum</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
-  <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.</p>
-  <p>Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-</section>
-    <section class="bloc">
-  <h2>Lorem Ipsum</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
-  <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.</p>
-  <p>Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-</section>
-    <section class="bloc">
-  <h2>Lorem Ipsum</h2>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
-  <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.</p>
-  <p>Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
-</section>
-      <section style="height: 2000px; background: linear-gradient(#111, #444);"></section>
+<body>
+  <header class="header">
+    <div class="site-title">Codex Mental</div>
+    <nav class="main-nav">
+      <a href="#" class="nav-link">Accueil</a>
+      <a href="#" class="nav-link">Blog</a>
+      <a href="#" class="nav-link">Projets</a>
+      <a href="#" class="nav-link">CV</a>
+      <a href="#" class="nav-link">Contact</a>
+    </nav>
+    <div class="theme-switcher">
+      <button title="Stellaire">🌌</button>
+      <button title="Galactique">✨</button>
+      <button title="Lunaire">🌙</button>
+      <button title="Solaire">☀️</button>
+    </div>
+  </header>
+
+  <main>
+    <h1>Page de test sticky</h1>
+    <section>
+      <h2>Lorem Ipsum</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
+      <p>Suspendisse potenti. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam.</p>
+    </section>
+    <section>
+      <h2>Plus de contenu</h2>
+      <p>Morbi in ipsum sit amet pede facilisis laoreet. Donec lacus nunc, viverra nec. Sed cursus ante dapibus diam. Sed nisi.</p>
+      <p>Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque. Quisque porta.</p>
+    </section>
+    <section>
+      <h2>Encore plus</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent libero. Fusce nec tellus sed augue semper porta.</p>
+      <p>Curabitur sit amet mauris. Morbi in dui quis est pulvinar ullamcorper. Nulla facilisi. Integer lacinia sollicitudin massa.</p>
+    </section>
+    <section>
+      <h2>Scroll encore</h2>
+      <p>Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis.</p>
+      <p>Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam.</p>
+    </section>
   </main>
-
-  <script>
-    fetch('/menu2.html')
-      .then(res => res.text())
-      .then(html => document.getElementById('menu-placeholder').innerHTML = html);
-  </script>
-
 </body>
 </html>
