@@ -2,10 +2,11 @@
   {
   "date": "2025-06-10",
   "type": "moon_phase",
-  "phase": "Nouvelle lune",
-  "message": "🌑 Super lune test app",
-  "themeEffect": "moon_nouvelle_lune"
-},
+  "phase": "Pleine lune",
+  "message": "🌕 Super pleine lune test app",
+  "themeEffect": "moon_super_full"
+  }
+,
 
   {
     "date": "2025-01-06",
