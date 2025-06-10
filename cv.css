@@ -8,51 +8,34 @@
   margin-bottom: 3rem;
 }
 
-/* 🧱 Bloc demi-largeur */
 .cv-bloc-half {
-  flex: 1 1 48%;
+  flex: 1 1;
   min-width: 280px;
   padding: 1.5rem;
   border-radius: 1rem;
-  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--bloc-border, rgba(255,255,255,0.15));
-  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
+  background-color: var(--bloc-bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
   color: var(--text-primary, #fff);
   transition: box-shadow 0.3s ease;
 }
 
 .cv-bloc-half:hover {
-  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
+  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255, 255, 255, 0.3));
 }
 
-/* 🧱 Bloc pleine largeur */
 .cv-bloc-full {
   width: 100%;
   padding: 1.5rem;
   border-radius: 1rem;
-  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--bloc-border, rgba(255,255,255,0.15));
-  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
+  background-color: var(--bloc-bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
   color: var(--text-primary, #fff);
   margin-bottom: 2rem;
   transition: box-shadow 0.3s ease;
 }
 
-.cv-bloc-full:hover {
-  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
-}
-
-/* ✏️ Style des titres avec icône */
-.cv-bloc-half h2,
-.cv-bloc-full h2 {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-}
-
-/* 📱 Responsive */
 @media screen and (max-width: 768px) {
   .cv-section {
     flex-direction: column;
