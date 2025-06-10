@@ -1,12 +1,20 @@
+/* === MENU STICKY & RESPONSIVE === */
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--nav-bg, #111);
   padding: 1rem 2rem;
-  position: sticky;
-  top: 0;
   z-index: 1000;
+}
+
+/* Sticky uniquement sur desktop */
+@media (min-width: 768px) {
+  .header {
+    position: sticky;
+    top: 0;
+  }
 }
 
 .site-title {
@@ -15,6 +23,7 @@
   font-weight: bold;
   flex: 1;
   text-align: left;
+  color: var(--logo-color, white);
 }
 
 .main-nav {
@@ -30,20 +39,104 @@
   color: var(--nav-link-color, #4eaaff);
   text-decoration: none;
   padding: 0.3rem 0.6rem;
+  border-radius: 4px;
   transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #fff;
+  background-color: rgba(255,255,255,0.1);
 }
 
 .theme-switcher {
   display: flex;
-  gap: 0.3rem;
-  justify-content: flex-end;
-  flex: 1;
+  gap: 0.5rem;
 }
 
 .theme-switcher button {
+  background-color: var(--btn-bg, #4eaaff);
+  color: var(--btn-text, #fff);
+  border: none;
+  padding: 0.3rem 0.6rem;
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
+}
+
+.theme-switcher button:hover {
+  background-color: var(--btn-hover, #74c4ff);
+}
+
+/* BOUTON BURGER EN STICKY SUR MOBILE */
+.menu-toggle {
+  position: sticky;
+  top: 0;
+  right: 1rem;
+  margin-left: auto;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 1.5rem;
+  border-radius: .5rem;
+  z-index: 1001;
+  display: none;
+}
+
+/* Affiché seulement sur mobile */
+@media (max-width: 768px) {
+  .main-nav,
+  .theme-switcher {
+    display: none;
+  }
+  .menu-toggle {
+    display: block;
+  }
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 260px;
+  height: 100vh;
+  background-color: rgba(10,10,20,0.95);
+  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: right 0.3s ease-in-out;
+  padding: 2rem 1rem;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.mobile-menu li {
+  margin: 1rem 0;
+}
+
+.mobile-menu a,
+.mobile-menu button {
+  color: var(--text-primary);
   background: none;
   border: none;
-  color: white;
-  font-size: 1.2rem;
+  padding: 0.4rem 0;
+  width: 100%;
+  text-align: left;
+  font-size: 1rem;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.mobile-menu button:hover,
+.mobile-menu a:hover {
+  color: var(--accent-hover);
   cursor: pointer;
 }
