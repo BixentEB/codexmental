@@ -3,23 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accueil – Codex Mental</title>
+  <title>Blog – Codex Mental</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
 
-  <!-- Styles -->
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
+
+  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/main.css" />
- 
-  <!-- Scripts -->
+  <link rel="stylesheet" href="/lune.css" />
+
+  <!-- ⚙️ Script principal -->
   <script src="/script.js" defer></script>
 </head>
-<body class="theme-stellaire">
-<canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- Injection menu -->
+<body class="theme-stellaire">
+  <!-- 🌌 Canvas de fond -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu injecté dynamiquement -->
   <div id="menu-placeholder"></div>
 
+  <!-- ☰ Bouton menu mobile -->
+  <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
+
+  <!-- 🌟 Badge alerte astronomique flottant -->
+<div id="astro-badge" style="display:none;"></div>
+ 
     <!-- Contenu -->
   <main class="container">
     <h1>🧠 Le Blog</h1>
@@ -29,7 +41,17 @@
     </ul>
   </main>
 
-  <!-- Injection footer -->
+  <!-- 🌙 Lune injectée automatiquement si thème lunaire -->
+
+  <!-- 🦶 Footer dynamique -->
   <div id="footer-placeholder"></div>
+
+  <!-- ✅ Confirmation soumission -->
+  <script>
+    function formSubmitted() {
+      const msg = document.getElementById('confirmationMessage');
+      if (msg) msg.style.display = 'block';
+    }
+  </script>
 </body>
 </html>
