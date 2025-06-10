@@ -2,10 +2,10 @@
   <!-- 🧠 Titre du site -->
   <div class="site-title">Codex Mental</div>
 
-  <!-- ☰ Bouton menu mobile -->
+  <!-- ☞ Bouton menu mobile sticky sur mobile uniquement -->
   <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
 
-  <!-- 🧭 Menu de navigation principal -->
+  <!-- 🗭 Menu de navigation principal -->
   <nav class="main-nav">
     <a href="/index.html" class="nav-link">Accueil</a>
     <a href="/fr/blog" class="nav-link">Blog</a>
@@ -14,12 +14,12 @@
     <a href="/fr/contact" class="nav-link">Contact</a>
   </nav>
 
-  <!-- 🌈 Sélecteur de thème -->
-  <div class="theme-switcher">
-    <button onclick="setTheme('stellaire')" title="Thème stellaire">🌌</button>
-    <button onclick="setTheme('galactique')" title="Thème galactique">✨</button>
-    <button onclick="setTheme('lunaire')" title="Thème lunaire">🌙</button>
-    <button onclick="setTheme('solaire')" title="Thème solaire">☀️</button>
+  <!-- 🌌 Sélecteur de thème visible avec texte sur desktop -->
+  <div class="theme-buttons">
+    <button onclick="setTheme('solaire')">Solaire</button>
+    <button onclick="setTheme('lunaire')">Lunaire</button>
+    <button onclick="setTheme('galactique')">Galactique</button>
+    <button onclick="setTheme('stellaire')">Stellaire</button>
   </div>
 
   <!-- 📱 Menu mobile déroulant -->
@@ -37,3 +37,50 @@
     </ul>
   </div>
 </header>
+
+<style>
+/* Sticky uniquement sur desktop */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--nav-bg, #111);
+  padding: 1rem 2rem;
+  top: 0;
+  z-index: 1000;
+}
+
+@media (min-width: 768px) {
+  .header {
+    position: sticky;
+  }
+}
+
+@media (max-width: 767px) {
+  .header {
+    position: static;
+  }
+  .menu-toggle {
+    position: sticky;
+    top: 0;
+    right: 1rem;
+    z-index: 1100;
+  }
+}
+
+.theme-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.theme-buttons button {
+  background: var(--btn-bg, #4eaaff);
+  color: var(--btn-text, #fff);
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
