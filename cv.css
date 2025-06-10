@@ -69,8 +69,8 @@
 }
 
 .cv-bloc-full p {
-  margin-bottom: 1.2rem;
-  line-height: 1.6;
+  margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
 .cv-bloc-full p:last-child {
@@ -79,8 +79,10 @@
 
 .cv-bloc-full p strong {
   display: inline-block;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.2rem;   /* petit espace mais pas trop */
   font-weight: 600;
+  font-size: 1.05rem;
   color: var(--accent-color, #ffcc70);
 }
+
 
