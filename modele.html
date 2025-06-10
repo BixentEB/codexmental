@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accueil – Codex Mental</title>
+  <title>Page – Codex Mental</title>
+
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
 
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- 🎨 Styles principaux -->
+  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/main.css" />
   <link rel="stylesheet" href="/lune.css" />
 
@@ -17,63 +20,47 @@
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Effet stellaire / galactique -->
+  <!-- 🌌 Canvas de fond -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧠 Injection du menu desktop (menu.html) -->
+  <!-- 🧠 Menu injecté dynamiquement -->
   <div id="menu-placeholder"></div>
 
   <!-- ☰ Bouton menu mobile -->
-  <button id="menu-toggle" class="menu-toggle">☰</button>
-
-  <!-- 📱 Menu mobile injecté dynamiquement par script.js -->
-  <nav id="mobile-menu" class="mobile-menu">
-    <ul id="mobile-menu-items">
-      <!-- rempli automatiquement -->
-    </ul>
-  </nav>
+  <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
 
   <!-- 🧱 Contenu principal -->
   <main class="container">
-    <h1 class="text-center">Bienvenue sur mon site</h1>
 
-    <!-- 💡 Bloc prêt à remplir -->
+    <!-- ✅ Titre principal de la page -->
+    <h1 class="text-center">[Titre de la page]</h1>
+
+    <!-- 📦 Bloc de contenu 1 -->
     <section class="bloc">
-      <h2>Titre de section</h2>
-      <p>Contenu à ajouter ici…</p>
+      <h2>[Titre du bloc 1]</h2>
+      <p>[Paragraphe 1]</p>
+      <p>[Paragraphe 2]</p>
     </section>
 
-    <!-- 🔧 Exemple de second bloc -->
+    <!-- 📦 Bloc de contenu 2 -->
     <section class="bloc">
-      <h2>Autre section</h2>
-      <p>Utilise ce modèle pour organiser ton contenu sur les autres pages.</p>
+      <h2>[Titre du bloc 2]</h2>
+      <ul>
+        <li>[Élément de liste 1]</li>
+        <li>[Élément de liste 2]</li>
+      </ul>
     </section>
 
-    <!-- 🌠 Alerte événement astronomique (remplie dynamiquement) -->
+    <!-- 🌠 Alerte événement astronomique (laisser tel quel) -->
     <div id="astro-info" class="astro-info" style="all: unset; display: block; text-align: center; font-size: .9rem; color: var(--text-primary); margin: 1rem auto;">
       Chargement des événements astronomiques...
     </div>
+
   </main>
 
-  <!-- 🌙 Le widget de lune s’injecte automatiquement si thème lunaire -->
+  <!-- 🌙 Widget lunaire généré dynamiquement si thème = lunaire -->
 
-  <!-- 🦶 Injection dynamique du footer -->
+  <!-- 🦶 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
-
-  <!-- 📜 Script ouverture / fermeture du menu mobile -->
-  <script>
-    const toggleBtn = document.getElementById("menu-toggle");
-    const menu = document.getElementById("mobile-menu");
-
-    toggleBtn.addEventListener("click", () => {
-      menu.classList.toggle("open");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!menu.contains(e.target) && e.target !== toggleBtn) {
-        menu.classList.remove("open");
-      }
-    });
-  </script>
 </body>
 </html>
