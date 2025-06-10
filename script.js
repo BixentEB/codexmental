@@ -211,30 +211,9 @@ function isToday(dateStr) {
   );
 }
 
-function afficherNoteAstro(data) {
-  const bloc = document.getElementById('astro-info');
-  if (!bloc) return;
-
-  const todayAlerts = data.filter(ev => isToday(ev.date));
-  let alertText = "";
-
-  if (todayAlerts.length > 0) {
-    alertText = todayAlerts.map(ev => ev.message).join(' • ');
-    todayAlerts.forEach(ev => {
-      if (ev.themeEffect) lancerAnimation(ev.themeEffect);
-    });
-  } else {
-    alertText = "Aucun événement astronomique aujourd’hui.";
-  }
-
-  lancerIntroAstro(alertText);
-}
-
-// 💡 Cette fonction remplace le fetch unique
 function chargerEtAfficherAstro() {
   fetch('./arc/events-astro-2025.json')
     .then(res => res.json())
-    .then(data => afficherNoteAstro(data))
     .then(data => {
       const todayAlerts = data.filter(ev => isToday(ev.date));
       let alertText = "";
@@ -289,10 +268,8 @@ function lancerIntroAstro(alertText = "") {
         clearInterval(typer);
         bloc.textContent += ' ' + alertText;
 
-        // ✅ Et maintenant on relance tout le fetch après délai
         // 🔁 Reboucle complète après 10s
         setTimeout(() => {
-          chargerEtAfficherAstro(); // 🔁 pas juste la boucle
           chargerEtAfficherAstro();
         }, 10000);
       }
@@ -300,6 +277,5 @@ function lancerIntroAstro(alertText = "") {
   }, 2000);
 }
 
-// 👇 Lancement initial
 // 🚀 Démarrage initial
 chargerEtAfficherAstro();
