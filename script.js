@@ -227,13 +227,16 @@ function afficherNoteAstro(data) {
     alertText = "Aucun événement astronomique aujourd’hui.";
   }
 
-  lancerIntroAstro(alertText); // Affiche intro + ajoute l’alerte ensuite (non tapée)
+  lancerIntroAstro(alertText);
 }
 
-fetch('./arc/events-astro-2025.json')
-  .then(res => res.json())
-  .then(data => afficherNoteAstro(data))
-  .catch(err => console.error("Erreur chargement astro.json", err));
+// 💡 Cette fonction remplace le fetch unique
+function chargerEtAfficherAstro() {
+  fetch('./arc/events-astro-2025.json')
+    .then(res => res.json())
+    .then(data => afficherNoteAstro(data))
+    .catch(err => console.error("Erreur chargement astro.json", err));
+}
 
 function lancerIntroAstro(alertText = "") {
   const bloc = document.getElementById('astro-info');
@@ -269,14 +272,16 @@ function lancerIntroAstro(alertText = "") {
       i++;
       if (i === entry.text.length) {
         clearInterval(typer);
-        // ✅ Affiche directement l’alerte après le message tapé
         bloc.textContent += ' ' + alertText;
 
-        // 🔁 Relancer la boucle après un délai
+        // ✅ Et maintenant on relance tout le fetch après délai
         setTimeout(() => {
-          lancerIntroAstro(alertText);
+          chargerEtAfficherAstro(); // 🔁 pas juste la boucle
         }, 10000);
       }
     }, 45);
   }, 2000);
 }
+
+// 👇 Lancement initial
+chargerEtAfficherAstro();
