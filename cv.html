@@ -4,33 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Page – Codex Mental</title>
-  
+
   <!-- 🌞 Favicon -->
-  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
 
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
-  <!-- 🎨 Styles globaux -->
-  <link rel="stylesheet" href="/style-base.css" />
-  <!-- 🎨 Styles spécifiques au CV -->
-  <link rel="stylesheet" href="/cv.css" />
+  <!-- 🎨 Styles -->
+  <link rel="stylesheet" href="/main.css" />
+  <link rel="stylesheet" href="/lune.css" />
 
   <!-- ⚙️ Script principal -->
   <script src="/script.js" defer></script>
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Fond animé -->
+  <!-- 🌌 Canvas de fond -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧠 Menu dynamique -->
+  <!-- 🧠 Menu injecté dynamiquement -->
   <div id="menu-placeholder"></div>
 
-  <!-- ☰ Menu mobile -->
+  <!-- ☰ Bouton menu mobile -->
   <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
 
-  <!-- 📄 Contenu principal -->
+  <!-- 🌟 Badge alerte astronomique flottant -->
+<div id="astro-badge" style="display:none;"></div>
+ 
+  <!-- 🧱 Contenu principal -->
+  <main class="container">
+
+    <!-- ✅ Titre principal de la page -->
+    <h1 class="text-center">[Titre de la page]</h1>
+
+     <!-- 📄 Contenu principal -->
   <main class="container">
 
     <!-- 🔷 En-tête CV -->
@@ -71,9 +79,9 @@
     ...
   </div>
 </section>
+    <!-- 🌠 Alerte événement astronomique (à ajouter si besoin voir index.html) -->
 
-
-</main>
+  </main>
 
   <!-- 🌙 Widget lunaire généré dynamiquement si thème = lunaire -->
 
