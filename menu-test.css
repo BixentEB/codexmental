@@ -1,0 +1,49 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--nav-bg, #111);
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.site-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.8rem;
+  font-weight: bold;
+  flex: 1;
+  text-align: left;
+}
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex: 2;
+}
+
+.nav-link {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  color: var(--nav-link-color, #4eaaff);
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  transition: all 0.3s ease;
+}
+
+.theme-switcher {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.theme-switcher button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
