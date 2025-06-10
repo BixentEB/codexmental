@@ -303,3 +303,9 @@ footer .theme-buttons {
 body:not(.theme-lunaire) #astro-badge {
   bottom: 18px !important;
 }
+
+#astro-info-space {
+  height: 3.5rem; /* ou la hauteur réelle de ton bloc #astro-info */
+  visibility: hidden;
+  pointer-events: none;
+}
