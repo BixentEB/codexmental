@@ -1,35 +1,54 @@
+/* 🌐 Mise en page CV - compatible avec tous les thèmes */
+
 .cv-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
   margin-bottom: 3rem;
-  clear: both;
 }
 
+/* 🎯 Bloc 1/2 */
+.cv-bloc-half {
+  flex: 0 0 48%;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background-color: var(--bloc-bg);
+  border: 1px solid var(--bloc-border);
+  box-shadow: 0 0 20px var(--bloc-shadow);
+  color: var(--text-primary);
+  transition: box-shadow 0.3s ease;
+}
+
+.cv-bloc-half:hover {
+  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
+}
+
+/* 🎯 Bloc 1/1 */
 .cv-bloc-full {
   width: 100%;
   padding: 1.5rem;
   border-radius: 1rem;
-  background-color: var(--bloc-bg, rgba(255,255,255,0.05));
-  border: 1px solid var(--bloc-border, rgba(255,255,255,0.2));
-  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
+  background-color: var(--bloc-bg);
+  border: 1px solid var(--bloc-border);
+  box-shadow: 0 0 20px var(--bloc-shadow);
+  color: var(--text-primary);
   margin-bottom: 2rem;
+  transition: box-shadow 0.3s ease;
 }
 
-.cv-bloc-half {
-  width: 48%;
-  display: inline-block;
-  vertical-align: top;
-  margin: 1%;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  background-color: var(--bloc-bg, rgba(255,255,255,0.05));
-  border: 1px solid var(--bloc-border, rgba(255,255,255,0.2));
-  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
+.cv-bloc-full:hover {
+  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
 }
 
-/* Responsive mobile */
+/* 📱 Responsive mobile */
 @media screen and (max-width: 768px) {
+  .cv-section {
+    flex-direction: column;
+  }
+
   .cv-bloc-half {
     width: 100%;
-    display: block;
-    margin: 1rem 0;
+    margin-bottom: 1rem;
   }
 }
