@@ -3,14 +3,13 @@
 .cv-section {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   gap: 2rem;
   margin-bottom: 3rem;
 }
 
-/* 🧱 Bloc 1/2 */
 .cv-bloc-half {
-  flex: 0 0 48%;
+  flex: 1;
+  min-width: 300px;
   padding: 1.5rem;
   border-radius: 1rem;
   background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
@@ -24,7 +23,6 @@
   box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
 }
 
-/* 🧱 Bloc 1/1 */
 .cv-bloc-full {
   width: 100%;
   padding: 1.5rem;
