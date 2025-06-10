@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accueil – Codex Mental</title>
 
-  <!-- 🌞 Favicon  -->
-<link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96")">
-
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
 
   <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
@@ -31,7 +30,7 @@
   <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
 
   <!-- 🧱 Contenu principal -->
-  <main class="container">
+  <main class="container" style="padding-bottom: 3rem;">
     <h1 class="text-center">Bienvenue sur mon site</h1>
 
     <section class="bloc">
@@ -53,11 +52,11 @@
     </section>
 
     <!-- 🌠 Alerte événement astronomique -->
-    <div id="astro-info" class="astro-info" style="all: unset; display: block; text-align: center; font-size: .9rem; color: var(--text-primary); margin: 1rem auto;">
-      Chargement des événements astronomiques...
+    <div id="astro-info-space" style="min-height: 2rem;">
+      <div id="astro-info" class="astro-info" style="all: unset; display: block; text-align: center; font-size: .9rem; color: var(--text-primary); margin: 1rem auto;">
+        Chargement des événements astronomiques...
       </div>
-    <!-- 📦 Espace réservé pour astro-info -->
-  <div id="astro-info-space"></div>
+    </div>
   </main>
 
   <!-- 🌙 Widget lunaire généré dynamiquement si thème = lunaire -->
