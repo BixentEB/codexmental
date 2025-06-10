@@ -211,28 +211,32 @@ function isToday(dateStr) {
   );
 }
 
-function chargerEtAfficherAstro() {
-  fetch('./arc/events-astro-2025.json')
-    .then(res => res.json())
-    .then(data => {
-      const todayAlerts = data.filter(ev => isToday(ev.date));
-      let alertText = "";
+let currentAlertText = "";
 
-      if (todayAlerts.length > 0) {
-        alertText = todayAlerts.map(ev => ev.message).join(' • ');
-        todayAlerts.forEach(ev => {
-          if (ev.themeEffect) lancerAnimation(ev.themeEffect);
-        });
-      } else {
-        alertText = "Aucun événement astronomique aujourd’hui.";
-      }
+function afficherNoteAstro(data) {
+  const bloc = document.getElementById('astro-info');
+  if (!bloc) return;
 
-      lancerIntroAstro(alertText);
-    })
-    .catch(err => console.error("Erreur chargement astro.json", err));
+  const todayAlerts = data.filter(ev => isToday(ev.date));
+
+  if (todayAlerts.length > 0) {
+    currentAlertText = todayAlerts.map(ev => ev.message).join(' • ');
+    todayAlerts.forEach(ev => {
+      if (ev.themeEffect) lancerAnimation(ev.themeEffect);
+    });
+  } else {
+    currentAlertText = "Aucun événement astronomique aujourd’hui.";
+  }
+
+  lancerIntroAstro(); // ne transmet plus en argument
 }
 
-function lancerIntroAstro(alertText = "") {
+fetch('./arc/events-astro-2025.json')
+  .then(res => res.json())
+  .then(data => afficherNoteAstro(data))
+  .catch(err => console.error("Erreur chargement astro.json", err));
+
+function lancerIntroAstro() {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
 
@@ -266,16 +270,12 @@ function lancerIntroAstro(alertText = "") {
       i++;
       if (i === entry.text.length) {
         clearInterval(typer);
-        bloc.textContent += ' ' + alertText;
+        bloc.textContent += ' ' + currentAlertText;
 
-        // 🔁 Reboucle complète après 10s
         setTimeout(() => {
-          chargerEtAfficherAstro();
+          lancerIntroAstro();
         }, 10000);
       }
     }, 45);
   }, 2000);
 }
-
-// 🚀 Démarrage initial
-chargerEtAfficherAstro();
