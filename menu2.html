@@ -1,6 +1,11 @@
 <header class="header">
+  <!-- 🧠 Titre du site -->
   <div class="site-title">Codex Mental</div>
 
+  <!-- ☰ Bouton menu mobile -->
+  <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
+
+  <!-- 🧭 Menu de navigation principal -->
   <nav class="main-nav">
     <a href="/index.html" class="nav-link">Accueil</a>
     <a href="/fr/blog" class="nav-link">Blog</a>
@@ -9,10 +14,26 @@
     <a href="/fr/contact" class="nav-link">Contact</a>
   </nav>
 
+  <!-- 🌈 Sélecteur de thème -->
   <div class="theme-switcher">
-    <button onclick="setTheme('solaire')">☀️ Solaire</button>
-    <button onclick="setTheme('lunaire')">🌙 Lunaire</button>
-    <button onclick="setTheme('galactique')">✨ Galactique</button>
-    <button onclick="setTheme('stellaire')">🌌 Stellaire</button>
+    <button onclick="setTheme('stellaire')" title="Thème stellaire">🌌</button>
+    <button onclick="setTheme('galactique')" title="Thème galactique">✨</button>
+    <button onclick="setTheme('lunaire')" title="Thème lunaire">🌙</button>
+    <button onclick="setTheme('solaire')" title="Thème solaire">☀️</button>
+  </div>
+
+  <!-- 📱 Menu mobile déroulant -->
+  <div class="mobile-menu" id="mobile-menu">
+    <ul>
+      <li><a href="/index.html">Accueil</a></li>
+      <li><a href="/fr/blog">Blog</a></li>
+      <li><a href="/fr/projets">Projets</a></li>
+      <li><a href="/fr/cv">CV</a></li>
+      <li><a href="/fr/contact">Contact</a></li>
+      <li><button onclick="setTheme('stellaire')">🌌 Stellaire</button></li>
+      <li><button onclick="setTheme('galactique')">✨ Galactique</button></li>
+      <li><button onclick="setTheme('lunaire')">🌙 Lunaire</button></li>
+      <li><button onclick="setTheme('solaire')">☀️ Solaire</button></li>
+    </ul>
   </div>
 </header>
