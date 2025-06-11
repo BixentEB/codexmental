@@ -1,0 +1,31 @@
+/* ===========================
+   🧾 FORMULAIRE DE CONTACT
+=========================== */
+.bloc-contact form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.bloc-contact input,
+.bloc-contact textarea {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--bloc-border, #ccc);
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.bloc-contact textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.bloc-contact button {
+  align-self: center;
+  margin-top: 0.5rem;
+}

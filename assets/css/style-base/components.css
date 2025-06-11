@@ -1,0 +1,27 @@
+/* ===========================
+   🪨 BLOCS DE CONTENU
+=========================== */
+section {
+  margin-bottom: 3rem;
+}
+
+.bloc {
+  background-color: var(--bloc-bg, rgba(255,255,255,0.05));
+  border: 1px solid var(--bloc-border, rgba(255,255,255,0.2));
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
+  transition: box-shadow 0.3s ease;
+}
+
+.bloc:hover {
+  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255,255,255,0.3));
+}
+
+.bloc h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}

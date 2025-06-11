@@ -1,0 +1,58 @@
+/* ===========================
+   🛰️ BADGE ASTRONOMIQUE
+=========================== */
+#astro-badge {
+  position: fixed;
+  bottom: calc(120px + 4vh);
+  right: 18px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-family: 'Orbitron', sans-serif;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 8px rgba(255,255,255,0.12);
+  transition: opacity 0.3s ease;
+}
+
+#astro-badge.pulse {
+  animation: pulse 2s infinite;
+  background: radial-gradient(circle at center, rgba(150, 90, 255, 0.8), rgba(30, 0, 60, 0.6));
+  color: #fffbe6;
+  box-shadow: 0 0 16px rgba(255, 230, 255, 0.4);
+}
+
+body:not(.theme-lunaire) #astro-badge {
+  bottom: 18px !important;
+}
+
+
+/* ===========================
+   🌙 INTRO ANIMÉE ASTRO
+=========================== */
+#astro-info {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  z-index: 999;
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  background-color: #ffffff;
+  animation: blink-cursor 1s steps(2, start) infinite;
+  vertical-align: baseline;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

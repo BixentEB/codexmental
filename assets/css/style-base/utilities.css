@@ -1,0 +1,51 @@
+/* ===========================
+   🔗 LIENS GÉNÉRAUX
+=========================== */
+a {
+  color: var(--link-color, #00bfff);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* ===========================
+   🧩 BOUTONS GÉNÉRAUX
+=========================== */
+.theme-buttons button,
+.btn-primary {
+  background-color: var(--btn-bg, #4eaaff);
+  color: var(--btn-text, #fff);
+  border: none;
+  padding: 0.5rem 1rem;
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-buttons button:hover,
+.btn-primary:hover {
+  background-color: var(--btn-hover, #74c4ff);
+}
+
+/* ===========================
+   ⬆️ BOUTON RETOUR EN HAUT
+=========================== */
+#scrollTopBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 50%;
+  padding: 0.6rem 0.8rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
