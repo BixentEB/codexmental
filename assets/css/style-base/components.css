@@ -5,6 +5,12 @@ section {
   margin-bottom: 3rem;
 }
 
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 .bloc {
   background-color: var(--bloc-bg, rgba(255,255,255,0.05));
   border: 1px solid var(--bloc-border, rgba(255,255,255,0.2));
@@ -24,4 +30,10 @@ section {
   gap: 0.5rem;
   font-size: 1.3rem;
   margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 0.8rem;
+  }
 }
