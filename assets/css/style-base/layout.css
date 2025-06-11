@@ -11,6 +11,12 @@ body {
   line-height: 1.5;
 }
 
+main.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 /* ===========================
    🖛️ BANDEAU DE NAVIGATION
 =========================== */
