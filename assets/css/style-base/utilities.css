@@ -49,3 +49,33 @@ a:hover {
   z-index: 999;
   transition: opacity 0.3s ease;
 }
+
+/* ===========================
+   🚀 BOUTONS SWITCHER THEMES
+=========================== */
+.theme-switcher-icons {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1000;
+}
+
+.theme-switcher-icons button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  padding: 0.6rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease;
+}
+
+.theme-switcher-icons button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
