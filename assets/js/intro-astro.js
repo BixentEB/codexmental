@@ -2,7 +2,7 @@
 // intro-astro.js – Message animé d’introduction + alerte astro
 // ========================================================
 
-import { IDS } from './ids.js';
+import { IDS } from '/assets/js/ids.js';
 
 export let currentAlertText = "";
 let isTyping = false;
@@ -86,8 +86,8 @@ export function lancerIntroAstro() {
     { icon: '🪐', text: 'Décodage des messages interstellaires...' },
     { icon: '🔭', text: 'Connexion à l’observatoire quantique...' },
     { icon: '💫', text: 'Analyse des anomalies cosmiques...' },
-    { icon: '📁', text: 'Accès aux archives célestes...' },
-    { icon: '🔌', text: 'Mise à jour du protocole astrologique...' }
+    { icon: '🔮', text: 'Accès aux archives célestes...' },
+    { icon: '🌟', text: 'Mise à jour du protocole astrologique...' }
   ];
 
   const entry = messages[Math.floor(Math.random() * messages.length)];
