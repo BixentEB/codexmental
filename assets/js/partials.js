@@ -11,7 +11,7 @@ export function injectPartial(id, url) {
   const target = document.getElementById(id);
   if (!target) return;
 
-  fetch(url)
+  return fetch(url)
     .then(res => res.ok ? res.text() : Promise.reject(`Erreur chargement ${url}`))
     .then(html => {
       target.innerHTML = html;
@@ -36,23 +36,20 @@ export function injectPartial(id, url) {
               }
             });
           }
-        }, 100); // petit délai pour garantir que le DOM soit bien injecté
+        }, 10);
       }
-    })
-    .catch(err => console.error("❌ Injection échouée :", err));
+    });
 }
 
 /**
- * Ajoute la classe .active au lien correspondant à la page actuelle
+ * Ajoute la classe "active" sur le lien du menu correspondant à la page en cours
  */
 export function highlightActiveLink() {
-  const currentPath = location.pathname.replace(/\/+$/, '');
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
-  document.querySelectorAll("nav a").forEach(link => {
-    const href = link.getAttribute("href");
-    const linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '');
-
-    if (linkPath === currentPath) {
+  document.querySelectorAll(".nav-link").forEach(link => {
+    const href = link.getAttribute("href") || "";
+    if (href.endsWith(currentPage)) {
       link.classList.add("active");
     }
   });
