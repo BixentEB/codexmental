@@ -87,9 +87,12 @@ function animateParticles() {
  */
 export function stopParticles() {
   if (rafId) cancelAnimationFrame(rafId);
-  if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.shadowBlur = 0;
+  if (ctx && canvas) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.shadowBlur = 0;
+  }
+
   particles = [];
 
   if (canvas) canvas.style.opacity = '0';
