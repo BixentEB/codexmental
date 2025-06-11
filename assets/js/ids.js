@@ -10,7 +10,7 @@ export const IDS = {
 
   // 🌠 Alerte événement astro
   ASTRO: 'intro-astro',
-  BADGE: 'astro-badge',
+  BADGE: 'badge-astro',
 
   // 🌌 Canvas de fond dynamique
   CANVAS: 'theme-canvas',
