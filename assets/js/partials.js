@@ -45,11 +45,16 @@ export function injectPartial(id, url) {
  * Ajoute la classe "active" sur le lien du menu correspondant à la page en cours
  */
 export function highlightActiveLink() {
-  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  const path = window.location.pathname;
 
   document.querySelectorAll(".nav-link").forEach(link => {
-    const href = link.getAttribute("href") || "";
-    if (href.endsWith(currentPage)) {
+    const href = link.getAttribute("href");
+
+    // Normalisation des chemins : sans /final ni index.html explicite
+    const normalizedHref = href.replace(/\/index\.html$/, "").replace(/\/$/, "");
+    const normalizedPath = path.replace(/\/index\.html$/, "").replace(/\/$/, "");
+
+    if (normalizedHref === normalizedPath) {
       link.classList.add("active");
     }
   });
