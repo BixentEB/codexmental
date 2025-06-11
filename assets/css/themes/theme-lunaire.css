@@ -1,0 +1,47 @@
+/* === 🌙 THÈME LUNAIRE === */
+body.theme-lunaire {
+  --bg-primary: #0b1a33;
+  --text-primary: #dceeff;
+  --text-secondary: #aaccee;
+  --accent-primary: #3b7dd8;
+  --accent-hover: #5da3ff;
+  --link-color: #77aaff;
+
+  --bloc-bg: rgba(20, 30, 60, 0.95);
+  --bloc-border: rgba(150, 200, 255, 0.1);
+  --bloc-shadow: rgba(150, 200, 255, 0.08);
+  --bloc-shadow-hover: rgba(150, 200, 255, 0.2);
+
+  --logo-color: #77aaff;
+  --nav-bg: #111;
+  --nav-link-color: #aaccee;
+  --nav-link-active-bg: #3b7dd8;
+  --nav-link-active-color: #fff;
+
+  --btn-bg: #5da3ff;
+  --btn-text: #fff;
+  --btn-hover: #3b7dd8;
+}
+
+body.theme-lunaire .mobile-nav .theme-buttons button {
+  color: #aaccee;
+  text-shadow: 0 0 2px rgba(150, 200, 255, 0.2);
+}
+body.theme-lunaire .mobile-nav .theme-buttons button:hover {
+  color: #dceeff;
+  text-shadow: 0 0 4px rgba(220, 238, 255, 0.5);
+}
+
+/* ✅ Lisibilité du formulaire lunaire (optionnel mais recommandé) */
+body.theme-lunaire input,
+body.theme-lunaire textarea {
+  background-color: rgba(255, 255, 255, 0.06); /* fond doux */
+  color: #dceeff; /* texte clair */
+  border: 1px solid rgba(120, 180, 255, 0.2); /* bordure légèrement bleutée */
+}
+
+body.theme-lunaire input::placeholder,
+body.theme-lunaire textarea::placeholder {
+  color: #aaccee;
+  opacity: 0.75;
+}

@@ -1,0 +1,48 @@
+/* === 💫 THÈME GALACTIQUE === */
+body.theme-galactique {
+  --bg-primary: #0a0e2a;
+  --text-primary: #f2f0ff;
+  --text-secondary: #c3bdf5;
+  --accent-primary: #b388ff;
+  --accent-hover: #d1b3ff;
+  --link-color: #c6a6ff;
+
+  --bloc-bg: rgba(30, 20, 60, 0.9);
+  --bloc-border: rgba(179, 136, 255, 0.2);
+  --bloc-shadow: rgba(179, 136, 255, 0.08);
+  --bloc-shadow-hover: rgba(179, 136, 255, 0.2);
+  --text-shadow: rgba(179, 136, 255, 0.3);
+
+  --logo-color: #c6a6ff;
+  --nav-bg: #111;
+  --nav-link-color: #c6a6ff;
+  --nav-link-active-bg: #c6a6ff;
+  --nav-link-active-color: #111;
+
+  --btn-bg: #7c4dff;
+  --btn-text: #fff;
+  --btn-hover: #a982ff;
+}
+
+body.theme-galactique .mobile-nav .theme-buttons button {
+  color: #c6a6ff;
+  text-shadow: 0 0 2px rgba(200, 160, 255, 0.2);
+}
+body.theme-galactique .mobile-nav .theme-buttons button:hover {
+  color: #f2f0ff;
+  text-shadow: 0 0 4px rgba(242, 240, 255, 0.4);
+}
+
+/* ✅ Lisibilité du formulaire galactique (optionnel) */
+body.theme-galactique input,
+body.theme-galactique textarea {
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #f2f0ff;
+  border: 1px solid rgba(200, 160, 255, 0.2);
+}
+
+body.theme-galactique input::placeholder,
+body.theme-galactique textarea::placeholder {
+  color: #c3bdf5;
+  opacity: 0.7;
+}

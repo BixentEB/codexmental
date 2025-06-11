@@ -1,0 +1,21 @@
+/* ==========================================================
+   🎨 Import des thèmes visuels disponibles sur Codex Mental
+   Chaque thème contient ses variables CSS et ses styles associés
+========================================================== */
+
+/* 🌙 Thème Lunaire */
+@import url('./themes/theme-lunaire.css');
+
+/* ☀️ Thème Solaire */
+@import url('./themes/theme-solaire.css');
+
+/* ✨ Thème Stellaire */
+@import url('./themes/theme-stellaire.css');
+
+/* 💫 Thème Galactique */
+@import url('./themes/theme-galactique.css');
+
+/* 🧩 Ajouter ici les futurs thèmes spéciaux :
+@import url('./themes/theme-samain.css');      // 🎃 Thème Samain
+@import url('./themes/theme-yule.css');        // ❄️ Thème Yule
+*/

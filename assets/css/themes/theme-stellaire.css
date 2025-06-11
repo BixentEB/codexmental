@@ -1,0 +1,46 @@
+/* === ✨ THÈME STELLAIRE === */
+body.theme-stellaire {
+  --bg-primary: #030617;
+  --text-primary: #ffffff;
+  --text-secondary: #88ccff;
+  --accent-primary: #4eaaff;
+  --accent-hover: #74c4ff;
+  --link-color: #00bfff;
+
+  --bloc-bg: rgba(255, 255, 255, 0.05);
+  --bloc-border: rgba(255, 255, 255, 0.2);
+  --bloc-shadow: rgba(0, 0, 0, 0.2);
+  --bloc-shadow-hover: rgba(255, 255, 255, 0.3);
+
+  --logo-color: #4eaaff;
+  --nav-bg: #111;
+  --nav-link-color: #4eaaff;
+  --nav-link-active-bg: #4eaaff;
+  --nav-link-active-color: #111;
+
+  --btn-bg: #4eaaff;
+  --btn-text: #fff;
+  --btn-hover: #74c4ff;
+}
+
+body.theme-stellaire .mobile-nav .theme-buttons button {
+  color: #4eaaff;
+  text-shadow: 0 0 2px rgba(78, 170, 255, 0.2);
+}
+body.theme-stellaire .mobile-nav .theme-buttons button:hover {
+  color: #ffffff;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+/* ✨ Widget stellaire (placeholder futur)
+body.theme-stellaire #stellaire-widget {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: 40px;
+  height: 40px;
+  background-image: url('/img/stellaire/etoile.gif');
+  background-size: cover;
+  opacity: 0.8;
+}
+*/
