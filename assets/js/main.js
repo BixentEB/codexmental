@@ -13,7 +13,7 @@ import '/assets/js/theme-special.js';   // Thèmes pour fêtes/saisons
 import { setTheme } from '/assets/js/theme-engine.js';
 import { injectPartial } from '/assets/js/partials.js';
 import { setupScrollButton } from '/assets/js/scroll.js';
-import { afficherNoteAstro, lancerIntroAstro } from './intro-astro.js';
+import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 
 // === 🪐 Appliquer le thème au chargement ===
