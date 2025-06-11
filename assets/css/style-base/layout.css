@@ -14,8 +14,20 @@ body {
 main.container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1rem; /* ← très important pour l’espace mobile */
 }
+
+@media (max-width: 600px) {
+  main.container {
+    padding: 0 0.75rem;
+  }
+}
+
+.bloc {
+  width: 100%;
+  box-sizing: border-box; /* ← pour que padding + border ne dépassent pas */
+}
+
 
 /* ===========================
    🖛️ BANDEAU DE NAVIGATION
