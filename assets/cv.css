@@ -1,0 +1,114 @@
+/* ============================================================
+   👤 STYLE CV – Blocs, Grilles, Responsive
+   Appliqué uniquement sur /cv.html si inclus manuellement
+=========================================================== */
+
+.cv-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cv-bloc-half {
+  flex: 1 1 300px;
+  max-width: calc(50% - 1rem); /* 2rem de gap divisée entre deux blocs */
+  padding: 1.2rem;
+  border-radius: 1rem;
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
+  color: var(--text-primary, #fff);
+  transition: box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.cv-bloc-half:hover {
+  box-shadow: 0 0 30px var(--bloc-shadow-hover, rgba(255, 255, 255, 0.3));
+}
+
+.cv-bloc-full {
+  width: 100%;
+  padding: 1.2rem;
+  border-radius: 1rem;
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
+  color: var(--text-primary, #fff);
+  margin-bottom: 1rem;
+  transition: box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* 📱 Responsive */
+@media screen and (max-width: 768px) {
+  .cv-section {
+    flex-direction: column;
+  }
+
+  .cv-bloc-half {
+    max-width: 100%;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+.cv-perso {
+  max-width: 900px;
+  margin: 2rem auto;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #ccc;
+  font-style: italic;
+}
+
+.cv-bloc-full h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  line-height: 1.3;
+}
+
+.cv-bloc-full p {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.cv-bloc-full p:last-child {
+  margin-bottom: 0;
+}
+
+.cv-bloc-full p strong {
+  display: inline-block;
+  margin-bottom: 0.2rem;   /* petit espace mais pas trop */
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--accent-color, #ffcc70);
+}
+
+/* 🌌 Section centres d’intérêt */
+.profile-interests {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.profile-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
+  transition: box-shadow .3s ease;
+}
+.profile-card:hover {
+  box-shadow: 0 0 30px var(--bloc-shadow, rgba(0, 0, 0, 0.35));
+}
+.profile-card h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-family: 'Orbitron', sans-serif;
+}

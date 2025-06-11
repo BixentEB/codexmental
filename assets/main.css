@@ -1,0 +1,33 @@
+/* ============================================================
+   🎨 main.css – Point d’entrée global pour Codex Mental
+   Structure, typographie, composants, responsive, thèmes
+============================================================ */
+
+/* === 📐 Structure de base (body, blocs, layout) === */
+@import url('./style-base/layout.css');
+
+/* === ✍️ Typographie (titres, paragraphes) === */
+@import url('./style-base/typography.css');
+
+/* === 📩 Formulaires de contact === */
+@import url('./style-base/forms.css');
+
+/* === 🧩 Composants visuels (blocs, boutons) === */
+@import url('./style-base/components.css');
+
+/* === 📱 Menu mobile === */
+@import url('./style-base/menu-mobile.css');
+
+/* === 🛠️ Classes utilitaires (flex, gap, scrollTop, centrage...) === */
+@import url('./style-base/utilities.css');
+
+/* === 🌠 Animation astro, badge, intro === */
+@import url('./style-base/astro.css');
+
+/* === 🌓 Extensions spécifiques === */
+@import url('./lune.css');        /* effets visuels de la lune */
+@import url('./cv.css');          /* structure CV uniquement */
+@import url('./helpers.css');     /* classes utilitaires diverses */
+
+/* === 🎨 Thèmes dynamiques === */
+@import url('./themes/themes.css');  /* appelle tous les thèmes CSS */
