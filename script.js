@@ -225,7 +225,7 @@ function afficherNoteAstro(data) {
       if (ev.themeEffect) lancerAnimation(ev.themeEffect);
     });
   } else {
-    currentAlertText = "Aucun événement astronomique aujourd’hui.";
+    currentAlertText = "🌌 Aucun phénomène remarquable aujourd’hui. Les étoiles se reposent en silence.";
   }
 
   lancerIntroAstro(); // déclenche le cycle animé
@@ -237,6 +237,7 @@ fetch('./arc/events-astro-2025.json')
   .catch(err => console.error("Erreur chargement astro.json", err));
 
 function typewriter(element, text, speed = 45, callback) {
+  element.textContent = ''; // On vide avant de commencer à écrire
   let i = 0;
   const interval = setInterval(() => {
     element.textContent += text.charAt(i);
@@ -252,6 +253,9 @@ function lancerIntroAstro() {
   const bloc = document.getElementById('astro-info');
   if (!bloc) return;
 
+  // Toujours vider le contenu au début
+  bloc.textContent = '';
+
   const messages = [
     { icon: '🛰️', text: 'Connexion au satellite Codex établie.' },
     { icon: '🌌', text: 'Balayage du ciel nocturne...' },
@@ -265,7 +269,6 @@ function lancerIntroAstro() {
   ];
 
   const entry = messages[Math.floor(Math.random() * messages.length)];
-  bloc.textContent = entry.icon;
   let clignote = true;
 
   const clignoteInterval = setInterval(() => {
@@ -277,11 +280,11 @@ function lancerIntroAstro() {
     clearInterval(clignoteInterval);
     bloc.textContent = '';
     typewriter(bloc, entry.text, 45, () => {
-      // ⌛ courte pause avant de taper l’alerte
+      // ⌛ courte pause avant l’alerte
       setTimeout(() => {
         bloc.textContent += ' ';
         typewriter(bloc, currentAlertText, 45, () => {
-          // 🔁 Et on recommence après 10 secondes
+          // 🔁 Relance du cycle toutes les 10 secondes
           setTimeout(() => {
             lancerIntroAstro();
           }, 10000);
