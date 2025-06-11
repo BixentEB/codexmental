@@ -256,12 +256,18 @@ function typewriter(element, text, speed = 45, callback) {
   }, speed);
 }
 
+let isTyping = false; // à mettre en haut du script si pas déjà fait
 
 function lancerIntroAstro() {
-  const bloc = document.getElementById('astro-info');
-  if (!bloc) return;
+  if (isTyping) return;
+  isTyping = true;
 
-  // Toujours vider le contenu au début
+  const bloc = document.getElementById('astro-info');
+  if (!bloc) {
+    isTyping = false;
+    return;
+  }
+
   bloc.textContent = '';
 
   const messages = [
@@ -277,23 +283,31 @@ function lancerIntroAstro() {
   ];
 
   const entry = messages[Math.floor(Math.random() * messages.length)];
-  let clignote = true;
 
-  const clignoteInterval = setInterval(() => {
-    bloc.textContent = clignote ? entry.icon : '';
-    clignote = !clignote;
-  }, 400);
+  // PHASE 1 : Message d’ambiance
+  typewriter(bloc, entry.text, 45, () => {
+    bloc.textContent += ' ';
 
-setTimeout(() => {
-  clearInterval(clignoteInterval);
-  bloc.textContent = '';
-  typewriter(bloc, `${entry.text} ${currentAlertText}`, 45, () => {
-    isTyping = false; // ✅ FIN DU CYCLE
+    // PHASE 2 : Curseur clignotant
+    const cursorSpan = document.createElement('span');
+    cursorSpan.className = 'cursor-blink';
+    bloc.appendChild(cursorSpan);
+
     setTimeout(() => {
-      lancerIntroAstro();
-    }, 10000);
+      cursorSpan.remove();
+
+      // PHASE 3 : Message astro ou message alternatif
+      const messageFinal = currentAlertText?.trim()
+        ? currentAlertText
+        : '🪐 Aucune donnée à ce jour.';
+      
+      bloc.textContent += ' ';
+      typewriter(bloc, messageFinal, 45, () => {
+        isTyping = false;
+        setTimeout(lancerIntroAstro, 10000);
+      });
+    }, 2000);
   });
-}, 2000);
 
 }
 
