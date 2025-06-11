@@ -19,5 +19,5 @@ export function activerBadgeAstro() {
         }
       }
     })
-    .catch(err => console.error("❌ Erreur chargement astro.json (badge)", err));
+    .catch(err => console.error("❌ Erreur chargement events-astro-2025.json (badge)", err));
 }
