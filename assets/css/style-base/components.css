@@ -1,14 +1,10 @@
+
 /* ===========================
-   🪨 BLOCS DE CONTENU
+   🪨 BLOCS DE CONTENU (visuel)
+   → components.css
 =========================== */
 section {
   margin-bottom: 3rem;
-}
-
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 1rem;
 }
 
 .bloc {
@@ -18,6 +14,8 @@ section {
   padding: 1.5rem;
   box-shadow: 0 0 20px var(--bloc-shadow, rgba(0,0,0,0.2));
   transition: box-shadow 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .bloc:hover {
@@ -30,10 +28,4 @@ section {
   gap: 0.5rem;
   font-size: 1.3rem;
   margin-bottom: 1rem;
-}
-
-@media screen and (max-width: 768px) {
-  .container {
-    padding: 0 0.8rem;
-  }
 }
