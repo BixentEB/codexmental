@@ -4,30 +4,31 @@
 ============================================================ */
 
 /* === 📐 Structure de base (body, blocs, layout) === */
-@import url('./style-base/layout.css');
+@import url('/assets/css/style-base/layout.css');
 
 /* === ✍️ Typographie (titres, paragraphes) === */
-@import url('./style-base/typography.css');
+@import url('/assets/css/style-base/typography.css');
 
 /* === 📩 Formulaires de contact === */
-@import url('./style-base/forms.css');
+@import url('/assets/css/style-base/forms.css');
 
 /* === 🧩 Composants visuels (blocs, boutons) === */
-@import url('./style-base/components.css');
+@import url('/assets/css/style-base/components.css');
 
 /* === 📱 Menu mobile === */
-@import url('./style-base/menu-mobile.css');
+@import url('/assets/css/style-base/menu-mobile.css');
 
 /* === 🛠️ Classes utilitaires (flex, gap, scrollTop, centrage...) === */
-@import url('./style-base/utilities.css');
+@import url('/assets/css/style-base/utilities.css');
 
 /* === 🌠 Animation astro, badge, intro === */
-@import url('./style-base/astro.css');
+@import url('/assets/css/style-base/astro.css');
 
 /* === 🌓 Extensions spécifiques === */
-@import url('./lune.css');        /* effets visuels de la lune */
-@import url('./cv.css');          /* structure CV uniquement */
-@import url('./helpers.css');     /* classes utilitaires diverses */
+@import url('/assets/css/lune.css');
+@import url('/assets/css/cv.css');
+@import url('/assets/css/helpers.css');
 
 /* === 🎨 Thèmes dynamiques === */
-@import url('./themes/themes.css');  /* appelle tous les thèmes CSS */
+@import url('/assets/css/themes/themes.css');
+
