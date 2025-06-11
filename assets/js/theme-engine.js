@@ -2,8 +2,8 @@
 // theme-engine.js – Applique le thème et initialise les effets associés
 // ========================================================
 
-import { setupCanvas, initParticles, stopParticles } from './canvas.js';
-import { updateLunarWidget, followScrollLune } from './lune.js';
+import { setupCanvas, initParticles, stopParticles } from '/assets/js/canvas.js';
+import { updateLunarWidget, followScrollLune } from '/assets/js/lune.js';
 
 /**
  * Applique un thème visuel au <body> :
