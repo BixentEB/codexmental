@@ -284,22 +284,17 @@ function lancerIntroAstro() {
     clignote = !clignote;
   }, 400);
 
-  setTimeout(() => {
-    clearInterval(clignoteInterval);
-    bloc.textContent = '';
-    typewriter(bloc, entry.text, 45, () => {
-      // ⌛ courte pause avant l’alerte
-      setTimeout(() => {
-        bloc.textContent += ' ';
-        typewriter(bloc, currentAlertText, 45, () => {
-          // 🔁 Relance du cycle toutes les 10 secondes
-          setTimeout(() => {
-            lancerIntroAstro();
-          }, 10000);
-        });
-      }, 500);
-    });
-  }, 2000);
+setTimeout(() => {
+  clearInterval(clignoteInterval);
+  bloc.textContent = '';
+  typewriter(bloc, `${entry.text} ${currentAlertText}`, 45, () => {
+    isTyping = false; // ✅ FIN DU CYCLE
+    setTimeout(() => {
+      lancerIntroAstro();
+    }, 10000);
+  });
+}, 2000);
+
 }
 
 // === 🌠 BADGE ASTRONOMIE ===
