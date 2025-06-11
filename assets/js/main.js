@@ -16,6 +16,8 @@ import { setupScrollButton } from '/assets/js/scroll.js';
 import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 
+window.setTheme = setTheme;
+
 // === 🪐 Appliquer le thème au chargement ===
 const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
 setTheme(savedTheme);
