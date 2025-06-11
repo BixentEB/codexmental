@@ -4,18 +4,18 @@
 ========================================================== */
 
 /* 🌙 Thème Lunaire */
-@import url('./themes/theme-lunaire.css');
+@import url('/assets/css/themes/theme-lunaire.css');
 
 /* ☀️ Thème Solaire */
-@import url('./themes/theme-solaire.css');
+@import url('/assets/css/themes/theme-solaire.css');
 
 /* ✨ Thème Stellaire */
-@import url('./themes/theme-stellaire.css');
+@import url('/assets/css/themes/theme-stellaire.css');
 
 /* 💫 Thème Galactique */
-@import url('./themes/theme-galactique.css');
+@import url('/assets/css/themes/theme-galactique.css');
 
 /* 🧩 Ajouter ici les futurs thèmes spéciaux :
-@import url('./themes/theme-samain.css');      // 🎃 Thème Samain
-@import url('./themes/theme-yule.css');        // ❄️ Thème Yule
+@import url('/assets/css/themes/theme-samain.css');      // 🎃 Thème Samain
+@import url('/assets/css/themes/theme-yule.css');        // ❄️ Thème Yule
 */
