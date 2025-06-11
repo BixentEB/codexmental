@@ -237,17 +237,25 @@ fetch('./arc/events-astro-2025.json')
   .catch(err => console.error("Erreur chargement astro.json", err));
 
 function typewriter(element, text, speed = 45, callback) {
-  element.textContent = ''; // On vide avant de commencer à écrire
+  if (!element || typeof text !== 'string') return;
+
+  // Réinitialisation complète
+  element.innerHTML = '';
   let i = 0;
+
   const interval = setInterval(() => {
-    element.textContent += text.charAt(i);
+    // Ajout d’un encodage sécurité par entité HTML
+    const char = document.createTextNode(text.charAt(i));
+    element.appendChild(char);
     i++;
+
     if (i >= text.length) {
       clearInterval(interval);
       if (callback) callback();
     }
   }, speed);
 }
+
 
 function lancerIntroAstro() {
   const bloc = document.getElementById('astro-info');
