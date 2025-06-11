@@ -4,17 +4,17 @@
 
 // === 📦 Modules à effets de bord ===
 // Ces modules s’auto-initialisent à l’importation si nécessaire
-import './canvas.js';          // Canvas d’arrière-plan dynamique (stellar/galactic)
-import './lune.js';            // Widget lunaire flottant
-import './theme-hours.js';     // Thèmes en fonction de l’heure
-import './theme-special.js';   // Thèmes pour fêtes/saisons
+import '/assets/js/canvas.js';          // Canvas d’arrière-plan dynamique (stellar/galactic)
+import '/assets/js/lune.js';            // Widget lunaire flottant
+import '/assets/js/theme-hours.js';     // Thèmes en fonction de l’heure
+import '/assets/js/theme-special.js';   // Thèmes pour fêtes/saisons
 
 // === 🔧 Modules à fonctions exportées explicites ===
-import { setTheme } from './theme-engine.js';
-import { injectPartial } from './partials.js';
-import { setupScrollButton } from './scroll.js';
+import { setTheme } from '/assets/js/theme-engine.js';
+import { injectPartial } from '/assets/js/partials.js';
+import { setupScrollButton } from '/assets/js/scroll.js';
 import { afficherNoteAstro, lancerIntroAstro } from './intro-astro.js';
-import { activerBadgeAstro } from './badge-astro.js';
+import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 
 // === 🪐 Appliquer le thème au chargement ===
 const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
@@ -28,7 +28,7 @@ injectPartial('footer-placeholder', '/footer.html');
 setupScrollButton();
 
 // === 🌠 Récupérer et afficher les événements astronomiques ===
-fetch('./arc/events-astro-2025.json')
+fetch('/arc/events-astro-2025.json')
   .then(res => res.json())
   .then(data => afficherNoteAstro(data));
 
