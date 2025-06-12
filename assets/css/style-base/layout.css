@@ -46,19 +46,26 @@ main.container {
    🖛️ BANDEAU DE NAVIGATION
 =========================== */
 .header {
-  position: fixed;
+  position: sticky;
   top: 0;
-  width: 100%;         /* ← nécessaire en fixed */
-  left: 0;
   z-index: 999;
+  background-color: var(--nav-bg, #111); /* obligatoire si fond semi-transparent */
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+
+/* Le vrai centrage + layout flex vient ici */
+.header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--nav-bg, #111);
-  padding: 1rem 2rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
+
 
 .site-title {
   font-family: 'Orbitron', sans-serif;
