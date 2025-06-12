@@ -1,77 +1,42 @@
 /* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
+
 #theme-toggle-container {
   position: fixed;
-  top: 1rem;
+  top: 4rem;
   right: 1rem;
-  z-index: 1000;
+  z-index: 999;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.3rem;
 }
 
-#theme-toggle-container button {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.2);
+/* Icône flottante */
+#theme-toggle {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  padding: 0.6rem;
-  font-size: 1.2rem;
+  padding: 0.7rem;
+  font-size: 1.4rem;
   cursor: pointer;
-  color: var(--text-primary, #fff);
   backdrop-filter: blur(6px);
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 }
 
-#theme-toggle-container button:hover {
-  background: rgba(255,255,255,0.2);
-}
-
+/* Bloc avec les 4 thèmes */
 #theme-options {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-top: 0.3rem;
-}
-
-#theme-options.hidden {
-  display: none;
-}
-
-/* 💻 Desktop only */
-@media screen and (max-width: 767px) {
-  #theme-toggle-container {
-    display: none;
-  }
-}
-
-.theme-floating-menu {
-  position: fixed;
-  top: 70px;
-  right: 1rem;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.theme-floating-menu #theme-options {
   margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  background-color: rgba(0,0,0,0.6);
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 0.6rem;
+  border-radius: 0.6rem;
+  backdrop-filter: blur(8px);
 }
 
-.theme-floating-menu #theme-options.hidden {
-  display: none;
-}
-
-.theme-floating-menu button {
+#theme-options button {
   border: none;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
   border-radius: 50%;
   padding: 0.6rem;
@@ -80,3 +45,14 @@
   transition: background 0.3s ease;
 }
 
+/* Masqué par défaut */
+#theme-options.hidden {
+  display: none;
+}
+
+/* CACHER sur mobile */
+@media (max-width: 768px) {
+  #theme-toggle-container {
+    display: none;
+  }
+}
