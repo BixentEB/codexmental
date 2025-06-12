@@ -1,0 +1,45 @@
+/* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
+#theme-toggle-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+#theme-toggle-container button {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  padding: 0.6rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-primary, #fff);
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+}
+
+#theme-toggle-container button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+#theme-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+#theme-options.hidden {
+  display: none;
+}
+
+/* 💻 Desktop only */
+@media screen and (max-width: 767px) {
+  #theme-toggle-container {
+    display: none;
+  }
+}
