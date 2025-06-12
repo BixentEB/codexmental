@@ -43,15 +43,16 @@ main.container {
 .header {
   position: sticky;
   top: 0;
+  z-index: 999;
+  background-color: var(--nav-bg, #111);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--nav-bg, #111);
   padding: 1rem 2rem;
-  z-index: 999;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  backdrop-filter: blur(8px);
 }
+
 
 .site-title {
   font-family: 'Orbitron', sans-serif;
