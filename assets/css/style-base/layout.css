@@ -99,8 +99,10 @@ main.container {
 
 .nav-link.active {
   background-color: var(--nav-link-active-bg, #4eaaff);
-  color: var(--nav-link-active-color, #111);
+  color: var(--nav-link-active-color, #000); /* #111 trop sombre sur fond bleu */
   font-weight: bold;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(78, 170, 255, 0.4);
 }
 
 /* ===========================
