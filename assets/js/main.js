@@ -39,3 +39,8 @@ lancerIntroAstro();
 
 // === 💫 Afficher le badge si événement présent ===
 activerBadgeAstro();
+
+document.getElementById("menu-toggle")?.addEventListener("click", () => {
+  console.log("Burger clicked");
+});
+
