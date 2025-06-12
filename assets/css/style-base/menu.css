@@ -3,12 +3,21 @@
 /* 🌌 FAB Thème flottant */
 .theme-fab-container {
   position: fixed;
-  top: 4.2rem; /* légèrement en dessous du menu */
+  top: 4.2rem; /* Légèrement en dessous du menu sticky */
   right: 1rem;
   z-index: 999;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+
+  opacity: 0;
+  animation: fadeInFab 0.6s ease 0.5s forwards;
+}
+
+@keyframes fadeInFab {
+  to {
+    opacity: 1;
+  }
 }
 
 #theme-fab {
@@ -21,11 +30,12 @@
   backdrop-filter: blur(4px);
   color: var(--text-primary);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 #theme-fab:hover {
   background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
 }
 
 .theme-fab-options {
@@ -33,6 +43,16 @@
   flex-direction: column;
   gap: 0.4rem;
   margin-top: 0.4rem;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: auto;
+}
+
+.theme-fab-options.hidden {
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
 }
 
 .theme-fab-options button {
@@ -45,20 +65,17 @@
   backdrop-filter: blur(6px);
   color: var(--text-primary);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .theme-fab-options button:hover {
   background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
 }
 
-.hidden {
-  display: none !important;
-}
-
+/* Cacher complètement sur mobile */
 @media screen and (max-width: 768px) {
   .theme-fab-container {
     display: none;
   }
 }
-
