@@ -40,28 +40,23 @@ export function followScrollLune(lune) {
 
   const padding = 10;
 
-  window.addEventListener('scroll', () => {
-    if (!lune) return;
+  const updatePosition = () => {
+    const currentLune = document.getElementById('lune-widget');
+    if (!currentLune) return; // sécurise dynamiquement
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
-    const luneHeight = lune.offsetHeight;
+    const luneHeight = currentLune.offsetHeight;
     const idealTop = scrollTop + windowHeight - luneHeight - padding;
 
-    lune.style.left = 'unset';
-    lune.style.right = `${padding}px`;
-    lune.style.top = `${idealTop}px`;
-  });
+    currentLune.style.left = 'unset';
+    currentLune.style.right = `${padding}px`;
+    currentLune.style.top = `${idealTop}px`;
+  };
 
-  // appel initial
-  const scrollTop = window.scrollY;
-  const windowHeight = window.innerHeight;
-  const luneHeight = lune.offsetHeight;
-  const idealTop = scrollTop + windowHeight - luneHeight - padding;
-
-  lune.style.left = 'unset';
-  lune.style.right = `${padding}px`;
-  lune.style.top = `${idealTop}px`;
+  window.addEventListener('scroll', updatePosition);
+  updatePosition(); // premier appel
 }
+
 
 
 /**
