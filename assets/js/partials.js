@@ -16,27 +16,37 @@ export function injectPartial(id, url) {
     .then(html => {
       target.innerHTML = html;
 
-      // Si on injecte le menu, activer liens et menu mobile
+      // Si on injecte le menu, activer liens et interactions
       if (id === 'menu-placeholder') {
         highlightActiveLink();
 
-        // 🔄 Activation du menu mobile
-        setTimeout(() => {
-          const toggleBtn = document.getElementById("menu-toggle");
-          const menu = document.getElementById("mobile-menu");
+        // 🔄 Menu mobile
+        const toggleBtn = document.getElementById("menu-toggle");
+        const menu = document.getElementById("mobile-menu");
+        if (toggleBtn && menu) {
+          toggleBtn.addEventListener("click", () => {
+            menu.classList.toggle("open");
+          });
+          document.addEventListener("click", (e) => {
+            if (!menu.contains(e.target) && e.target !== toggleBtn) {
+              menu.classList.remove("open");
+            }
+          });
+        }
 
-          if (toggleBtn && menu) {
-            toggleBtn.addEventListener("click", () => {
-              menu.classList.toggle("open");
-            });
-
-            document.addEventListener("click", (e) => {
-              if (!menu.contains(e.target) && e.target !== toggleBtn) {
-                menu.classList.remove("open");
-              }
-            });
-          }
-        }, 10);
+        // 🌌 Bouton flottant des thèmes
+        const themeFab = document.getElementById("theme-fab");
+        const themeOptions = document.querySelector(".theme-fab-options");
+        if (themeFab && themeOptions) {
+          themeFab.addEventListener("click", () => {
+            themeOptions.classList.toggle("hidden");
+          });
+          document.addEventListener("click", (e) => {
+            if (!themeFab.contains(e.target) && !themeOptions.contains(e.target)) {
+              themeOptions.classList.add("hidden");
+            }
+          });
+        }
       }
     });
 }
@@ -50,7 +60,6 @@ export function highlightActiveLink() {
   document.querySelectorAll(".nav-link").forEach(link => {
     const href = link.getAttribute("href");
 
-    // Normalisation des chemins : sans /final ni index.html explicite
     const normalizedHref = href.replace(/\/index\.html$/, "").replace(/\/$/, "");
     const normalizedPath = path.replace(/\/index\.html$/, "").replace(/\/$/, "");
 
@@ -59,22 +68,3 @@ export function highlightActiveLink() {
     }
   });
 }
-
-/* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
-document.addEventListener("DOMContentLoaded", () => {
-  const toggleBtn = document.getElementById("theme-toggle");
-  const options = document.getElementById("theme-options");
-
-  if (toggleBtn && options) {
-    toggleBtn.addEventListener("click", () => {
-      options.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!toggleBtn.contains(e.target) && !options.contains(e.target)) {
-        options.classList.add("hidden");
-      }
-    });
-  }
-});
-
