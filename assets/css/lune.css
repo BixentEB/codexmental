@@ -23,14 +23,15 @@ body.theme-lunaire #lune-widget {
 body.theme-lunaire #lune-widget.lune-super {
   width: 480px;
   height: 480px;
-  bottom: -100px;
-  right: -160px;
+  bottom: -120px;
+  right: -200px;
   opacity: 0.9;
   pointer-events: auto;
   cursor: pointer;
   z-index: 10;
-  transition: width 0.5s ease, height 0.5s ease, right 0.5s ease, bottom 0.5s ease;
+  transition: all 0.5s ease;
 }
+
 
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
