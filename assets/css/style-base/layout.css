@@ -85,6 +85,18 @@ main.container {
   font-weight: bold;
 }
 
+.header::after {
+  content: "STICKY TEST";
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: red;
+  color: white;
+  padding: 0.5rem;
+  z-index: 9999;
+}
+
+
 /* ===========================
    🧦 FOOTER
 =========================== */
