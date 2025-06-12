@@ -21,14 +21,16 @@ export function updateLunarWidget(theme) {
   if (existing) existing.remove();
 
   if (theme === 'theme-lunaire') {
-    const phase = getMoonPhaseIndex();
-    const lune = document.createElement('div');
-    lune.id = 'lune-widget';
-    lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
-    document.body.appendChild(lune);
-    applySavedLuneSize(lune);
-    followScrollLune(lune);
-    setupLuneClickCycle(lune);
+    setTimeout(() => {
+      const phase = getMoonPhaseIndex();
+      const lune = document.createElement('div');
+      lune.id = 'lune-widget';
+      lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
+      document.body.appendChild(lune);
+      applySavedLuneSize(lune);
+      followScrollLune(lune);
+      setupLuneClickCycle(lune);
+    }, 50); // petit délai pour laisser le DOM respirer
   }
 }
 
