@@ -32,6 +32,7 @@ export function highlightActiveLink() {
 
   document.querySelectorAll(".nav-link").forEach(link => {
     const href = link.getAttribute("href");
+
     const normalizedHref = href.replace(/\/index\.html$/, "").replace(/\/$/, "");
     const normalizedPath = path.replace(/\/index\.html$/, "").replace(/\/$/, "");
 
@@ -40,6 +41,7 @@ export function highlightActiveLink() {
     }
   });
 }
+
 
 /**
  * Gère l’ouverture et la fermeture du menu mobile
