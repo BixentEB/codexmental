@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accueil – Codex Mental</title>
-  <meta name="description" content="Codex Mental – Un carnet numérique personnel mêlant observation, introspection, narration, outils et IA." />
 
   <!-- 🌞 Favicon -->
   <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
@@ -13,18 +12,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
   <!-- 🎨 Styles -->
-  <link rel="stylesheet" href="/assets/css/main.css">
+ <link rel="stylesheet" href="/assets/css/main.css">
 
   <!-- ⚙️ Script principal -->
-  <script type="module" src="/assets/js/main.js"></script>
+<script type="module" src="/assets/js/main.js"></script>
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas animé -->
+  <!-- 🌌 Canvas de fond -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
   <!-- 🧠 Menu injecté dynamiquement -->
-<header id="menu-placeholder" class="header"></header>
+  <div id="menu-placeholder"></div>
+
+  <!-- ☰ Bouton menu mobile -->
+  <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
+
+  
 
   <!-- 🧱 Contenu principal -->
   <main class="container" style="padding-bottom: 3rem;">
