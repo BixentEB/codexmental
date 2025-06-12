@@ -67,6 +67,31 @@ body.theme-solaire textarea::placeholder {
   opacity: 0.7;
 }
 
+/* ☀️ Widget solaire stylisé */
+.sun-widget {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 480px;
+  height: 480px;
+  background-image: url("/img/visuels/sun-final.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 40px rgba(255, 200, 50, 0.5));
+  pointer-events: none;
+  z-index: 10;
+}
+
+@media screen and (max-width: 768px) {
+  .sun-widget {
+    width: 180px;
+    height: 180px;
+    opacity: 0.75;
+  }
+}
+
+
 /* ☀️ Widget solaire (à développer plus tard)
 body.theme-solaire #sun-widget {
   position: fixed;
