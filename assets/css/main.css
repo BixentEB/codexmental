@@ -32,3 +32,5 @@
 /* === 🎨 Thèmes dynamiques === */
 @import url('/assets/css/themes/themes.css');
 
+/* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
+@import url('/assets/css/style-base/menu.css');
