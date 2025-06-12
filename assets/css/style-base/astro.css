@@ -22,6 +22,21 @@
   letter-spacing: 0.2px;
 }
 
+body.index #badge-astro::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 100%;
+  border-radius: 24px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  z-index: -1;
+  filter: blur(12px);
+}
+
+
 /* Mise en valeur spéciale sur page d'accueil (ou accueil animé) */
 body.index #badge-astro {
   margin-top: 1rem;
