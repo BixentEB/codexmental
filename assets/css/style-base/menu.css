@@ -1,58 +1,53 @@
 /* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
 
-#theme-toggle-container {
+/* 🌌 Bouton étoilé */
+.theme-float {
   position: fixed;
-  top: 4rem;
+  top: 4.5rem;
   right: 1rem;
-  z-index: 999;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
 }
 
-/* Icône flottante */
 #theme-toggle {
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   padding: 0.7rem;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  backdrop-filter: blur(8px);
   cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-/* Bloc avec les 4 thèmes */
-#theme-options {
-  margin-top: 0.5rem;
+.theme-options {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 0.6rem;
-  border-radius: 0.6rem;
-  backdrop-filter: blur(8px);
+  margin-top: 0.5rem;
 }
 
-#theme-options button {
-  border: none;
+.theme-options button {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  border: none;
   border-radius: 50%;
   padding: 0.6rem;
   font-size: 1.2rem;
+  color: var(--text-primary);
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-/* Masqué par défaut */
-#theme-options.hidden {
+.theme-options.hidden {
   display: none;
 }
 
-/* CACHER sur mobile */
-@media (max-width: 768px) {
-  #theme-toggle-container {
-    display: none;
+@media screen and (max-width: 768px) {
+  .theme-float {
+    display: none; /* Désactivé sur mobile */
   }
 }
+
