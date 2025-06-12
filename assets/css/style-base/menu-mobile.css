@@ -74,3 +74,8 @@
     display: none !important;
   }
 }
+
+.menu-toggle {
+  background-color: red !important;
+  z-index: 9999 !important;
+}
