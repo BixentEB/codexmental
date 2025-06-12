@@ -16,19 +16,6 @@ body.theme-lunaire #lune-widget {
   transition: width 0.5s ease, height 0.5s ease, top 0.5s ease, right 0.5s ease;
 }
 
-/* 🌕 Apparence spéciale de la super lune */
-body.theme-lunaire #lune-widget.lune-super {
-  width: 480px;
-  height: 480px;
-  bottom: 0;
-  right: -220px; /* Environ la moitié de la lune cachée */
-  opacity: 0.9;
-  pointer-events: auto;
-  cursor: pointer;
-  z-index: 10;
-}
-
-
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
     pointer-events: auto;
@@ -37,5 +24,18 @@ body.theme-lunaire #lune-widget.lune-super {
 }
 
 html, body {
-  overflow-x: hidden;
+  overflow-x: hidden;  /* Stop barre scroll horizontal */
+}
+
+/* Apparence de la super lune (1/3 visible, 2/3 cachée) */
+body.theme-lunaire #lune-widget.lune-super {
+  width: 480px;
+  height: 480px;
+  bottom: -100px; /* légèrement cachée en bas */
+  right: -160px;   /* pousse vers l’extérieur */
+  opacity: 0.9;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 10;
+  transition: width 0.5s ease, height 0.5s ease, right 0.5s ease, bottom 0.5s ease;
 }
