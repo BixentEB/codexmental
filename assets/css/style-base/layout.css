@@ -20,9 +20,8 @@ main.container {
   padding: 0 1rem;
 }
 
-
 .container {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
   width: 100%;
@@ -50,19 +49,18 @@ main.container {
   top: 0;
   z-index: 999;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
   padding: 1rem 2rem;
+
   background-color: var(--nav-bg, #111);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px);
 
-  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-sizing: border-box; /* ← évite les débordements */
 }
-
-
 
 /* Le vrai centrage + layout flex vient ici */
 .header .container {
