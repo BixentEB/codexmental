@@ -49,10 +49,19 @@ main.container {
   position: sticky;
   top: 0;
   z-index: 999;
-  background-color: var(--nav-bg, #111); /* obligatoire si fond semi-transparent */
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 2rem;
+  background-color: var(--nav-bg, #111);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
+
 
 
 /* Le vrai centrage + layout flex vient ici */
