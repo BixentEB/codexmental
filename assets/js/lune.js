@@ -76,7 +76,7 @@ export function followScrollLune(lune) {
 function applySavedLuneSize(lune) {
   if (!lune || window.innerWidth <= 1024) return;
 
-  const tailles = ["80px", "120px", "180px", "480px"];
+  const tailles = ["100px", "150px", "250px", "600px"];
   const classes = ["", "", "", "lune-super"];
   const index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
@@ -94,7 +94,7 @@ function applySavedLuneSize(lune) {
 function setupLuneClickCycle(lune) {
   if (!lune || window.innerWidth <= 1024) return;
 
-  const tailles = ["80px", "120px", "180px", "480px"];
+  const tailles = ["100px", "150px", "250px", "600px"];
   const classes = ["", "", "", "lune-super"];
   let index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
