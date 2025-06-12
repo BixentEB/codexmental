@@ -1,10 +1,9 @@
 /* 🌙 lune.css – Styles du widget lunaire dynamique */
 
 html, body {
-  overflow-x: hidden; /* Évite l’apparition de la barre horizontale */
+  overflow-x: hidden; /* Stop barre scroll horizontal */
 }
 
-/* Lune normale */
 body.theme-lunaire #lune-widget {
   position: absolute;
   right: 20px;
@@ -21,9 +20,7 @@ body.theme-lunaire #lune-widget {
   transition: width 0.5s ease, height 0.5s ease, top 0.5s ease, right 0.5s ease;
 }
 
-/* Super lune (480px) – positionnée volontairement partiellement hors-cadre */
 body.theme-lunaire #lune-widget.lune-super {
-  position: absolute;
   width: 480px;
   height: 480px;
   bottom: -120px;
@@ -35,7 +32,7 @@ body.theme-lunaire #lune-widget.lune-super {
   transition: all 0.5s ease;
 }
 
-/* Interactivité uniquement sur desktop */
+
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
     pointer-events: auto;
