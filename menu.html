@@ -1,23 +1,10 @@
-<!-- 🧭 MENU GLOBAL -->
-
-<!-- 🖥️ Menu principal (desktop sticky) -->
 <header class="header">
   <div class="site-title">Codex Mental</div>
 
-  <!-- 🌌 Bouton galactique pour menu thème (sous le header, en haut à droite) -->
-<div id="theme-toggle-container" class="theme-floating-menu">
-  <button id="theme-toggle" aria-label="Changer de thème">🌌</button>
-  <div id="theme-options" class="hidden">
-    <button onclick="setTheme('theme-solaire')" aria-label="Thème Solaire">🌞</button>
-    <button onclick="setTheme('theme-lunaire')" aria-label="Thème Lunaire">🌙</button>
-    <button onclick="setTheme('theme-galactique')" aria-label="Thème Galactique">🪐</button>
-    <button onclick="setTheme('theme-stellaire')" aria-label="Thème Stellaire">✨</button>
-  </div>
-</div>
-
-  <!-- ☰ Bouton menu mobile (injecté ici pour TOUS les devices) -->
+  <!-- ☰ Bouton menu mobile -->
   <button id="menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu mobile">☰</button>
 
+  <!-- 🧭 Navigation principale -->
   <nav class="main-nav">
     <a href="/index.html" class="nav-link">Home</a>
     <a href="/blog/index.html" class="nav-link">Blog</a>
@@ -27,8 +14,18 @@
   </nav>
 </header>
 
+<!-- 🌌 Bouton thème flottant desktop -->
+<div id="theme-float" class="theme-float">
+  <button id="theme-toggle" aria-label="Changer de thème">🌌</button>
+  <div id="theme-options" class="theme-options hidden">
+    <button onclick="setTheme('theme-solaire')" aria-label="Thème Solaire">🌞</button>
+    <button onclick="setTheme('theme-lunaire')" aria-label="Thème Lunaire">🌙</button>
+    <button onclick="setTheme('theme-galactique')" aria-label="Thème Galactique">🪐</button>
+    <button onclick="setTheme('theme-stellaire')" aria-label="Thème Stellaire">✨</button>
+  </div>
+</div>
 
-<!-- 📱 Menu mobile déroulant (slide menu) -->
+<!-- 📱 Menu mobile -->
 <nav id="mobile-menu" class="mobile-menu">
   <ul>
     <li><a href="/index.html">Home</a></li>
