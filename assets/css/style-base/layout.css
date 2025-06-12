@@ -41,12 +41,14 @@ main.container {
    🖛️ BANDEAU DE NAVIGATION
 =========================== */
 .header {
+  position: fixed;
+  top: 0;
+  width: 100%;         /* ← nécessaire en fixed */
+  left: 0;
+  z-index: 999;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  top: 0;
-  z-index: 999;
   background-color: var(--nav-bg, #111);
   padding: 1rem 2rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
