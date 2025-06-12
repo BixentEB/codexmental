@@ -18,7 +18,9 @@ body.theme-lunaire #lune-widget {
   pointer-events: none;
   z-index: 10;
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-  transition: width 0.5s ease, height 0.5s ease, top 0.5s ease, right 0.5s ease;
+  transition: all 0.5s ease-in-out;
+  will-change: top, right;
+
 }
 
 /* Super lune (480px) – positionnée volontairement partiellement hors-cadre */
