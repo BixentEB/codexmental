@@ -44,21 +44,23 @@ export function followScrollLune(lune) {
   const padding = 10;
 
   const updatePosition = () => {
-    const currentLune = document.getElementById('lune-widget');
-    if (!currentLune || currentLune.classList.contains('lune-super')) return;
+    const lune = document.getElementById('lune-widget');
+    if (!lune || lune.classList.contains('lune-super')) return;
 
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
-    const luneHeight = currentLune.offsetHeight;
+    const luneHeight = lune.offsetHeight;
     const idealTop = scrollTop + windowHeight - luneHeight - padding;
 
-    currentLune.style.left = 'unset';
-    currentLune.style.right = `${padding}px`;
-    currentLune.style.top = `${idealTop}px`;
+    lune.style.position = 'absolute';
+    lune.style.left = 'unset';
+    lune.style.right = '20px';
+    lune.style.top = `${idealTop}px`;
+    lune.style.bottom = 'unset';
   };
 
   window.addEventListener('scroll', updatePosition);
-  updatePosition(); // init
+  updatePosition(); // initialisation immédiate
 }
 
 /**
@@ -77,7 +79,12 @@ function applySavedLuneSize(lune) {
 
   if (classes[index]) {
     lune.classList.add("lune-super");
-    setSuperLunePosition(lune);
+    lune.style.position = 'absolute';
+    lune.style.right = '-200px';
+    lune.style.bottom = '-120px';
+    lune.style.top = 'unset';
+  } else {
+    followScrollLune(lune); // rebranche le scroll dynamique
   }
 }
 
@@ -100,24 +107,26 @@ function setupLuneClickCycle(lune) {
   const classes = ["", "", "", "lune-super"];
   let index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
-  const applySize = () => {
+  lune.style.cursor = 'pointer';
+
+  lune.addEventListener('click', () => {
+    index = (index + 1) % tailles.length;
     lune.style.width = tailles[index];
     lune.style.height = tailles[index];
-    lune.classList.remove("lune-super");
 
+    lune.classList.remove("lune-super");
     if (classes[index]) {
       lune.classList.add("lune-super");
-      setSuperLunePosition(lune);
+      lune.style.position = 'absolute';
+      lune.style.right = '-200px';
+      lune.style.bottom = '-120px';
+      lune.style.top = 'unset';
+    } else {
+      lune.style.position = 'absolute';
+      lune.style.bottom = 'unset';
+      followScrollLune(lune);
     }
 
     localStorage.setItem("luneTailleIndex", index);
-  };
-
-  lune.style.cursor = 'pointer';
-  lune.addEventListener('click', () => {
-    index = (index + 1) % tailles.length;
-    applySize();
   });
-
-  applySize(); // appliquer l’état initial (important)
 }
