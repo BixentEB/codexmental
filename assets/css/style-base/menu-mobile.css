@@ -69,13 +69,7 @@
   }
 
   nav .main-nav,
-  .main-nav {
+  .main-nav,
+  .theme-switcher-icons {
     display: none !important;
   }
-}
-
-@media (max-width: 768px) {
-  .theme-switcher-icons {
-    display: none;
-  }
-}
