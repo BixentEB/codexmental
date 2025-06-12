@@ -92,7 +92,8 @@ export function lancerIntroAstro() {
 
   const entry = messages[Math.floor(Math.random() * messages.length)];
 
-  typewriter(bloc, entry.text, 45, () => {
+  // ✅ Affiche icône + texte
+  typewriter(bloc, `${entry.icon} ${entry.text}`, 45, () => {
     bloc.textContent += ' ';
 
     const cursorSpan = document.createElement('span');
