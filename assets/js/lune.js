@@ -14,7 +14,7 @@ function getMoonPhaseIndex(date = new Date()) {
 }
 
 /**
- * Met à jour le widget lunaire selon le thème
+ * Met à jour le widget lunaire selon le thème actif
  */
 export function updateLunarWidget(theme) {
   const existing = document.getElementById('lune-widget');
@@ -27,51 +27,57 @@ export function updateLunarWidget(theme) {
       lune.id = 'lune-widget';
       lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
       document.body.appendChild(lune);
+
       applySavedLuneSize(lune);
-      followScrollLune(lune);
       setupLuneClickCycle(lune);
-    }, 50); // petit délai pour laisser le DOM respirer
+      followScrollLune(lune);
+    }, 50); // Laisse le DOM respirer
   }
 }
 
 /**
- * Positionne dynamiquement la lune lors du scroll
+ * Gère le positionnement dynamique de la lune au scroll
  */
-export function followScrollLune(lune) {
+function followScrollLune(lune) {
   if (!lune) return;
-
-  const padding = 10;
 
   const updatePosition = () => {
     const currentLune = document.getElementById('lune-widget');
-    if (!currentLune || currentLune.classList.contains('lune-super')) return;
+    if (!currentLune) return;
 
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const luneHeight = currentLune.offsetHeight;
-    const idealTop = scrollTop + windowHeight - luneHeight - padding;
+    const padding = 10;
+
+    // Valeurs par défaut
+    let top = scrollTop + windowHeight - luneHeight - padding;
+    let right = 20;
+
+    // Ajustements pour super lune
+    if (currentLune.classList.contains("lune-super")) {
+      right = -160;
+      top += 40;
+    }
 
     currentLune.style.left = 'unset';
-    currentLune.style.right = `${padding}px`;
-    currentLune.style.top = `${idealTop}px`;
+    currentLune.style.right = `${right}px`;
+    currentLune.style.top = `${top}px`;
   };
 
   window.addEventListener('scroll', updatePosition);
-  updatePosition();
+  updatePosition(); // Appel initial
 }
 
-
-
-
 /**
- * Applique la taille sauvegardée à la lune (si existante)
+ * Applique la taille enregistrée (localStorage) à la lune
  */
 function applySavedLuneSize(lune) {
   if (!lune || window.innerWidth <= 1024) return;
 
   const tailles = ["80px", "120px", "180px", "480px"];
   const classes = ["", "", "", "lune-super"];
-  let index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
+  const index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
   lune.style.width = tailles[index];
   lune.style.height = tailles[index];
@@ -80,14 +86,13 @@ function applySavedLuneSize(lune) {
 }
 
 /**
- * Ajoute l'interaction de clic pour changer la taille de la lune
+ * Gère l’interaction au clic pour faire évoluer la taille de la lune
  */
 function setupLuneClickCycle(lune) {
   if (!lune || window.innerWidth <= 1024) return;
 
   const tailles = ["80px", "120px", "180px", "480px"];
   const classes = ["", "", "", "lune-super"];
-
   let index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
   const applySize = () => {
@@ -99,10 +104,8 @@ function setupLuneClickCycle(lune) {
   };
 
   lune.style.cursor = 'pointer';
-
   lune.addEventListener('click', () => {
     index = (index + 1) % tailles.length;
     applySize();
   });
 }
-
