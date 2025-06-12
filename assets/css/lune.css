@@ -23,6 +23,6 @@ body.theme-lunaire #lune-widget.lune-super {
   bottom: -100px;
   right: -120px;
   opacity: 0.9;
-  pointer-events: none;
+  pointer-events: auto;
   z-index: 10;
 }
