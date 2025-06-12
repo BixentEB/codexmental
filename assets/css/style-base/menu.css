@@ -1,53 +1,64 @@
 /* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
 
-/* 🌌 Bouton étoilé */
-.theme-float {
+/* 🌌 FAB Thème flottant */
+.theme-fab-container {
   position: fixed;
-  top: 4.5rem;
+  top: 4.2rem; /* légèrement en dessous du menu */
   right: 1rem;
-  z-index: 1000;
+  z-index: 999;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
 }
 
-#theme-toggle {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+#theme-fab {
+  width: 40px;
+  height: 40px;
+  font-size: 1.4rem;
+  border: none;
   border-radius: 50%;
-  padding: 0.7rem;
-  font-size: 1.5rem;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(4px);
   color: var(--text-primary);
-  backdrop-filter: blur(8px);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.2s ease;
 }
 
-.theme-options {
+#theme-fab:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.theme-fab-options {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
-.theme-options button {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 50%;
-  padding: 0.6rem;
+.theme-fab-options button {
+  width: 36px;
+  height: 36px;
   font-size: 1.2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(6px);
   color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.2s ease;
 }
 
-.theme-options.hidden {
-  display: none;
+.theme-fab-options button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.hidden {
+  display: none !important;
 }
 
 @media screen and (max-width: 768px) {
-  .theme-float {
-    display: none; /* Désactivé sur mobile */
+  .theme-fab-container {
+    display: none;
   }
 }
 
