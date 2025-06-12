@@ -43,3 +43,40 @@
     display: none;
   }
 }
+
+.theme-floating-menu {
+  position: fixed;
+  top: 70px;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.theme-floating-menu #theme-options {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background-color: rgba(0,0,0,0.6);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  backdrop-filter: blur(6px);
+}
+
+.theme-floating-menu #theme-options.hidden {
+  display: none;
+}
+
+.theme-floating-menu button {
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+  border-radius: 50%;
+  padding: 0.6rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
