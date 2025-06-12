@@ -26,17 +26,16 @@ export function updateLunarWidget(theme) {
     lune.id = 'lune-widget';
     lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
     document.body.appendChild(lune);
-    applySavedLuneSize();
-    followScrollLune();
-    setupLuneClickCycle();
+    applySavedLuneSize(lune);
+    followScrollLune(lune);
+    setupLuneClickCycle(lune);
   }
 }
 
 /**
  * Positionne dynamiquement la lune lors du scroll
  */
-export function followScrollLune() {
-  const lune = document.getElementById('lune-widget');
+export function followScrollLune(lune) {
   if (!lune) return;
 
   const padding = 10;
@@ -58,8 +57,7 @@ export function followScrollLune() {
 /**
  * Applique la taille sauvegardée à la lune (si existante)
  */
-function applySavedLuneSize() {
-  const lune = document.getElementById('lune-widget');
+function applySavedLuneSize(lune) {
   if (!lune || window.innerWidth <= 1024) return;
 
   const tailles = ["80px", "120px", "180px", "480px"];
@@ -75,8 +73,7 @@ function applySavedLuneSize() {
 /**
  * Ajoute l'interaction de clic pour changer la taille de la lune
  */
-function setupLuneClickCycle() {
-  const lune = document.getElementById('lune-widget');
+function setupLuneClickCycle(lune) {
   if (!lune || window.innerWidth <= 1024) return;
 
   const tailles = ["80px", "120px", "180px", "480px"];
