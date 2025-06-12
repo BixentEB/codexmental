@@ -59,3 +59,23 @@ export function highlightActiveLink() {
     }
   });
 }
+
+/* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("theme-toggle");
+  const options = document.getElementById("theme-options");
+
+  if (toggleBtn && options) {
+    toggleBtn.addEventListener("click", () => {
+      options.classList.toggle("hidden");
+    });
+
+    // Fermer si clic en dehors
+    document.addEventListener("click", (e) => {
+      if (!toggleBtn.contains(e.target) && !options.contains(e.target)) {
+        options.classList.add("hidden");
+      }
+    });
+  }
+});
+
