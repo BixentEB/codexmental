@@ -33,3 +33,7 @@ body.theme-lunaire #lune-widget.lune-super {
     cursor: pointer;
   }
 }
+
+html, body {
+  overflow-x: hidden;
+}
