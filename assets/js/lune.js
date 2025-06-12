@@ -44,7 +44,8 @@ export function followScrollLune(lune) {
 
   const updatePosition = () => {
     const currentLune = document.getElementById('lune-widget');
-    if (!currentLune) return; // sécurise dynamiquement
+    if (!currentLune || currentLune.classList.contains('lune-super')) return;
+
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const luneHeight = currentLune.offsetHeight;
@@ -56,8 +57,9 @@ export function followScrollLune(lune) {
   };
 
   window.addEventListener('scroll', updatePosition);
-  updatePosition(); // premier appel
+  updatePosition();
 }
+
 
 
 
