@@ -10,7 +10,7 @@ body.theme-lunaire #lune-widget {
   background-position: center;
   background-size: contain;
   opacity: 0.8;
-  pointer-events: auto;
+  pointer-events: none;
   z-index: 10;
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
   transition: width 0.5s ease, height 0.5s ease, top 0.5s ease, right 0.5s ease;
@@ -23,13 +23,13 @@ body.theme-lunaire #lune-widget.lune-super {
   bottom: -100px;
   right: -120px;
   opacity: 0.9;
-  pointer-events: auto;
+  pointer-events: none;
   z-index: 10;
 }
 
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
-    pointer-events: none;
+    pointer-events: auto;
     cursor: pointer;
   }
 }
