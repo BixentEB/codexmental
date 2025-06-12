@@ -15,9 +15,11 @@ body {
 
 main.container {
   max-width: 1000px;
+  margin-top: 80px; /* ou hauteur exacte de ton header */
   margin: 0 auto;
   padding: 0 1rem;
 }
+
 
 .container {
   max-width: 960px;
