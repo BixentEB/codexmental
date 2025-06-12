@@ -1,19 +1,23 @@
 /* ===========================
    🌐 MENU MOBILE
 =========================== */
+
 .menu-toggle {
   position: fixed;
   top: 1rem;
   right: 1rem;
   font-size: 1.7rem;
-  background: var(--accent-primary);
+  background: var(--accent-primary, red);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: .5rem;
-  z-index: 1001;
+  border-radius: 0.5rem;
+  z-index: 9999; /* élevé pour être au-dessus de tout */
   display: none;
+
+  pointer-events: auto;
 }
+
 
 .mobile-menu {
   position: fixed;
