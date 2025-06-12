@@ -39,7 +39,9 @@ export function followScrollLune(lune) {
   if (!lune) return;
 
   const padding = 10;
-  const updatePosition = () => {
+
+  window.addEventListener('scroll', () => {
+    if (!lune) return;
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const luneHeight = lune.offsetHeight;
@@ -48,11 +50,19 @@ export function followScrollLune(lune) {
     lune.style.left = 'unset';
     lune.style.right = `${padding}px`;
     lune.style.top = `${idealTop}px`;
-  };
+  });
 
-  window.addEventListener('scroll', updatePosition);
-  updatePosition(); // initial
+  // appel initial
+  const scrollTop = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const luneHeight = lune.offsetHeight;
+  const idealTop = scrollTop + windowHeight - luneHeight - padding;
+
+  lune.style.left = 'unset';
+  lune.style.right = `${padding}px`;
+  lune.style.top = `${idealTop}px`;
 }
+
 
 /**
  * Applique la taille sauvegardée à la lune (si existante)
