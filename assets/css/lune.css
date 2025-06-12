@@ -20,12 +20,14 @@ body.theme-lunaire #lune-widget {
 body.theme-lunaire #lune-widget.lune-super {
   width: 480px;
   height: 480px;
-  bottom: -100px;
-  right: -120px;
+  bottom: 0;
+  right: -220px; /* Environ la moitié de la lune cachée */
   opacity: 0.9;
-  pointer-events: auto; /* ← clic réactivé même en super lune */
+  pointer-events: auto;
+  cursor: pointer;
   z-index: 10;
 }
+
 
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
