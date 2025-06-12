@@ -1,6 +1,7 @@
 <!-- 🧭 MENU GLOBAL -->
 
 <!-- 🖥️ Menu principal (desktop sticky) -->
+<header class="header">
   <div class="site-title">Codex Mental</div>
 
   <!-- ☰ Bouton menu mobile (injecté ici pour TOUS les devices) -->
@@ -13,9 +14,10 @@
     <a href="/cv.html" class="nav-link">CV</a>
     <a href="/contact.html" class="nav-link">Contact</a>
   </nav>
+</header>
 
-<!-- 🌌 Bouton étoilé pour menu thème (visible uniquement sur desktop) -->
-<div id="theme-toggle-container">
+<!-- 🌌 Bouton galactique pour menu thème (sous le header, en haut à droite) -->
+<div id="theme-toggle-container" class="theme-floating-menu">
   <button id="theme-toggle" aria-label="Changer de thème">🌌</button>
   <div id="theme-options" class="hidden">
     <button onclick="setTheme('theme-solaire')" aria-label="Thème Solaire">🌞</button>
@@ -24,7 +26,6 @@
     <button onclick="setTheme('theme-stellaire')" aria-label="Thème Stellaire">✨</button>
   </div>
 </div>
-
 
 <!-- 📱 Menu mobile déroulant (slide menu) -->
 <nav id="mobile-menu" class="mobile-menu">
