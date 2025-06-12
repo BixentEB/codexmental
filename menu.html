@@ -14,15 +14,19 @@
     <a href="/cv.html" class="nav-link">CV</a>
     <a href="/contact.html" class="nav-link">Contact</a>
   </nav>
-</header>
 
-<!-- 🌌 Sélecteur de thème flottant (icônes à droite) -->
-<div class="theme-switcher-icons">
-  <button onclick="setTheme('theme-solaire')" aria-label="Thème Solaire">🌞</button>
-  <button onclick="setTheme('theme-lunaire')" aria-label="Thème Lunaire">🌙</button>
-  <button onclick="setTheme('theme-galactique')" aria-label="Thème Galactique">🪐</button>
-  <button onclick="setTheme('theme-stellaire')" aria-label="Thème Stellaire">✨</button>
+<!-- 🌌 Bouton flottant pour menu thème (desktop only) -->
+<div class="theme-fab-container">
+  <button id="theme-fab" aria-label="Changer de thème">🌌</button>
+  <div class="theme-fab-options hidden">
+    <button onclick="setTheme('theme-solaire')" aria-label="Thème Solaire">🌞</button>
+    <button onclick="setTheme('theme-lunaire')" aria-label="Thème Lunaire">🌙</button>
+    <button onclick="setTheme('theme-galactique')" aria-label="Thème Galactique">🪐</button>
+    <button onclick="setTheme('theme-stellaire')" aria-label="Thème Stellaire">✨</button>
+  </div>
 </div>
+  
+</header>
 
 <!-- 📱 Menu mobile déroulant (slide menu) -->
 <nav id="mobile-menu" class="mobile-menu">
