@@ -70,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
       options.classList.toggle("hidden");
     });
 
-    // Fermer si clic en dehors
     document.addEventListener("click", (e) => {
       if (!toggleBtn.contains(e.target) && !options.contains(e.target)) {
         options.classList.add("hidden");
