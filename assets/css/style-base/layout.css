@@ -1,8 +1,13 @@
-
 /* ===============================
    🧠 STRUCTURE GÉNÉRALE DU BODY
    → layout.css
 =============================== */
+
+/* Reset box-sizing global */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -15,8 +20,7 @@ body {
 
 main.container {
   max-width: 1000px;
-  margin-top: 80px; /* ou hauteur exacte de ton header */
-  margin: 0 auto;
+  margin: 80px auto 0 auto; /* Marge haute pour compenser le header fixe */
   padding: 0 1rem;
 }
 
@@ -25,9 +29,7 @@ main.container {
   margin: 0 auto;
   padding: 0 1rem;
   width: 100%;
-  box-sizing: border-box;
 }
-
 
 @media screen and (max-width: 768px) {
   .container {
@@ -42,7 +44,7 @@ main.container {
 }
 
 /* ===========================
-   🖛️ BANDEAU DE NAVIGATION
+   🚟 BANDEAU DE NAVIGATION
 =========================== */
 .header {
   position: fixed;
@@ -57,12 +59,9 @@ main.container {
   align-items: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px);
-  font-family: 'Orbitron', sans-serif; /* POLICE */
-  box-sizing: border-box; /* ← évite les débordements */
-   
+  font-family: 'Orbitron', sans-serif;
 }
 
-/* Le vrai centrage + layout flex vient ici */
 .header .container {
   display: flex;
   justify-content: space-between;
@@ -70,9 +69,7 @@ main.container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 0 1rem;
-  box-sizing: border-box;
 }
-
 
 .site-title {
   font-family: 'Orbitron', sans-serif;
@@ -107,7 +104,7 @@ main.container {
 }
 
 /* ===========================
-   🧦 FOOTER
+   🫎 FOOTER
 =========================== */
 footer {
   text-align: center;
