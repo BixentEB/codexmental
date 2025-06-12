@@ -54,21 +54,17 @@ a:hover {
    🚀 BOUTONS SWITCHER THEMES
 =========================== */
 .theme-switcher-icons {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  z-index: 1000;
+  gap: 0.3rem;
+  margin-left: 1.5rem;
 }
 
 .theme-switcher-icons button {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  padding: 0.6rem;
-  font-size: 1.2rem;
+  padding: 0.5rem;
+  font-size: 1.1rem;
   cursor: pointer;
   color: var(--text-primary);
   backdrop-filter: blur(6px);
