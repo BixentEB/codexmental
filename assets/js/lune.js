@@ -4,47 +4,74 @@
 
 /**
  * Calcule l’index de phase lunaire (0 à 7)
+ * Basé sur la date de référence du 1er janvier 2001
  */
 function getMoonPhaseIndex(date = new Date()) {
   const base = new Date('2001-01-01T00:00:00Z');
-  const diff = (date - base) / (1000 * 60 * 60 * 24);
+  const diff = (date - base) / (1000 * 60 * 60 * 24); // jours
   const lunations = 0.20439731 + diff * 0.03386319269;
   return Math.floor((lunations % 1) * 8);
 }
 
-// === VARIABLE GLOBALE POUR TRACKER LE SCROLL HANDLER ===
-let scrollHandler = null;
+/**
+ * Met à jour le widget lunaire selon le thème actif
+ */
+export function updateLunarWidget(theme) {
+  const existing = document.getElementById('lune-widget');
+  if (existing) existing.remove();
+
+  if (theme === 'theme-lunaire') {
+    setTimeout(() => {
+      const phase = getMoonPhaseIndex();
+      const lune = document.createElement('div');
+      lune.id = 'lune-widget';
+      lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
+      document.body.appendChild(lune);
+
+      applySavedLuneSize(lune);
+      setupLuneClickCycle(lune);
+      followScrollLune(lune);
+    }, 50);
+  }
+}
 
 /**
- * Applique dynamiquement la position de la lune selon scroll
+ * Fait suivre la lune au scroll, quelle que soit sa taille
  */
-function startScrollTracking() {
-  if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
+export function followScrollLune(lune) {
+  if (!lune) return;
 
-  scrollHandler = () => {
+  const updatePosition = () => {
     const lune = document.getElementById('lune-widget');
     if (!lune) return;
 
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const luneHeight = lune.offsetHeight;
-    const idealTop = scrollTop + windowHeight - luneHeight - 10;
+    const top = scrollTop + windowHeight - luneHeight - 20;
 
     lune.style.position = 'absolute';
-    lune.style.left = 'unset';
+    lune.style.top = `${top}px`;
 
-    // Décalage selon taille
-    lune.style.right = lune.classList.contains("lune-super") ? '-200px' : '20px';
-    lune.style.top = `${idealTop}px`;
+    // Ajustement latéral : normale vs super
+    if (lune.classList.contains('lune-super')) {
+      lune.style.right = '-200px';
+    } else {
+      lune.style.right = '20px';
+    }
+
+    lune.style.left = 'unset';
     lune.style.bottom = 'unset';
   };
 
-  window.addEventListener('scroll', scrollHandler);
-  scrollHandler(); // init immédiat
+  window.removeEventListener('scroll', followScrollLune._handler);
+  window.addEventListener('scroll', updatePosition);
+  followScrollLune._handler = updatePosition;
+  updatePosition();
 }
 
 /**
- * Applique la taille sauvegardée (locale)
+ * Applique la taille sauvegardée de la lune
  */
 function applySavedLuneSize(lune) {
   if (!lune || window.innerWidth <= 1024) return;
@@ -56,10 +83,9 @@ function applySavedLuneSize(lune) {
   lune.style.width = tailles[index];
   lune.style.height = tailles[index];
   lune.classList.remove("lune-super");
-
   if (classes[index]) lune.classList.add(classes[index]);
 
-  startScrollTracking();
+  followScrollLune(lune);
 }
 
 /**
@@ -76,36 +102,12 @@ function setupLuneClickCycle(lune) {
 
   lune.addEventListener('click', () => {
     index = (index + 1) % tailles.length;
-
     lune.style.width = tailles[index];
     lune.style.height = tailles[index];
     lune.classList.remove("lune-super");
-
     if (classes[index]) lune.classList.add(classes[index]);
 
     localStorage.setItem("luneTailleIndex", index);
-    startScrollTracking();
+    followScrollLune(lune);
   });
-}
-
-/**
- * Crée et affiche le widget lunaire
- */
-export function updateLunarWidget(theme) {
-  const existing = document.getElementById('lune-widget');
-  if (existing) existing.remove();
-
-  if (theme === 'theme-lunaire') {
-    setTimeout(() => {
-      const phase = getMoonPhaseIndex();
-      const lune = document.createElement('div');
-      lune.id = 'lune-widget';
-      lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
-      document.body.appendChild(lune);
-
-      applySavedLuneSize(lune);
-      setupLuneClickCycle(lune);
-      startScrollTracking();
-    }, 50);
-  }
 }
