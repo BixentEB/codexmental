@@ -83,18 +83,22 @@ function setupLuneClickCycle(lune) {
 
   const tailles = ["80px", "120px", "180px", "480px"];
   const classes = ["", "", "", "lune-super"];
+
   let index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
+
+  const applySize = () => {
+    lune.style.width = tailles[index];
+    lune.style.height = tailles[index];
+    lune.classList.remove("lune-super");
+    if (classes[index]) lune.classList.add(classes[index]);
+    localStorage.setItem("luneTailleIndex", index);
+  };
 
   lune.style.cursor = 'pointer';
 
   lune.addEventListener('click', () => {
     index = (index + 1) % tailles.length;
-    lune.style.width = tailles[index];
-    lune.style.height = tailles[index];
-
-    lune.classList.remove("lune-super");
-    if (classes[index]) lune.classList.add(classes[index]);
-
-    localStorage.setItem("luneTailleIndex", index);
+    applySize();
   });
 }
+
