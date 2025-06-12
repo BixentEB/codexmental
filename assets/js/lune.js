@@ -74,7 +74,20 @@ function applySavedLuneSize(lune) {
   lune.style.width = tailles[index];
   lune.style.height = tailles[index];
   lune.classList.remove("lune-super");
-  if (classes[index]) lune.classList.add(classes[index]);
+
+  if (classes[index]) {
+    lune.classList.add("lune-super");
+    setSuperLunePosition(lune);
+  }
+}
+
+/**
+ * Définit le placement spécial de la super lune (hors champ)
+ */
+function setSuperLunePosition(lune) {
+  lune.style.right = "-200px";
+  lune.style.bottom = "-120px";
+  lune.style.top = "unset";
 }
 
 /**
@@ -87,18 +100,24 @@ function setupLuneClickCycle(lune) {
   const classes = ["", "", "", "lune-super"];
   let index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
-  lune.style.cursor = 'pointer';
-
-  lune.addEventListener('click', () => {
-    index = (index + 1) % tailles.length;
+  const applySize = () => {
     lune.style.width = tailles[index];
     lune.style.height = tailles[index];
-
     lune.classList.remove("lune-super");
-    if (classes[index]) lune.classList.add(classes[index]);
+
+    if (classes[index]) {
+      lune.classList.add("lune-super");
+      setSuperLunePosition(lune);
+    }
 
     localStorage.setItem("luneTailleIndex", index);
-    // reposition si retour en taille normale
-    if (!classes[index]) followScrollLune(lune);
+  };
+
+  lune.style.cursor = 'pointer';
+  lune.addEventListener('click', () => {
+    index = (index + 1) % tailles.length;
+    applySize();
   });
+
+  applySize(); // appliquer l’état initial (important)
 }
