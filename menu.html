@@ -14,13 +14,17 @@
     <a href="/contact.html" class="nav-link">Contact</a>
   </nav>
 
-<!-- 🌌 Sélecteur de thème flottant (icônes à droite) -->
-<div class="theme-switcher-icons">
-  <button onclick="setTheme('theme-solaire')" aria-label="Thème Solaire">🌞</button>
-  <button onclick="setTheme('theme-lunaire')" aria-label="Thème Lunaire">🌙</button>
-  <button onclick="setTheme('theme-galactique')" aria-label="Thème Galactique">🪐</button>
-  <button onclick="setTheme('theme-stellaire')" aria-label="Thème Stellaire">✨</button>
+<!-- 🌌 Bouton étoilé pour menu thème (visible uniquement sur desktop) -->
+<div id="theme-toggle-container">
+  <button id="theme-toggle" aria-label="Changer de thème">🌌</button>
+  <div id="theme-options" class="hidden">
+    <button onclick="setTheme('theme-solaire')" aria-label="Thème Solaire">🌞</button>
+    <button onclick="setTheme('theme-lunaire')" aria-label="Thème Lunaire">🌙</button>
+    <button onclick="setTheme('theme-galactique')" aria-label="Thème Galactique">🪐</button>
+    <button onclick="setTheme('theme-stellaire')" aria-label="Thème Stellaire">✨</button>
+  </div>
 </div>
+
 
 <!-- 📱 Menu mobile déroulant (slide menu) -->
 <nav id="mobile-menu" class="mobile-menu">
