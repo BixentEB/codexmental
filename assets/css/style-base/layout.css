@@ -52,7 +52,7 @@ main.container {
   left: 0;
   width: 100%;
   z-index: 999;
-  background-color: var(--nav-bg, #111);
+  background-color: rgba(0, 0, 0, 0.75); /* anciennement #111 ou var() */
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
