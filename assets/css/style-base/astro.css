@@ -1,25 +1,31 @@
 /* ===========================
-   🛰️ BADGE ASTRONOMIQUE GLOBAL
+   🛰️ BADGE ASTRONOMIQUE COMPACT
 =========================== */
+
 #badge-astro {
   position: absolute;
   bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-primary);
-  z-index: 999;
-  opacity: 0.9;
-  font-family: 'Orbitron', sans-serif;
   background: rgba(0, 0, 0, 0.6);
   padding: 4px 10px;
   border-radius: 16px;
+  font-family: 'Orbitron', sans-serif;
   backdrop-filter: blur(4px);
   box-shadow: 0 0 8px rgba(255,255,255,0.12);
+  z-index: 999;
+  opacity: 0.9;
   transition: opacity 0.3s ease;
   animation: astroFade 2.4s ease-in;
   letter-spacing: 0.2px;
+}
+
+body.index #badge-astro {
+  margin-top: 1rem;
+  font-style: italic;
 }
 
 body.index #badge-astro::before {
@@ -31,42 +37,28 @@ body.index #badge-astro::before {
   width: 120%;
   height: 100%;
   border-radius: 24px;
-  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
-  z-index: -1;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
   filter: blur(12px);
+  z-index: -1;
 }
 
-
-/* Mise en valeur spéciale sur page d'accueil (ou accueil animé) */
-body.index #badge-astro {
-  margin-top: 1rem;
-  font-style: italic;
-}
-
-/* État "pulse" s’il y a un événement */
 #badge-astro.pulse {
-  animation: pulse 2s infinite;
+  animation: astroFade 2.4s ease-in, pulse 2s infinite;
   background: radial-gradient(circle at center, rgba(150, 90, 255, 0.8), rgba(30, 0, 60, 0.6));
   color: #fffbe6;
   box-shadow: 0 0 16px rgba(255, 230, 255, 0.4);
 }
 
-/* Badge en bas à droite pour les autres pages (non accueil lunaire) */
 body:not(.theme-lunaire):not(.index) #badge-astro {
   position: fixed;
   bottom: 18px !important;
   left: unset;
   right: 18px;
   transform: none;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
   font-size: 0.75rem;
-  padding: 4px 10px;
-  border-radius: 16px;
-  font-family: 'Orbitron', sans-serif;
-  z-index: 9999;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 0 8px rgba(255,255,255,0.12);
+  color: white;
+  font-style: normal;
+  margin: 0;
 }
 
 /* ===========================
@@ -87,7 +79,7 @@ body:not(.theme-lunaire):not(.index) #badge-astro {
   display: inline-block;
   width: 1px;
   height: 1em;
-  background-color: #ffffff;
+  background: #fff;
   animation: blink-cursor 1s steps(2, start) infinite;
   vertical-align: baseline;
 }
