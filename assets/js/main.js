@@ -49,3 +49,5 @@ import { initSoleilFlottant } from "/assets/js/canvas-solaire.js";
 if (document.body.classList.contains("theme-solaire")) {
   initSoleilFlottant();
 }
+
+import { initEtoileFilante } from "/assets/js/etoile-filante.js";
