@@ -8,7 +8,7 @@ import { updateLunarWidget, followScrollLune } from '/assets/js/lune.js';
 /**
  * Applique un thème visuel au <body> :
  * - Mémorise le thème dans localStorage
- * - Active les effets visuels (canvas, lune, etc.)
+ * - Active les effets visuels (canvas, lune, soleil, etc.)
  * - Gère les listeners spécifiques
  * @param {string} theme - Nom de la classe (ex: theme-lunaire)
  */
@@ -20,7 +20,7 @@ export function setTheme(theme) {
   localStorage.setItem('codexTheme', theme);
 
   // Nettoyer les effets visuels précédents
-  stopParticles();                    // Effets canvas
+  stopParticles();                    // Effets canvas (poussière, étoiles, etc.)
   updateLunarWidget(theme);          // Widget lune
 
   // === Effets visuels par thème ===
@@ -34,6 +34,12 @@ export function setTheme(theme) {
     setupCanvas();
     initParticles('dust', 100);
     document.getElementById('theme-canvas').style.opacity = '1';
+  }
+
+  else if (theme === 'theme-solaire') {
+    import('/assets/js/canvas-solaire.js').then(mod => {
+      mod.initSoleilFlottant();
+    });
   }
 
   // === Scroll dynamique pour thème lunaire ===
