@@ -35,7 +35,7 @@ export function afficherNoteAstro(data) {
   if (todayAlerts.length > 0) {
     currentAlertText = todayAlerts.map(ev => ev.message).join(' • ');
     todayAlerts.forEach(ev => {
-      if (ev.themeEffect) lancerAnimation(ev.themeEffect); // effet visuel à lancer
+    //  if (ev.themeEffect) lancerAnimation(ev.themeEffect); // effet visuel à lancer
     });
   } else {
     currentAlertText = "🌌 Aucun phénomène remarquable aujourd’hui. Les étoiles se reposent en silence.";
