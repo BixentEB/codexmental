@@ -105,7 +105,3 @@ body.theme-solaire #sun-widget {
   opacity: 0.8;
 }
 */
-
-canvas#theme-canvas {
-  background: rgba(255, 0, 0, 0.03); /* à retirer ensuite */
-}
