@@ -51,3 +51,11 @@ if (document.body.classList.contains("theme-solaire")) {
 }
 
 import { initEtoileFilante } from "/assets/js/etoile-filante.js";
+
+window.addEventListener("DOMContentLoaded", () => {
+  if (document.body.classList.contains("theme-stellaire")) {
+    console.log("🌌 Lancement de l’étoile filante...");
+    initEtoileFilante();
+  }
+});
+
