@@ -1,4 +1,3 @@
-
 // ========================================================
 // etoile-filante.js – Étoile filante pour thème stellaire
 // ========================================================
@@ -20,6 +19,8 @@ export function initEtoileFilante() {
  * Crée une étoile filante
  */
 function spawnEtoile() {
+  console.log("🌠 Une étoile filante se prépare...");
+
   etoile = {
     x: Math.random() * canvas.width * 0.5,
     y: -50,
@@ -67,19 +68,3 @@ function animateEtoile() {
 function getRandomDelay() {
   return 20000 + Math.random() * 30000; // entre 20s et 50s
 }
-
-function spawnEtoile() {
-  console.log("🌠 Une étoile filante se prépare...");
-
-  etoile = {
-    x: Math.random() * canvas.width * 0.5,
-    y: -50,
-    vx: 4 + Math.random() * 2,
-    vy: 4 + Math.random() * 2,
-    length: 80,
-    alpha: 1
-  };
-
-  animateEtoile();
-}
-
