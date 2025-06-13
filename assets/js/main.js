@@ -44,3 +44,8 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
   console.log("Burger clicked");
 });
 
+import { initSoleilFlottant } from "/assets/js/canvas-solaire.js";
+
+if (document.body.classList.contains("theme-solaire")) {
+  initSoleilFlottant();
+}
