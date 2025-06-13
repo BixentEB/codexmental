@@ -34,3 +34,12 @@
 
 /* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
 @import url('/assets/css/style-base/menu.css');
+
+/* === 🃏 MENU CARTES THÉMATIQUES === */
+@import url('/assets/css/themes/theme-cards.css');
+document.querySelectorAll('.theme-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const theme = card.dataset.theme;
+    setTheme(theme);
+  });
+});
