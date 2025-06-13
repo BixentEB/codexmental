@@ -32,42 +32,45 @@ body.theme-stellaire .mobile-nav .theme-buttons button:hover {
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
-/* === ⚛️ PRESENTATION MENU ATOME === */
-.theme-atom-wrapper {
+/* === ⚛️ PRESENTATION MENU ATOME (uniquement pour stellaire) === */
+body.theme-stellaire .theme-atom-wrapper {
   position: relative;
   width: 300px;
   height: 300px;
   margin: 3rem auto;
   border-radius: 50%;
+  pointer-events: none;
 }
 
-.atom-center {
+body.theme-stellaire .atom-center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--bg-card);
+  background: var(--bg-card, #101828);
   color: var(--text-primary);
   padding: 1rem;
   border-radius: 50%;
   text-align: center;
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  z-index: 2;
 }
 
-.orbit {
+body.theme-stellaire .orbit {
   position: absolute;
   width: 100%;
   height: 100%;
   animation: rotate 20s linear infinite;
   transform-origin: center center;
+  pointer-events: none;
 }
 
-.orbit1 { animation-delay: 0s; }
-.orbit2 { animation-delay: 5s; }
-.orbit3 { animation-delay: 10s; }
-.orbit4 { animation-delay: 15s; }
+body.theme-stellaire .orbit1 { animation-delay: 0s; }
+body.theme-stellaire .orbit2 { animation-delay: 5s; }
+body.theme-stellaire .orbit3 { animation-delay: 10s; }
+body.theme-stellaire .orbit4 { animation-delay: 15s; }
 
-.theme-electron {
+body.theme-stellaire .theme-electron {
   position: absolute;
   top: 0;
   left: 50%;
@@ -75,28 +78,21 @@ body.theme-stellaire .mobile-nav .theme-buttons button:hover {
   background: var(--btn-bg);
   color: var(--text-primary);
   border: none;
-  border-radius: 999px;
-  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 0.9rem;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  box-shadow: 0 0 10px rgba(255,255,255,0.15);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 @keyframes rotate {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-
-/* ✨ Widget stellaire (placeholder futur)
-body.theme-stellaire #stellaire-widget {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  width: 40px;
-  height: 40px;
-  background-image: url('/img/stellaire/etoile.gif');
-  background-size: cover;
-  opacity: 0.8;
-}
-*/
