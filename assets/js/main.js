@@ -16,6 +16,10 @@ import { setupScrollButton } from '/assets/js/scroll.js';
 import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 
+// === ☀️🌌 Effets visuels selon le thème actif ===
+import { initSoleilFlottant } from "/assets/js/canvas-solaire.js";
+import { initEtoileFilante } from "/assets/js/etoile-filante.js";
+
 window.setTheme = setTheme;
 
 // === 🪐 Appliquer le thème au chargement ===
@@ -40,21 +44,21 @@ lancerIntroAstro();
 // === 💫 Afficher le badge si événement présent ===
 activerBadgeAstro();
 
+// === 🍔 Menu burger debug
 document.getElementById("menu-toggle")?.addEventListener("click", () => {
   console.log("Burger clicked");
 });
 
-// === ☀️🌌 Effets visuels selon le thème actif ===
-import { initSoleilFlottant } from "/assets/js/canvas-solaire.js";
-import { initEtoileFilante } from "/assets/js/etoile-filante.js";
-
+// === ☀️🌌 Lancer effets spécifiques une fois le DOM prêt
 window.addEventListener("DOMContentLoaded", () => {
-  if (document.body.classList.contains("theme-stellaire")) {
+  const themeClass = document.body.className;
+
+  if (themeClass.includes("theme-stellaire")) {
     console.log("🌌 Lancement de l’étoile filante...");
     initEtoileFilante();
   }
 
-  if (document.body.classList.contains("theme-solaire")) {
+  if (themeClass.includes("theme-solaire")) {
     console.log("☀️ Lancement du soleil flottant...");
     initSoleilFlottant();
   }
