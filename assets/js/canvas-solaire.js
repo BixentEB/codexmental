@@ -1,4 +1,3 @@
-
 // ================================================
 // ☀️ canvas-solaire.js – Soleil flottant pour thème solaire
 // ================================================
@@ -8,15 +7,26 @@ export function initSoleilFlottant() {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
+  // Redimensionne le canvas plein écran
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
   const soleil = {
     x: 100,             // Coin gauche
     y: -100,            // Juste au-dessus du menu
     radius: 160,        // Taille du soleil
     speedY: 0.07,       // Vitesse de descente
-    opacity: 0.12       // Transparence douce
+    opacity: 0.3        // Transparence augmentée pour test
   };
 
   function draw() {
+    // Debug console
+    console.log("🟡 Soleil en cours de dessin à", soleil.x, soleil.y);
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const gradient = ctx.createRadialGradient(
