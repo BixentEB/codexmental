@@ -1,5 +1,5 @@
 // ================================================
-// ☀️ canvas-solaire.js – Soleil flottant avec pulsation pour thème solaire
+// ☀️ canvas-solaire.js – Soleil flamboyant pour thème solaire
 // ================================================
 
 export function initSoleilFlottant() {
@@ -7,7 +7,6 @@ export function initSoleilFlottant() {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
-  // Redimensionne le canvas plein écran
   function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -16,32 +15,32 @@ export function initSoleilFlottant() {
   window.addEventListener("resize", resizeCanvas);
 
   const soleil = {
-    x: 220,             // Plus centré vers la gauche
-    y: -100,            // Démarrage en haut
-    baseRadius: 280,    // Rayon de base augmenté
-    speedY: 0.07,        // Descente lente
-    opacity: 0.35        // Opacité visible mais douce
+    x: 260,              // Plus au centre gauche
+    y: -100,             // Commence en haut
+    baseRadius: 340,     // Taille principale plus imposante
+    speedY: 0.05,        // Descente lente
+    opacity: 0.6         // Plus lumineux
   };
 
   let hasLogged = false;
 
   function draw() {
     if (!hasLogged) {
-      console.log("🟡 Soleil flottant (version pulsante) activé !");
+      console.log("☀️ Soleil flamboyant activé !");
       hasLogged = true;
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Ajout d’un effet de pulsation solaire
-    const pulse = 20 * Math.sin(Date.now() / 1000); // Douce oscillation
+    const pulse = 35 * Math.sin(Date.now() / 900); // Pulsation plus forte
     const radius = soleil.baseRadius + pulse;
 
     const gradient = ctx.createRadialGradient(
       soleil.x, soleil.y, 0,
       soleil.x, soleil.y, radius
     );
-    gradient.addColorStop(0, `rgba(255, 220, 100, ${soleil.opacity})`);
+    gradient.addColorStop(0, `rgba(255, 255, 200, ${soleil.opacity})`); // cœur blanc chaud
+    gradient.addColorStop(0.4, `rgba(255, 220, 100, ${soleil.opacity})`);
     gradient.addColorStop(1, "rgba(255, 220, 100, 0)");
 
     ctx.fillStyle = gradient;
