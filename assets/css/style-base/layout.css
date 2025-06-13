@@ -104,6 +104,20 @@ main.container {
   border-bottom: 2px solid #4eaaff;
 }
 
+/* ===========================
+   🖼️ THEME CANVAS
+=========================== */
+canvas#theme-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+
 
 /* ===========================
    🫎 FOOTER
