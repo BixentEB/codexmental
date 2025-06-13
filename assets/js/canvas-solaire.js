@@ -49,9 +49,10 @@ export function initSoleilFlottant() {
     ctx.fill();
 
     soleil.y += soleil.speedY;
-    if (soleil.y > canvas.height + soleil.baseRadius) {
-      soleil.y = -soleil.baseRadius;
+    if (soleil.y < 180) {
+    soleil.y += soleil.speedY;
     }
+
 
     requestAnimationFrame(draw);
   }
