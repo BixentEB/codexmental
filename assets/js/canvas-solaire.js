@@ -1,5 +1,5 @@
 // ================================================
-// ☀️ canvas-solaire.js – Soleil flamboyant pour thème solaire
+// ☀️ canvas-solaire.js – Soleil flamboyant intensifié pour thème solaire
 // ================================================
 
 export function initSoleilFlottant() {
@@ -15,33 +15,33 @@ export function initSoleilFlottant() {
   window.addEventListener("resize", resizeCanvas);
 
   const soleil = {
-    x: 260,              // Plus au centre gauche
-    y: -100,             // Commence en haut
-    baseRadius: 340,     // Taille principale plus imposante
-    speedY: 0.05,        // Descente lente
-    opacity: 0.6         // Plus lumineux
+    x: 290,              // Plus proche du centre gauche
+    y: -100,
+    baseRadius: 380,     // Plus large
+    speedY: 0.04,        // Plus lente pour savourer
+    opacity: 0.75        // Encore plus chaud
   };
 
   let hasLogged = false;
 
   function draw() {
     if (!hasLogged) {
-      console.log("☀️ Soleil flamboyant activé !");
+      console.log("🌞 Soleil flamboyant+ activé !");
       hasLogged = true;
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const pulse = 35 * Math.sin(Date.now() / 900); // Pulsation plus forte
+    const pulse = 45 * Math.sin(Date.now() / 1000);
     const radius = soleil.baseRadius + pulse;
 
     const gradient = ctx.createRadialGradient(
       soleil.x, soleil.y, 0,
       soleil.x, soleil.y, radius
     );
-    gradient.addColorStop(0, `rgba(255, 255, 200, ${soleil.opacity})`); // cœur blanc chaud
-    gradient.addColorStop(0.4, `rgba(255, 220, 100, ${soleil.opacity})`);
-    gradient.addColorStop(1, "rgba(255, 220, 100, 0)");
+    gradient.addColorStop(0,   `rgba(255, 255, 220, ${soleil.opacity})`); // cœur très clair
+    gradient.addColorStop(0.3, `rgba(255, 230, 120, ${soleil.opacity * 0.8})`);
+    gradient.addColorStop(1,   "rgba(255, 200, 80, 0)");
 
     ctx.fillStyle = gradient;
     ctx.beginPath();
