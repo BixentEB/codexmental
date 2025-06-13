@@ -1,28 +1,81 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Test Soleil – Codex Mental</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #fff8e1;
+      color: #333;
+      overflow-x: hidden;
+      height: 100vh;
+    }
 
-  <link rel="stylesheet" href="/assets/css/main.css">
-  <script type="module" src="/assets/js/main.js"></script>
+    header {
+      text-align: center;
+      padding: 2rem 1rem 0.5rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+    }
+
+    #soleil-halo-container {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 480px;
+      height: 480px;
+      transform: translate(30%, 30%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #soleil-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 0 30px rgba(255, 200, 0, 0.6))
+        drop-shadow(0 0 60px rgba(255, 150, 0, 0.3))
+        brightness(1.1);
+      animation: solar-glow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes solar-glow {
+      0%   { filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.4)) drop-shadow(0 0 40px rgba(255, 150, 0, 0.2)) brightness(1); }
+      100% { filter: drop-shadow(0 0 40px rgba(255, 200, 0, 0.6)) drop-shadow(0 0 80px rgba(255, 150, 0, 0.3)) brightness(1.15); }
+    }
+
+    @media screen and (max-width: 768px) {
+      #soleil-halo-container {
+        width: 160px;
+        height: 160px;
+        transform: translate(30%, 30%);
+      }
+    }
+  </style>
 </head>
+<body>
+  <header>
+    <h1>🌞 Zone de test – Soleil stylisé</h1>
+    <p>Affichage fixe en bas à droite avec halo doux et position 1/3 visible.</p>
+  </header>
 
-<body class="theme-solaire">
-  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
-
-  <header id="menu-placeholder"></header>
-
-  <main class="container" style="padding: 3rem 1rem;">
-    <h1 class="text-center">🌞 Zone de test – Soleil vectoriel</h1>
-
-    <!-- 👇 Soleil animé -->
-    <div id="sun-test" class="sun-widget"></div>
-
-    <p style="margin-top:2rem; text-align:center;">Ceci est une simulation de la version desktop avec halo solaire stylisé.<br>À comparer avec la version mobile si besoin.</p>
-  </main>
-
-  <div id="footer-placeholder"></div>
+  <div id="soleil-halo-container">
+    <img src="soleil.png" alt="Soleil stylisé" id="soleil-img">
+  </div>
 </body>
 </html>
