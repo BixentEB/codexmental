@@ -97,32 +97,32 @@ body.theme-solaire textarea::placeholder {
 body.theme-solaire::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 120%;
-  height: 500px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 220, 150, 0.2) 0%,
-    rgba(255, 190, 100, 0.12) 40%,
-    rgba(255, 160, 80, 0.06) 70%,
-    transparent 100%
-  );
-  opacity: 0.5;
+  top: -100px;
+  left: -100px;
+  width: 150%;
+  height: 600px;
+  background: radial-gradient(ellipse at top left,
+    rgba(255, 230, 160, 0.25) 0%,
+    rgba(255, 200, 100, 0.12) 40%,
+    transparent 80%);
+  transform: rotate(10deg);
+  animation: lightSweep 18s ease-in-out infinite;
+  opacity: 0.4;
   pointer-events: none;
   z-index: 1;
-  animation: diagonalLight 12s ease-in-out infinite;
-  transform: rotateZ(0.001deg); /* pour forcer le repaint */
 }
 
-@keyframes diagonalLight {
+@keyframes lightSweep {
   0%, 100% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0px) rotate(10deg);
+    opacity: 0.4;
   }
   50% {
-    transform: translateY(20px) translateX(10px);
+    transform: translateY(15px) rotate(12deg);
+    opacity: 0.6;
   }
 }
+
 
 /* Responsive mobile : lumière moins large */
 @media (max-width: 768px) {
