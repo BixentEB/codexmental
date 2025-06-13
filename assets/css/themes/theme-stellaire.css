@@ -32,6 +32,62 @@ body.theme-stellaire .mobile-nav .theme-buttons button:hover {
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
+/* === ⚛️ PRESENTATION MENU ATOME === */
+.theme-atom-wrapper {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 3rem auto;
+  border-radius: 50%;
+}
+
+.atom-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 1rem;
+  border-radius: 50%;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: rotate 20s linear infinite;
+  transform-origin: center center;
+}
+
+.orbit1 { animation-delay: 0s; }
+.orbit2 { animation-delay: 5s; }
+.orbit3 { animation-delay: 10s; }
+.orbit4 { animation-delay: 15s; }
+
+.theme-electron {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--btn-bg);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+@keyframes rotate {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
 /* ✨ Widget stellaire (placeholder futur)
 body.theme-stellaire #stellaire-widget {
   position: fixed;
