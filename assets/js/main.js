@@ -43,20 +43,12 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
   console.log("Burger clicked");
 });
 
-// === ☀️🌌 Effets visuels selon le thème actif ===
+// === 🌌 Étoile filante pour thème stellaire uniquement ===
 import { initEtoileFilante } from "/assets/js/etoile-filante.js";
 
-window.addEventListener("DOMContentLoaded", async () => {
-  const bodyClass = document.body.classList;
-
-  if (bodyClass.contains("theme-stellaire")) {
+window.addEventListener("DOMContentLoaded", () => {
+  if (document.body.classList.contains("theme-stellaire")) {
     console.log("🌌 Lancement de l’étoile filante...");
     initEtoileFilante();
-  }
-
-  if (bodyClass.contains("theme-solaire")) {
-    console.log("☀️ Lancement du soleil flottant...");
-    const { initSoleilFlottant } = await import("/assets/js/canvas-solaire.js");
-    initSoleilFlottant();
   }
 });
