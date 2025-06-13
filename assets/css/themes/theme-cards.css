@@ -82,3 +82,15 @@
   overflow: hidden;
 }
 
+.theme-card {
+  background: rgba(255, 255, 255, 0.8); /* fond doux mais lisible */
+  color: #111; /* texte foncé pour contraste */
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* optionnel pour un effet doux */
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+}
+
+.theme-card:hover {
+  background: rgba(255, 255, 255, 0.95); /* un peu plus opaque au survol */
+}
