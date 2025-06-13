@@ -91,6 +91,44 @@ body.theme-solaire textarea::placeholder {
   }
 }
 
+/* ============================================
+   ☀️ HALO SOLAIRE – Coin haut gauche animé
+   Ne s'affiche que si le thème solaire est actif
+============================================ */
+body.theme-solaire #halo-solaire {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle at top left, rgba(255, 223, 100, 0.4) 0%, rgba(255, 223, 100, 0.1) 70%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  animation: pulse-halo 6s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+@keyframes pulse-halo {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* Responsive – mobile */
+@media (max-width: 768px) {
+  body.theme-solaire #halo-solaire {
+    width: 200px;
+    height: 200px;
+    opacity: 0.6;
+  }
+}
+
+
 
 /* ☀️ Widget solaire (à développer plus tard)
 body.theme-solaire #sun-widget {
