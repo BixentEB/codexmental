@@ -66,3 +66,19 @@
 .theme-card:hover {
   box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
 }
+
+.theme-card {
+  border-radius: 1rem; /* ou 10px / 16px, selon ton arrondi souhaité */
+  overflow: hidden; /* important si effets internes */
+}
+
+.theme-card:hover .card-hover-content {
+  border-radius: inherit; /* pour hériter automatiquement de la carte parente */
+}
+
+.card-hover-content {
+  backdrop-filter: blur(6px);
+  border-radius: inherit;
+  overflow: hidden;
+}
+
