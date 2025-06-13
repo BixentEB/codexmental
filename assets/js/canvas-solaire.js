@@ -48,10 +48,14 @@ export function initSoleilFlottant() {
     ctx.arc(soleil.x, soleil.y, radius, 0, Math.PI * 2);
     ctx.fill();
 
-    soleil.y += soleil.speedY;
-    if (soleil.y < 180) {
-    soleil.y += soleil.speedY;
-    }
+   const finalY = 180;
+
+   if (soleil.y < finalY) {
+   soleil.y += soleil.speedY;
+  } else {
+  soleil.y = finalY;
+  }
+
 
 
     requestAnimationFrame(draw);
