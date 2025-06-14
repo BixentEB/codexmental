@@ -59,23 +59,51 @@
 
       <!-- 🎨 Menu thèmes -->
 <section class="theme-cards">
-<div class="theme-card" onclick="setTheme('theme-solaire')" aria-label="Activer le thème solaire">
-  <img src="/img/tarot/sun-card.png" alt="Carte Solaire" />
-</div>
-  
-  <div class="theme-card" onclick="setTheme('theme-lunaire')" aria-label="Activer le thème lunaire">
-  <img src="/img/tarot/moon-card.png" alt="Carte Lunaire" />
-</div>
+  <div class="theme-card" data-theme="theme-solaire">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="/img/tarot/sun-card.png" alt="Solaire">
+      </div>
+      <div class="card-back">
+        <div class="description">☀️ Énergie, clarté, illumination, action.</div>
+      </div>
+    </div>
+  </div>
 
-<div class="theme-card" onclick="setTheme('theme-galactique')" aria-label="Activer le thème galactique">
-  <img src="/img/tarot/galaxy-card.png" alt="Carte Galactique" />
-</div>
+  <div class="theme-card" data-theme="theme-lunaire">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="/img/tarot/moon-card.png" alt="Lunaire">
+      </div>
+      <div class="card-back">
+        <div class="description">🌙 Intuition, rêve, mystère, intériorité.</div>
+      </div>
+    </div>
+  </div>
 
-<div class="theme-card" onclick="setTheme('theme-stellaire')" aria-label="Activer le thème stellaire">
-  <img src="/img/tarot/star-card.png" alt="Carte Stellaire" />
-</div>
+  <div class="theme-card" data-theme="theme-galactique">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="/img/tarot/galaxy-card.png" alt="Galactique">
+      </div>
+      <div class="card-back">
+        <div class="description">🌌 Profondeur, mémoire cosmique, poussières d’étoiles.</div>
+      </div>
+    </div>
+  </div>
 
+  <div class="theme-card" data-theme="theme-stellaire">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="/img/tarot/star-card.png" alt="Stellaire">
+      </div>
+      <div class="card-back">
+        <div class="description">✨ Nuit étoilée, synchronicités, guidance céleste.</div>
+      </div>
+    </div>
+  </div>
 </section>
+
 
 
 
