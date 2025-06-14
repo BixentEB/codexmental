@@ -2,6 +2,18 @@
 // main.js – Point d'entrée central de Codex Mental
 // ========================================================
 
+// ================================
+// 🎨 Initialisation du thème
+// ================================
+
+(function initTheme() {
+  const savedTheme = localStorage.getItem('codexTheme') || 'stellaire'; // <== nom cohérent
+  const themeLink = document.getElementById('theme-style');
+  if (themeLink) {
+    themeLink.href = `/assets/css/themes/theme-${savedTheme}.css`;
+  }
+})();
+
 // === 📦 Modules à effets de bord ===
 import '/assets/js/canvas.js';          
 import '/assets/js/lune.js';            
@@ -15,11 +27,8 @@ import { setupScrollButton } from '/assets/js/scroll.js';
 import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 
+// Rendre setTheme accessible globalement
 window.setTheme = setTheme;
-
-// === 🪐 Appliquer le thème au chargement ===
-const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
-setTheme(savedTheme);
 
 // === 🧩 Injecter dynamiquement le menu et le footer ===
 injectPartial('menu-placeholder', '/menu.html');
@@ -39,6 +48,7 @@ lancerIntroAstro();
 // === 💫 Afficher le badge si événement présent ===
 activerBadgeAstro();
 
+// === 🍔 Log burger menu (optionnel)
 document.getElementById("menu-toggle")?.addEventListener("click", () => {
   console.log("Burger clicked");
 });
