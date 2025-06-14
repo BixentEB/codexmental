@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Atelier – Codex Mental</title>
+    <title>Atelier</title>
 
   <!-- 🌞 Favicon -->
   <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
@@ -13,6 +13,7 @@
 
   <!-- 🎨 Styles -->
  <link rel="stylesheet" href="/assets/css/main.css">
+ <link rel="stylesheet" href="/assets/css/atelier.css">
 
   <!-- ⚙️ Script principal -->
 <script type="module" src="/assets/js/main.js"></script>
@@ -27,23 +28,34 @@
  
 
   <!-- 🧱 Contenu principal -->
+  <main class="atelier-layout">
+    <section id="visualiseur">
+      <div class="placeholder">
+        <h2>Bienvenue dans l'atelier</h2>
+        <p>Sélectionnez un projet à droite pour l'afficher ici.</p>
+      </div>
+    </section>
 
- 
- <main class="container">
-    <h1>Atelier</h1>
-    <p>Voici une présentation de mes projets en cours, passés ou à venir.</p>
+    <aside class="atelier-menu">
+      <h3>Projets</h3>
+      <ul>
+        <li><button onclick="chargerProjet('b12')">🧬 B12 Project</button></li>
+        <li><button onclick="chargerProjet('heures')">⏳ Heures Sacrées</button></li>
+        <li><button onclick="chargerProjet('ia')">🤖 IA & Outils</button></li>
+      </ul>
+    </aside>
   </main>
 
-  <!-- 🌙 Lune injectée automatiquement si thème lunaire -->
-
-  <!-- 🦶 Footer dynamique -->
-  <div id="footer-placeholder"></div>
-
-  <!-- ✅ Confirmation soumission -->
   <script>
-    function formSubmitted() {
-      const msg = document.getElementById('confirmationMessage');
-      if (msg) msg.style.display = 'block';
+    function chargerProjet(nom) {
+      fetch(`/atelier/${nom}.html`)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById("visualiseur").innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById("visualiseur").innerHTML = `<p class='erreur'>Erreur de chargement : ${nom}.html</p>`;
+        });
     }
   </script>
 </body>
