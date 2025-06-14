@@ -31,6 +31,54 @@ main.container {
   width: 100%;
 }
 
+/* 📍 Alignement du texte */
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.text-justify {
+  text-align: justify;
+}
+
+/* 📐 Largeur contrôlée et centrée */
+.text-bloc {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* 🧠 Combo utiles */
+.text-left-bloc {
+  text-align: left;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.text-center-bloc {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.text-justify-bloc {
+  text-align: justify;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* 📱 Responsive : centré sur grand écran, gauche sur mobile */
+.text-center-desktop-left-mobile {
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .text-center-desktop-left-mobile {
+    text-align: left;
+  }
+}
+
+
 @media screen and (max-width: 768px) {
   .container {
     padding: 0 0.8rem;
