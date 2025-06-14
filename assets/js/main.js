@@ -7,12 +7,10 @@
 // ================================
 
 (function initTheme() {
-  const savedTheme = localStorage.getItem('codexTheme') || 'stellaire'; // <== nom cohérent
-  const themeLink = document.getElementById('theme-style');
-  if (themeLink) {
-    themeLink.href = `/assets/css/themes/theme-${savedTheme}.css`;
-  }
+  const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
+  document.body.className = savedTheme;
 })();
+
 
 // === 📦 Modules à effets de bord ===
 import '/assets/js/canvas.js';          
