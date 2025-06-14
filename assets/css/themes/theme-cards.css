@@ -116,3 +116,13 @@
     height: 195px;
   }
 }
+
+.card-back .description {
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #f0f0f0;
+  padding: 1rem;
+  white-space: pre-line;
+  font-family: 'Roboto', sans-serif;
+}
