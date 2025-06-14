@@ -68,6 +68,13 @@ main.container {
   margin: 0 auto;
 }
 
+.separator {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+  border: none;
+  margin: 2rem 0;
+}
+
 /* 📱 Responsive : centré sur grand écran, gauche sur mobile */
 .text-center-desktop-left-mobile {
   text-align: center;
