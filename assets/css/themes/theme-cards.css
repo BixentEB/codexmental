@@ -1,4 +1,4 @@
-/* 🃏 CARTES THÉMATIQUES INTERACTIVES */
+/* MENU INTERACTIF CARTES THEMES */
 .theme-cards-container {
   text-align: center;
   margin: 4rem auto;
@@ -14,30 +14,36 @@
 }
 
 .theme-card {
-  width: 150px;
-  height: 240px;
   perspective: 1000px;
+  width: 150px;
+  height: 293px;
   cursor: pointer;
   border-radius: 1rem;
   overflow: hidden;
-  transition: transform 0.4s ease;
+  background: transparent;
+  color: #111;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  transition: transform 0.6s, background 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
 }
 
 .theme-card:hover {
-  transform: translateY(-5px) scale(1.05);
+  transform: translateY(-4px) scale(1.05);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
+}
+
+.theme-card:hover .card-inner {
+  transform: rotateY(180deg);
 }
 
 .card-inner {
   width: 100%;
   height: 100%;
-  position: relative;
-  transition: transform 0.8s ease;
   transform-style: preserve-3d;
-}
-
-/* Effet flip */
-.theme-card:hover .card-inner {
-  transform: rotateY(180deg);
+  transition: transform 0.8s ease;
+  position: relative;
 }
 
 .card-front,
@@ -45,67 +51,95 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border-radius: 1rem;
-  overflow: hidden;
-}
-
-/* FACE avant */
-.card-front {
-  z-index: 2;
-}
-
-/* DOS arrière */
-.card-back {
-  transform: rotateY(180deg);
-  z-index: 1;
-  background-image: url('/img/tarot/back-card.png'); /* adapte à ton nom */
-  background-size: cover;
-  background-position: center;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  background: transparent;
+  backdrop-filter: blur(6px);
+  transition: box-shadow 0.3s;
 }
 
-/* Image contenue dans chaque face */
-.card-front img {
+.card-front {
+  font-size: 2rem;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  font-size: 0.95rem;
+  padding: 1rem;
+  position: relative;
+}
+
+.card-front img,
+.card-back img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   border-radius: inherit;
 }
 
-/* Texte en overlay sur le dos (optionnel) */
-.card-back .description {
-  color: #fff;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.85rem;
-  font-family: 'Roboto', sans-serif;
-  backdrop-filter: blur(2px);
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
+.theme-card,
+.card-front img,
+.card-back img {
+  border-radius: 1rem;
+  overflow: hidden;
 }
 
-/* Carte sélectionnée */
+.card-hover-content {
+  backdrop-filter: blur(6px);
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.theme-card:hover .card-hover-content {
+  border-radius: inherit;
+}
+
 .theme-card.active {
   outline: 2px solid var(--accent-primary, #4eaaff);
-  box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
+  box-shadow: 0 0 30px var(--accent-primary, #4eaaff);
 }
 
-/* 📱 Responsive */
+.card-back .description {
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #f0f0f0;
+  padding: 1rem;
+  white-space: pre-line;
+  font-family: 'Roboto', sans-serif;
+  background-image: url('/img/tarot/back-card.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+}
+
 @media (max-width: 768px) {
   .theme-card {
     width: 120px;
-    height: 192px;
+    height: 234px;
   }
 }
 
 @media (max-width: 480px) {
   .theme-card {
     width: 100px;
-    height: 160px;
+    height: 195px;
   }
 }
