@@ -23,14 +23,13 @@
   background: transparent;
   color: #111;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(6px);
   transition: transform 0.6s, background 0.3s ease, box-shadow 0.3s ease;
   position: relative;
 }
 
 .theme-card:hover {
   transform: translateY(-4px) scale(1.05);
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent;
   box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
 }
 
@@ -60,9 +59,8 @@
   color: white;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  box-shadow: none;
   background: transparent;
-  backdrop-filter: blur(6px);
   transition: box-shadow 0.3s;
 }
 
@@ -94,7 +92,6 @@
 }
 
 .card-hover-content {
-  backdrop-filter: blur(6px);
   border-radius: inherit;
   overflow: hidden;
 }
