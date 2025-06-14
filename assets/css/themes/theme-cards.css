@@ -1,4 +1,4 @@
-/* MENU INTERACTIF CARTES THEMES */
+/* 🎴 MENU INTERACTIF CARTES THEMES */
 .theme-cards-container {
   text-align: center;
   margin: 4rem auto;
@@ -21,26 +21,24 @@
   border-radius: 1rem;
   overflow: hidden;
   background: transparent;
-  color: #111;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(6px);
-  transition: transform 0.6s, background 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.6s ease, box-shadow 0.3s ease;
 }
 
 .theme-card:hover {
   transform: translateY(-4px) scale(1.05);
-  background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
 }
 
-/* ✅ Flip sur hover (plus besoin de .flipped) */
+/* ✅ Animation de flip uniquement sur hover */
 .theme-card:hover .card-inner {
   transform: rotateY(180deg);
 }
 
 .card-inner {
-  transform-style: preserve-3d;
+  width: 100%;
+  height: 100%;
   transition: transform 0.8s ease;
+  transform-style: preserve-3d;
   position: relative;
 }
 
@@ -49,56 +47,45 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: white;
   backface-visibility: hidden;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  background: transparent; /* ✅ suppression du fond blanc */
-  backdrop-filter: blur(6px);
-  transition: box-shadow 0.3s;
+  -webkit-backface-visibility: hidden;
+  background: transparent;
+  transition: box-shadow 0.3s ease;
 }
 
+/* 🟡 Face avant */
 .card-front {
-  font-size: 2rem;
+  z-index: 2;
 }
 
+/* 🔄 Dos retourné */
 .card-back {
   transform: rotateY(180deg);
-  font-size: 0.95rem;
+  z-index: 1;
   padding: 1rem;
-  position: relative;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #f0f0f0;
+  font-family: 'Roboto', sans-serif;
+  white-space: pre-line;
 }
 
-.card-front, .card-back {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden; /* Safari fix */
-}
-
-
-/* 🧠 Images affichées dans les faces (face + dos) */
+/* 🧠 Images des cartes */
 .card-front img,
 .card-back img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* cover ✅ remplissage total pour éviter le filet blanc */
+  object-fit: contain;
   display: block;
   border-radius: inherit;
+  background: transparent;
 }
 
-/* ✅ Arrondi solide même si l’image a des coins carrés */
-.theme-card,
-.card-front img,
-.card-back img {
-  border-radius: 1rem;
-  overflow: hidden;
-}
-
-/* 👁️ Bonus visuel */
+/* 🌟 Visuel bonus (non obligatoire) */
 .card-hover-content {
   backdrop-filter: blur(6px);
   border-radius: inherit;
@@ -109,23 +96,10 @@
   border-radius: inherit;
 }
 
-/* 🔹 Carte active (si stylisée via JS) */
+/* 🟦 Carte active */
 .theme-card.active {
   outline: 2px solid var(--accent-primary, #4eaaff);
   box-shadow: 0 0 30px var(--accent-primary, #4eaaff);
-}
-
-/* 💬 Texte dans le dos de la carte */
-.card-back .description {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: #f0f0f0;
-  padding: 1rem;
-  white-space: pre-line;
-  font-family: 'Roboto', sans-serif;
 }
 
 /* 📱 Responsive */
