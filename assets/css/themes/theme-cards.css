@@ -85,6 +85,14 @@
   border-radius: inherit;
 }
 
+/* ✅ Arrondi solide même si l’image a des coins carrés */
+.theme-card,
+.card-front img,
+.card-back img {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
 /* 👁️ Bonus visuel */
 .card-hover-content {
   backdrop-filter: blur(6px);
@@ -117,6 +125,7 @@
   }
 }
 
+/* 💬 Texte dans le dos de la carte */
 .card-back .description {
   text-align: center;
   font-size: 0.85rem;
