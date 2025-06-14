@@ -5,13 +5,14 @@
 
 .atelier-layout {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse; /* ✅ Menu passe à droite */
   gap: 2rem;
   max-width: 1200px;
   margin: 3rem auto;
   padding: 0 1rem;
   box-sizing: border-box;
 }
+
 
 /* Visualiseur central */
 #visualiseur {
