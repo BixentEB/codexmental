@@ -33,16 +33,17 @@
   box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
 }
 
+/* Flip actif uniquement quand la classe .flipped est appliquée */
+.theme-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
 .card-inner {
   width: 100%;
   height: 100%;
   transition: transform 0.8s;
   transform-style: preserve-3d;
   position: relative;
-}
-
-.theme-card:hover .card-inner {
-  transform: rotateY(180deg);
 }
 
 .card-front,
@@ -73,6 +74,7 @@
   transform: rotateY(180deg);
   font-size: 0.95rem;
   padding: 1rem;
+  position: relative;
 }
 
 /* 🧠 Images affichées dans les faces (face + dos) */
@@ -104,10 +106,23 @@
   border-radius: inherit;
 }
 
-/* 🔹 Carte active (si activée en JS) */
+/* 🔹 Carte active (si activée en JS ou stylisée manuellement) */
 .theme-card.active {
   outline: 2px solid var(--accent-primary, #4eaaff);
   box-shadow: 0 0 30px var(--accent-primary, #4eaaff);
+}
+
+/* 💬 Texte dans le dos de la carte */
+.card-back .description {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #f0f0f0;
+  padding: 1rem;
+  white-space: pre-line;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* 📱 Responsive */
@@ -123,15 +138,4 @@
     width: 100px;
     height: 195px;
   }
-}
-
-/* 💬 Texte dans le dos de la carte */
-.card-back .description {
-  text-align: center;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: #f0f0f0;
-  padding: 1rem;
-  white-space: pre-line;
-  font-family: 'Roboto', sans-serif;
 }
