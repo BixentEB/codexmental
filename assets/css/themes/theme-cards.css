@@ -18,7 +18,19 @@
   width: 140px;
   height: 140px;
   cursor: pointer;
-  transition: transform 0.6s;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.8);
+  color: #111;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  transition: transform 0.6s, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-card:hover {
+  transform: translateY(-4px) scale(1.05);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
 }
 
 .card-inner {
@@ -63,34 +75,12 @@
   padding: 1rem;
 }
 
-.theme-card:hover {
-  box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
-}
-
-.theme-card {
-  border-radius: 1rem; /* ou 10px / 16px, selon ton arrondi souhaité */
-  overflow: hidden; /* important si effets internes */
-}
-
-.theme-card:hover .card-hover-content {
-  border-radius: inherit; /* pour hériter automatiquement de la carte parente */
-}
-
 .card-hover-content {
   backdrop-filter: blur(6px);
   border-radius: inherit;
   overflow: hidden;
 }
 
-.theme-card {
-  background: rgba(255, 255, 255, 0.8); /* fond doux mais lisible */
-  color: #111; /* texte foncé pour contraste */
-  border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* optionnel pour un effet doux */
-  backdrop-filter: blur(6px);
-  transition: all 0.3s ease;
-}
-
-.theme-card:hover {
-  background: rgba(255, 255, 255, 0.95); /* un peu plus opaque au survol */
+.theme-card:hover .card-hover-content {
+  border-radius: inherit;
 }
