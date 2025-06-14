@@ -7,6 +7,8 @@ import '/assets/js/canvas.js';
 import '/assets/js/lune.js';
 import '/assets/js/theme-hours.js';
 import '/assets/js/theme-special.js';
+import '/assets/js/theme-cards.js';
+
 
 // === 🔧 Modules à fonctions exportées ===
 import { setTheme } from '/assets/js/theme-engine.js';
