@@ -1,22 +1,18 @@
 document.querySelectorAll('.theme-card').forEach(card => {
   card.addEventListener('click', () => {
-    const theme = card.dataset.theme; // Récupère "solaire", "lunaire", etc.
+    const theme = card.dataset.theme;
 
-    // Mise à jour du localStorage
+    // Mémoriser dans le localStorage
     localStorage.setItem('codexTheme', `theme-${theme}`);
 
-    // Changer dynamiquement le lien vers la feuille de style du thème
+    // Appliquer dynamiquement la feuille de style
     const themeLink = document.getElementById('theme-style');
     if (themeLink) {
       themeLink.href = `/assets/css/themes/theme-${theme}.css`;
-    } else {
-      console.warn("⚠️ Le lien <link id='theme-style'> est introuvable.");
     }
 
-    // Appliquer visuellement la carte active
-    document.querySelectorAll('.theme-card').forEach(c => {
-      c.classList.remove('active');
-    });
+    // Mettre à jour visuellement la carte active
+    document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
   });
 });
