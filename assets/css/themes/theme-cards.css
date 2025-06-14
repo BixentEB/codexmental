@@ -39,10 +39,8 @@
 }
 
 .card-inner {
-  width: 100%;
-  height: 100%;
-  transition: transform 0.8s;
   transform-style: preserve-3d;
+  transition: transform 0.8s ease;
   position: relative;
 }
 
@@ -76,12 +74,18 @@
   position: relative;
 }
 
+.card-front, .card-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari fix */
+}
+
+
 /* 🧠 Images affichées dans les faces (face + dos) */
 .card-front img,
 .card-back img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* ✅ remplissage total pour éviter le filet blanc */
+  object-fit: contain; /* cover ✅ remplissage total pour éviter le filet blanc */
   display: block;
   border-radius: inherit;
 }
