@@ -5,15 +5,13 @@
 
 .atelier-layout {
   display: flex;
-  flex-direction: row; /* ou row-reverse si besoin */
+  flex-direction: row;
   gap: 2rem;
   max-width: 1200px;
-  margin: 6rem auto 3rem; /* 👈 ajoute une marge haute plus généreuse */
+  margin: 2rem auto 2rem; /* 🔧 Marge haute réduite */
   padding: 0 1rem;
   box-sizing: border-box;
 }
-
-
 
 /* Visualiseur central */
 #visualiseur {
@@ -75,13 +73,14 @@
 @media screen and (max-width: 768px) {
   .atelier-layout {
     flex-direction: column;
+    margin: 1.5rem auto;
   }
 
   .atelier-menu {
     max-width: 100%;
     margin-top: 2rem;
   }
-} 
+}
 
 /* Placeholder par défaut */
 .placeholder {
@@ -96,8 +95,9 @@
   margin-top: 1rem;
 }
 
+/* Espacement interne du visualiseur */
 #visualiseur > * + * {
-  margin-top: 1rem; /* ou 1rem si tu veux un espacement plus serré */
+  margin-top: 1rem;
 }
 
 #visualiseur p {
