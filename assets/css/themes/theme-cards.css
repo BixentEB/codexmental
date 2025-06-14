@@ -15,8 +15,8 @@
 
 .theme-card {
   perspective: 1000px;
-  width: 140px;
-  height: 140px;
+  width: 150px;
+  height: 293px;
   cursor: pointer;
   border-radius: 1rem;
   overflow: hidden;
@@ -25,6 +25,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   transition: transform 0.6s, background 0.3s ease, box-shadow 0.3s ease;
+
 }
 
 .theme-card:hover {
@@ -88,4 +89,18 @@
 .theme-card.active {
   outline: 2px solid var(--accent-primary, #4eaaff);
   box-shadow: 0 0 30px var(--accent-primary, #4eaaff);
+}
+
+@media (max-width: 768px) {
+  .theme-card {
+    width: 120px;
+    height: 234px;
+  }
+}
+
+@media (max-width: 480px) {
+  .theme-card {
+    width: 100px;
+    height: 195px;
+  }
 }
