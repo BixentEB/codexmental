@@ -33,8 +33,8 @@
   box-shadow: 0 0 20px var(--accent-primary, #4eaaff);
 }
 
-/* Flip actif uniquement quand la classe .flipped est appliquée */
-.theme-card.flipped .card-inner {
+/* ✅ Flip sur hover (plus besoin de .flipped) */
+.theme-card:hover .card-inner {
   transform: rotateY(180deg);
 }
 
@@ -60,13 +60,12 @@
   color: white;
   backface-visibility: hidden;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent; /* ✅ suppression du fond blanc */
   backdrop-filter: blur(6px);
   transition: box-shadow 0.3s;
 }
 
 .card-front {
-  background: rgba(255, 255, 255, 0.08);
   font-size: 2rem;
 }
 
@@ -82,7 +81,7 @@
 .card-back img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover; /* ✅ remplissage total pour éviter le filet blanc */
   display: block;
   border-radius: inherit;
 }
@@ -106,7 +105,7 @@
   border-radius: inherit;
 }
 
-/* 🔹 Carte active (si activée en JS ou stylisée manuellement) */
+/* 🔹 Carte active (si stylisée via JS) */
 .theme-card.active {
   outline: 2px solid var(--accent-primary, #4eaaff);
   box-shadow: 0 0 30px var(--accent-primary, #4eaaff);
