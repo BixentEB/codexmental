@@ -8,7 +8,7 @@
   flex-direction: row;
   gap: 2rem;
   max-width: 1200px;
-  margin: 2rem auto 2rem; /* 🔧 Marge haute réduite */
+  margin: 2rem auto 3rem; /* 🔧 Marge haute réduite */
   padding: 0 1rem;
   box-sizing: border-box;
 }
@@ -16,7 +16,7 @@
 /* Visualiseur central */
 #visualiseur {
   flex: 3;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 1rem;
   background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
