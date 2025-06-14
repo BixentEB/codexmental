@@ -1,0 +1,95 @@
+/* =============================================
+   🎨 CSS – Atelier : présentation des projets
+   Utilisé par /atelier.html
+============================================= */
+
+.atelier-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* Visualiseur central */
+#visualiseur {
+  flex: 3;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
+  min-height: 400px;
+  transition: all 0.3s ease;
+}
+
+/* Menu latéral */
+.atelier-menu {
+  flex: 1;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
+  min-width: 220px;
+  max-width: 280px;
+}
+
+.atelier-menu h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.atelier-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.atelier-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.5rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: var(--accent-bg, rgba(255, 255, 255, 0.08));
+  color: var(--text-primary, #fff);
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.atelier-menu button:hover {
+  background: var(--accent-hover, rgba(255, 255, 255, 0.15));
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .atelier-layout {
+    flex-direction: column;
+  }
+
+  .atelier-menu {
+    max-width: 100%;
+    margin-top: 2rem;
+  }
+} 
+
+/* Placeholder par défaut */
+.placeholder {
+  opacity: 0.6;
+  font-style: italic;
+  color: #ccc;
+}
+
+.erreur {
+  color: #ff7070;
+  font-weight: bold;
+  margin-top: 1rem;
+}
