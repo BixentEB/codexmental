@@ -95,3 +95,7 @@
   font-weight: bold;
   margin-top: 1rem;
 }
+
+#visualiseur > * + * {
+  margin-top: 1.2rem; /* ou 1rem si tu veux un espacement plus serré */
+}
