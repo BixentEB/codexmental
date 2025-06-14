@@ -97,5 +97,5 @@
 }
 
 #visualiseur > * + * {
-  margin-top: 1.2rem; /* ou 1rem si tu veux un espacement plus serré */
+  margin-top: 1rem; /* ou 1rem si tu veux un espacement plus serré */
 }
