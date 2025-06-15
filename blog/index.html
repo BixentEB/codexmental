@@ -9,6 +9,79 @@
   <link rel="stylesheet" href="/assets/css/main.css">
   <script type="module" src="/assets/js/main.js"></script>
   <script defer src="/assets/js/loader.js"></script>
+  <style>
+    #blog-menu {
+      transition: left 0.3s ease, top 0.3s ease;
+      top: 120px;
+      left: 0;
+      position: fixed;
+      z-index: 1000;
+      padding: 0.5rem;
+      border-radius: 0 20px 20px 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.4);
+    }
+
+    #blog-menu.closed {
+      left: -60px;
+    }
+
+    #blog-menu nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #blog-menu nav ul li {
+      margin: 0.5rem 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .menu-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .menu-btn:hover {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    #toggle-menu {
+      margin-top: 0.5rem;
+      border: none;
+      border-radius: 50%;
+      padding: 0.5rem 0.6rem;
+      font-size: 1.2rem;
+      background-color: #fff;
+      color: #000;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      position: absolute;
+      right: -20px;
+      top: 0;
+    }
+
+    .panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body class="theme-stellaire">
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
@@ -17,10 +90,12 @@
   <aside id="blog-menu" class="open blog-capsule">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
-        <button class="menu-btn" data-panel="date">🗓️</button>
-        <button class="menu-btn" data-panel="theme">🧠</button>
-        <button class="menu-btn" data-panel="all">📄</button>
-        <button class="menu-btn" data-panel="search">🔍</button>
+      <ul>
+        <li><button class="menu-btn" data-panel="date">🗓️</button></li>
+        <li><button class="menu-btn" data-panel="theme">🧠</button></li>
+        <li><button class="menu-btn" data-panel="all">📄</button></li>
+        <li><button class="menu-btn" data-panel="search">🔍</button></li>
+      </ul>
     </nav>
   </aside>
 
@@ -48,7 +123,6 @@
     const panelButtons = document.querySelectorAll('.menu-btn');
     const panelDivs = document.querySelectorAll('.panel');
 
-    // Toggle du menu burger
     toggleButton.addEventListener('click', () => {
       blogMenu.classList.toggle('closed');
       const wasOpen = !blogMenu.classList.contains('closed');
@@ -58,7 +132,6 @@
       }
     });
 
-    // Boutons : toggle panel + fermeture mobile + fade
     panelButtons.forEach(button => {
       button.addEventListener('click', () => {
         const panelName = button.getAttribute('data-panel');
@@ -80,7 +153,6 @@
       });
     });
 
-    // Chargement dynamique
     fetch('/blog/blog.json')
       .then(res => res.json())
       .then(data => populateMenus(data));
