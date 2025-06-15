@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Codex – Prototype Menu</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <!-- Menu vertical -->
+  <aside id="blog-menu" class="open">
+    <button id="toggle-menu">☰</button>
+    <nav>
+      <ul>
+        <li><button class="menu-btn" data-panel="date">🗓️</button></li>
+        <li><button class="menu-btn" data-panel="theme">🧠</button></li>
+        <li><button class="menu-btn" data-panel="all">📄</button></li>
+        <li><button class="menu-btn" data-panel="search">🔍</button></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Panneaux latéraux -->
+  <section id="panels">
+    <div id="panel-date" class="panel">📅 Calendrier ou liste par date</div>
+    <div id="panel-theme" class="panel">🧠 Liste par thématique</div>
+    <div id="panel-all" class="panel">📄 Tous les articles</div>
+    <div id="panel-search" class="panel">
+      🔍 <input type="text" id="search-input" placeholder="Rechercher un mot-clé ou #hashtag">
+      <div id="search-results"></div>
+    </div>
+  </section>
+
+  <!-- Contenu principal -->
+  <main id="blog-content">
+    <article data-date="2025-06-15" data-theme="ia" data-tags="#ia #philosophie">
+      <h2>La place de l’IA dans ma vie</h2>
+      <p>Cet article explore mon rapport intime avec l’intelligence artificielle...</p>
+    </article>
+    <article data-date="2025-06-14" data-theme="surfonctionnement" data-tags="#caméléon #introspection">
+      <h2>Le syndrome du caméléon</h2>
+      <p>Ce texte aborde la manière dont je m’adapte constamment aux autres...</p>
+    </article>
+  </main>
+</body>
+</html>
