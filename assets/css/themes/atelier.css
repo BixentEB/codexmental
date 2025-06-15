@@ -97,7 +97,7 @@
 
 /* Espacement interne du visualiseur */
 #visualiseur > * + * {
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
 
 #visualiseur p {
