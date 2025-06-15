@@ -23,6 +23,11 @@ body.theme-solaire {
   --btn-hover: #f57f17;
 }
 
+body.theme-solaire strong {
+  color: #ffb300; /* couleur plus lisible que #ffcd72 */
+  font-weight: bold;
+}
+
 /* Boutons thème mobile */
 body.theme-solaire .mobile-nav .theme-buttons button {
   color: #ffe082;
