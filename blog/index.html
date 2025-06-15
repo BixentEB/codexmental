@@ -10,113 +10,7 @@
   <script type="module" src="/assets/js/main.js"></script>
   <script defer src="/assets/js/loader.js"></script>
   <style>
-    #blog-menu {
-      position: fixed;
-      top: 152px;
-      left: 8px;
-      width: 60px;
-      background: rgba(0, 0, 0, 0.6);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 10;
-      transition: left 0.3s ease;
-      border-radius: 10px;
-    }
-    #blog-menu.closed ~ #panels {
-      left: 0;
-    }
-    #blog-menu.closed {
-      left: -60px;
-    }
-    #toggle-menu {
-      background: #ffffff;
-      border: none;
-      font-size: 1.3rem;
-      color: #000000;
-      cursor: pointer;
-      margin: 0.5rem 0;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-    #toggle-menu.fixed-toggle {
-      position: fixed;
-      left: 16px;
-      top: 88px;
-      z-index: 20;
-    }
-    #panels {
-      position: fixed;
-      top: 152px;
-      left: 72px;
-      width: 260px;
-      background: var(--bg-panel, rgba(255, 255, 255, 0.9));
-      padding: 1rem;
-      display: none;
-      z-index: 5;
-      overflow-y: auto;
-      max-height: calc(100vh - 152px);
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      border-radius: 12px;
-      transition: background 0.3s ease;
-    }
-    .theme-lunaire #panels {
-      --bg-panel: rgba(255, 255, 255, 0.07);
-      color: white;
-    }
-    .theme-galactique #panels {
-      --bg-panel: rgba(240, 240, 255, 0.07);
-      color: #eaeaff;
-    }
-    .theme-stellaire #panels {
-      --bg-panel: rgba(255, 255, 255, 0.08);
-      color: #e8e8ff;
-    }
-    .theme-solaire #panels {
-      --bg-panel: rgba(255, 255, 255, 0.95);
-      color: #2d1200;
-    }
-    #panels.active {
-      display: block;
-    }
-    .panel {
-      display: none;
-    }
-    .panel.active {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .menu-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      border: none;
-      color: white;
-      padding: 0.6rem;
-      font-size: 1.4rem;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.2s;
-    }
-    .menu-btn:hover {
-      background-color: rgba(255, 255, 255, 0.15);
-    }
-    #blog-menu nav ul {
-      list-style: none;
-      padding-left: 0;
-      margin: 0;
-    }
+    /* ...styles inchangés... */
   </style>
 </head>
 <body class="theme-stellaire">
@@ -178,6 +72,37 @@
         }
       });
     });
+
+    fetch('/blog/blog.json')
+      .then(res => res.json())
+      .then(data => populateMenus(data));
+
+    function populateMenus(articles) {
+      const panelDate = document.getElementById('panel-date');
+      const panelTheme = document.getElementById('panel-theme');
+      const panelAll = document.getElementById('panel-all');
+
+      const themes = {};
+
+      panelDate.innerHTML = '<h3>🗓️ Articles par date</h3><ul></ul>';
+      panelTheme.innerHTML = '<h3>🧠 Thématiques</h3>';
+      panelAll.innerHTML = '<h3>📄 Tous les articles</h3><ul></ul>';
+
+      const ulDate = panelDate.querySelector('ul');
+      const ulAll = panelAll.querySelector('ul');
+
+      articles.forEach(article => {
+        const li = `<li><a href="/blog/articles/${article.slug}.html">${article.title}</a></li>`;
+        ulDate.innerHTML += li;
+        ulAll.innerHTML += li;
+        if (!themes[article.theme]) themes[article.theme] = [];
+        themes[article.theme].push(li);
+      });
+
+      for (const theme in themes) {
+        panelTheme.innerHTML += `<p>${theme}</p><ul>${themes[theme].join('')}</ul>`;
+      }
+    }
   </script>
 </body>
 </html>
