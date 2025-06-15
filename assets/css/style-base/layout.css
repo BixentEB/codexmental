@@ -75,6 +75,16 @@ main.container {
   margin: 2rem 0;
 }
 
+blockquote {
+  font-style: italic;
+  color: #ccc;
+  border-left: 3px solid var(--accent, #888);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  opacity: 0.85;
+}
+
+
 /* 📱 Responsive : centré sur grand écran, gauche sur mobile */
 .text-center-desktop-left-mobile {
   text-align: center;
