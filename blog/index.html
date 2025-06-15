@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accueil – Codex Mental</title>
+  <title>Blog – Codex Mental</title>
 
   <!-- 🌞 Favicon -->
   <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
@@ -12,10 +12,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
 
   <!-- 🎨 Styles -->
- <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
 
-  <!-- ⚙️ Script principal -->
-<script type="module" src="/assets/js/main.js"></script>
+  <!-- ⚙️ Scripts -->
+  <script type="module" src="/assets/js/main.js"></script>
+  <script defer src="/assets/js/loader.js"></script>
 </head>
 
 <body class="theme-stellaire">
@@ -23,29 +24,41 @@
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
   <!-- 🧠 Menu injecté dynamiquement -->
-<header id="menu-placeholder"></header>
- 
+  <header id="menu-placeholder"></header>
 
-  <!-- 🧱 Contenu principal -->
-  <main class="container">
+  <!-- 🔽 Menu vertical blog -->
+  <aside id="blog-menu" class="open">
+    <button id="toggle-menu">☰</button>
+    <nav>
+      <ul>
+        <li><button class="menu-btn" data-panel="date">🗓️</button></li>
+        <li><button class="menu-btn" data-panel="theme">🧠</button></li>
+        <li><button class="menu-btn" data-panel="all">📄</button></li>
+        <li><button class="menu-btn" data-panel="search">🔍</button></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- 📂 Panneaux de filtre -->
+  <section id="panels">
+    <div id="panel-date" class="panel">📅 Chargement en cours...</div>
+    <div id="panel-theme" class="panel">🧠 Chargement en cours...</div>
+    <div id="panel-all" class="panel">📄 Chargement en cours...</div>
+    <div id="panel-search" class="panel">
+      🔍 <input type="text" id="search-input" placeholder="Rechercher un mot-clé ou #hashtag">
+      <div id="search-results"></div>
+    </div>
+  </section>
+
+  <!-- 📖 Visualiseur d'article -->
+  <main id="blog-viewer" class="container">
     <h1>🧠 Le Blog</h1>
-    <ul style="list-style: none; padding-left: 0;">
-      <li><a href="article1.html">📝 Comment j’ai rencontré mon IA intérieure</a></li>
-      <li><a href="article2.html">🌀 L’étrange silence des chiffres</a></li>
-    </ul>
+    <p>📰 Sélectionne un article dans le menu pour l’afficher ici.</p>
   </main>
 
   <!-- 🌙 Lune injectée automatiquement si thème lunaire -->
 
   <!-- 🦶 Footer dynamique -->
   <div id="footer-placeholder"></div>
-
-  <!-- ✅ Confirmation soumission -->
-  <script>
-    function formSubmitted() {
-      const msg = document.getElementById('confirmationMessage');
-      if (msg) msg.style.display = 'block';
-    }
-  </script>
 </body>
 </html>
