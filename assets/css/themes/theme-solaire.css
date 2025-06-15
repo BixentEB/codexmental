@@ -42,13 +42,14 @@ body.theme-solaire nav a:hover {
 }
 
 /* Menu latéral mobile */
-body.theme-solaire .mobile-menu a,
-body.theme-solaire .mobile-menu button {
-  color: #ffda99 !important;
-  text-shadow: 0 0 2px rgba(255, 220, 150, 0.3);
+body.theme-solaire .menu-mobile a,
+body.theme-solaire .menu-mobile button {
+  color: #ffb300 !important; /* couleur renforcée */
+  text-shadow: 0 0 2px rgba(255, 193, 7, 0.4);
 }
-body.theme-solaire .mobile-menu a:hover,
-body.theme-solaire .mobile-menu button:hover {
+
+body.theme-solaire .menu-mobile a:hover,
+body.theme-solaire .menu-mobile button:hover {
   color: #fff8e1 !important;
   text-shadow: 0 0 4px rgba(255, 255, 220, 0.6);
 }
@@ -90,7 +91,6 @@ body.theme-solaire textarea::placeholder {
     opacity: 0.75;
   }
 }
-
 
 /* ☀️ Widget solaire (à développer plus tard)
 body.theme-solaire #sun-widget {
