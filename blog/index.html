@@ -65,12 +65,14 @@
         // Ferme tous les panels
         panelDivs.forEach(p => p.classList.remove('active'));
 
-        if (!isActive) {
-          panel.classList.add('active');
-          panels.classList.add('active');
-        } else {
-          panels.classList.remove('active');
-        }
+      if (!isActive) {
+        panelDivs.forEach(p => p.classList.remove('active'));
+        panel.classList.add('active');
+        panels.classList.add('active');
+      } else {
+        panel.classList.remove('active');
+        panels.classList.remove('active');
+}
       });
     });
 
