@@ -19,7 +19,7 @@
 /* Visualiseur central */
 #visualiseur {
   flex: 3;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 1rem;
   background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
