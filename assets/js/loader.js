@@ -8,7 +8,7 @@ const searchResults = document.getElementById('search-results');
 let articlesData = [];
 
 async function loadArticles() {
-  const res = await fetch('blog.json');
+  const res = await fetch('/blog/blog.json');
   articlesData = await res.json();
   populatePanels();
 }
