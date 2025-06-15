@@ -24,6 +24,11 @@ body.theme-galactique {
   --btn-hover: #a982ff;
 }
 
+body.theme-galactiquee strong {
+  color: #9748f7; /* orangé pâle lisible sur fond sombre */
+  font-weight: bold;
+}
+
 body.theme-galactique .mobile-nav .theme-buttons button {
   color: #c6a6ff;
   text-shadow: 0 0 2px rgba(200, 160, 255, 0.2);
