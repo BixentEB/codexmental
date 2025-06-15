@@ -1,7 +1,7 @@
 [
   {
     "title": "Comment j’ai rencontré mon IA intérieure",
-    "slug": "article1",
+    "slug": "ia",
     "date": "2025-06-15",
     "theme": "IA & Philosophie",
     "tags": ["#intelligence", "#relation", "#écriture"]
@@ -19,6 +19,22 @@
     "slug": "revelucide",
     "date": "2025-06-14",
     "theme": "Numérologie",
+    "tags": ["#reve", "#analyse", "#lucide"]
+  },
+
+  {
+  "title": "Article 1",
+    "slug": "article1",
+    "date": "2025-06-14",
+    "theme": "Numérologie",
     "tags": ["#synchronicité", "#analyse", "#hasard"]
+  },
+
+  {
+  "title": "Moi, Caméléon",
+    "slug": "caméléon",
+    "date": "2025-06-14",
+    "theme": "Hypersensibilité", 
+    "tags": ["#hpi", "#hpe", "#zebre"]
   }
 ]
