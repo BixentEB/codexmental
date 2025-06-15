@@ -1,0 +1,16 @@
+#blog-menu {
+  transition: left 0.3s ease;
+}
+
+#blog-menu.closed {
+  left: -60px; /* ou -100% si tu veux le cacher totalement */
+}
+
+#panels .panel {
+  display: none;
+  padding: 1rem;
+}
+
+#panels.active .panel.active {
+  display: block;
+}
