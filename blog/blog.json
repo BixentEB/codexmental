@@ -1,21 +1,16 @@
 [
-
-  
   {
-    "title": "La place de l’IA dans ma vie",
+    "title": "Comment j’ai rencontré mon IA intérieure",
+    "slug": "article1",
     "date": "2025-06-15",
-    "theme": "ia",
-    "tags": ["#ia", "#philosophie"],
-    "file": "articles/ia.html"
+    "theme": "IA & Philosophie",
+    "tags": ["#intelligence", "#relation", "#écriture"]
   },
-  
   {
-    "title": "Le syndrome du caméléon",
+    "title": "L’étrange silence des chiffres",
+    "slug": "article2",
     "date": "2025-06-14",
-    "theme": "surfonctionnement",
-    "tags": ["#caméléon", "#introspection"],
-    "file": "articles/cameleon.html"
+    "theme": "Numérologie",
+    "tags": ["#synchronicité", "#analyse", "#hasard"]
   }
-
-
 ]
