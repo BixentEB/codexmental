@@ -9,11 +9,10 @@
   <link rel="stylesheet" href="/assets/css/main.css">
   <script type="module" src="/assets/js/main.js"></script>
   <script defer src="/assets/js/loader.js"></script>
-
   <style>
     #blog-menu {
       position: fixed;
-      top: 120px;
+      top: 140px;
       left: 8px;
       width: 60px;
       background: rgba(0, 0, 0, 0.6);
@@ -25,15 +24,12 @@
       transition: left 0.3s ease;
       border-radius: 10px;
     }
-
     #blog-menu.closed ~ #panels {
       left: 0;
     }
-
     #blog-menu.closed {
       left: -60px;
     }
-
     #toggle-menu {
       background: #ffffff;
       border: none;
@@ -49,17 +45,15 @@
       justify-content: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-
     #toggle-menu.fixed-toggle {
       position: fixed;
       left: 16px;
       top: 88px;
       z-index: 20;
     }
-
     #panels {
       position: fixed;
-      top: 120px;
+      top: 140px;
       left: 72px;
       width: 260px;
       background: var(--bg-panel, rgba(255, 255, 255, 0.9));
@@ -67,50 +61,41 @@
       display: none;
       z-index: 5;
       overflow-y: auto;
-      max-height: calc(100vh - 120px);
+      max-height: calc(100vh - 140px);
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
       border-radius: 12px;
       transition: background 0.3s ease;
     }
-
     .theme-lunaire #panels {
       --bg-panel: rgba(255, 255, 255, 0.07);
       color: white;
     }
-
     .theme-galactique #panels {
       --bg-panel: rgba(240, 240, 255, 0.07);
       color: #eaeaff;
     }
-
     .theme-stellaire #panels {
       --bg-panel: rgba(255, 255, 255, 0.08);
       color: #e8e8ff;
     }
-
     .theme-solaire #panels {
       --bg-panel: rgba(255, 255, 255, 0.95);
       color: #2d1200;
     }
-
     #panels.active {
       display: block;
     }
-
     .panel {
       display: none;
     }
-
     .panel.active {
       display: block;
       animation: fadeIn 0.3s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(5px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .menu-btn {
       display: flex;
       align-items: center;
@@ -124,11 +109,9 @@
       width: 100%;
       transition: background 0.2s;
     }
-
     .menu-btn:hover {
       background-color: rgba(255, 255, 255, 0.15);
     }
-
     #blog-menu nav ul {
       list-style: none;
       padding-left: 0;
@@ -139,7 +122,6 @@
 <body class="theme-stellaire">
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
   <header id="menu-placeholder"></header>
-
   <aside id="blog-menu" class="open">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
@@ -151,7 +133,6 @@
       </ul>
     </nav>
   </aside>
-
   <section id="panels">
     <div id="panel-date" class="panel"></div>
     <div id="panel-theme" class="panel"></div>
@@ -161,19 +142,39 @@
       <div id="search-results"></div>
     </div>
   </section>
-
   <main id="blog-viewer" class="container">
     <h1>🧠 Le Blog</h1>
     <p>📰 Sélectionne un article dans le menu pour l’afficher ici.</p>
   </main>
-
   <div id="footer-placeholder"></div>
-
   <script>
     const toggleButton = document.getElementById('toggle-menu');
     const blogMenu = document.getElementById('blog-menu');
+    const panels = document.getElementById('panels');
+    const panelButtons = document.querySelectorAll('.menu-btn');
+    const panelDivs = document.querySelectorAll('.panel');
+
     toggleButton.addEventListener('click', () => {
       blogMenu.classList.toggle('closed');
+      if (blogMenu.classList.contains('closed')) {
+        panels.classList.remove('active');
+        panelDivs.forEach(panel => panel.classList.remove('active'));
+      }
+    });
+
+    panelButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const panelName = button.getAttribute('data-panel');
+        const panel = document.getElementById(`panel-${panelName}`);
+        const isActive = panel.classList.contains('active');
+        panelDivs.forEach(p => p.classList.remove('active'));
+        if (!isActive) {
+          panel.classList.add('active');
+          panels.classList.add('active');
+        } else {
+          panels.classList.remove('active');
+        }
+      });
     });
   </script>
 </body>
