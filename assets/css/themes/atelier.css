@@ -1,3 +1,4 @@
+
 /* =============================================
    🎨 CSS – Atelier : présentation des projets
    Utilisé par /atelier.html
@@ -5,13 +6,15 @@
 
 .atelier-layout {
   display: flex;
-  flex-direction: row;
+  flex-direction: row; /* ou row-reverse si besoin */
   gap: 2rem;
   max-width: 1200px;
-  margin: 2rem auto 2rem; /* 🔧 Marge haute réduite */
+  margin: 6rem auto 3rem; /* 👈 ajoute une marge haute plus généreuse */
   padding: 0 1rem;
   box-sizing: border-box;
 }
+
+
 
 /* Visualiseur central */
 #visualiseur {
@@ -73,14 +76,13 @@
 @media screen and (max-width: 768px) {
   .atelier-layout {
     flex-direction: column;
-    margin: 1.5rem auto;
   }
 
   .atelier-menu {
     max-width: 100%;
     margin-top: 2rem;
   }
-}
+} 
 
 /* Placeholder par défaut */
 .placeholder {
@@ -95,18 +97,6 @@
   margin-top: 1rem;
 }
 
-/* Espacement interne du visualiseur */
 #visualiseur > * + * {
-  margin-top: 1rem;
-}
-
-#visualiseur p {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-#visualiseur h3,
-#visualiseur h2 {
-  margin-top: 1.2rem;
-  margin-bottom: 0.6rem;
+  margin-top: 1rem; /* ou 1rem si tu veux un espacement plus serré */
 }
