@@ -9,9 +9,6 @@
   <link rel="stylesheet" href="/assets/css/main.css">
   <script type="module" src="/assets/js/main.js"></script>
   <script defer src="/assets/js/loader.js"></script>
-  <style>
-    /* ...styles inchangés... */
-  </style>
 </head>
 <body class="theme-stellaire">
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
@@ -48,31 +45,36 @@
     const panelButtons = document.querySelectorAll('.menu-btn');
     const panelDivs = document.querySelectorAll('.panel');
 
+    // Gestion toggle burger : ferme tout si actif
     toggleButton.addEventListener('click', () => {
       blogMenu.classList.toggle('closed');
-      if (blogMenu.classList.contains('closed')) {
-        panels.classList.remove('active');
+      const wasOpen = !blogMenu.classList.contains('closed');
+      if (!wasOpen) {
         panelDivs.forEach(panel => panel.classList.remove('active'));
+        panels.classList.remove('active');
       }
     });
 
+    // Gestion des boutons : toggle individuel + fermeture des autres
     panelButtons.forEach(button => {
       button.addEventListener('click', () => {
         const panelName = button.getAttribute('data-panel');
         const panel = document.getElementById(`panel-${panelName}`);
         const isActive = panel.classList.contains('active');
+
+        // Ferme tous les panels
         panelDivs.forEach(p => p.classList.remove('active'));
+
         if (!isActive) {
           panel.classList.add('active');
           panels.classList.add('active');
         } else {
-          panel.classList.remove('active');
-          const anyOpen = Array.from(panelDivs).some(p => p.classList.contains('active'));
-          if (!anyOpen) panels.classList.remove('active');
+          panels.classList.remove('active');
         }
       });
     });
 
+    // Chargement dynamique du menu
     fetch('/blog/blog.json')
       .then(res => res.json())
       .then(data => populateMenus(data));
