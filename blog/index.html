@@ -13,17 +13,17 @@
 <body class="theme-stellaire">
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
   <header id="menu-placeholder"></header>
-  <aside id="blog-menu" class="open" style="margin-top: 3.5rem;">
+
+  <aside id="blog-menu" class="open blog-capsule">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
-      <ul>
-        <li><button class="menu-btn" data-panel="date">🗓️</button></li>
-        <li><button class="menu-btn" data-panel="theme">🧠</button></li>
-        <li><button class="menu-btn" data-panel="all">📄</button></li>
-        <li><button class="menu-btn" data-panel="search">🔍</button></li>
-      </ul>
+        <button class="menu-btn" data-panel="date">🗓️</button>
+        <button class="menu-btn" data-panel="theme">🧠</button>
+        <button class="menu-btn" data-panel="all">📄</button>
+        <button class="menu-btn" data-panel="search">🔍</button>
     </nav>
   </aside>
+
   <section id="panels">
     <div id="panel-date" class="panel"></div>
     <div id="panel-theme" class="panel"></div>
@@ -33,11 +33,14 @@
       <div id="search-results"></div>
     </div>
   </section>
+
   <main id="blog-viewer" class="container">
     <h1>🧠 Le Blog</h1>
     <p>📰 Sélectionne un article dans le menu pour l’afficher ici.</p>
   </main>
+
   <div id="footer-placeholder"></div>
+
   <script>
     const toggleButton = document.getElementById('toggle-menu');
     const blogMenu = document.getElementById('blog-menu');
@@ -45,7 +48,7 @@
     const panelButtons = document.querySelectorAll('.menu-btn');
     const panelDivs = document.querySelectorAll('.panel');
 
-    // Gestion toggle burger : ferme tout si actif
+    // Toggle du menu burger
     toggleButton.addEventListener('click', () => {
       blogMenu.classList.toggle('closed');
       const wasOpen = !blogMenu.classList.contains('closed');
@@ -55,7 +58,7 @@
       }
     });
 
-    // Gestion des boutons : toggle individuel + fermeture des autres + fermeture auto menu mobile
+    // Boutons : toggle panel + fermeture mobile + fade
     panelButtons.forEach(button => {
       button.addEventListener('click', () => {
         const panelName = button.getAttribute('data-panel');
@@ -77,7 +80,7 @@
       });
     });
 
-    // Chargement dynamique du menu
+    // Chargement dynamique
     fetch('/blog/blog.json')
       .then(res => res.json())
       .then(data => populateMenus(data));
@@ -86,7 +89,6 @@
       const panelDate = document.getElementById('panel-date');
       const panelTheme = document.getElementById('panel-theme');
       const panelAll = document.getElementById('panel-all');
-
       const themes = {};
 
       panelDate.innerHTML = '<h3>🗓️ Articles par date</h3><ul></ul>';
