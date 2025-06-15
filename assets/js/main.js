@@ -8,6 +8,7 @@ import '/assets/js/lune.js';
 import '/assets/js/theme-hours.js';
 import '/assets/js/theme-special.js';
 import '/assets/js/theme-cards.js';
+import '/assets/js/anti-copy.js';
 
 
 // === 🔧 Modules à fonctions exportées ===
@@ -17,6 +18,8 @@ import { setupScrollButton } from '/assets/js/scroll.js';
 import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 import { initEtoileFilante } from '/assets/js/etoile-filante.js';
+
+
 
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
