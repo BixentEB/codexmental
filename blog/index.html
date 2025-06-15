@@ -13,7 +13,7 @@
 <body class="theme-stellaire">
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
   <header id="menu-placeholder"></header>
-  <aside id="blog-menu" class="open">
+  <aside id="blog-menu" class="open" style="margin-top: 3.5rem;">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
       <ul>
@@ -55,24 +55,25 @@
       }
     });
 
-    // Gestion des boutons : toggle individuel + fermeture des autres
+    // Gestion des boutons : toggle individuel + fermeture des autres + fermeture auto menu mobile
     panelButtons.forEach(button => {
       button.addEventListener('click', () => {
         const panelName = button.getAttribute('data-panel');
         const panel = document.getElementById(`panel-${panelName}`);
         const isActive = panel.classList.contains('active');
 
-        // Ferme tous les panels
         panelDivs.forEach(p => p.classList.remove('active'));
 
-      if (!isActive) {
-        panelDivs.forEach(p => p.classList.remove('active'));
-        panel.classList.add('active');
-        panels.classList.add('active');
-      } else {
-        panel.classList.remove('active');
-        panels.classList.remove('active');
-}
+        if (!isActive) {
+          panel.classList.add('active');
+          panels.classList.add('active');
+        } else {
+          panels.classList.remove('active');
+        }
+
+        if (window.innerWidth < 768) {
+          blogMenu.classList.add('closed');
+        }
       });
     });
 
