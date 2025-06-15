@@ -23,6 +23,7 @@ body.theme-solaire {
   --btn-hover: #f57f17;
 }
 
+/* Strong personnalisé uniquement dans le thème solaire */
 body.theme-solaire strong {
   color: #ffb300; /* couleur plus lisible que #ffcd72 */
   font-weight: bold;
@@ -38,7 +39,7 @@ body.theme-solaire .mobile-nav .theme-buttons button:hover {
   text-shadow: 0 0 4px rgba(255, 255, 200, 0.6);
 }
 
-/* Liens menu */
+/* Liens menu principal */
 body.theme-solaire nav a {
   color: #ffe082 !important;
 }
