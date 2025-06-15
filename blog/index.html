@@ -4,17 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog – Codex Mental</title>
-
-  <!-- 🌞 Favicon -->
   <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
-
-  <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
-
-  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/assets/css/main.css">
-
-  <!-- ⚙️ Scripts -->
   <script type="module" src="/assets/js/main.js"></script>
   <script defer src="/assets/js/loader.js"></script>
 
@@ -22,7 +14,7 @@
     #blog-menu {
       position: fixed;
       top: 80px;
-      left: 0;
+      left: 8px;
       width: 60px;
       background: rgba(0, 0, 0, 0.6);
       color: white;
@@ -31,6 +23,7 @@
       align-items: center;
       z-index: 10;
       transition: left 0.3s ease;
+      border-radius: 10px;
     }
 
     #blog-menu.closed ~ #panels {
@@ -42,31 +35,32 @@
     }
 
     #toggle-menu {
-      background: rgba(255, 255, 255, 0.1);
+      background: #ffffff;
       border: none;
-      font-size: 1.2rem;
-      color: white;
+      font-size: 1.3rem;
+      color: #000000;
       cursor: pointer;
       margin: 0.5rem 0;
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
     #toggle-menu.fixed-toggle {
       position: fixed;
-      left: 10px;
-      top: 90px;
+      left: 16px;
+      top: 88px;
       z-index: 20;
     }
 
     #panels {
       position: fixed;
       top: 80px;
-      left: 60px;
+      left: 72px;
       width: 260px;
       background: var(--bg-panel, rgba(255, 255, 255, 0.9));
       padding: 1rem;
@@ -142,15 +136,10 @@
     }
   </style>
 </head>
-
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas de fond -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
-
-  <!-- 🧠 Menu injecté dynamiquement -->
   <header id="menu-placeholder"></header>
 
-  <!-- 🔽 Menu vertical blog -->
   <aside id="blog-menu" class="open">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
@@ -163,7 +152,6 @@
     </nav>
   </aside>
 
-  <!-- 📂 Panneaux de filtre -->
   <section id="panels">
     <div id="panel-date" class="panel"></div>
     <div id="panel-theme" class="panel"></div>
@@ -174,19 +162,14 @@
     </div>
   </section>
 
-  <!-- 📖 Visualiseur d'article -->
   <main id="blog-viewer" class="container">
     <h1>🧠 Le Blog</h1>
     <p>📰 Sélectionne un article dans le menu pour l’afficher ici.</p>
   </main>
 
-  <!-- 🌙 Lune injectée automatiquement si thème lunaire -->
-
-  <!-- 🦶 Footer dynamique -->
   <div id="footer-placeholder"></div>
 
   <script>
-    // Toggle menu vertical
     const toggleButton = document.getElementById('toggle-menu');
     const blogMenu = document.getElementById('blog-menu');
     toggleButton.addEventListener('click', () => {
