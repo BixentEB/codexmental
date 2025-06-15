@@ -100,3 +100,8 @@
 #visualiseur > * + * {
   margin-top: 1rem; /* ou 1rem si tu veux un espacement plus serré */
 }
+
+#visualiseur em,
+#visualiseur i {
+  font-style: italic !important;
+}
