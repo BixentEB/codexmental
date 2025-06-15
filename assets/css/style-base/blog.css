@@ -6,7 +6,6 @@
   transition: left 0.3s ease;
   top: 100px; /* 80 à l'origine ou essaye 100px selon rendu */
   position: fixed;
-  top: 80px;
   left: 0;
   z-index: 1000;
 }
