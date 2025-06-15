@@ -21,7 +21,7 @@
   <style>
     #blog-menu {
       position: fixed;
-      top: 80px; /* Pour éviter de passer sous le header */
+      top: 80px;
       left: 0;
       width: 60px;
       background: rgba(0,0,0,0.8);
@@ -30,6 +30,11 @@
       flex-direction: column;
       align-items: center;
       z-index: 10;
+      transition: transform 0.3s ease;
+    }
+
+    #blog-menu.closed {
+      transform: translateX(-100%);
     }
 
     #toggle-menu {
@@ -52,6 +57,8 @@
       z-index: 5;
       overflow-y: auto;
       max-height: calc(100vh - 80px);
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      border-radius: 0 8px 8px 0;
     }
 
     #panels.active {
@@ -64,6 +71,23 @@
 
     .panel.active {
       display: block;
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 0.6rem;
+      font-size: 1.4rem;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .menu-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
@@ -109,5 +133,14 @@
 
   <!-- 🦶 Footer dynamique -->
   <div id="footer-placeholder"></div>
+
+  <script>
+    // Activer/désactiver le menu vertical
+    const toggleButton = document.getElementById('toggle-menu');
+    const blogMenu = document.getElementById('blog-menu');
+    toggleButton.addEventListener('click', () => {
+      blogMenu.classList.toggle('closed');
+    });
+  </script>
 </body>
 </html>
