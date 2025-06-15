@@ -15,21 +15,6 @@
     "theme": "surfonctionnement",
     "tags": ["#caméléon", "#introspection"],
     "file": "articles/cameleon.html"
-  },
-  
-  {
-    "title": "La place de l’IA dans ma vie",
-    "date": "2025-06-15",
-    "theme": "ia",
-    "tags": ["#ia", "#philosophie"],
-    "file": "articles/ia.html"
-  },
-  {
-    "title": "Le syndrome du caméléon",
-    "date": "2025-06-14",
-    "theme": "surfonctionnement",
-    "tags": ["#caméléon", "#introspection"],
-    "file": "articles/cameleon.html"
   }
 
 
