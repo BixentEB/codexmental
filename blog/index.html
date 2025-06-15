@@ -17,6 +17,55 @@
   <!-- ⚙️ Scripts -->
   <script type="module" src="/assets/js/main.js"></script>
   <script defer src="/assets/js/loader.js"></script>
+
+  <style>
+    #blog-menu {
+      position: fixed;
+      top: 80px; /* Pour éviter de passer sous le header */
+      left: 0;
+      width: 60px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #toggle-menu {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
+      margin: 1rem 0;
+    }
+
+    #panels {
+      position: fixed;
+      top: 80px;
+      left: 60px;
+      width: 260px;
+      background: rgba(255,255,255,0.95);
+      padding: 1rem;
+      display: none;
+      z-index: 5;
+      overflow-y: auto;
+      max-height: calc(100vh - 80px);
+    }
+
+    #panels.active {
+      display: block;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+  </style>
 </head>
 
 <body class="theme-stellaire">
@@ -41,9 +90,9 @@
 
   <!-- 📂 Panneaux de filtre -->
   <section id="panels">
-    <div id="panel-date" class="panel">📅 Chargement en cours...</div>
-    <div id="panel-theme" class="panel">🧠 Chargement en cours...</div>
-    <div id="panel-all" class="panel">📄 Chargement en cours...</div>
+    <div id="panel-date" class="panel"></div>
+    <div id="panel-theme" class="panel"></div>
+    <div id="panel-all" class="panel"></div>
     <div id="panel-search" class="panel">
       🔍 <input type="text" id="search-input" placeholder="Rechercher un mot-clé ou #hashtag">
       <div id="search-results"></div>
