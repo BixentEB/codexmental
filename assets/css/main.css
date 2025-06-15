@@ -29,6 +29,7 @@
 @import url('/assets/css/themes/atelier.css');
 @import url('/assets/css/style-base/blocs.css');
 @import url('/assets/css/helpers.css');
+@import url('/assets/css/style-base/blog.css');
 
 /* === 🎨 Thèmes dynamiques === */
 @import url('/assets/css/themes/themes.css');
