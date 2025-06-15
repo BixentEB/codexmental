@@ -24,26 +24,43 @@
       top: 80px;
       left: 0;
       width: 60px;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.6);
       color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 10;
-      transition: transform 0.3s ease;
+      transition: left 0.3s ease;
+    }
+
+    #blog-menu.closed ~ #panels {
+      left: 0;
     }
 
     #blog-menu.closed {
-      transform: translateX(-100%);
+      left: -60px;
     }
 
     #toggle-menu {
-      background: none;
+      background: rgba(255, 255, 255, 0.1);
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       color: white;
       cursor: pointer;
-      margin: 1rem 0;
+      margin: 0.5rem 0;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #toggle-menu.fixed-toggle {
+      position: fixed;
+      left: 10px;
+      top: 90px;
+      z-index: 20;
     }
 
     #panels {
@@ -51,14 +68,35 @@
       top: 80px;
       left: 60px;
       width: 260px;
-      background: rgba(255,255,255,0.95);
+      background: var(--bg-panel, rgba(255, 255, 255, 0.9));
       padding: 1rem;
       display: none;
       z-index: 5;
       overflow-y: auto;
       max-height: calc(100vh - 80px);
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      border-radius: 0 8px 8px 0;
+      border-radius: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .theme-lunaire #panels {
+      --bg-panel: rgba(255, 255, 255, 0.07);
+      color: white;
+    }
+
+    .theme-galactique #panels {
+      --bg-panel: rgba(240, 240, 255, 0.07);
+      color: #eaeaff;
+    }
+
+    .theme-stellaire #panels {
+      --bg-panel: rgba(255, 255, 255, 0.08);
+      color: #e8e8ff;
+    }
+
+    .theme-solaire #panels {
+      --bg-panel: rgba(255, 255, 255, 0.95);
+      color: #2d1200;
     }
 
     #panels.active {
@@ -84,10 +122,11 @@
       font-size: 1.4rem;
       cursor: pointer;
       width: 100%;
+      transition: background 0.2s;
     }
 
     .menu-btn:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.15);
     }
   </style>
 </head>
@@ -101,7 +140,7 @@
 
   <!-- 🔽 Menu vertical blog -->
   <aside id="blog-menu" class="open">
-    <button id="toggle-menu">☰</button>
+    <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
       <ul>
         <li><button class="menu-btn" data-panel="date">🗓️</button></li>
@@ -135,7 +174,7 @@
   <div id="footer-placeholder"></div>
 
   <script>
-    // Activer/désactiver le menu vertical
+    // Toggle menu vertical
     const toggleButton = document.getElementById('toggle-menu');
     const blogMenu = document.getElementById('blog-menu');
     toggleButton.addEventListener('click', () => {
