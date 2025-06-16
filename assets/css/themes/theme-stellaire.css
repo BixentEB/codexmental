@@ -96,3 +96,15 @@ body.theme-stellaire .theme-electron {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* 💫 BLOG MENU */
+/* Fermé : violet pâle (discret) */
+body.theme-stellaire .blog-menu details summary {
+  color: #a289ff;
+}
+
+/* Ouvert : violet néon ou lavande claire */
+body.theme-stellaire .blog-menu details[open] summary {
+  color: #e0c0ff;
+}
+
