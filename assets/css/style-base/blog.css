@@ -71,3 +71,12 @@
   right: -20px;
   top: 10px;
 }
+
+/* Pour masquer les panels au chargement */
+#panels .panel {
+  display: none;
+}
+
+#panels.active .panel.active {
+  display: block;
+}
