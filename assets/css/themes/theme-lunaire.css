@@ -53,3 +53,8 @@ body.theme-lunaire .blog-menu details summary {
 body.theme-lunaire .blog-menu details[open] summary {
   color: #1295f3;
 }
+
+/* viewer blog */
+body.theme-lunaire #article-viewer .placeholder {
+  color: #1295f3; /* bleu lunaire */
+}
