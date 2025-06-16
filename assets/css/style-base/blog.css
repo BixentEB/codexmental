@@ -18,10 +18,11 @@ body {
   padding: 2rem;
 }
 
-/* === Menu blog === */
+/* === Menu blog (à gauche) === */
 #blog-menu {
-  width: 260px;
-  margin-right: 1rem;
+  width: 240px;
+  margin-left: 1.5rem;
+  margin-top: 1rem;
   background-color: var(--bg-secondary, #111);
   border-radius: 12px;
   border: 1px solid var(--border-color, #333);
@@ -32,12 +33,12 @@ body {
 /* === Menu collapsible par catégorie === */
 .blog-menu h2 {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.1rem;
-  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
 }
 
 .blog-menu details {
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   background-color: rgba(255, 255, 255, 0.03);
   border-radius: 6px;
   border: 1px solid var(--border-color, #333);
@@ -47,7 +48,7 @@ body {
 
 .blog-menu summary {
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
   color: var(--text-primary);
   padding: 0.3rem;
@@ -62,17 +63,17 @@ body {
 .blog-menu ul {
   list-style: none;
   padding-left: 1rem;
-  margin: 0.5rem 0 0;
+  margin: 0.4rem 0 0;
 }
 
 .blog-menu li {
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
 }
 
 .blog-menu a {
   color: var(--text-primary);
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   transition: color 0.3s;
 }
 
@@ -85,9 +86,12 @@ body {
 /* === Article viewer === */
 #article-viewer {
   flex: 1;
-  min-height: 400px;
-  line-height: 1.7;
+  max-width: 850px;
+  margin-left: 2rem;
+  margin-top: 1rem;
   padding-right: 1rem;
+  line-height: 1.7;
+  min-height: 400px;
 }
 
 #article-viewer h1,
@@ -109,6 +113,7 @@ body {
   }
 
   #article-viewer {
+    margin-left: 0;
     padding: 0;
   }
 }
