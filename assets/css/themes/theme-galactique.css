@@ -63,3 +63,7 @@ body.theme-galactique .blog-menu details[open] summary {
   color: #80eaff;
 }
 
+/* viewer blog */
+body.theme-galactique #article-viewer .placeholder {
+  color: #b088ff;
+}
