@@ -108,3 +108,11 @@ body.theme-stellaire .blog-menu details[open] summary {
   color: #e0c0ff;
 }
 
+body.theme-stellaire #article-viewer .placeholder {
+  color: #7fd4ff; /* bleu astral */
+}
+
+body.theme-stellaire #article-viewer em,
+body.theme-stellaire #article-viewer i {
+  color: #b6aaff; /* lavande douce */
+}
