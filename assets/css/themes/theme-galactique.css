@@ -51,3 +51,15 @@ body.theme-galactique textarea::placeholder {
   color: #c3bdf5;
   opacity: 0.7;
 }
+
+/* 🪐 BLOG MENU */
+/* Fermé : gris acier galactique */
+body.theme-galactique .blog-menu details summary {
+  color: #888;
+}
+
+/* Ouvert : bleu cyan lumineux (effet plasma) */
+body.theme-galactique .blog-menu details[open] summary {
+  color: #80eaff;
+}
+
