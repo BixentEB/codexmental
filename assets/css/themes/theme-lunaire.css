@@ -58,3 +58,11 @@ body.theme-lunaire .blog-menu details[open] summary {
 body.theme-lunaire #article-viewer .placeholder {
   color: #1295f3; /* bleu lunaire */
 }
+
+:root {
+  --accent-color: #2a2a55;
+  --accent-hover: #3b3b77;
+  --accent-glow: rgba(173, 216, 230, 0.3);
+  --accent-pressed: #1a1a3b;
+}
+
