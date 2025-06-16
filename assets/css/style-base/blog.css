@@ -155,3 +155,11 @@ body:not(.theme-lunaire) #article-viewer {
     padding: 0;
   }
 }
+
+/* === effet hover doux type glow === */
+.blog-menu summary {
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+.blog-menu summary:hover {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
+}
