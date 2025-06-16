@@ -109,6 +109,11 @@ body.theme-solaire .blog-menu details[open] summary {
   color: #f39c12;
 }
 
+body.theme-solaire #article-viewer .placeholder {
+  color: #663300; /* marron solaire */
+}
+
+
 
 
 /* ☀️ Widget solaire (à développer plus tard)
