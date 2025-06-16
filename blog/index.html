@@ -9,84 +9,13 @@
   <link rel="stylesheet" href="/assets/css/main.css">
   <script type="module" src="/assets/js/main.js"></script>
   <script defer src="/assets/js/loader.js"></script>
-  <style>
-    #blog-menu {
-      transition: left 0.3s ease, top 0.3s ease;
-      top: 120px;
-      left: 0;
-      position: fixed;
-      z-index: 1000;
-      padding: 0.5rem;
-      border-radius: 0 20px 20px 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
-      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.4);
-    }
-
-    #blog-menu.closed {
-      left: -60px;
-    }
-
-    #blog-menu nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    #blog-menu nav ul li {
-      margin: 0.5rem 0;
-      display: flex;
-      justify-content: center;
-    }
-
-    .menu-btn {
-      background-color: rgba(255, 255, 255, 0.1);
-      border: none;
-      border-radius: 12px;
-      padding: 0.6rem;
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .menu-btn:hover {
-      background-color: rgba(255, 255, 255, 0.25);
-    }
-
-    #toggle-menu {
-      margin-top: 0.5rem;
-      border: none;
-      border-radius: 50%;
-      padding: 0.5rem 0.6rem;
-      font-size: 1.2rem;
-      background-color: #fff;
-      color: #000;
-      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-      cursor: pointer;
-      position: absolute;
-      right: -20px;
-      top: 0;
-    }
-
-    .panel {
-      display: none;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .panel.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <script defer src="/assets/js/blog.js"></script>
 </head>
 <body class="theme-stellaire">
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
   <header id="menu-placeholder"></header>
 
+  <!-- MENU LATÉRAL BLOG -->
   <aside id="blog-menu" class="open blog-capsule">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
@@ -99,6 +28,7 @@
     </nav>
   </aside>
 
+  <!-- PANNEAUX D’AFFICHAGE -->
   <section id="panels">
     <div id="panel-date" class="panel"></div>
     <div id="panel-theme" class="panel"></div>
@@ -109,79 +39,12 @@
     </div>
   </section>
 
+  <!-- AFFICHAGE DE L’ARTICLE -->
   <main id="blog-viewer" class="container">
     <h1>🧠 Le Blog</h1>
     <p>📰 Sélectionne un article dans le menu pour l’afficher ici.</p>
   </main>
 
   <div id="footer-placeholder"></div>
-
-  <script>
-    const toggleButton = document.getElementById('toggle-menu');
-    const blogMenu = document.getElementById('blog-menu');
-    const panels = document.getElementById('panels');
-    const panelButtons = document.querySelectorAll('.menu-btn');
-    const panelDivs = document.querySelectorAll('.panel');
-
-    toggleButton.addEventListener('click', () => {
-      blogMenu.classList.toggle('closed');
-      const wasOpen = !blogMenu.classList.contains('closed');
-      if (!wasOpen) {
-        panelDivs.forEach(panel => panel.classList.remove('active'));
-        panels.classList.remove('active');
-      }
-    });
-
-    panelButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const panelName = button.getAttribute('data-panel');
-        const panel = document.getElementById(`panel-${panelName}`);
-        const isActive = panel.classList.contains('active');
-
-        panelDivs.forEach(p => p.classList.remove('active'));
-
-        if (!isActive) {
-          panel.classList.add('active');
-          panels.classList.add('active');
-        } else {
-          panels.classList.remove('active');
-        }
-
-        if (window.innerWidth < 768) {
-          blogMenu.classList.add('closed');
-        }
-      });
-    });
-
-    fetch('/blog/blog.json')
-      .then(res => res.json())
-      .then(data => populateMenus(data));
-
-    function populateMenus(articles) {
-      const panelDate = document.getElementById('panel-date');
-      const panelTheme = document.getElementById('panel-theme');
-      const panelAll = document.getElementById('panel-all');
-      const themes = {};
-
-      panelDate.innerHTML = '<h3>🗓️ Articles par date</h3><ul></ul>';
-      panelTheme.innerHTML = '<h3>🧠 Thématiques</h3>';
-      panelAll.innerHTML = '<h3>📄 Tous les articles</h3><ul></ul>';
-
-      const ulDate = panelDate.querySelector('ul');
-      const ulAll = panelAll.querySelector('ul');
-
-      articles.forEach(article => {
-        const li = `<li><a href="/blog/articles/${article.slug}.html">${article.title}</a></li>`;
-        ulDate.innerHTML += li;
-        ulAll.innerHTML += li;
-        if (!themes[article.theme]) themes[article.theme] = [];
-        themes[article.theme].push(li);
-      });
-
-      for (const theme in themes) {
-        panelTheme.innerHTML += `<p>${theme}</p><ul>${themes[theme].join('')}</ul>`;
-      }
-    }
-  </script>
 </body>
 </html>
