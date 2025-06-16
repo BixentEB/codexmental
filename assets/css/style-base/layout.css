@@ -203,3 +203,12 @@ footer .theme-buttons {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+/* ===========================
+   🫎 ROOT
+=========================== */
+:root {
+  --bloc-bg: rgba(255, 255, 255, 0.04);
+  --bloc-border: rgba(255, 255, 255, 0.15);
+  --bloc-shadow: rgba(0, 0, 0, 0.2);
+}
