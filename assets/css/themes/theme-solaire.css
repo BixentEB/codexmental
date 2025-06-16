@@ -98,6 +98,19 @@ body.theme-solaire textarea::placeholder {
   }
 }
 
+/* ☀️ MENU BLOG */
+/* Fermé : orange clair (bouton éteint) */
+body.theme-solaire .blog-menu details summary {
+  color: #f5c878;
+}
+
+/* Ouvert : orange solaire intense (bouton allumé) */
+body.theme-solaire .blog-menu details[open] summary {
+  color: #f39c12;
+}
+
+
+
 /* ☀️ Widget solaire (à développer plus tard)
 body.theme-solaire #sun-widget {
   position: fixed;
