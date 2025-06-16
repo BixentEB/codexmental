@@ -14,8 +14,9 @@ body {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 2rem;
-  padding: 0 1rem;
+  gap: 2rem; /* = ~32px = l'espace entre menu et viewer */
+  padding: 0 30px;
+  max-width: 100vw;
   margin-top: 6rem;
   box-sizing: border-box;
 }
@@ -97,15 +98,17 @@ body {
   min-height: 400px;
   line-height: 1.7;
   transition: all 0.3s ease;
-  max-width: 100%;
+  max-width: unset; /* on peut ajuster ci-dessous */
 }
 
 /* Cas spécial : thème lunaire → réduit pour la Lune */
 body.theme-lunaire #article-viewer {
-  max-width: calc(100vw - 500px);
+  max-width: calc(100vw - 500px); /* car on a la lune à droite */
 }
 
-
+body:not(.theme-lunaire) #article-viewer {
+  max-width: 100%;
+}
 
 /* === Placeholder & erreurs === */
 #article-viewer .placeholder {
