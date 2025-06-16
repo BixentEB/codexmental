@@ -116,3 +116,11 @@ body.theme-stellaire #article-viewer em,
 body.theme-stellaire #article-viewer i {
   color: #b6aaff; /* lavande douce */
 }
+
+:root {
+  --accent-color: #4f46e5; /* Indigo électrique */
+  --accent-hover: #6366f1;
+  --accent-glow: rgba(173, 216, 255, 0.3); /* Bleu lunaire pâle */
+  --accent-pressed: #3730a3;
+}
+
