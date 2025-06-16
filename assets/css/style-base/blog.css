@@ -33,8 +33,8 @@ body {
 /* === Menu collapsible par catégorie === */
 .blog-menu h2 {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
 }
 
 .blog-menu details {
@@ -42,13 +42,13 @@ body {
   background-color: rgba(255, 255, 255, 0.03);
   border-radius: 6px;
   border: 1px solid var(--border-color, #333);
-  padding: 0.5rem;
+  padding: 0.4rem;
   transition: all 0.3s ease;
 }
 
 .blog-menu summary {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
   color: var(--text-primary);
   padding: 0.3rem;
@@ -73,7 +73,7 @@ body {
 .blog-menu a {
   color: var(--text-primary);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   transition: color 0.3s;
 }
 
