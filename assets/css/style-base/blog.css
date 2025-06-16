@@ -86,10 +86,10 @@ body {
 }
 
 /* === Article viewer === */
-/* === Ajustement du viewer pour ressembler à l'atelier === */
+/* Viewer normal – étendu */
 #article-viewer {
   flex: 1;
-  padding: 2rem;
+  padding: 2rem 2.5rem;
   border-radius: 1rem;
   background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
@@ -97,8 +97,14 @@ body {
   min-height: 400px;
   line-height: 1.7;
   transition: all 0.3s ease;
-  max-width: calc(100vw - 320px); /* 240px menu + 80px marge droite (pour lune) */
+  max-width: 100%;
 }
+
+/* Cas spécial : thème lunaire → réduit pour la Lune */
+body.theme-lunaire #article-viewer {
+  max-width: calc(100vw - 360px);
+}
+
 
 
 /* === Placeholder & erreurs === */
