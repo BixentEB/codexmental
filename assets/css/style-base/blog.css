@@ -23,25 +23,39 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column; /* Pour forcer l'affichage vertical */
+  gap: 0.5rem;
+  align-items: center;
 }
 
 #blog-menu nav ul li {
-  margin: 0.5rem 0;
-  display: flex;
-  justify-content: center;
+  margin: 0;
 }
 
 .menu-btn {
   background-color: rgba(255, 255, 255, 0.1);
   border: none;
-  border-radius: 12px;
-  padding: 0.6rem;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
   font-size: 1.3rem;
+  color: #fff;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .menu-btn:hover {
   background-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+/* Ajustement position verticale */
+#blog-menu {
+  top: 100px; /* Ajusté depuis 120px */
 }
 
 #toggle-menu {
