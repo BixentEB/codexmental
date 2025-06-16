@@ -18,6 +18,8 @@ body {
   margin: 6rem auto 3rem;
   padding: 0 1rem;
   box-sizing: border-box;
+  align-items: flex-start; /* ← aligne en haut */
+
 }
 
 /* === Menu blog (à gauche) === */
