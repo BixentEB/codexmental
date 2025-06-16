@@ -7,7 +7,7 @@
   <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/main.css">
-  <script type="module" src="/assets/js/main.js"></script>
+  <link rel="stylesheet" href="/assets/css/style-base/blog.css">
   <script defer src="/assets/js/loader.js"></script>
   <script defer src="/assets/js/blog.js"></script>
 </head>
@@ -15,8 +15,7 @@
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
   <header id="menu-placeholder"></header>
 
-  <!-- MENU LATÉRAL BLOG -->
-  <aside id="blog-menu" class="open blog-capsule">
+  <aside id="blog-menu" class="blog-capsule closed">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
       <ul>
@@ -28,7 +27,6 @@
     </nav>
   </aside>
 
-  <!-- PANNEAUX D’AFFICHAGE -->
   <section id="panels">
     <div id="panel-date" class="panel"></div>
     <div id="panel-theme" class="panel"></div>
@@ -39,7 +37,6 @@
     </div>
   </section>
 
-  <!-- AFFICHAGE DE L’ARTICLE -->
   <main id="blog-viewer" class="container">
     <h1>🧠 Le Blog</h1>
     <p>📰 Sélectionne un article dans le menu pour l’afficher ici.</p>
