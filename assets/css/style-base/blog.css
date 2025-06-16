@@ -84,14 +84,42 @@ body {
 }
 
 /* === Article viewer === */
+/* === Apparence bloc du visualiseur (comme dans l'Atelier) === */
 #article-viewer {
   flex: 1;
   max-width: 850px;
   margin-left: 2rem;
-  margin-top: 1rem;
-  padding-right: 1rem;
-  line-height: 1.7;
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
   min-height: 400px;
+  transition: all 0.3s ease;
+  line-height: 1.7;
+}
+
+/* === Placeholder & erreurs === */
+#article-viewer .placeholder {
+  opacity: 0.6;
+  font-style: italic;
+  color: #ccc;
+}
+
+#article-viewer .erreur {
+  color: #ff7070;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+#article-viewer > * + * {
+  margin-top: 1rem;
+}
+
+#article-viewer em,
+#article-viewer i {
+  font-style: italic !important;
 }
 
 #article-viewer h1,
