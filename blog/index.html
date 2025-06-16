@@ -15,7 +15,7 @@
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
   <header id="menu-placeholder"></header>
 
-  <aside id="blog-menu" class="blog-capsule closed">
+  <aside id="blog-menu" class="blog-capsule">
     <button id="toggle-menu" class="fixed-toggle">☰</button>
     <nav>
       <ul>
@@ -43,5 +43,16 @@
   </main>
 
   <div id="footer-placeholder"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const blogMenu = document.getElementById('blog-menu');
+      const toggleButton = document.getElementById('toggle-menu');
+
+      toggleButton.addEventListener('click', () => {
+        blogMenu.classList.toggle('closed');
+      });
+    });
+  </script>
 </body>
 </html>
