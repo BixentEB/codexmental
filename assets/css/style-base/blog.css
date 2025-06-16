@@ -22,7 +22,7 @@ body {
 #blog-menu {
   width: 240px;
   margin-left: 1.5rem;
-  margin-top: 1rem;
+  margin-top: 2.5rem;
   background-color: var(--bg-secondary, #111);
   border-radius: 12px;
   border: 1px solid var(--border-color, #333);
