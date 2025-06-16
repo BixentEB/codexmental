@@ -45,3 +45,11 @@ body.theme-lunaire textarea::placeholder {
   color: #aaccee;
   opacity: 0.75;
 }
+
+/* 🌙 BLOG MENU */
+body.theme-lunaire .blog-menu details summary {
+  color: #ccc;
+}
+body.theme-lunaire .blog-menu details[open] summary {
+  color: #f39c12;
+}
