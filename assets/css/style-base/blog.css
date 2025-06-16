@@ -9,7 +9,7 @@ body {
   color: var(--text-primary, #fff);
 }
 
-/* === Mise en page principale (2 colonnes) === */
+/* === Disposition 2 colonnes === */
 .blog-layout {
   display: flex;
   flex-direction: row;
@@ -19,44 +19,68 @@ body {
 }
 
 /* === Menu blog === */
-#menu-blog {
-  width: 240px;
-  padding: 1rem;
+#blog-menu {
+  width: 260px;
+  margin-left: 1.5rem;
+  margin-top: 2.5rem;
   background-color: var(--bg-secondary, #111);
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid var(--border-color, #333);
-  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  padding: 1rem;
 }
 
+/* === Menu collapsible par catégorie === */
 .blog-menu h2 {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.3rem;
   margin-bottom: 1rem;
 }
 
+.blog-menu details {
+  margin-bottom: 1rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #333);
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.blog-menu summary {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 0.3rem;
+  transition: color 0.3s ease;
+}
+
+.blog-menu details[open] summary {
+  color: var(--text-accent, #f39c12);
+}
+
+/* === Liste d’articles === */
 .blog-menu ul {
   list-style: none;
-  padding: 0;
-  margin: 0;
+  padding-left: 1rem;
+  margin: 0.5rem 0 0;
 }
 
 .blog-menu li {
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.4rem;
 }
 
 .blog-menu a {
-  color: var(--text-primary, #fff);
+  color: var(--text-primary);
   text-decoration: none;
+  font-size: 0.95rem;
   transition: color 0.3s;
 }
 
-.blog-menu a:hover {
+.blog-menu a:hover,
+#blog-menu a.active {
   color: var(--text-accent, #f39c12);
-}
-
-#menu-blog a.active {
   font-weight: bold;
-  color: var(--text-accent, #f39c12);
 }
 
 /* === Article viewer === */
@@ -79,42 +103,13 @@ body {
     padding: 1rem;
   }
 
-  #menu-blog {
+  #blog-menu {
     width: 100%;
+    margin-left: 0;
     margin-bottom: 2rem;
   }
 
   #article-viewer {
     padding: 0;
   }
-}
-
-.blog-menu details {
-  margin-bottom: 1rem;
-  background-color: rgba(255, 255, 255, 0.03);
-  border-radius: 6px;
-  border: 1px solid var(--border-color, #333);
-  padding: 0.5rem;
-}
-
-.blog-menu summary {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
-  cursor: pointer;
-  color: var(--text-primary);
-  padding: 0.3rem;
-}
-
-.blog-menu details[open] summary {
-  color: var(--text-accent, #f39c12);
-}
-
-.blog-menu ul {
-  list-style: none;
-  padding-left: 1rem;
-  margin: 0.5rem 0 0;
-}
-
-.blog-menu li {
-  margin-bottom: 0.4rem;
 }
