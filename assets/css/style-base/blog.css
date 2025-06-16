@@ -88,3 +88,33 @@ body {
     padding: 0;
   }
 }
+
+.blog-menu details {
+  margin-bottom: 1rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #333);
+  padding: 0.5rem;
+}
+
+.blog-menu summary {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 0.3rem;
+}
+
+.blog-menu details[open] summary {
+  color: var(--text-accent, #f39c12);
+}
+
+.blog-menu ul {
+  list-style: none;
+  padding-left: 1rem;
+  margin: 0.5rem 0 0;
+}
+
+.blog-menu li {
+  margin-bottom: 0.4rem;
+}
