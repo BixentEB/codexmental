@@ -80,3 +80,51 @@
 #panels.active .panel.active {
   display: block;
 }
+
+.blog-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1rem;
+  gap: 1rem;
+  margin-top: 80px; /* sous le header */
+}
+
+.blog-capsule {
+  flex-shrink: 0;
+  width: 64px;
+  transition: width 0.3s ease;
+}
+
+.blog-capsule.closed {
+  width: 48px;
+}
+
+.blog-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#panels {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: block;
+}
+
+#blog-viewer {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+}
