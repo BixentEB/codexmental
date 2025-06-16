@@ -89,16 +89,45 @@ a:hover {
 
 .btn-download {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.6rem;
   background-color: var(--accent-color, #444);
   color: white;
-  font-weight: bold;
+  font-weight: 600;
+  font-family: inherit;
   text-decoration: none;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.btn-download::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--accent-glow, rgba(255,255,255,0.2)) 0%, transparent 70%);
+  transform: scale(0);
+  transition: transform 0.4s ease;
+  z-index: 0;
+}
+
+.btn-download:hover::before {
+  transform: scale(1.2);
 }
 
 .btn-download:hover {
   background-color: var(--accent-hover, #666);
+  transform: translateY(-2px);
 }
+
+.btn-download:active {
+  transform: scale(0.96);
+  background-color: var(--accent-pressed, #222);
+}
+
+
