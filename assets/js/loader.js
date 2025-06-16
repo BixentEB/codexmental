@@ -1,105 +1,52 @@
-const panels = document.querySelectorAll('.panel');
-const panelWrapper = document.getElementById('panels');
-const blogViewer = document.getElementById('blog-viewer');
-const menuButtons = document.querySelectorAll('.menu-btn');
-const searchInput = document.getElementById('search-input');
-const searchResults = document.getElementById('search-results');
+// ========================================================
+// loader.js – Initialisation globale et effets d’interface Codex Mental
+// ========================================================
 
-let articlesData = [];
+// Exemple : loader d'intro (si existant)
+console.log("\u2728 Lancement de l’étoile filante...");
 
-async function loadArticles() {
-  const res = await fetch('/blog/blog.json');
-  articlesData = await res.json();
-  populatePanels();
-}
+// Thèmes dynamiques ou animations peuvent être lancées ici
+// Exemple : document.body.classList.add('theme-stellaire');
 
-function populatePanels() {
-  const byDate = [...articlesData].sort((a, b) => b.date.localeCompare(a.date));
-  const byTheme = {};
-  const allList = [];
-
-  byDate.forEach(article => {
-    // Liste pour Tous
-    const link = createArticleLink(article);
-    allList.push(link);
-
-    // Regroupement par thème
-    if (!byTheme[article.theme]) byTheme[article.theme] = [];
-    byTheme[article.theme].push(createArticleLink(article));
+// Rendu du header/footer dynamique (si tu utilises l’injection HTML)
+fetch('/menu.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('menu-placeholder').innerHTML = html;
   });
 
-  // Remplir les panneaux
-  const datePanel = document.getElementById('panel-date');
-  datePanel.innerHTML = '<h3>🗓️ Articles par date</h3>';
-  byDate.forEach(article => {
-    datePanel.appendChild(createArticleLink(article));
+fetch('/footer.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('footer-placeholder').innerHTML = html;
   });
 
-  const themePanel = document.getElementById('panel-theme');
-  themePanel.innerHTML = '<h3>🧠 Thématiques</h3>';
-  for (let theme in byTheme) {
-    const themeTitle = document.createElement('h4');
-    themeTitle.textContent = theme;
-    themePanel.appendChild(themeTitle);
-    byTheme[theme].forEach(link => themePanel.appendChild(link));
-  }
-
-  const allPanel = document.getElementById('panel-all');
-  allPanel.innerHTML = '<h3>📄 Tous les articles</h3>';
-  allList.forEach(link => allPanel.appendChild(link));
-}
-
-function createArticleLink(article) {
-  const a = document.createElement('a');
-  a.href = '#';
-  a.textContent = article.title;
-  a.dataset.file = article.file;
-  a.classList.add('article-link');
-  a.style.display = 'block';
-  a.style.margin = '0.5rem 0';
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    loadArticle(article.file);
-  });
-  return a;
-}
-
-function loadArticle(file) {
-  fetch(file)
-    .then(res => res.text())
-    .then(html => {
-      blogViewer.innerHTML = html;
-    })
-    .catch(err => {
-      blogViewer.innerHTML = '<p>❌ Erreur lors du chargement de l’article.</p>';
+// Initialisation des éléments interactifs globaux (ex. : switch de thème, menu mobile)
+window.addEventListener('DOMContentLoaded', () => {
+  // Mobile menu
+  const toggleBtn = document.getElementById('menu-toggle');
+  const nav = document.querySelector('.main-nav');
+  if (toggleBtn && nav) {
+    toggleBtn.addEventListener('click', () => {
+      nav.classList.toggle('open');
     });
-}
+  }
 
-menuButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    panelWrapper.classList.add('active');
-    panels.forEach(p => p.classList.remove('active'));
-    const panel = document.getElementById(`panel-${btn.dataset.panel}`);
-    if (panel) panel.classList.add('active');
-  });
-});
-
-// Recherche dynamique
-searchInput?.addEventListener('input', () => {
-  const query = searchInput.value.toLowerCase();
-  searchResults.innerHTML = '';
-
-  articlesData.forEach(article => {
-    const content = (article.title + article.tags.join(' ')).toLowerCase();
-    if (content.includes(query)) {
-      const link = createArticleLink(article);
-      searchResults.appendChild(link);
-    }
+  // Système de thèmes (si présent)
+  const themeButtons = document.querySelectorAll('.theme-switcher-icons button');
+  themeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.dataset.theme;
+      if (theme) {
+        document.body.className = `theme-${theme}`;
+        localStorage.setItem('theme', theme);
+      }
+    });
   });
 
-  if (!searchResults.children.length) {
-    searchResults.innerHTML = '<p>Aucun résultat.</p>';
+  // Rétablir le dernier thème choisi
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    document.body.className = `theme-${savedTheme}`;
   }
 });
-
-loadArticles();
