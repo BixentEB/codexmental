@@ -5,17 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Injecte le menu spécifique au blog depuis /blog/menu-blog.html
+ * Injecte le menu spécifique au blog depuis /blog/blog-menu.html
  */
 function injectBlogMenu() {
-  fetch('/blog/menu-blog.html')
+  fetch('/blog/blog-menu.html')
     .then(response => response.text())
     .then(html => {
-      document.getElementById('menu-blog').innerHTML = html;
+      document.getElementById('blog-menu').innerHTML = html;
       setupBlogMenuEvents(); // Active les clics une fois le menu chargé
     })
     .catch(error => {
-      console.error('Erreur lors du chargement du menu-blog:', error);
+      console.error('Erreur lors du chargement du blog-menu:', error);
     });
 }
 
@@ -23,7 +23,7 @@ function injectBlogMenu() {
  * Gère les clics sur le menu pour charger les articles
  */
 function setupBlogMenuEvents() {
-  const links = document.querySelectorAll('#menu-blog a[data-article]');
+  const links = document.querySelectorAll('#blog-menu a[data-article]');
 
   links.forEach(link => {
     link.addEventListener('click', (e) => {
@@ -60,7 +60,7 @@ function loadArticle(url) {
  * Met en surbrillance le lien actif dans le menu
  */
 function setActiveLink(activeLink) {
-  document.querySelectorAll('#menu-blog a[data-article]').forEach(link => {
+  document.querySelectorAll('#blog-menu a[data-article]').forEach(link => {
     link.classList.remove('active');
   });
   activeLink.classList.add('active');
