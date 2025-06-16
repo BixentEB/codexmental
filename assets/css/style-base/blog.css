@@ -13,16 +13,15 @@ body {
 .blog-layout {
   display: flex;
   flex-direction: row;
-  gap: 2rem;
-  padding-top: 2.5rem;
   align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem;
 }
 
 /* === Menu blog === */
 #blog-menu {
   width: 260px;
-  margin-left: 1.5rem;
-  margin-top: 2.5rem;
+  margin-right: 1rem;
   background-color: var(--bg-secondary, #111);
   border-radius: 12px;
   border: 1px solid var(--border-color, #333);
