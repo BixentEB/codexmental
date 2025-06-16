@@ -102,7 +102,7 @@ body {
 
 /* Cas spécial : thème lunaire → réduit pour la Lune */
 body.theme-lunaire #article-viewer {
-  max-width: calc(100vw - 380px);
+  max-width: calc(100vw - 500px);
 }
 
 
