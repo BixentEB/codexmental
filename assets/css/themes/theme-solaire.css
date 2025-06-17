@@ -120,6 +120,13 @@ body.theme-solaire #article-viewer .placeholder {
   --accent-pressed: #92400e;
 }
 
+/*thème bouton partage*/
+:root {
+  --btn-bg: rgba(255, 215, 100, 0.1);      /* doré léger */
+  --btn-color: #ffd870;                   /* texte doré pâle */
+  --btn-border: #ffaa00;
+  --btn-hover: rgba(255, 180, 50, 0.3);    /* halo orangé */
+}
 
 
 /* ☀️ Widget solaire (à développer plus tard)
