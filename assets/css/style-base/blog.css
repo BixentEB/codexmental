@@ -163,3 +163,31 @@ body:not(.theme-lunaire) #article-viewer {
 .blog-menu summary:hover {
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
 }
+
+/* === style bouton partage === */
+.btn-share-article {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4em 0.9em;
+  background: var(--btn-bg, #fff);
+  color: var(--btn-color, #000);
+  border: 1px solid var(--btn-border, #ccc);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0 transparent;
+}
+
+.btn-share-article .icon {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.btn-share-article:hover {
+  background: var(--btn-hover, #eee);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  transform: scale(1.03);
+}
