@@ -106,7 +106,13 @@ function copierLienArticle() {
     const fullUrl = `${window.location.origin}${window.location.pathname}?article=${articleId}`;
     navigator.clipboard.writeText(fullUrl).then(() => {
       console.log(`🔗 Lien copié : ${fullUrl}`);
-      alert("Lien de l’article copié !");
+      const button = document.querySelector('.btn-share-article');
+      if (button) {
+        button.classList.add('clicked');
+        setTimeout(() => {
+          button.classList.remove('clicked');
+        }, 800);
+      }
     });
   } else {
     alert("Aucun article sélectionné.");
