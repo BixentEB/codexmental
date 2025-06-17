@@ -257,3 +257,24 @@ body.theme-galactique {
   --btn-border: #5e3aa9;
   --btn-hover: rgba(150, 0, 255, 0.2);
 }
+
+.btn-share-article.clicked {
+  animation: haloFlash 0.8s ease-out;
+  box-shadow: 0 0 12px var(--btn-color, #fff);
+}
+
+/* === halo autour des boutons === */
+@keyframes haloFlash {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 transparent;
+  }
+  40% {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--btn-color, #fff);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 transparent;
+  }
+}
