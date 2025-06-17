@@ -124,3 +124,10 @@ body.theme-stellaire #article-viewer i {
   --accent-pressed: #3730a3;
 }
 
+/*thème bouton partage*/
+:root {
+  --btn-bg: rgba(255, 255, 255, 0.05);
+  --btn-color: #aeeeff;
+  --btn-border: #444;
+  --btn-hover: rgba(255, 255, 255, 0.15);
+}
