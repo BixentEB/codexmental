@@ -227,3 +227,33 @@ body:not(.theme-lunaire) #article-viewer {
 .share-menu.hidden {
   display: none;
 }
+
+/* === Variables de thème spécifiques aux boutons de partage === */
+
+body.theme-stellaire {
+  --btn-bg: rgba(255, 255, 255, 0.05);
+  --btn-color: #aeeeff;
+  --btn-border: #444;
+  --btn-hover: rgba(255, 255, 255, 0.15);
+}
+
+body.theme-solaire {
+  --btn-bg: rgba(255, 215, 100, 0.1);
+  --btn-color: #ffd870;
+  --btn-border: #ffaa00;
+  --btn-hover: rgba(255, 180, 50, 0.3);
+}
+
+body.theme-lunaire {
+  --btn-bg: rgba(200, 200, 255, 0.07);
+  --btn-color: #ddeeff;
+  --btn-border: #8899aa;
+  --btn-hover: rgba(150, 150, 255, 0.2);
+}
+
+body.theme-galactique {
+  --btn-bg: rgba(100, 0, 255, 0.1);
+  --btn-color: #c2a6ff;
+  --btn-border: #5e3aa9;
+  --btn-hover: rgba(150, 0, 255, 0.2);
+}
