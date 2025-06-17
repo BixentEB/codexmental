@@ -164,7 +164,7 @@ body:not(.theme-lunaire) #article-viewer {
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
 }
 
-/* === style bouton partage === */
+/* === style bouton partage simple "lien copié" === */
 .btn-share-article {
   display: inline-flex;
   align-items: center;
@@ -190,4 +190,40 @@ body:not(.theme-lunaire) #article-viewer {
   background: var(--btn-hover, #eee);
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
   transform: scale(1.03);
+}
+
+/* === style bouton partage pop up avec menu social === */
+.btn-share-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.share-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: var(--btn-bg, #222);
+  border: 1px solid var(--btn-border, #555);
+  border-radius: 8px;
+  padding: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.share-menu a {
+  color: var(--btn-color, #eee);
+  text-decoration: none;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+}
+
+.share-menu a:hover {
+  text-decoration: underline;
+}
+
+.share-menu.hidden {
+  display: none;
 }
