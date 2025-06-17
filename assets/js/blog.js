@@ -84,14 +84,28 @@ function setActiveLink(activeLink) {
 }
 
 /**
- * Fonction optionnelle pour copier le lien de l’article affiché
+ * Copie le lien de l’article affiché dans le presse-papier
+ * Fonctionne même si le bouton est en dehors de l’article
  */
 function copierLienArticle() {
-  const params = new URLSearchParams(window.location.search);
-  const article = params.get('article');
-  if (article) {
-    const fullUrl = `${window.location.origin}${window.location.pathname}?article=${article}`;
+  let articleId = null;
+
+  // Cherche un <article id="..."> visible dans #article-viewer
+  const articleEl = document.querySelector('#article-viewer article[id]');
+  if (articleEl) {
+    articleId = articleEl.id;
+  }
+
+  // Sinon, récupère l'ID depuis l'URL
+  if (!articleId) {
+    const params = new URLSearchParams(window.location.search);
+    articleId = params.get('article');
+  }
+
+  if (articleId) {
+    const fullUrl = `${window.location.origin}${window.location.pathname}?article=${articleId}`;
     navigator.clipboard.writeText(fullUrl).then(() => {
+      console.log(`🔗 Lien copié : ${fullUrl}`);
       alert("Lien de l’article copié !");
     });
   } else {
