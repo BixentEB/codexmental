@@ -1,7 +1,14 @@
-// blog.js – Gère le menu du blog et l'affichage des articles
+// blog.js – Gère le menu du blog et l'affichage des articles avec liens partageables
 
 document.addEventListener('DOMContentLoaded', () => {
   injectBlogMenu();
+
+  // Vérifie si l’URL contient ?article=...
+  const params = new URLSearchParams(window.location.search);
+  const articleParam = params.get('article');
+  if (articleParam) {
+    loadArticle(articleParam);
+  }
 });
 
 /**
@@ -12,7 +19,7 @@ function injectBlogMenu() {
     .then(response => response.text())
     .then(html => {
       document.getElementById('blog-menu').innerHTML = html;
-      setupBlogMenuEvents(); // Active les clics une fois le menu chargé
+      setupBlogMenuEvents();
     })
     .catch(error => {
       console.error('Erreur lors du chargement du blog-menu:', error);
@@ -32,6 +39,7 @@ function setupBlogMenuEvents() {
       if (articleUrl) {
         loadArticle(articleUrl);
         setActiveLink(link);
+        updateURL(articleUrl);
       }
     });
   });
@@ -57,6 +65,15 @@ function loadArticle(url) {
 }
 
 /**
+ * Met à jour l’URL avec le paramètre ?article=...
+ */
+function updateURL(articleUrl) {
+  const shortName = articleUrl.replace(/^.*[\\/]/, '').replace('.html', '');
+  const newUrl = `${window.location.pathname}?article=${shortName}`;
+  window.history.pushState({}, '', newUrl);
+}
+
+/**
  * Met en surbrillance le lien actif dans le menu
  */
 function setActiveLink(activeLink) {
@@ -64,4 +81,20 @@ function setActiveLink(activeLink) {
     link.classList.remove('active');
   });
   activeLink.classList.add('active');
+}
+
+/**
+ * Fonction optionnelle pour copier le lien de l’article affiché
+ */
+function copierLienArticle() {
+  const params = new URLSearchParams(window.location.search);
+  const article = params.get('article');
+  if (article) {
+    const fullUrl = `${window.location.origin}${window.location.pathname}?article=${article}`;
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      alert("Lien de l’article copié !");
+    });
+  } else {
+    alert("Aucun article sélectionné.");
+  }
 }
