@@ -75,3 +75,10 @@ body.theme-galactique #article-viewer .placeholder {
   --accent-pressed: #5b21b6;
 }
 
+/*thème bouton partage*/
+:root {
+  --btn-bg: rgba(100, 0, 255, 0.1);        /* violet spatial */
+  --btn-color: #c2a6ff;                   /* violet lumineux */
+  --btn-border: #5e3aa9;
+  --btn-hover: rgba(150, 0, 255, 0.2);     /* halo galactique */
+}
