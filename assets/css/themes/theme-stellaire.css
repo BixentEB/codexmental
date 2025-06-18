@@ -1,5 +1,6 @@
 /* === ✨ THÈME STELLAIRE === */
 body.theme-stellaire {
+  /* 🌌 Couleurs principales */
   --bg-primary: #030617;
   --text-primary: #ffffff;
   --text-secondary: #88ccff;
@@ -7,22 +8,32 @@ body.theme-stellaire {
   --accent-hover: #74c4ff;
   --link-color: #00bfff;
 
+  /* 🧱 Blocs d’articles */
   --bloc-bg: rgba(255, 255, 255, 0.05);
   --bloc-border: rgba(255, 255, 255, 0.2);
   --bloc-shadow: rgba(0, 0, 0, 0.2);
   --bloc-shadow-hover: rgba(255, 255, 255, 0.3);
 
+  /* 🔖 Navigation */
   --logo-color: #4eaaff;
   --nav-bg: #111;
   --nav-link-color: #4eaaff;
   --nav-link-active-bg: #4eaaff;
   --nav-link-active-color: #111;
 
+  /* 🟣 Boutons standard */
   --btn-bg: #4eaaff;
   --btn-text: #fff;
   --btn-hover: #74c4ff;
+
+  /* 📤 Bouton de partage (popup) */
+  --share-bg: rgba(10, 20, 30, 0.95);
+  --share-color: #aeeeff;
+  --share-border: rgba(100, 150, 255, 0.2);
+  --share-hover: rgba(255, 255, 255, 0.08);
 }
 
+/* 🌠 Thème mobile – boutons */
 body.theme-stellaire .mobile-nav .theme-buttons button {
   color: #4eaaff;
   text-shadow: 0 0 2px rgba(78, 170, 255, 0.2);
@@ -32,7 +43,7 @@ body.theme-stellaire .mobile-nav .theme-buttons button:hover {
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
-/* === ⚛️ PRESENTATION MENU ATOME (uniquement pour stellaire) === */
+/* ⚛️ Présentation orbitale (spécifique stellaire) */
 body.theme-stellaire .theme-atom-wrapper {
   position: relative;
   width: 300px;
@@ -64,7 +75,6 @@ body.theme-stellaire .orbit {
   transform-origin: center center;
   pointer-events: none;
 }
-
 body.theme-stellaire .orbit1 { animation-delay: 0s; }
 body.theme-stellaire .orbit2 { animation-delay: 5s; }
 body.theme-stellaire .orbit3 { animation-delay: 10s; }
@@ -97,43 +107,27 @@ body.theme-stellaire .theme-electron {
   100% { transform: rotate(360deg); }
 }
 
-/* 💫 BLOG MENU */
-/* Fermé : violet pâle (discret) */
+/* 💫 Menu collapsible blog */
 body.theme-stellaire .blog-menu details summary {
   color: #a289ff;
 }
-
-/* Ouvert : violet néon ou lavande claire */
 body.theme-stellaire .blog-menu details[open] summary {
   color: #e0c0ff;
 }
 
+/* Texte et placeholder dans les articles */
 body.theme-stellaire #article-viewer .placeholder {
-  color: #7fd4ff; /* bleu astral */
+  color: #7fd4ff;
 }
-
 body.theme-stellaire #article-viewer em,
 body.theme-stellaire #article-viewer i {
-  color: #b6aaff; /* lavande douce */
+  color: #b6aaff;
 }
 
+/* 🌌 Variables d’accentuation générales */
 :root {
-  --accent-color: #4f46e5; /* Indigo électrique */
+  --accent-color: #4f46e5;
   --accent-hover: #6366f1;
-  --accent-glow: rgba(173, 216, 255, 0.3); /* Bleu lunaire pâle */
+  --accent-glow: rgba(173, 216, 255, 0.3);
   --accent-pressed: #3730a3;
 }
-
-/*thème bouton partage*/
-:root {
-  --btn-bg: rgba(255, 255, 255, 0.05);
-  --btn-color: #aeeeff;
-  --btn-border: #444;
-  --btn-hover: rgba(255, 255, 255, 0.15);
-}
-
-  --share-bg: rgba(10, 20, 30, 0.95);
-  --share-color: #aeeeff;
-  --share-border: rgba(100, 150, 255, 0.2);
-  --share-hover: rgba(255, 255, 255, 0.08);
-
