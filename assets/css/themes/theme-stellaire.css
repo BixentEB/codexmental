@@ -131,3 +131,9 @@ body.theme-stellaire #article-viewer i {
   --btn-border: #444;
   --btn-hover: rgba(255, 255, 255, 0.15);
 }
+
+  --share-bg: rgba(10, 20, 30, 0.95);
+  --share-color: #aeeeff;
+  --share-border: rgba(100, 150, 255, 0.2);
+  --share-hover: rgba(255, 255, 255, 0.08);
+
