@@ -142,13 +142,26 @@ body:not(.theme-lunaire) #article-viewer {
   margin-bottom: 1.2em;
   line-height: 1.6;
 }
-.article blockquote {
+  .article blockquote {
   margin: 1.5em 0;
+  font-style: italic;
+  padding-left: 1em;
+  border-left: 2px solid rgba(255,255,255,0.1);
   line-height: 1.5;
 }
+  
 .article h2 {
   margin-top: 2em;
   margin-bottom: 0.8em;
+}
+
+.article {
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+.article p {
+  margin-bottom: 1.2em;
 }
 
 /* === Responsive mobile === */
