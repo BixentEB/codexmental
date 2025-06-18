@@ -120,3 +120,43 @@ function copierLienArticle() {
     alert("Aucun article sélectionné.");
   }
 }
+
+// Ouvre / ferme le menu popup de partage
+function toggleShareMenu() {
+  const menu = document.getElementById('share-menu');
+  menu.classList.toggle('hidden');
+}
+
+// Partage vers une plateforme (Facebook, Twitter, Email)
+function shareTo(platform) {
+  const params = new URLSearchParams(window.location.search);
+  const articlePath = params.get('article');
+  if (!articlePath) return;
+
+  const url = `${window.location.origin}${window.location.pathname}?article=${articlePath}`;
+  let shareUrl = '';
+
+  switch (platform) {
+    case 'facebook':
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+      break;
+    case 'twitter':
+      shareUrl = `https://twitter.com/intent/tweet?text=Un article à lire !&url=${encodeURIComponent(url)}`;
+      break;
+    case 'email':
+      shareUrl = `mailto:?subject=Article Codex Mental&body=Lis ça : ${encodeURIComponent(url)}`;
+      break;
+  }
+
+  if (shareUrl) {
+    // Ajoute l'effet halo aussi au bouton de partage contextuel
+    const button = document.querySelector('.btn-share-article');
+    if (button) {
+      button.classList.add('clicked');
+      setTimeout(() => button.classList.remove('clicked'), 800);
+    }
+
+    window.open(shareUrl, '_blank');
+  }
+}
+
