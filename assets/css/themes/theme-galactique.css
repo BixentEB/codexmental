@@ -1,5 +1,6 @@
 /* === 💫 THÈME GALACTIQUE === */
 body.theme-galactique {
+  /* 🎨 Couleurs de base */
   --bg-primary: #0a0e2a;
   --text-primary: #f2f0ff;
   --text-secondary: #c3bdf5;
@@ -7,28 +8,39 @@ body.theme-galactique {
   --accent-hover: #d1b3ff;
   --link-color: #c6a6ff;
 
+  /* 🧱 Blocs d’articles */
   --bloc-bg: rgba(30, 20, 60, 0.9);
   --bloc-border: rgba(179, 136, 255, 0.2);
   --bloc-shadow: rgba(179, 136, 255, 0.08);
   --bloc-shadow-hover: rgba(179, 136, 255, 0.2);
   --text-shadow: rgba(179, 136, 255, 0.3);
 
+  /* 🔖 Navigation */
   --logo-color: #c6a6ff;
   --nav-bg: #111;
   --nav-link-color: #c6a6ff;
   --nav-link-active-bg: #c6a6ff;
   --nav-link-active-color: #111;
 
+  /* 🟡 Boutons généraux */
   --btn-bg: #7c4dff;
   --btn-text: #fff;
   --btn-hover: #a982ff;
+
+  /* 📤 Bouton de partage (spécifique) */
+  --share-bg: rgba(30, 10, 60, 0.95);
+  --share-color: #cccaff;
+  --share-border: rgba(150, 100, 255, 0.4);
+  --share-hover: rgba(120, 100, 200, 0.25);
 }
 
-body.theme-galactiquee strong {
-  color: #9748f7; /* orangé pâle lisible sur fond sombre */
+/* Texte fort */
+body.theme-galactique strong {
+  color: #9748f7;
   font-weight: bold;
 }
 
+/* Thème mobile – boutons de sélection */
 body.theme-galactique .mobile-nav .theme-buttons button {
   color: #c6a6ff;
   text-shadow: 0 0 2px rgba(200, 160, 255, 0.2);
@@ -38,47 +50,36 @@ body.theme-galactique .mobile-nav .theme-buttons button:hover {
   text-shadow: 0 0 4px rgba(242, 240, 255, 0.4);
 }
 
-/* ✅ Lisibilité du formulaire galactique (optionnel) */
+/* Formulaire galactique */
 body.theme-galactique input,
 body.theme-galactique textarea {
   background-color: rgba(255, 255, 255, 0.07);
   color: #f2f0ff;
   border: 1px solid rgba(200, 160, 255, 0.2);
 }
-
 body.theme-galactique input::placeholder,
 body.theme-galactique textarea::placeholder {
   color: #c3bdf5;
   opacity: 0.7;
 }
 
-/* 🪐 BLOG MENU */
-/* Fermé : gris acier galactique */
+/* 📚 BLOG – Menu collapsible */
 body.theme-galactique .blog-menu details summary {
   color: #888;
 }
-
-/* Ouvert : bleu cyan lumineux (effet plasma) */
 body.theme-galactique .blog-menu details[open] summary {
   color: #80eaff;
 }
 
-/* viewer blog */
+/* Placeholder */
 body.theme-galactique #article-viewer .placeholder {
   color: #b088ff;
 }
 
+/* 🌌 Variables globales d’accent */
 :root {
-  --accent-color: #7c3aed; /* Violet nébuleux */
+  --accent-color: #7c3aed;
   --accent-hover: #a78bfa;
-  --accent-glow: rgba(221, 160, 255, 0.3); /* Lueur interstellaire */
+  --accent-glow: rgba(221, 160, 255, 0.3);
   --accent-pressed: #5b21b6;
-}
-
-/*thème bouton partage*/
-:root {
-  --btn-bg: rgba(100, 0, 255, 0.1);        /* violet spatial */
-  --btn-color: #c2a6ff;                   /* violet lumineux */
-  --btn-border: #5e3aa9;
-  --btn-hover: rgba(150, 0, 255, 0.2);     /* halo galactique */
 }
