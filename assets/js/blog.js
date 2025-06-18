@@ -65,6 +65,8 @@ function loadArticle(url) {
       document.getElementById('article-viewer').innerHTML =
         `<p class="error">Impossible de charger l’article.</p>`;
       console.error(error);
+      if (!url.endsWith(".html")) throw new Error("Format non supporté.");
+
     });
 }
 
