@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const articleParam = params.get('article');
   if (articleParam) {
-    loadArticle(articleParam);
+    loadArticle(`/blog/articles/${articleParam}.html`);
   }
 });
 
@@ -35,11 +35,16 @@ function setupBlogMenuEvents() {
   links.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      const articleUrl = link.getAttribute('data-article');
+      const articleUrl = link.getAttribute('data-article'); // Ex: /blog/articles/ai/hypocrisie.html
       if (articleUrl) {
         loadArticle(articleUrl);
         setActiveLink(link);
-        updateURL(articleUrl);
+
+        // Récupère chemin relatif pour ?article=...
+        const relativePath = articleUrl
+          .replace('/blog/articles/', '')
+          .replace('.html', '');
+        updateURL(relativePath);
       }
     });
   });
@@ -67,9 +72,8 @@ function loadArticle(url) {
 /**
  * Met à jour l’URL avec le paramètre ?article=...
  */
-function updateURL(articleUrl) {
-  const shortName = articleUrl.replace(/^.*[\\/]/, '').replace('.html', '');
-  const newUrl = `${window.location.pathname}?article=${shortName}`;
+function updateURL(relativePath) {
+  const newUrl = `${window.location.pathname}?article=${relativePath}`;
   window.history.pushState({}, '', newUrl);
 }
 
@@ -85,34 +89,32 @@ function setActiveLink(activeLink) {
 
 /**
  * Copie le lien de l’article affiché dans le presse-papier
- * Fonctionne même si le bouton est en dehors de l’article
  */
 function copierLienArticle() {
-  let articleId = null;
+  let articlePath = null;
 
   // Cherche un <article id="..."> visible dans #article-viewer
   const articleEl = document.querySelector('#article-viewer article[id]');
   if (articleEl) {
-    articleId = articleEl.id;
+    articlePath = articleEl.id;
   }
 
   // Sinon, récupère l'ID depuis l'URL
-  if (!articleId) {
+  if (!articlePath) {
     const params = new URLSearchParams(window.location.search);
-    articleId = params.get('article');
+    articlePath = params.get('article');
   }
 
-  if (articleId) {
-    const fullUrl = `${window.location.origin}${window.location.pathname}?article=${articleId}`;
+  if (articlePath) {
+    const fullUrl = `${window.location.origin}${window.location.pathname}?article=${articlePath}`;
     navigator.clipboard.writeText(fullUrl).then(() => {
       console.log(`🔗 Lien copié : ${fullUrl}`);
-      const button = document.querySelector('.btn-share-article');
-      if (button) {
+
+      // Ajoute effet halo visuel sur tous les boutons
+      document.querySelectorAll('.btn-share-article').forEach(button => {
         button.classList.add('clicked');
-        setTimeout(() => {
-          button.classList.remove('clicked');
-        }, 800);
-      }
+        setTimeout(() => button.classList.remove('clicked'), 800);
+      });
     });
   } else {
     alert("Aucun article sélectionné.");
