@@ -114,42 +114,36 @@ function copierLienArticle() {
   }
 }
 
-/**
- * Ouvre / ferme le menu contextuel de partage
- */
+/* Ouvre / ferme le menu contextuel de partage*/
 function toggleShareMenu() {
   const menu = document.getElementById('share-menu');
   menu.classList.toggle('hidden');
 }
 
-/**
- * Partage vers une plateforme (Facebook, Twitter, Email)
- */
+/* Partage vers une plateforme (Facebook, Twitter, Email) */
+function toggleShareMenu() {
+  const menu = document.getElementById('share-menu');
+  menu.classList.toggle('hidden');
+}
+
 function shareTo(platform) {
-  const params = new URLSearchParams(window.location.search);
-  const articlePath = params.get('article');
-  if (!articlePath) return;
+  const articleParam = new URLSearchParams(window.location.search).get('article');
+  const url = `${window.location.origin}${window.location.pathname}?article=${articleParam}`;
 
-  const url = `${window.location.origin}${window.location.pathname}?article=${articlePath}`;
   let shareUrl = '';
-
   switch (platform) {
     case 'facebook':
       shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
       break;
     case 'twitter':
-      shareUrl = `https://twitter.com/intent/tweet?text=Un article à lire !&url=${encodeURIComponent(url)}`;
+      shareUrl = `https://twitter.com/intent/tweet?text=Regarde cet article !&url=${encodeURIComponent(url)}`;
       break;
     case 'email':
-      shareUrl = `mailto:?subject=Article Codex Mental&body=Lis ça : ${encodeURIComponent(url)}`;
+      shareUrl = `mailto:?subject=Article Codex&body=Lis ça : ${encodeURIComponent(url)}`;
       break;
   }
 
   if (shareUrl) {
-    document.querySelectorAll('.btn-share-article').forEach(button => {
-      button.classList.add('clicked');
-      setTimeout(() => button.classList.remove('clicked'), 800);
-    });
     window.open(shareUrl, '_blank');
   }
 }
