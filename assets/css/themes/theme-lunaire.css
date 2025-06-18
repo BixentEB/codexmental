@@ -1,5 +1,6 @@
 /* === 🌙 THÈME LUNAIRE === */
 body.theme-lunaire {
+  /* 🌌 Couleurs de base */
   --bg-primary: #0b1a33;
   --text-primary: #dceeff;
   --text-secondary: #aaccee;
@@ -7,22 +8,32 @@ body.theme-lunaire {
   --accent-hover: #5da3ff;
   --link-color: #77aaff;
 
+  /* 🧱 Blocs de contenu */
   --bloc-bg: rgba(20, 30, 60, 0.95);
   --bloc-border: rgba(150, 200, 255, 0.1);
   --bloc-shadow: rgba(150, 200, 255, 0.08);
   --bloc-shadow-hover: rgba(150, 200, 255, 0.2);
 
+  /* 🔖 Navigation */
   --logo-color: #77aaff;
   --nav-bg: #111;
   --nav-link-color: #aaccee;
   --nav-link-active-bg: #3b7dd8;
   --nav-link-active-color: #fff;
 
+  /* 🌙 Boutons classiques */
   --btn-bg: #5da3ff;
   --btn-text: #fff;
   --btn-hover: #3b7dd8;
+
+  /* 📤 Bouton de partage (capsule) */
+  --share-bg: rgba(240, 240, 255, 0.94);
+  --share-color: #1a1a2a;
+  --share-border: rgba(160, 160, 255, 0.4);
+  --share-hover: rgba(190, 190, 255, 0.25);
 }
 
+/* 🌗 Thème mobile – boutons */
 body.theme-lunaire .mobile-nav .theme-buttons button {
   color: #aaccee;
   text-shadow: 0 0 2px rgba(150, 200, 255, 0.2);
@@ -32,21 +43,20 @@ body.theme-lunaire .mobile-nav .theme-buttons button:hover {
   text-shadow: 0 0 4px rgba(220, 238, 255, 0.5);
 }
 
-/* ✅ Lisibilité du formulaire lunaire (optionnel mais recommandé) */
+/* 🖋️ Formulaire lunaire */
 body.theme-lunaire input,
 body.theme-lunaire textarea {
-  background-color: rgba(255, 255, 255, 0.06); /* fond doux */
-  color: #dceeff; /* texte clair */
-  border: 1px solid rgba(120, 180, 255, 0.2); /* bordure légèrement bleutée */
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #dceeff;
+  border: 1px solid rgba(120, 180, 255, 0.2);
 }
-
 body.theme-lunaire input::placeholder,
 body.theme-lunaire textarea::placeholder {
   color: #aaccee;
   opacity: 0.75;
 }
 
-/* 🌙 BLOG MENU */
+/* 📚 Menu collapsible blog */
 body.theme-lunaire .blog-menu details summary {
   color: #ccc;
 }
@@ -54,22 +64,15 @@ body.theme-lunaire .blog-menu details[open] summary {
   color: #1295f3;
 }
 
-/* viewer blog */
+/* Placeholder blog */
 body.theme-lunaire #article-viewer .placeholder {
-  color: #1295f3; /* bleu lunaire */
+  color: #1295f3;
 }
 
+/* 🌒 Variables d’accentuation globales */
 :root {
   --accent-color: #2a2a55;
   --accent-hover: #3b3b77;
   --accent-glow: rgba(173, 216, 230, 0.3);
   --accent-pressed: #1a1a3b;
-}
-
-/*thème bouton partage*/
-:root {
-  --btn-bg: rgba(200, 200, 255, 0.07);     /* lueur bleutée pâle */
-  --btn-color: #ddeeff;                   /* blanc lunaire / argenté */
-  --btn-border: #8899aa;
-  --btn-hover: rgba(150, 150, 255, 0.2);   /* effet brume froide */
 }
