@@ -1,0 +1,28 @@
+/* === 📱 mobile === */
+@media (max-width: 768px) {
+  .blog-wrapper {
+    flex-direction: column;
+  }
+
+  #viewer,
+  .bloc,
+  .article {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .menu-lateral {
+    width: 100%;
+    order: -1;
+    margin-bottom: 1rem;
+  }
+
+  .article h1 {
+    font-size: 1.6rem;
+  }
+
+  .btn-share-wrapper {
+    justify-content: center;
+  }
+}
