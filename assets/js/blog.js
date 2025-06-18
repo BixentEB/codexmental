@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const articleParam = params.get('article');
   if (articleParam) {
-    loadArticle(`blog/articles/${articleParam}.html`);
+    loadArticle(`articles/${articleParam}.html`);
   }
 });
 
 /**
- * Injecte le menu spécifique au blog depuis /blog/blog-menu.html
+ * Injecte le menu spécifique au blog depuis blog-menu.html
  */
 function injectBlogMenu() {
-  fetch('/blog/blog-menu.html')
+  fetch('blog-menu.html')
     .then(response => response.text())
     .then(html => {
       document.getElementById('blog-menu').innerHTML = html;
@@ -35,16 +35,11 @@ function setupBlogMenuEvents() {
   links.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      const articleUrl = link.getAttribute('data-article'); // Ex: /blog/articles/ai/hypocrisie.html
-      if (articleUrl) {
-        loadArticle(articleUrl);
+      const articlePath = link.getAttribute('data-article'); // Ex: ai/hypocrisie
+      if (articlePath) {
+        loadArticle(`articles/${articlePath}.html`);
         setActiveLink(link);
-
-        // Récupère chemin relatif pour ?article=...
-        const relativePath = articleUrl
-          .replace('/blog/articles/', '')
-          .replace('.html', '');
-        updateURL(relativePath);
+        updateURL(articlePath);
       }
     });
   });
@@ -99,7 +94,7 @@ function copierLienArticle() {
     articlePath = articleEl.id;
   }
 
-  // Sinon, récupère l'ID depuis l'URL
+  // Sinon, récupère depuis l’URL
   if (!articlePath) {
     const params = new URLSearchParams(window.location.search);
     articlePath = params.get('article');
@@ -109,8 +104,6 @@ function copierLienArticle() {
     const fullUrl = `${window.location.origin}${window.location.pathname}?article=${articlePath}`;
     navigator.clipboard.writeText(fullUrl).then(() => {
       console.log(`🔗 Lien copié : ${fullUrl}`);
-
-      // Ajoute effet halo visuel sur tous les boutons
       document.querySelectorAll('.btn-share-article').forEach(button => {
         button.classList.add('clicked');
         setTimeout(() => button.classList.remove('clicked'), 800);
@@ -121,13 +114,17 @@ function copierLienArticle() {
   }
 }
 
-// Ouvre / ferme le menu popup de partage
+/**
+ * Ouvre / ferme le menu contextuel de partage
+ */
 function toggleShareMenu() {
   const menu = document.getElementById('share-menu');
   menu.classList.toggle('hidden');
 }
 
-// Partage vers une plateforme (Facebook, Twitter, Email)
+/**
+ * Partage vers une plateforme (Facebook, Twitter, Email)
+ */
 function shareTo(platform) {
   const params = new URLSearchParams(window.location.search);
   const articlePath = params.get('article');
@@ -149,14 +146,10 @@ function shareTo(platform) {
   }
 
   if (shareUrl) {
-    // Ajoute l'effet halo aussi au bouton de partage contextuel
-    const button = document.querySelector('.btn-share-article');
-    if (button) {
+    document.querySelectorAll('.btn-share-article').forEach(button => {
       button.classList.add('clicked');
       setTimeout(() => button.classList.remove('clicked'), 800);
-    }
-
+    });
     window.open(shareUrl, '_blank');
   }
 }
-
