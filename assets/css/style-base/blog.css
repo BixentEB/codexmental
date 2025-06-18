@@ -307,3 +307,22 @@ body.theme-galactique {
     box-shadow: 0 0 0 transparent;
   }
 }
+
+/* === viewer mobile === */
+@media (max-width: 768px) {
+  .blog-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #viewer {
+    width: 100%;
+    min-height: 60vh;
+    padding: 1rem;
+  }
+
+  .menu-lateral {
+    width: 100%;
+  }
+}
+
