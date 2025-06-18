@@ -229,7 +229,6 @@ body:not(.theme-lunaire) #article-viewer {
 }
 
 /* === Variables de thème spécifiques aux boutons de partage === */
-
 body.theme-stellaire {
   --btn-bg: rgba(255, 255, 255, 0.05);
   --btn-color: #aeeeff;
