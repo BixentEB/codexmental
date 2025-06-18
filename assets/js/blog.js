@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const articleParam = params.get('article');
   if (articleParam) {
-    loadArticle(`/blog/articles/${articleParam}.html`);
+    loadArticle(`blog/articles/${articleParam}.html`);
   }
 });
 
