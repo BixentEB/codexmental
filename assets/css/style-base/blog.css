@@ -226,6 +226,11 @@ body:not(.theme-lunaire) #article-viewer {
   display: none;
 }
 
+.btn-share-wrapper {
+  position: relative; /* clé pour que .share-menu soit positionné par rapport à ce conteneur */
+  display: inline-block;
+}
+
 /* === Variables de thème spécifiques aux boutons de partage === */
 body.theme-stellaire {
   --btn-bg: rgba(255, 255, 255, 0.05);
