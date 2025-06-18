@@ -25,4 +25,17 @@
   .btn-share-wrapper {
     justify-content: center;
   }
+
+ #article-viewer {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+  }
+
 }
+
