@@ -55,7 +55,11 @@ function loadArticle(url) {
       return response.text();
     })
     .then(html => {
-      document.getElementById('article-viewer').innerHTML = html;
+      const viewer = document.getElementById('article-viewer');
+      viewer.style.display = 'none';
+      viewer.innerHTML = html;
+      void viewer.offsetHeight;
+      viewer.style.display = 'block';
     })
     .catch(error => {
       document.getElementById('article-viewer').innerHTML =
