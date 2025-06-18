@@ -1,7 +1,15 @@
-/* === 📱 mobile === */
+/* === 📱 Responsive Mobile – Codex Mental === */
 @media (max-width: 768px) {
+
   .blog-wrapper {
+    display: flex;
     flex-direction: column;
+  }
+
+  .menu-lateral {
+    width: 100%;
+    order: -1; /* Pour passer au-dessus du viewer */
+    margin-bottom: 1rem;
   }
 
   #viewer,
@@ -12,30 +20,43 @@
     box-sizing: border-box;
   }
 
-  .menu-lateral {
-    width: 100%;
-    order: -1;
-    margin-bottom: 1rem;
-  }
-
   .article h1 {
     font-size: 1.6rem;
   }
 
   .btn-share-wrapper {
     justify-content: center;
+    margin-bottom: 1rem;
   }
 
- #article-viewer {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 1rem;
-  overflow-wrap: break-word;
-  word-break: normal;
-  white-space: normal;
+  #article-viewer {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+    word-break: normal;
+    overflow-wrap: break-word;
+    white-space: normal !important;
+    line-height: 1.6;
+  }
+
+  #article-viewer * {
+    white-space: normal !important;
+    display: block;
+  }
+
+  #article-viewer h1,
+  #article-viewer h2,
+  #article-viewer h3 {
+    word-break: normal;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+  }
+
+  #article-viewer p {
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
   }
 
 }
-
