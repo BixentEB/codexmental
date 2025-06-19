@@ -1,4 +1,5 @@
-/* === 🌙 THÈME LUNAIRE === */
+
+/* === 🌙 THÈME LUNAIRE — VERSION CORRIGÉE === */
 body.theme-lunaire {
   /* 🌌 Couleurs de base */
   --bg-primary: #0b1a33;
@@ -31,6 +32,12 @@ body.theme-lunaire {
   --share-color: #1a1a2a;
   --share-border: rgba(160, 160, 255, 0.4);
   --share-hover: rgba(190, 190, 255, 0.25);
+
+  /* 🌒 Variables d’accentuation globales */
+  --accent-color: #2a2a55;
+  --accent-hover: #3b3b77;
+  --accent-glow: rgba(173, 216, 230, 0.3);
+  --accent-pressed: #1a1a3b;
 }
 
 /* 🌗 Thème mobile – boutons */
@@ -69,10 +76,20 @@ body.theme-lunaire #article-viewer .placeholder {
   color: #1295f3;
 }
 
-/* 🌒 Variables d’accentuation globales */
-:root {
-  --accent-color: #2a2a55;
-  --accent-hover: #3b3b77;
-  --accent-glow: rgba(173, 216, 230, 0.3);
-  --accent-pressed: #1a1a3b;
+/* ✅ NOUVELLES RÈGLES POUR CORRIGER L’AFFICHAGE */
+body.theme-lunaire #article-viewer {
+  color: var(--text-primary);
+  background: var(--bloc-bg);
+  padding: 1rem;
+  box-sizing: border-box;
+  line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+body.theme-lunaire .article p {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  line-height: 1.6;
 }
