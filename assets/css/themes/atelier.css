@@ -72,15 +72,6 @@
   background: var(--accent-hover, rgba(255, 255, 255, 0.15));
 }
 
-/* ✅ Correction des couleurs placeholder en thème solaire */
-body.theme-solaire #visualiseur.empty h2 {
-  color: #d88c1f; /* orange solaire plus clair */
-}
-
-body.theme-solaire #visualiseur.empty p {
-  color: #e6aa5c; /* beige orangé lisible */
-}
-
 /* === Placeholder visuel adapté par thème === */
 
 body.theme-solaire .placeholder h2,
