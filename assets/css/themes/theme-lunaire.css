@@ -96,7 +96,8 @@ body.theme-lunaire .article p {
 
 body.theme-lunaire strong,
 body.theme-lunaire b {
-  color: var(--text-primary);
+  color: #b8d8ff; /* bleu ciel doux */
   font-weight: bold;
 }
+
 
