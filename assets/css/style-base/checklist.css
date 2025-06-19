@@ -28,3 +28,22 @@ input[type="checkbox"]:checked {
   accent-color: #00ccff;
   filter: drop-shadow(0 0 5px rgba(0, 200, 255, 0.5));
 }
+
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.checklist li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.6em;
+  font-size: 1rem;
+}
+
+.checklist input[type="checkbox"] {
+  margin-right: 0.6em;
+  accent-color: var(--accent-primary);
+  pointer-events: none;
+}
