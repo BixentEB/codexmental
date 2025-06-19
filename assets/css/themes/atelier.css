@@ -106,12 +106,17 @@
   font-style: italic !important;
 }
 
-body.theme-solaire #atelier-viewer.empty h2 {
+/* ✅ Correction des couleurs placeholder en thème solaire */
+body.theme-solaire #visualiseur.empty h2 {
   color: #d88c1f; /* orange solaire plus clair */
 }
 
-body.theme-solaire #atelier-viewer.empty p {
+body.theme-solaire #visualiseur.empty p {
   color: #e6aa5c; /* beige orangé lisible */
+}
+
+body.theme-solaire .placeholder {
+  color: #e6aa5c;
 }
 
 
