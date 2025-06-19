@@ -81,26 +81,32 @@ body.theme-solaire #visualiseur.empty p {
   color: #e6aa5c; /* beige orangé lisible */
 }
 
-/* === Styles placeholder par thème === */
+/* === Placeholder visuel adapté par thème === */
+
+body.theme-solaire .placeholder h2,
 body.theme-solaire .placeholder p {
-  color: #e6aa5c !important;
+  color: #e6aa5c !important; /* doré lisible sur fond clair */
+  opacity: 0.9;
+}
+
+body.theme-lunaire .placeholder h2,
+body.theme-lunaire .placeholder p {
+  color: #ddeeff !important; /* bleu lunaire clair */
+  opacity: 0.9;
+}
+
+body.theme-galactique .placeholder h2,
+body.theme-galactique .placeholder p {
+  color: #caaaff !important; /* violet clair */
   opacity: 0.85;
 }
 
-body.theme-lunaire .placeholder p {
-  color: #ddeeff;
-  opacity: 0.75;
-}
-
+body.theme-stellaire .placeholder h2,
 body.theme-stellaire .placeholder p {
-  color: #88ccff;
-  opacity: 0.75;
+  color: #88ccff !important; /* bleu ciel lumineux */
+  opacity: 0.85;
 }
 
-body.theme-galactique .placeholder p {
-  color: #caaaff;
-  opacity: 0.8;
-}
 
 
 /* Responsive */
