@@ -18,3 +18,8 @@
   font-size: 1rem;
   cursor: pointer;
 }
+
+input[type="checkbox"]:checked {
+  accent-color: var(--accent-primary, #4eaaff); /* ta couleur de thème */
+  filter: drop-shadow(0 0 3px var(--accent-hover, #74c4ff));
+}
