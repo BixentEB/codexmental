@@ -247,6 +247,11 @@ body:not(.theme-lunaire) #article-viewer {
   display: inline-block;
 }
 
+/* === classe utilitaire === */
+.hidden {
+  display: none !important;
+}
+
 /* === Variables de thème spécifiques aux boutons de partage === */
 body.theme-stellaire {
   --btn-bg: rgba(255, 255, 255, 0.05);
@@ -314,9 +319,6 @@ body.theme-galactique {
     width: 100%;
   }
 
-  .hidden {
-  display: none !important;
-}
 
 }
 
