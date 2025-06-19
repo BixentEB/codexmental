@@ -31,11 +31,10 @@ function injectBlogMenu() {
  */
 function setupBlogMenuEvents() {
   const links = document.querySelectorAll('#blog-menu a[data-article]');
-
   links.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      const articlePath = link.getAttribute('data-article'); // Ex: ai/hypocrisie
+      const articlePath = link.getAttribute('data-article');
       if (articlePath) {
         loadArticle(`articles/${articlePath}.html`);
         setActiveLink(link);
@@ -47,6 +46,7 @@ function setupBlogMenuEvents() {
 
 /**
  * Charge dynamiquement un article dans #article-viewer
+ * + injecte les outils d'article (ex: bouton partage)
  */
 function loadArticle(url) {
   fetch(url)
@@ -58,6 +58,10 @@ function loadArticle(url) {
       const viewer = document.getElementById('article-viewer');
       viewer.style.display = 'none';
       viewer.innerHTML = html;
+
+      // Injecte le menu outils d'article
+      injectArticleTools();
+
       void viewer.offsetHeight;
       viewer.style.display = 'block';
     })
@@ -65,7 +69,6 @@ function loadArticle(url) {
       document.getElementById('article-viewer').innerHTML =
         `<p class="error">Impossible de charger l’article.</p>`;
       console.error(error);
-      if (!url.endsWith(".html")) throw new Error("Format non supporté.");
     });
 }
 
@@ -93,13 +96,11 @@ function setActiveLink(activeLink) {
 function copierLienArticle() {
   let articlePath = null;
 
-  // Cherche un <article id="..."> visible dans #article-viewer
   const articleEl = document.querySelector('#article-viewer article[id]');
   if (articleEl) {
     articlePath = articleEl.id;
   }
 
-  // Sinon, récupère depuis l’URL
   if (!articlePath) {
     const params = new URLSearchParams(window.location.search);
     articlePath = params.get('article');
@@ -120,13 +121,12 @@ function copierLienArticle() {
 }
 
 /**
- * Ouvre / ferme le menu contextuel de partage (avec fermeture automatique au clic extérieur)
+ * Ouvre / ferme le menu contextuel de partage
  */
 function toggleShareMenu() {
   const menu = document.getElementById('share-menu');
   menu.classList.toggle('hidden');
 
-  // Ferme si clic ailleurs
   if (!menu.classList.contains('hidden')) {
     const handleClickOutside = (event) => {
       if (!menu.contains(event.target) && !event.target.closest('.btn-share-wrapper')) {
@@ -141,7 +141,7 @@ function toggleShareMenu() {
 }
 
 /**
- * Partage vers une plateforme (Facebook, Twitter, Email)
+ * Partage vers une plateforme
  */
 function shareTo(platform) {
   const articleParam = new URLSearchParams(window.location.search).get('article');
@@ -163,4 +163,19 @@ function shareTo(platform) {
   if (shareUrl) {
     window.open(shareUrl, '_blank');
   }
+}
+
+/**
+ * Injecte dynamiquement le menu outils (partage...) dans l'article
+ */
+function injectArticleTools() {
+  const target = document.getElementById('article-tools');
+  if (!target) return;
+
+  fetch('/partials/article-tools.html')
+    .then(res => res.text())
+    .then(html => {
+      target.innerHTML = html;
+    })
+    .catch(err => console.error('Erreur injection article-tools:', err));
 }
