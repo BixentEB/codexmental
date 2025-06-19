@@ -107,9 +107,11 @@
 }
 
 body.theme-solaire #atelier-viewer.empty h2 {
-  color: #8b5e20;
+  color: #d88c1f; /* orange solaire plus clair */
 }
+
 body.theme-solaire #atelier-viewer.empty p {
-  color: #a8783d;
+  color: #e6aa5c; /* beige orangé lisible */
 }
+
 
