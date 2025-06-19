@@ -66,7 +66,6 @@ function loadArticle(url) {
         `<p class="error">Impossible de charger l’article.</p>`;
       console.error(error);
       if (!url.endsWith(".html")) throw new Error("Format non supporté.");
-
     });
 }
 
@@ -120,18 +119,30 @@ function copierLienArticle() {
   }
 }
 
-/* Ouvre / ferme le menu contextuel de partage*/
+/**
+ * Ouvre / ferme le menu contextuel de partage (avec fermeture automatique au clic extérieur)
+ */
 function toggleShareMenu() {
   const menu = document.getElementById('share-menu');
   menu.classList.toggle('hidden');
+
+  // Ferme si clic ailleurs
+  if (!menu.classList.contains('hidden')) {
+    const handleClickOutside = (event) => {
+      if (!menu.contains(event.target) && !event.target.closest('.btn-share-wrapper')) {
+        menu.classList.add('hidden');
+        document.removeEventListener('click', handleClickOutside);
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener('click', handleClickOutside);
+    }, 0);
+  }
 }
 
-/* Partage vers une plateforme (Facebook, Twitter, Email) */
-function toggleShareMenu() {
-  const menu = document.getElementById('share-menu');
-  menu.classList.toggle('hidden');
-}
-
+/**
+ * Partage vers une plateforme (Facebook, Twitter, Email)
+ */
 function shareTo(platform) {
   const articleParam = new URLSearchParams(window.location.search).get('article');
   const url = `${window.location.origin}${window.location.pathname}?article=${articleParam}`;
