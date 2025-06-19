@@ -46,4 +46,5 @@
 /* === ✅ CHECK LIST === */
 @import url('/assets/css/style-base/checklist.css');
 
-
+/* === 📱 Mobile interface === */
+@import url('/assets/css/style-base/mobile.css');
