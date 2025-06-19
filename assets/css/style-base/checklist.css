@@ -47,3 +47,14 @@ input[type="checkbox"]:checked {
   accent-color: var(--accent-primary);
   pointer-events: none;
 }
+
+body.theme-solaire input[type="checkbox"] {
+  accent-color: #ff9900;
+}
+body.theme-lunaire input[type="checkbox"] {
+  accent-color: #ddeeff;
+}
+body.theme-galactique input[type="checkbox"] {
+  accent-color: #c2a6ff;
+}
+
