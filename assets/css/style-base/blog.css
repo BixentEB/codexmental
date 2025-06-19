@@ -1,3 +1,4 @@
+
 /* blog.css – Mise en page du blog Codex Mental */
 
 /* === Structure générale === */
@@ -14,7 +15,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 2rem; /* = ~32px = l'espace entre menu et viewer */
+  gap: 2rem;
   padding: 0 30px;
   max-width: 100vw;
   margin-top: 6rem;
@@ -29,9 +30,8 @@ body {
   border: 1px solid var(--border-color, #333);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   padding: 1rem;
-  margin: 0; /* plus de décalage */
+  margin: 0;
 }
-
 
 /* === Menu collapsible par catégorie === */
 .blog-menu h2 {
@@ -87,7 +87,6 @@ body {
 }
 
 /* === Article viewer === */
-/* Viewer normal – étendu */
 #article-viewer {
   flex: 1;
   padding: 2rem 2.5rem;
@@ -98,14 +97,12 @@ body {
   min-height: 400px;
   line-height: 1.7;
   transition: all 0.3s ease;
-  max-width: unset; /* on peut ajuster ci-dessous */
+  max-width: unset;
 }
 
-/* Cas spécial : thème lunaire → réduit pour la Lune */
 body.theme-lunaire #article-viewer {
-  max-width: calc(100vw - 500px); /* car on a la lune à droite */
+  max-width: calc(100vw - 500px);
 }
-
 body:not(.theme-lunaire) #article-viewer {
   max-width: 100%;
 }
@@ -116,22 +113,18 @@ body:not(.theme-lunaire) #article-viewer {
   font-style: italic;
   color: #ccc;
 }
-
 #article-viewer .erreur {
   color: #ff7070;
   font-weight: bold;
   margin-top: 1rem;
 }
-
 #article-viewer > * + * {
   margin-top: 1rem;
 }
-
 #article-viewer em,
 #article-viewer i {
   font-style: italic !important;
 }
-
 #article-viewer h1,
 #article-viewer h2 {
   font-family: 'Orbitron', sans-serif;
@@ -142,24 +135,21 @@ body:not(.theme-lunaire) #article-viewer {
   margin-bottom: 1.2em;
   line-height: 1.6;
 }
-  .article blockquote {
+.article blockquote {
   margin: 1.5em 0;
   font-style: italic;
   padding-left: 1em;
   border-left: 2px solid rgba(255,255,255,0.1);
   line-height: 1.5;
 }
-  
 .article h2 {
   margin-top: 2em;
   margin-bottom: 0.8em;
 }
-
 .article {
   line-height: 1.6;
   padding: 0 1rem;
 }
-
 .article p {
   margin-bottom: 1.2em;
 }
@@ -170,13 +160,11 @@ body:not(.theme-lunaire) #article-viewer {
     flex-direction: column;
     padding: 1rem;
   }
-
   #blog-menu {
     width: 100%;
     margin-left: 0;
     margin-bottom: 2rem;
   }
-
   #article-viewer {
     margin-left: 0;
     padding: 0;
@@ -207,12 +195,10 @@ body:not(.theme-lunaire) #article-viewer {
   transition: all 0.2s ease;
   box-shadow: 0 0 0 transparent;
 }
-
 .btn-share-article .icon {
   font-weight: bold;
   font-size: 1.2em;
 }
-
 .btn-share-article:hover {
   background: var(--btn-hover, #eee);
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
@@ -221,7 +207,7 @@ body:not(.theme-lunaire) #article-viewer {
 
 /* === style bouton partage pop up avec menu social === */
 .share-menu {
-  background-color: var(--share-bg, rgba(0, 0, 0, 0.95)); /* Opacité élevée par défaut */
+  background-color: var(--share-bg, rgba(0, 0, 0, 0.95));
   color: var(--share-color, #fff);
   border: 1px solid var(--share-border, rgba(255, 255, 255, 0.3));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -230,11 +216,15 @@ body:not(.theme-lunaire) #article-viewer {
   position: absolute;
   top: 110%;
   left: 0;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 0.4em;
   z-index: 100;
   min-width: 140px;
+}
+
+.btn-share-wrapper .share-menu:not(.hidden) {
+  display: flex;
 }
 
 .share-menu a {
@@ -244,7 +234,6 @@ body:not(.theme-lunaire) #article-viewer {
   border-radius: 4px;
   transition: background 0.2s ease;
 }
-
 .share-menu a:hover {
   background: var(--share-hover, rgba(255, 255, 255, 0.1));
 }
@@ -254,7 +243,7 @@ body:not(.theme-lunaire) #article-viewer {
 }
 
 .btn-share-wrapper {
-  position: relative; /* clé pour que .share-menu soit positionné par rapport à ce conteneur */
+  position: relative;
   display: inline-block;
 }
 
@@ -325,4 +314,3 @@ body.theme-galactique {
     width: 100%;
   }
 }
-
