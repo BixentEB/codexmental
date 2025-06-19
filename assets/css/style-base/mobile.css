@@ -29,17 +29,17 @@
     margin-bottom: 1rem;
   }
 
-  #article-viewer {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 1rem;
-    word-break: normal;
-    overflow-wrap: break-word;
-    white-space: normal !important;
-    line-height: 1.6;
-  }
+#article-viewer {
+  all: unset;
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
 
   #article-viewer * {
     white-space: normal !important;
@@ -60,3 +60,4 @@
   }
 
 }
+
