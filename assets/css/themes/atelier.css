@@ -81,9 +81,27 @@ body.theme-solaire #visualiseur.empty p {
   color: #e6aa5c; /* beige orangé lisible */
 }
 
-body.theme-solaire .placeholder {
-  color: #e6aa5c;
+/* === Styles placeholder par thème === */
+body.theme-solaire .placeholder p {
+  color: #e6aa5c !important;
+  opacity: 0.85;
 }
+
+body.theme-lunaire .placeholder p {
+  color: #ddeeff;
+  opacity: 0.75;
+}
+
+body.theme-stellaire .placeholder p {
+  color: #88ccff;
+  opacity: 0.75;
+}
+
+body.theme-galactique .placeholder p {
+  color: #caaaff;
+  opacity: 0.8;
+}
+
 
 /* Responsive */
 @media screen and (max-width: 768px) {
