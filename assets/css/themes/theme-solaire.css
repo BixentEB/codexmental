@@ -116,6 +116,13 @@ body.theme-solaire #article-viewer .placeholder {
   color: #663300;
 }
 
+/* ☀️ Menu blog : lien actif */
+body.theme-solaire #blog-menu a.active {
+  color: #ffb300 !important;
+  background-color: rgba(255, 193, 7, 0.1);
+  font-weight: bold;
+}
+
 /* === Variables d'accentuation (hors composants) === */
 :root {
   --accent-color: #d97706;
