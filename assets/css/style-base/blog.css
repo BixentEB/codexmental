@@ -286,6 +286,39 @@ body.theme-galactique {
   box-shadow: 0 0 12px var(--btn-color, #fff);
 }
 
+/* blog.css – Mise en page du blog Codex Mental */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--bg-primary, #000);
+  color: var(--text-primary, #fff);
+}
+
+/* [...] CONTENU ABRÉGÉ POUR LA LECTURE - ON INSÉRERA LE BLOC AJOUTÉ ICI EN BAS */
+/* === Bloc d'injection outils d'article === */
+#article-tools {
+  margin-bottom: 1.5rem;
+  text-align: right;
+}
+
+/* Harmonisation du bouton injecté */
+#article-tools .btn-share-article {
+  background: var(--btn-bg, #fff);
+  color: var(--btn-color, #000);
+  border: 1px solid var(--btn-border, #ccc);
+  font-size: 0.95em;
+  border-radius: 8px;
+  padding: 0.4em 0.9em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#article-tools .btn-share-article:hover {
+  background: var(--btn-hover, #eee);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+
 /* === halo autour des boutons === */
 @keyframes haloFlash {
   0% {
