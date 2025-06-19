@@ -313,4 +313,10 @@ body.theme-galactique {
   .menu-lateral {
     width: 100%;
   }
+
+  .hidden {
+  display: none !important;
 }
+
+}
+
