@@ -106,9 +106,10 @@
   font-style: italic !important;
 }
 
-body.theme-solaire #atelier-viewer.empty h2,
+body.theme-solaire #atelier-viewer.empty h2 {
+  color: #8b5e20;
+}
 body.theme-solaire #atelier-viewer.empty p {
-  color: #4a2a00; /* ou un brun doux bien lisible */
-  opacity: 0.85;
+  color: #a8783d;
 }
 
