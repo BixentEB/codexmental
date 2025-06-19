@@ -93,3 +93,10 @@ body.theme-lunaire .article p {
   margin-bottom: 1rem;
   line-height: 1.6;
 }
+
+body.theme-lunaire strong,
+body.theme-lunaire b {
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
