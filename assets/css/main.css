@@ -21,6 +21,9 @@
 /* === 🛠️ Classes utilitaires (flex, gap, scrollTop, centrage...) === */
 @import url('/assets/css/style-base/utilities.css');
 
+/* === 🖼️ Mise en page Tableaux === */
+@import url('/assets/css/style-base/table.css');
+
 /* === 🌠 Animation astro, badge, intro === */
 @import url('/assets/css/style-base/astro.css');
 
