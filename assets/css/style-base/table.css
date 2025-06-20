@@ -1,31 +1,53 @@
-/* === 📊 TABLEAUX GÉNÉRAUX === */
+/* 🌌 Tableaux stylisés */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0;
-  font-size: 1rem;
-  table-layout: auto;
-}
-
-thead {
-  background-color: transparent;
+  font-size: 0.95rem;
+  margin: 1.5rem 0;
 }
 
 th, td {
+  padding: 10px 16px;
   text-align: left;
-  padding: 12px 18px;
   vertical-align: top;
+}
+
+thead th {
+  font-weight: bold;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* ligne plus marquée */
+}
+
+tbody td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* En-têtes : héritent du thème */
-th {
-  font-weight: bold;
-  color: inherit;
+/* 👌 Compactage intelligent */
+table.compact th,
+table.compact td {
+  padding: 6px 12px;
+  font-size: 0.9rem;
 }
 
-/* Pour adoucir le rendu sur mobile */
-.table-scroll {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+/* 🎯 Alignement précis */
+th:nth-child(1),
+td:nth-child(1) {
+  width: 25%;
+}
+th:nth-child(2),
+td:nth-child(2) {
+  width: 25%;
+}
+th:nth-child(3),
+td:nth-child(3) {
+  width: 50%;
+}
+
+/* Responsive minimal */
+@media screen and (max-width: 768px) {
+  table {
+    font-size: 0.85rem;
+  }
+  table th, table td {
+    padding: 8px 10px;
+  }
 }
