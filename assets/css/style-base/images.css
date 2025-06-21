@@ -1,1 +1,25 @@
+    .freestyle {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      height: 400px;
+      margin: 2rem auto;
+      background: #111;
+      border: 2px dashed #555;
+      border-radius: 15px;
+      overflow: hidden;
+    }
 
+    .freestyle img {
+      position: absolute;
+      width: 150px;
+      height: auto;
+      border: 3px solid #fff;
+      border-radius: 6px;
+      box-shadow: 2px 2px 15px rgba(0,0,0,0.6);
+      transition: transform 0.3s ease;
+    }
+
+    .freestyle img:nth-child(1) { top: 20px; left: 30px; transform: rotate(-10deg); }
+    .freestyle img:nth-child(2) { top: 80px; left: 120px; transform: rotate(8deg); }
+    .freestyle img:nth-child(3) { top: 150px; left: 220px; transform: rotate(-6deg); }
