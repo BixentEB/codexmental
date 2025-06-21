@@ -51,3 +51,6 @@
 
 /* === 📱 Mobile interface === */
 @import url('/assets/css/style-base/mobile.css');
+
+/* === 🖼️ Mise en pages IMAGES === */
+@import url('/assets/css/style-base/images.css');
