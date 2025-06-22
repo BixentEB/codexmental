@@ -131,3 +131,14 @@ a:hover {
 }
 
 
+/* ===========================
+   ▶️ SIGNATURE
+=========================== */
+.signature {
+  text-align: center;
+  font-style: italic;
+  opacity: 0.7;
+  margin-top: 3rem;
+  font-size: 0.95rem;
+}
+
