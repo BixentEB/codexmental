@@ -14,6 +14,8 @@ body.theme-stellaire {
   --bloc-shadow: rgba(0, 0, 0, 0.2);
   --bloc-shadow-hover: rgba(255, 255, 255, 0.3);
 
+  --menu-bg: rgba(10, 10, 30, 0.5);
+  --menu-card-bg: rgba(30, 30, 60, 0.65);
   /* 🔖 Navigation */
   --logo-color: #4eaaff;
   --nav-bg: #111;
