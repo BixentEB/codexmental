@@ -129,3 +129,6 @@ body.theme-solaire #blog-menu a.active {
   --accent-glow: rgba(255, 200, 100, 0.4);
   --accent-pressed: #92400e;
 }
+
+--menu-bg: rgba(255, 240, 200, 0.35);
+--menu-card-bg: rgba(255, 230, 180, 0.6);
