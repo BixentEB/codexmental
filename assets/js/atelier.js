@@ -1,6 +1,6 @@
 // assets/js/atelier.js
-fetch('/partials/atelier-menu.html')
-  .then(r => r.text())
+fetch('/atelier/atelier-menu.html')
+  .then(res => res.text())
   .then(html => {
     document.getElementById('atelier-menu').innerHTML = html;
   });
