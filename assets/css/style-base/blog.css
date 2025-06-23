@@ -348,6 +348,14 @@ body.theme-solaire .blog-menu summary:hover {
   color: var(--menu-text-hover);
 }
 
+.notes-fin {
+  margin-top: 3rem;
+  padding-bottom: 6rem; /* laisse de l'air en bas pour la lune */
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
 
 /* === halo autour des boutons === */
 @keyframes haloFlash {
