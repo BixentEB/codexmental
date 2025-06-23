@@ -12,6 +12,8 @@ body.theme-solaire {
   --bloc-shadow: rgba(210, 140, 20, 0.1);
   --bloc-shadow-hover: rgba(210, 140, 20, 0.25);
   --menu-bg: rgba(255, 240, 200, 0.35);
+  --menu-text: #7a4e00;
+  --menu-text-hover: #ff9900;
   --menu-card-bg: rgba(255, 230, 180, 0.6);
 
   --logo-color: #e65100;
