@@ -1,51 +1,52 @@
-/* === ✨ THÈME STELLAIRE === */
+/* === ✨ THÈME STELLAIRE – HARMONISÉ === */
 body.theme-stellaire {
   /* 🌌 Couleurs principales */
   --bg-primary: #030617;
   --text-primary: #ffffff;
-  --text-secondary: #88ccff;
-  --accent-primary: #4eaaff;
-  --accent-hover: #74c4ff;
-  --link-color: #00bfff;
+  --text-secondary: #aad8ff;
+  --accent-primary: #77caff;
+  --accent-hover: #9ddfff;
+  --link-color: #9dbdff;
 
   /* 🧱 Blocs d’articles */
   --bloc-bg: rgba(255, 255, 255, 0.05);
-  --bloc-border: rgba(255, 255, 255, 0.2);
+  --bloc-border: rgba(255, 255, 255, 0.15);
   --bloc-shadow: rgba(0, 0, 0, 0.2);
-  --bloc-shadow-hover: rgba(255, 255, 255, 0.3);
+  --bloc-shadow-hover: rgba(255, 255, 255, 0.25);
 
   --menu-bg: rgba(10, 10, 30, 0.5);
   --menu-card-bg: rgba(30, 30, 60, 0.65);
+
   /* 🔖 Navigation */
-  --logo-color: #4eaaff;
+  --logo-color: #77caff;
   --nav-bg: #111;
-  --nav-link-color: #4eaaff;
-  --nav-link-active-bg: #4eaaff;
-  --nav-link-active-color: #111;
+  --nav-link-color: #aad8ff;
+  --nav-link-active-bg: transparent;
+  --nav-link-active-color: #ffffff;
 
   /* 🟣 Boutons standard */
   --btn-bg: #4eaaff;
-  --btn-text: #fff;
-  --btn-hover: #74c4ff;
+  --btn-text: #ffffff;
+  --btn-hover: #77caff;
 
   /* 📤 Bouton de partage (popup) */
   --share-bg: rgba(10, 20, 30, 0.95);
-  --share-color: #aeeeff;
-  --share-border: rgba(100, 150, 255, 0.2);
+  --share-color: #aad8ff;
+  --share-border: rgba(120, 180, 255, 0.2);
   --share-hover: rgba(255, 255, 255, 0.08);
 }
 
 /* 🌠 Thème mobile – boutons */
 body.theme-stellaire .mobile-nav .theme-buttons button {
-  color: #4eaaff;
-  text-shadow: 0 0 2px rgba(78, 170, 255, 0.2);
+  color: var(--nav-link-color);
+  text-shadow: 0 0 2px rgba(120, 180, 255, 0.3);
 }
 body.theme-stellaire .mobile-nav .theme-buttons button:hover {
-  color: #ffffff;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+  color: var(--text-primary);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
 }
 
-/* ⚛️ Présentation orbitale (spécifique stellaire) */
+/* ⚛️ Présentation orbitale */
 body.theme-stellaire .theme-atom-wrapper {
   position: relative;
   width: 300px;
@@ -111,19 +112,19 @@ body.theme-stellaire .theme-electron {
 
 /* 💫 Menu collapsible blog */
 body.theme-stellaire .blog-menu details summary {
-  color: #a289ff;
+  color: #aad8ff;
 }
 body.theme-stellaire .blog-menu details[open] summary {
-  color: #e0c0ff;
+  color: #ffffff;
 }
 
 /* Texte et placeholder dans les articles */
 body.theme-stellaire #article-viewer .placeholder {
-  color: #7fd4ff;
+  color: #aad8ff;
 }
 body.theme-stellaire #article-viewer em,
 body.theme-stellaire #article-viewer i {
-  color: #b6aaff;
+  color: #cce6ff;
 }
 
 /* 🌌 Variables d’accentuation générales */
@@ -136,6 +137,6 @@ body.theme-stellaire #article-viewer i {
 
 /* 🌌 Couleur du lien activé menu blog */
 body.theme-stellaire .blog-menu a.active {
-  color: #9dbdff !important; /* bleu étoilé pâle */
+  color: #aad8ff !important;
   font-weight: bold;
 }
