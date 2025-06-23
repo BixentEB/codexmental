@@ -25,7 +25,7 @@ body {
 /* === Menu blog (à gauche) === */
 #blog-menu {
   width: 240px;
-  background-color: var(--bg-secondary, #111);
+  background-color: var(--menu-bg, #111);
   border-radius: 12px;
   border: 1px solid var(--border-color, #333);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
@@ -42,7 +42,7 @@ body {
 
 .blog-menu details {
   margin-bottom: 0.8rem;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--menu-card-bg, rgba(255, 255, 255, 0.03));
   border-radius: 6px;
   border: 1px solid var(--border-color, #333);
   padding: 0.4rem;
