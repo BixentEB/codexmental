@@ -41,6 +41,7 @@ body {
 }
 
 .blog-menu details {
+  border: 1px solid var(--menu-border, var(--border-color, #333));
   margin-bottom: 0.8rem;
   background-color: var(--menu-card-bg, rgba(255, 255, 255, 0.03));
   border-radius: 6px;
@@ -50,6 +51,8 @@ body {
 }
 
 .blog-menu summary {
+  color: var(--menu-text, var(--text-primary));
+  text-shadow: 0 0 2px rgba(255, 220, 100, 0.3);
   font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
   cursor: pointer;
@@ -173,9 +176,13 @@ body:not(.theme-lunaire) #article-viewer {
 
 /* === effet hover doux type glow === */
 .blog-menu summary {
+  color: var(--menu-text, var(--text-primary));
+  text-shadow: 0 0 2px rgba(255, 220, 100, 0.3);
   transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 .blog-menu summary:hover {
+  color: var(--menu-text-hover, var(--text-accent));
+  text-shadow: 0 0 4px rgba(255, 220, 100, 0.5);
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
 }
 
