@@ -133,3 +133,9 @@ body.theme-stellaire #article-viewer i {
   --accent-glow: rgba(173, 216, 255, 0.3);
   --accent-pressed: #3730a3;
 }
+
+/* 🌌 Couleur du lien activé menu blog */
+body.theme-stellaire .blog-menu a.active {
+  color: #9dbdff !important; /* bleu étoilé pâle */
+  font-weight: bold;
+}
