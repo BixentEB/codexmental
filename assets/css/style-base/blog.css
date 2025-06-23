@@ -85,7 +85,7 @@ body {
 
 .blog-menu a:hover,
 #blog-menu a.active {
-  color: var(--text-accent, #f39c12);
+  color: var(--menu-text-hover, var(--text-accent));
   font-weight: bold;
 }
 
