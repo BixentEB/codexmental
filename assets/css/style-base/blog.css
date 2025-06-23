@@ -325,6 +325,29 @@ body {
 }
 
 
+/* overrides par thème */
+body.theme-solaire .blog-menu details[open] summary {
+  color: var(--menu-text-hover) !important;
+  font-weight: bold;
+}
+
+body.theme-solaire .blog-menu a {
+  color: var(--menu-text);
+}
+body.theme-solaire .blog-menu a:hover,
+body.theme-solaire .blog-menu a.active {
+  color: var(--menu-text-hover);
+  font-weight: bold;
+}
+
+body.theme-solaire .blog-menu summary {
+  color: var(--menu-text);
+}
+body.theme-solaire .blog-menu summary:hover {
+  color: var(--menu-text-hover);
+}
+
+
 /* === halo autour des boutons === */
 @keyframes haloFlash {
   0% {
