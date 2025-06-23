@@ -122,6 +122,12 @@ body.theme-solaire #blog-menu a.active {
   font-weight: bold;
 }
 
+/* Ajout des couleurs spécifiques au menu latéral */
+body.theme-solaire {
+  --menu-text: #7a4e00 !important;
+  --menu-text-hover: #ff9900 !important;
+}
+
 /* === Variables d'accentuation (hors composants) === */
 :root {
   --accent-color: #d97706;
