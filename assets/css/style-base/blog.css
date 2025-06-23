@@ -182,8 +182,7 @@ body:not(.theme-lunaire) #article-viewer {
 }
 .blog-menu summary:hover {
   color: var(--menu-text-hover, var(--text-accent));
-  text-shadow: 0 0 4px rgba(255, 220, 100, 0.5);
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
+  text-shadow: 0 0 4px rgba(255, 220, 100, 0.5), 0 0 5px rgba(255, 255, 255, 0.15);
 }
 
 /* === style bouton partage simple "lien copié" === */
