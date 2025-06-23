@@ -1,3 +1,4 @@
+
 /* === ☀️ THÈME SOLAIRE === */
 body.theme-solaire {
   --bg-primary: #fff8e1;
@@ -11,10 +12,13 @@ body.theme-solaire {
   --bloc-border: rgba(210, 140, 20, 0.2);
   --bloc-shadow: rgba(210, 140, 20, 0.1);
   --bloc-shadow-hover: rgba(210, 140, 20, 0.25);
+
   --menu-bg: rgba(255, 240, 200, 0.35);
+  --menu-card-bg: rgba(255, 230, 180, 0.6);
   --menu-text: #7a4e00;
   --menu-text-hover: #ff9900;
-  --menu-card-bg: rgba(255, 230, 180, 0.6);
+  --menu-border: rgba(255, 170, 50, 0.6);
+  --menu-category: #7c5200;
 
   --logo-color: #e65100;
   --nav-bg: #111;
@@ -26,15 +30,13 @@ body.theme-solaire {
   --btn-text: #111;
   --btn-hover: #f57f17;
 
-  /* Bouton de partage (spécifique, sans impacter les autres boutons) */
-  --share-bg: rgba(255, 244, 200, 0.96);     /* jaune doux, très lisible */
-  --share-color: #5e3a00;                    /* brun solaire lisible */
+  --share-bg: rgba(255, 244, 200, 0.96);
+  --share-color: #5e3a00;
   --share-border: rgba(255, 190, 100, 0.4);
   --share-hover: rgba(255, 200, 100, 0.25);
+
   --text-accent: #ff6f00;
-  --menu-text: #5c3a00;
-  --menu-text-hover: #b45f00;
-  --menu-border: rgba(255, 170, 50, 0.6); }
+}
 
 /* Texte en gras personnalisé uniquement dans le thème solaire */
 body.theme-solaire strong {
@@ -110,14 +112,6 @@ body.theme-solaire textarea::placeholder {
   }
 }
 
-/* ☀️ Menu blog : couleurs des summaries */
-body.theme-solaire .blog-menu details summary {
-  color: #f5c878;
-}
-body.theme-solaire .blog-menu details[open] summary {
-  color: #f39c12;
-}
-
 /* Placeholder stylisé */
 body.theme-solaire #article-viewer .placeholder {
   color: #663300;
@@ -136,5 +130,3 @@ body.theme-solaire #blog-menu a.active {
   --accent-glow: rgba(255, 200, 100, 0.4);
   --accent-pressed: #92400e;
 }
-
-
