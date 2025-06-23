@@ -11,6 +11,8 @@ body.theme-solaire {
   --bloc-border: rgba(210, 140, 20, 0.2);
   --bloc-shadow: rgba(210, 140, 20, 0.1);
   --bloc-shadow-hover: rgba(210, 140, 20, 0.25);
+  --menu-bg: rgba(255, 240, 200, 0.35);
+  --menu-card-bg: rgba(255, 230, 180, 0.6);
 
   --logo-color: #e65100;
   --nav-bg: #111;
@@ -130,5 +132,4 @@ body.theme-solaire #blog-menu a.active {
   --accent-pressed: #92400e;
 }
 
---menu-bg: rgba(255, 240, 200, 0.35);
---menu-card-bg: rgba(255, 230, 180, 0.6);
+
