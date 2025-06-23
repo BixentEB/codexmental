@@ -102,3 +102,9 @@ body.theme-lunaire b {
   font-weight: bold;
 }
 
+/* 🔵 Couleur du lien sélectionné dans le menu blog */
+body.theme-lunaire .blog-menu a.active {
+  background-color: #3b7dd8;
+  color: #dceeff !important;
+  border-left: 4px solid #5da3ff;
+}
