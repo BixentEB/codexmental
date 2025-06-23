@@ -62,8 +62,9 @@ body {
 }
 
 .blog-menu details[open] summary {
-  color: var(--text-accent, #f39c12);
+  color: var(--menu-text-hover, var(--text-accent));
 }
+
 
 /* === Liste d’articles === */
 .blog-menu ul {
