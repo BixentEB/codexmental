@@ -13,7 +13,9 @@ body.theme-galactique {
   --bloc-border: rgba(179, 136, 255, 0.2);
   --bloc-shadow: rgba(179, 136, 255, 0.08);
   --bloc-shadow-hover: rgba(179, 136, 255, 0.2);
-  --text-shadow: rgba(179, 136, 255, 0.3);
+
+  --menu-bg: rgba(25, 10, 35, 0.5);
+  --menu-card-bg: rgba(50, 20, 80, 0.6);  --text-shadow: rgba(179, 136, 255, 0.3);
 
   /* 🔖 Navigation */
   --logo-color: #c6a6ff;
