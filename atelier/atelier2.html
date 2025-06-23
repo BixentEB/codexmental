@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atelier – Codex Mental</title>
+
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" />
+
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
+
+  <!-- 🎨 Styles -->
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/themes/atelier.css" />
+
+  <!-- ⚙️ Scripts -->
+  <script type="module" src="/assets/js/main.js"></script>
+  <script defer src="/assets/js/atelier.js"></script>
+</head>
+
+<body class="theme-stellaire">
+  <!-- 🌌 Canvas de fond -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu principal injecté dynamiquement -->
+  <header id="menu-placeholder"></header>
+
+  <!-- 🧱 Contenu principal -->
+  <main class="blog-layout">
+    <!-- 🎨 Menu latéral injecté (projets Atelier) -->
+    <aside id="atelier-menu"></aside>
+
+    <!-- 📄 Visualiseur central -->
+    <section id="article-viewer">
+      <div class="placeholder">
+        <h2>Bienvenue dans l'atelier</h2>
+        <p>Sélectionnez un projet à gauche pour l'afficher ici.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 📜 Fonction de chargement dynamique -->
+  <script>
+    function chargerProjet(nom) {
+      fetch(`/atelier/${nom}.html`)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById("article-viewer").innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById("article-viewer").innerHTML = `<p class='erreur'>Erreur de chargement : ${nom}.html</p>`;
+        });
+    }
+  </script>
+</body>
+</html>
