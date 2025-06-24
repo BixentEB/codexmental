@@ -1,59 +1,50 @@
 /* 🌙 lune.css – Styles du widget lunaire dynamique */
 
-html, body {
-  overflow-x: hidden;
+#lune-widget {
+  position: absolute;
+  z-index: 999;
+  transition: all 0.4s ease;
+  pointer-events: auto;
 }
 
-/* Conteneur lunaire */
-body.theme-lunaire #lune-widget {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  z-index: 20;
-  pointer-events: none;
-  transition: all 0.5s ease-in-out;
-  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.25));
-}
-
-/* Image de la lune (pleine) */
-body.theme-lunaire .lune-img {
+.lune-img {
   position: relative;
+  display: block;
   width: 100%;
   height: 100%;
-  background-image: url('/img/lune/lune-pleine.png');
   background-size: cover;
-  background-repeat: no-repeat;
   background-position: center;
   border-radius: 50%;
   overflow: hidden;
 }
 
-/* Ombre dynamique en fonction de la phase */
-body.theme-lunaire .lune-img::after {
-  content: '';
+/* 🌓 Ombre lunaire dynamique (côté gauche ou droit selon la phase) */
+.lune-img::before {
+  content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.85);
+  top: 0;
+  bottom: 0;
+  left: var(--side, 0%);
   width: var(--illum, 50%);
-  inset-inline-start: var(--side, 0%);
-  transition: width 0.6s ease, inset-inline-start 0.6s ease;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 50%;
   pointer-events: none;
+  transition: all 0.4s ease;
 }
 
-/* Phase spéciale : nouvelle lune */
-body.theme-lunaire #lune-widget.lune-nouvelle .lune-img {
-  background-image: none;
-  background-color: black;
+/* 🌑 Nouvelle lune – optionnel : on rend l’image très sombre */
+.lune-nouvelle .lune-img {
+  filter: brightness(0.2) contrast(0.8);
+  transition: filter 0.6s ease;
 }
 
-/* Interactivité (desktop uniquement) */
-@media screen and (min-width: 1025px) {
-  body.theme-lunaire #lune-widget {
-    pointer-events: auto;
-    cursor: pointer;
+/* 💡 Taille normale (mobile / desktop) */
+@media screen and (max-width: 1024px) {
+  #lune-widget {
+    width: 120px;
+    height: 120px;
+    right: 20px;
+    bottom: 20px;
+    position: fixed;
   }
 }
