@@ -4,32 +4,41 @@
 // Si la lune est étrange dans le futur, c’est peut-être que nous avons changé, pas elle.
 // —————————
 
+/**
+ * Calcule le pourcentage de face éclairée visible de la Lune
+ */
 function getMoonPhasePercentage(date = new Date()) {
-  // 🌑 Base réelle : Nouvelle lune du 11 janvier 2024 à 11:57 UTC
-  const base = new Date('2024-01-11T11:57:00Z');
-  const diff = (date - base) / (1000 * 60 * 60 * 24); // jours depuis base
-  const lunations = diff / 29.530588853; // moyenne synodique
+  const base = new Date('2024-01-11T11:57:00Z'); // 🌑 Référence : Nouvelle lune
+  const diff = (date - base) / (1000 * 60 * 60 * 24);
+  const lunations = diff / 29.530588853;
   const phase = lunations % 1;
-
-  // 🌘 Retourne pourcentage de face éclairée (0 = nouvelle lune, 1 = pleine lune, puis retour à 0)
   const illumination = Math.round(100 * (1 - Math.cos(phase * 2 * Math.PI)) / 2);
   return illumination;
 }
 
+/**
+ * Retourne la fraction de phase actuelle (0 = nouvelle lune, 0.5 = pleine, 1 = nouvelle suivante)
+ */
+function getPhaseFraction(date = new Date()) {
+  const base = new Date('2024-01-11T11:57:00Z');
+  const diff = (date - base) / (1000 * 60 * 60 * 24);
+  const lunations = diff / 29.530588853;
+  return lunations % 1;
+}
 
-// Applique les variables CSS pour simuler l’éclairage lunaire
-function applyLunarShadow(luneElement, phasePercentage) {
+/**
+ * Applique l’ombre lunaire simulée en CSS
+ */
+function applyLunarShadow(luneElement, phasePercentage, phaseFraction) {
   if (!luneElement) return;
 
   const percent = Math.round(phasePercentage);
-  const isWaxing = percent <= 50;
+  const isWaxing = phaseFraction < 0.5; // 🌒 Croissante = éclairée à gauche
   const lightPercent = isWaxing ? percent * 2 : (100 - percent) * 2;
 
-  // On injecte les variables CSS pour le ::after
   luneElement.style.setProperty('--illum', `${100 - lightPercent}%`);
   luneElement.style.setProperty('--side', isWaxing ? '0%' : 'auto');
 
-  // Classe spéciale si nouvelle lune
   const wrapper = luneElement.parentElement;
   if (wrapper) {
     if (percent <= 2) {
@@ -60,7 +69,8 @@ export function updateLunarWidget(theme) {
       document.body.appendChild(wrapper);
 
       const pourcentage = getMoonPhasePercentage();
-      applyLunarShadow(lune, pourcentage);
+      const phase = getPhaseFraction();
+      applyLunarShadow(lune, pourcentage, phase);
 
       applySavedLuneSize(wrapper);
       setupLuneClickCycle(wrapper);
@@ -70,7 +80,7 @@ export function updateLunarWidget(theme) {
 }
 
 /**
- * Fait suivre la lune au scroll (même super)
+ * Fait suivre la lune au scroll
  */
 export function followScrollLune(lune) {
   if (!lune) return;
@@ -89,11 +99,7 @@ export function followScrollLune(lune) {
     wrapper.style.left = 'unset';
     wrapper.style.bottom = 'unset';
 
-    if (wrapper.classList.contains('lune-super')) {
-      wrapper.style.right = '-200px';
-    } else {
-      wrapper.style.right = '20px';
-    }
+    wrapper.style.right = wrapper.classList.contains('lune-super') ? '-200px' : '20px';
   };
 
   window.removeEventListener('scroll', followScrollLune._handler);
