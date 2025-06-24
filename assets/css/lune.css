@@ -35,16 +35,17 @@ body.theme-lunaire #lune-widget.lune-nouvelle {
 #lune-widget::before {
   content: "";
   position: absolute;
-  inset: 0;
+  width: var(--ombre-width, 50%);
+  height: 100%;
+  top: 0;
+  left: var(--ombre-offset, 0%);
+  background: rgba(0, 0, 0, 0.92);
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(
-    circle at var(--ombre-cote, left),
-    rgba(0, 0, 0, 0.92) var(--ombre-start, 48%),
-    transparent var(--ombre-end, 52%)
-  );
   transition: all 0.5s ease;
+  z-index: 2;
 }
+
 
 
 
