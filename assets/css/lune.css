@@ -34,16 +34,16 @@ body.theme-lunaire #lune-widget.lune-nouvelle {
 #lune-widget::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at var(--ombre-cote, left),
-    rgba(0, 0, 0, 0.92) var(--ombre-start, 49.8%),
-    transparent var(--ombre-end, 50%)
-  );
+  top: 0; left: 0;
+  width: var(--ombre-width, 50%);
+  height: 100%;
+  background-color: rgba(0,0,0,0.88);
+  transform: translateX(var(--ombre-offset, 0%));
+  border-radius: 0 50% 50% 0;
   pointer-events: none;
   transition: all 0.5s ease;
 }
+
 
 
 /* === 🌕 Super lune – taille géante et décalée (desktop only) === */
