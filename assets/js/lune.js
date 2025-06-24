@@ -18,17 +18,26 @@ function getMoonPhasePercentage(date = new Date()) {
 /**
  * 🌒 Applique l’ombre CSS selon la phase lunaire (via ::before)
  */
-function applyLunarShadow(luneElement, percent) {
+function applyLunarShadow(luneElement, illumination) {
   if (!luneElement) return;
 
-  const illumination = Math.round(percent);
-  const isWaxing = (percent < 50); // Croissant si < 50%
+  const percent = Math.round(illumination);
+  const isWaxing = percent < 50;
 
-  // Calcule les dimensions du masque (ombre) selon illumination
-  const ombreWidth = `${100 - illumination}%`;
-  const ombreOffset = isWaxing
-  ? `${100 - illumination}%` // ombre à droite pour croissante
-  : `0%`;                     // ombre à gauche pour décroissante
+  const start = isWaxing ? 50 - percent * 0.5 : 0;
+  const end = isWaxing ? 100 : 50 + percent * 0.5;
+
+  luneElement.style.setProperty('--ombre-cote', isWaxing ? 'left' : 'right');
+  luneElement.style.setProperty('--ombre-start', `${start}%`);
+  luneElement.style.setProperty('--ombre-end', `${end}%`);
+
+  if (percent <= 2) {
+    luneElement.classList.add('lune-nouvelle');
+  } else {
+    luneElement.classList.remove('lune-nouvelle');
+  }
+}
+
 
   // Application dynamique
   luneElement.style.setProperty('--ombre-width', ombreWidth);
