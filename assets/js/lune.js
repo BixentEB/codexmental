@@ -1,6 +1,6 @@
 // ====================================================================================================
 // lune.js – Widget lunaire dynamique (Vincent x IA – Codex Mental)
-// Version sécurisée – Simulation réaliste + orientation correcte
+// Version avec orientation du croissant corrigée (data-phase = waxing|waning)
 // ====================================================================================================
 
 /**
@@ -12,7 +12,7 @@ function getMoonData(date = new Date()) {
   const lunations = diff / 29.530588853;
   const phase = lunations % 1;
   const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
-  const isWaxing = phase < 0.5; // avant pleine lune
+  const isWaxing = phase < 0.5;
 
   return {
     illumination: illumination * 100,
@@ -22,7 +22,7 @@ function getMoonData(date = new Date()) {
 }
 
 /**
- * 🌒 Applique l’ombre CSS réaliste selon illumination et sens
+ * 🌒 Applique l’ombre CSS + oriente correctement selon phase
  */
 function applyLunarShadow(luneElement) {
   if (!luneElement) return;
@@ -30,11 +30,12 @@ function applyLunarShadow(luneElement) {
   const { illumination, isWaxing } = getMoonData();
   const rounded = Math.round(illumination);
 
-  const ombreWidth = `${100 - rounded}%`;
-  const ombreOffset = isWaxing ? `0%` : `${100 - rounded}%`;
+  // Attribut utile pour orienter le masque côté gauche/droit
+  luneElement.setAttribute('data-phase', isWaxing ? 'waxing' : 'waning');
 
-  luneElement.style.setProperty('--ombre-width', ombreWidth);
-  luneElement.style.setProperty('--ombre-offset', ombreOffset);
+  // Pour d’éventuelles variables CSS plus tard (facultatif)
+  luneElement.style.setProperty('--ombre-width', `${100 - rounded}%`);
+  luneElement.style.setProperty('--ombre-offset', isWaxing ? `0%` : `${100 - rounded}%`);
 
   if (rounded <= 2) {
     luneElement.classList.add('lune-nouvelle');
@@ -61,6 +62,11 @@ export function updateLunarWidget(theme) {
 
   const lune = document.createElement('div');
   lune.id = 'lune-widget';
+
+  // Ombre dynamique ajoutée ici (avant tout)
+  const ombre = document.createElement('div');
+  ombre.className = 'ombre-lunaire';
+  lune.appendChild(ombre);
 
   if (!document.body) return;
   document.body.appendChild(lune);
