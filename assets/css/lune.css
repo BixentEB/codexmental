@@ -6,67 +6,51 @@ html, body {
 
 /* Conteneur lunaire */
 body.theme-lunaire #lune-widget {
-  position: absolute;
+  position: fixed;
   right: 20px;
   bottom: 20px;
-  width: 120px;
-  height: 120px;
+  width: 240px;
+  height: 240px;
   border-radius: 50%;
-  overflow: hidden;
-  z-index: 10;
+  z-index: 20;
   pointer-events: none;
   transition: all 0.5s ease-in-out;
-  will-change: top, right;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-}
-
-/* Image de la lune */
-body.theme-lunaire .lune-img {
-  width: 100%;
-  height: 100%;
-  background-image: url('/img/lune/lune-pleine.png');
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.25));
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
-  position: relative;
-  z-index: 1;
+  background-position: center;
+  background-image: url('/img/lune/lune-pleine.png');
 }
 
-/* Masque progressif en opacité (ombrage réaliste) */
-body.theme-lunaire .lune-img::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  z-index: 2;
-  pointer-events: none;
-  transition: all 0.5s ease;
-
-  background: radial-gradient(
-    circle at var(--ombre-cote, left),
-    rgba(0, 0, 0, var(--ombre-opacity, 0.7)) var(--ombre-start, 30%),
-    rgba(0, 0, 0, 0) var(--ombre-end, 100%)
-  );
+/* Application d’un masque réaliste pour simuler la phase */
+body.theme-lunaire #lune-widget[data-phase="gibbeuse"] {
+  -webkit-mask-image: url('/img/lune/masques/phase-gibbeuse.png');
+  mask-image: url('/img/lune/masques/phase-gibbeuse.png');
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
-/* Nouvelle lune — très sombre */
-body.theme-lunaire #lune-widget.lune-nouvelle .lune-img::before {
-  background: rgba(0, 0, 0, 0.92);
+body.theme-lunaire #lune-widget[data-phase="croissante"] {
+  -webkit-mask-image: url('/img/lune/masques/phase-croissante.png');
+  mask-image: url('/img/lune/masques/phase-croissante.png');
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
-/* Super Lune */
-body.theme-lunaire #lune-widget.lune-super {
-  width: 480px;
-  height: 480px;
-  bottom: -120px;
-  right: -200px;
-  opacity: 0.9;
-  pointer-events: auto;
-  cursor: pointer;
-  z-index: 10;
+body.theme-lunaire #lune-widget[data-phase="nouvelle"] {
+  background-image: none;
+  background-color: black;
 }
 
-/* Desktop : clics activés */
+/* Interactivité (desktop uniquement) */
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
     pointer-events: auto;
