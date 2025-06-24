@@ -16,13 +16,21 @@ function applyLunarShadow(luneElement, phasePercentage) {
 
   const percent = Math.round(phasePercentage);
   const isWaxing = percent <= 50;
-  const ombreStart = isWaxing ? 0 : (percent - 50) * 2;
-  const ombreEnd = isWaxing ? percent * 2 : 100;
+  const lightPercent = isWaxing ? percent * 2 : (100 - percent) * 2;
 
-  luneElement.style.setProperty('--ombre-cote', isWaxing ? 'left' : 'right');
-  luneElement.style.setProperty('--ombre-start', `${ombreStart}%`);
-  luneElement.style.setProperty('--ombre-end', `${ombreEnd}%`);
+  // Création d’un masque radial directionnel simulant l’ombre
+  const gradient = isWaxing
+    ? `linear-gradient(to left, black ${100 - lightPercent}%, transparent ${100 - lightPercent}%)`
+    : `linear-gradient(to right, black ${100 - lightPercent}%, transparent ${100 - lightPercent}%)`;
 
+  luneElement.style.webkitMaskImage = gradient;
+  luneElement.style.maskImage = gradient;
+  luneElement.style.webkitMaskRepeat = "no-repeat";
+  luneElement.style.maskRepeat = "no-repeat";
+  luneElement.style.webkitMaskSize = "cover";
+  luneElement.style.maskSize = "cover";
+
+  // Classe optionnelle pour la nouvelle lune
   const wrapper = luneElement.parentElement;
   if (wrapper) {
     if (percent <= 2) {
@@ -31,6 +39,8 @@ function applyLunarShadow(luneElement, phasePercentage) {
       wrapper.classList.remove("lune-nouvelle");
     }
   }
+}
+
 
   appliquerMasqueVisuelLunaire(luneElement, percent);
 }
