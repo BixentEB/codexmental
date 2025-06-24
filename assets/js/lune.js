@@ -31,7 +31,7 @@ function applyLunarShadow(luneElement) {
   const rounded = Math.round(illumination);
 
   const ombreWidth = `${100 - rounded}%`;
-  const ombreOffset = isWaxing ? `${100 - rounded}%` : `0%`;
+  const ombreOffset = isWaxing ? `0%` : `${100 - rounded}%`; // ✅ Correction ici
 
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
@@ -42,6 +42,7 @@ function applyLunarShadow(luneElement) {
     luneElement.classList.remove('lune-nouvelle');
   }
 }
+
 
 /**
  * 🌕 Initialise le widget lunaire (appelé dynamiquement)
