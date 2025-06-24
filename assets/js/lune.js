@@ -34,7 +34,6 @@ export function updateLunarWidget(theme) {
 
   if (theme === 'theme-lunaire') {
     setTimeout(() => {
-      const phase = getMoonPhaseIndex();
       const lune = document.createElement('div');
       lune.id = 'lune-widget';
       lune.style.backgroundImage = `url('/img/lune/lune-pleine.png')`;
