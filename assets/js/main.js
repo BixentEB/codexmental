@@ -36,15 +36,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// === import widget lunaire
-import { updateLunarWidget } from './lune-widget.js';
-
-document.addEventListener("DOMContentLoaded", () => {
-  const currentTheme = document.body.className;
-  updateLunarWidget(currentTheme);
-});
-
-
 // === ⬆️ Bouton de retour en haut
 setupScrollButton();
 
