@@ -1,8 +1,7 @@
-// ———————————————————————————————————————————————————————————————
-// 🧠 Capsule IA CodexMental – Lune dynamique JS – Juin 2025
-// 🤖 Codée avec amour et précision jusqu'en 2035
-// Si la lune est étrange dans le futur, c’est peut-être que nous avons changé, pas elle.
-// —————————
+// ====================================================================================================
+// lune.js – Gestion du widget lunaire dynamique (Vincent x IA – Codex Mental)
+// Version simplifiée avec ::after dynamique (inspiré de madsstoumann) – Juin 2025
+// ====================================================================================================
 
 function getMoonPhasePercentage(date = new Date()) {
   // 🌑 Base réelle : Nouvelle lune du 11 janvier 2024 à 11:57 UTC
