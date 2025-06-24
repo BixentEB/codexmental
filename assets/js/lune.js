@@ -1,84 +1,68 @@
 // ====================================================================================================
-// lune.js – Widget lunaire dynamique injecté (Codex Mental, Vincent x IA)
+// lune.js – Gestion du widget lunaire dynamique - nouvelle correction intégrant nouvel index lunaire
 // ====================================================================================================
 
-// Calcule le pourcentage précis de lunaison (0 à 100 %)
+/**
+ * Calcule l’index de phase lunaire (28 à 30 phases)
+ * Basé sur la date de référence du 1er janvier 2001
+ */
 function getMoonPhasePercentage(date = new Date()) {
   const base = new Date('2001-01-01T00:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = 0.20439731 + diff * 0.03386319269;
-  return (lunations % 1) * 100;
+  return (lunations % 1) * 100; // pourcentage de 0 à 100
 }
 
-// Applique les variables CSS pour simuler l’éclairage lunaire
-function applyLunarShadow(luneElement, phasePercentage) {
-  if (!luneElement) return;
-  const percent = Math.round(phasePercentage);
-  const isWaxing = percent <= 50;
-  const ombreStart = isWaxing ? 0 : (percent - 50) * 2;
-  const ombreEnd = isWaxing ? percent * 2 : 100;
 
-  luneElement.style.setProperty('--ombre-cote', isWaxing ? 'left' : 'right');
-  luneElement.style.setProperty('--ombre-start', `${ombreStart}%`);
-  luneElement.style.setProperty('--ombre-end', `${ombreEnd}%`);
+/**
+ * Met à jour le widget lunaire selon le thème actif
+ */
+export function updateLunarWidget(theme) {
+  const existing = document.getElementById('lune-widget');
+  if (existing) existing.remove();
 
-  const wrapper = luneElement.parentElement;
-  if (wrapper) {
-    if (percent <= 2) {
-      wrapper.classList.add("lune-nouvelle");
-    } else {
-      wrapper.classList.remove("lune-nouvelle");
-    }
+  if (theme === 'theme-lunaire') {
+    setTimeout(() => {
+      const phase = getMoonPhaseIndex();
+      const lune = document.createElement('div');
+      lune.id = 'lune-widget';
+      lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
+      document.body.appendChild(lune);
+
+      applySavedLuneSize(lune);
+      setupLuneClickCycle(lune);
+      followScrollLune(lune);
+    }, 50);
   }
 }
 
-// Injection du widget lunaire (auto si theme lunaire)
-function injectLunarWidgetIfNeeded() {
-  const theme = document.body.className;
-  if (!theme.includes("theme-lunaire")) return;
-
-  if (document.getElementById('lune-widget')) return;
-
-  setTimeout(() => {
-    const wrapper = document.createElement('div');
-    wrapper.id = 'lune-widget';
-
-    const lune = document.createElement('div');
-    lune.classList.add('lune-img');
-    lune.style.backgroundImage = `url('/img/lune/lune-pleine.png')`;
-    wrapper.appendChild(lune);
-    document.body.appendChild(wrapper);
-
-    const pourcentage = getMoonPhasePercentage();
-    applyLunarShadow(lune, pourcentage);
-
-    applySavedLuneSize(wrapper);
-    setupLuneClickCycle(wrapper);
-    followScrollLune(wrapper);
-  }, 50);
-}
-
-// Suit le scroll
-function followScrollLune(lune) {
+/**
+ * Fait suivre la lune au scroll, quelle que soit sa taille
+ */
+export function followScrollLune(lune) {
   if (!lune) return;
+
   const updatePosition = () => {
-    const wrapper = document.getElementById('lune-widget');
-    if (!wrapper) return;
+    const lune = document.getElementById('lune-widget');
+    if (!lune) return;
+
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
-    const luneHeight = wrapper.offsetHeight;
+    const luneHeight = lune.offsetHeight;
     const top = scrollTop + windowHeight - luneHeight - 20;
 
-    wrapper.style.position = 'absolute';
-    wrapper.style.top = `${top}px`;
-    wrapper.style.left = 'unset';
-    wrapper.style.bottom = 'unset';
+    lune.style.position = 'absolute';
+    lune.style.top = `${top}px`;
 
-    if (wrapper.classList.contains('lune-super')) {
-      wrapper.style.right = '-200px';
+    // Ajustement latéral : normale vs super
+    if (lune.classList.contains('lune-super')) {
+      lune.style.right = '-200px';
     } else {
-      wrapper.style.right = '20px';
+      lune.style.right = '20px';
     }
+
+    lune.style.left = 'unset';
+    lune.style.bottom = 'unset';
   };
 
   window.removeEventListener('scroll', followScrollLune._handler);
@@ -87,43 +71,44 @@ function followScrollLune(lune) {
   updatePosition();
 }
 
-// Taille sauvegardée
-function applySavedLuneSize(wrapper) {
-  if (!wrapper || window.innerWidth <= 1024) return;
+/**
+ * Applique la taille sauvegardée de la lune
+ */
+function applySavedLuneSize(lune) {
+  if (!lune || window.innerWidth <= 1024) return;
 
   const tailles = ["150px", "250px", "350px", "500px"];
   const classes = ["", "", "", "lune-super"];
   const index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
-  wrapper.style.width = tailles[index];
-  wrapper.style.height = tailles[index];
-  wrapper.classList.remove("lune-super");
-  if (classes[index]) wrapper.classList.add(classes[index]);
+  lune.style.width = tailles[index];
+  lune.style.height = tailles[index];
+  lune.classList.remove("lune-super");
+  if (classes[index]) lune.classList.add(classes[index]);
 
-  followScrollLune(wrapper);
+  followScrollLune(lune);
 }
 
-// Cycle de clics
-function setupLuneClickCycle(wrapper) {
-  if (!wrapper || window.innerWidth <= 1024) return;
+/**
+ * Gère les clics pour changer la taille de la lune
+ */
+function setupLuneClickCycle(lune) {
+  if (!lune || window.innerWidth <= 1024) return;
 
   const tailles = ["150px", "250px", "350px", "500px"];
   const classes = ["", "", "", "lune-super"];
   let index = parseInt(localStorage.getItem("luneTailleIndex")) || 1;
 
-  wrapper.style.cursor = 'pointer';
+  lune.style.cursor = 'pointer';
 
-  wrapper.addEventListener('click', () => {
+  lune.addEventListener('click', () => {
     index = (index + 1) % tailles.length;
-    wrapper.style.width = tailles[index];
-    wrapper.style.height = tailles[index];
-    wrapper.classList.remove("lune-super");
-    if (classes[index]) wrapper.classList.add(classes[index]);
+    lune.style.width = tailles[index];
+    lune.style.height = tailles[index];
+    lune.classList.remove("lune-super");
+    if (classes[index]) lune.classList.add(classes[index]);
 
     localStorage.setItem("luneTailleIndex", index);
-    followScrollLune(wrapper);
+    followScrollLune(lune);
   });
 }
-
-// Lancement auto au chargement
-document.addEventListener("DOMContentLoaded", injectLunarWidgetIfNeeded);
