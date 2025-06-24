@@ -1,26 +1,34 @@
 /* 🌙 lune.css – Styles du widget lunaire dynamique */
 
 html, body {
-  overflow-x: hidden;
+  overflow-x: hidden; /* Évite l’apparition de la barre horizontale */
 }
 
+/* Conteneur de la lune */
 body.theme-lunaire #lune-widget {
   position: absolute;
   right: 20px;
   bottom: 20px;
   width: 120px;
   height: 120px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  opacity: 0.8;
-  pointer-events: none;
+  border-radius: 50%;
+  overflow: hidden;
   z-index: 10;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  pointer-events: none;
   transition: all 0.5s ease-in-out;
   will-change: top, right;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
 
-  /* 🌓 Masque dynamique */
+/* Image lunaire avec masque dynamique */
+body.theme-lunaire .lune-img {
+  width: 100%;
+  height: 100%;
+  background-image: url('/img/lune/lune-pleine.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
   mask-image: linear-gradient(
     to var(--ombre-cote, left),
     rgba(0, 0, 0, 1) var(--ombre-start, 0%),
@@ -31,6 +39,8 @@ body.theme-lunaire #lune-widget {
     rgba(0, 0, 0, 1) var(--ombre-start, 0%),
     rgba(0, 0, 0, 0) var(--ombre-end, 100%)
   );
+
+  transition: mask-image 0.5s ease, -webkit-mask-image 0.5s ease;
 }
 
 /* 🌕 Super Lune */
@@ -39,25 +49,19 @@ body.theme-lunaire #lune-widget.lune-super {
   height: 480px;
   bottom: -120px;
   right: -200px;
-  opacity: 0.9;
   pointer-events: auto;
   cursor: pointer;
-  z-index: 10;
+  filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.3));
 }
 
-/* 🌑 Nouvelle Lune */
-body.theme-lunaire #lune-widget.lune-nouvelle {
+/* 🌑 Nouvelle Lune – très atténuée */
+body.theme-lunaire #lune-widget.lune-nouvelle .lune-img {
   opacity: 0.05;
   filter: brightness(0.2) contrast(0.8);
   box-shadow: none;
 }
 
-/* 🧹 SUPPRIMÉ car inutile maintenant : ::before (effet redondant) */
-/*
-#lune-widget::before { ... }
-*/
-
-/* Interactivité desktop uniquement */
+/* Interactivité uniquement sur desktop */
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
     pointer-events: auto;
