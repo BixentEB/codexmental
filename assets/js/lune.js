@@ -1,4 +1,3 @@
-
 // ====================================================================================================
 // lune.js – Gestion du widget lunaire dynamique (Vincent x IA – Codex Mental)
 // ====================================================================================================
@@ -32,6 +31,35 @@ function applyLunarShadow(luneElement, phasePercentage) {
       wrapper.classList.remove("lune-nouvelle");
     }
   }
+
+  appliquerMasqueVisuelLunaire(luneElement, percent);
+}
+
+// Injecte un masque visuel en dégradé selon le pourcentage lunaire
+function appliquerMasqueVisuelLunaire(luneElement, percent) {
+  let masque = luneElement.querySelector('.masque-lunaire');
+  if (!masque) {
+    masque = document.createElement('div');
+    masque.className = 'masque-lunaire';
+    luneElement.appendChild(masque);
+  }
+
+  const inverse = percent > 50;
+  const valeur = inverse ? 100 - percent : percent;
+
+  masque.style.cssText = `
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    background: radial-gradient(
+      circle at ${inverse ? '70%' : '30%'} center,
+      rgba(0, 0, 0, 0) ${valeur}%,
+      rgba(0, 0, 0, 0.85) ${valeur + 5}%,
+      rgba(0, 0, 0, 1) 100%
+    );
+  `;
 }
 
 /**
