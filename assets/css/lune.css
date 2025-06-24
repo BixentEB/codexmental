@@ -31,19 +31,21 @@ body.theme-lunaire #lune-widget.lune-nouvelle {
 }
 
 /* === 🌘 Ombre dynamique selon phase – injectée via JS (avec variables CSS) === */
+/* === 🌘 Ombre dynamique selon phase – rectangle ajusté === */
 #lune-widget::before {
   content: "";
   position: absolute;
-  inset: 0;
+  width: var(--ombre-width, 50%);
+  height: 100%;
+  top: 0;
+  left: var(--ombre-offset, 0%);
+  background: rgba(0, 0, 0, 0.92);
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(
-    circle at var(--ombre-cote, left),
-    rgba(0, 0, 0, 0.95) var(--ombre-start, 49%),
-    transparent var(--ombre-end, 51%)
-  );
   transition: all 0.5s ease;
+  z-index: 2;
 }
+
 
 
 
