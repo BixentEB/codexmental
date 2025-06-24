@@ -2,16 +2,33 @@
 // lune.js – Gestion du widget lunaire dynamique - nouvelle correction intégrant nouvel index lunaire
 // ====================================================================================================
 
-/**
- * Calcule l’index de phase lunaire (28 à 30 phases)
- * Basé sur la date de référence du 1er janvier 2001
- */
+// Calcule le pourcentage précis de lunaison (0 à 100%) - Basé sur la date de référence du 1er janvier 2001
 function getMoonPhasePercentage(date = new Date()) {
   const base = new Date('2001-01-01T00:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = 0.20439731 + diff * 0.03386319269;
   return (lunations % 1) * 100; // pourcentage de 0 à 100
 }
+
+// Applique un masque d’ombre CSS en fonction de la lunaison
+// 🛰️ Collaboration Vincent x IA (Chatgpt) – Codex Mental
+// 💡 99.99 % de bon code, 0.01 % d’ombre au tableau. Mais on la corrige vite. ;)
+function applyLunarShadow(luneElement, phasePercentage) {
+  if (!luneElement) return;
+
+  const percent = Math.round(phasePercentage);
+
+  // Lune croissante = 0% → 50% (croissant visible à DROITE)
+  // Lune décroissante = 50% → 100% (croissant visible à GAUCHE)
+  const isWaxing = percent <= 50;
+  const ombreStart = isWaxing ? 0 : (percent - 50) * 2;
+  const ombreEnd = isWaxing ? percent * 2 : 100;
+
+  luneElement.style.setProperty('--ombre-cote', isWaxing ? 'left' : 'right');
+  luneElement.style.setProperty('--ombre-start', `${ombreStart}%`);
+  luneElement.style.setProperty('--ombre-end', `${ombreEnd}%`);
+}
+
 
 
 /**
@@ -23,11 +40,14 @@ export function updateLunarWidget(theme) {
 
   if (theme === 'theme-lunaire') {
     setTimeout(() => {
-      const phase = getMoonPhaseIndex();
       const lune = document.createElement('div');
       lune.id = 'lune-widget';
-      lune.style.backgroundImage = `url('/img/lune/lune-${phase}.png')`;
+      lune.style.backgroundImage = `url('/img/lune/lune-pleine.png')`;
       document.body.appendChild(lune);
+
+      const pourcentage = getMoonPhasePercentage();
+      applyLunarShadow(lune, pourcentage);
+
 
       applySavedLuneSize(lune);
       setupLuneClickCycle(lune);
