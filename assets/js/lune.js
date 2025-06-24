@@ -1,26 +1,28 @@
 // ====================================================================================================
 // lune.js – Widget lunaire dynamique (Vincent x IA – Codex Mental)
-// Version avec orientation du croissant corrigée (data-phase = waxing|waning)
+// Version sécurisée – Simulation réaliste + orientation correcte
 // ====================================================================================================
 
 /**
  * 📆 Données lunaires : illumination et sens (croissante/décroissante)
  */
 function getMoonData(date = new Date()) {
-  const base = new Date('2024-01-11T11:57:00Z');
+  const base = new Date('2024-01-11T11:57:00Z'); // Nouvelle lune réelle
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
   const phase = lunations % 1;
   const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
-  const isWaxing = phase < 0.5;
+  const isWaxing = phase < 0.5; // avant pleine lune
+
   return {
     illumination: illumination * 100,
-    isWaxing
+    isWaxing,
+    phase
   };
 }
 
 /**
- * 🌒 Applique l’ombre CSS + oriente correctement selon phase
+ * 🌒 Applique l’ombre CSS réaliste selon illumination et sens
  */
 function applyLunarShadow(luneElement) {
   if (!luneElement) return;
@@ -28,9 +30,8 @@ function applyLunarShadow(luneElement) {
   const { illumination, isWaxing } = getMoonData();
   const rounded = Math.round(illumination);
 
-  // Ombre fine pour croissant
   const ombreWidth = `${100 - rounded}%`;
-  const ombreOffset = isWaxing ? `0%` : `${rounded}%`;
+  const ombreOffset = isWaxing ? `${100 - rounded}%` : `0%`;
 
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
@@ -60,11 +61,6 @@ export function updateLunarWidget(theme) {
 
   const lune = document.createElement('div');
   lune.id = 'lune-widget';
-
-  // Ombre dynamique ajoutée ici (avant tout)
-  const ombre = document.createElement('div');
-  ombre.className = 'ombre-lunaire';
-  lune.appendChild(ombre);
 
   if (!document.body) return;
   document.body.appendChild(lune);
