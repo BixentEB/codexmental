@@ -1,6 +1,6 @@
 // ====================================================================================================
 // lune.js – Widget lunaire dynamique (Vincent x IA – Codex Mental)
-// Version sécurisée – Simulation réaliste + orientation correcte
+// Version avec orientation du croissant corrigée (data-phase = waxing|waning)
 // ====================================================================================================
 
 /**
@@ -20,7 +20,7 @@ function getMoonData(date = new Date()) {
 }
 
 /**
- * 🌒 Applique l’ombre CSS réaliste selon illumination et sens
+ * 🌒 Applique l’ombre CSS + oriente correctement selon phase
  */
 function applyLunarShadow(luneElement) {
   if (!luneElement) return;
@@ -60,6 +60,11 @@ export function updateLunarWidget(theme) {
 
   const lune = document.createElement('div');
   lune.id = 'lune-widget';
+
+  // Ombre dynamique ajoutée ici (avant tout)
+  const ombre = document.createElement('div');
+  ombre.className = 'ombre-lunaire';
+  lune.appendChild(ombre);
 
   if (!document.body) return;
   document.body.appendChild(lune);
