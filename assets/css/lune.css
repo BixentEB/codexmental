@@ -4,7 +4,7 @@ html, body {
   overflow-x: hidden; /* Évite l’apparition de la barre horizontale */
 }
 
-/* Conteneur de la lune */
+/* Conteneur lunaire */
 body.theme-lunaire #lune-widget {
   position: absolute;
   right: 20px;
@@ -20,7 +20,7 @@ body.theme-lunaire #lune-widget {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
 }
 
-/* Image lunaire avec masque dynamique */
+/* Image de la lune */
 body.theme-lunaire .lune-img {
   width: 100%;
   height: 100%;
@@ -28,38 +28,31 @@ body.theme-lunaire .lune-img {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
+  z-index: 1;
+}
 
-  mask-image: linear-gradient(
-    to var(--ombre-cote, left),
-    rgba(0, 0, 0, 1) var(--ombre-start, 0%),
+/* Ombre dynamique réaliste via ::before */
+body.theme-lunaire .lune-img::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--ombre-cote, left),
+    rgba(0, 0, 0, 1) var(--ombre-start, 50%),
     rgba(0, 0, 0, 0) var(--ombre-end, 100%)
   );
-  -webkit-mask-image: linear-gradient(
-    to var(--ombre-cote, left),
-    rgba(0, 0, 0, 1) var(--ombre-start, 0%),
-    rgba(0, 0, 0, 0) var(--ombre-end, 100%)
-  );
-
-  transition: mask-image 0.5s ease, -webkit-mask-image 0.5s ease;
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
+  transition: all 0.5s ease;
 }
 
-/* 🌕 Super Lune */
-body.theme-lunaire #lune-widget.lune-super {
-  width: 480px;
-  height: 480px;
-  bottom: -120px;
-  right: -200px;
-  pointer-events: auto;
-  cursor: pointer;
-  filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.3));
+/* Nouvelle lune visuellement très sombre */
+body.theme-lunaire #lune-widget.lune-nouvelle .lune-img::before {
+  background: rgba(0, 0, 0, 0.9);
 }
 
-/* 🌑 Nouvelle Lune – très atténuée */
-body.theme-lunaire #lune-widget.lune-nouvelle .lune-img {
-  opacity: 0.05;
-  filter: brightness(0.2) contrast(0.8);
-  box-shadow: none;
-}
 
 /* Interactivité uniquement sur desktop */
 @media screen and (min-width: 1025px) {
