@@ -4,11 +4,12 @@
 // ====================================================================================================
 
 function getMoonPhasePercentage(date = new Date()) {
-  const base = new Date('2024-01-11T11:57:00Z'); // 🌑 Dernière référence nouvelle lune réelle
+  const base = new Date('2001-01-01T00:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = 0.20439731 + diff * 0.03386319269;
   return (lunations % 1) * 100;
 }
+
 
 
 function applyLunarShadow(luneElement, phasePercentage) {
