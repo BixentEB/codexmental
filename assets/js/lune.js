@@ -1,40 +1,69 @@
-// lune-widget.js
+// ====================================================================================================
+// lune.js – Widget lunaire dynamique injecté (Codex Mental, Vincent x IA)
+// ====================================================================================================
 
-/**
- * Calcule le pourcentage de face éclairée de la Lune
- */
+// Calcule le pourcentage précis de lunaison (0 à 100 %)
 function getMoonPhasePercentage(date = new Date()) {
-  const base = new Date('2024-01-11T11:57:00Z'); // 🌑 Nouvelle lune
+  const base = new Date('2001-01-01T00:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
-  const lunations = diff / 29.530588853;
-  const phase = lunations % 1;
-  return Math.round(100 * (1 - Math.cos(phase * 2 * Math.PI)) / 2);
+  const lunations = 0.20439731 + diff * 0.03386319269;
+  return (lunations % 1) * 100;
 }
 
-function getPhaseFraction(date = new Date()) {
-  const base = new Date('2024-01-11T11:57:00Z');
-  const diff = (date - base) / (1000 * 60 * 60 * 24);
-  const lunations = diff / 29.530588853;
-  return lunations % 1;
-}
-
-function applyLunarShadow(luneElement, percent, fraction) {
+// Applique les variables CSS pour simuler l’éclairage lunaire
+function applyLunarShadow(luneElement, phasePercentage) {
   if (!luneElement) return;
+  const percent = Math.round(phasePercentage);
+  const isWaxing = percent <= 50;
+  const ombreStart = isWaxing ? 0 : (percent - 50) * 2;
+  const ombreEnd = isWaxing ? percent * 2 : 100;
 
-  const isWaxing = fraction < 0.5;
-  const illum = 100 - percent;
-
-  luneElement.style.setProperty('--illum', `${illum}%`);
-  luneElement.style.setProperty('--side', isWaxing ? '0%' : 'auto');
+  luneElement.style.setProperty('--ombre-cote', isWaxing ? 'left' : 'right');
+  luneElement.style.setProperty('--ombre-start', `${ombreStart}%`);
+  luneElement.style.setProperty('--ombre-end', `${ombreEnd}%`);
 
   const wrapper = luneElement.parentElement;
-  if (wrapper) wrapper.classList.toggle("lune-nouvelle", percent <= 2);
+  if (wrapper) {
+    if (percent <= 2) {
+      wrapper.classList.add("lune-nouvelle");
+    } else {
+      wrapper.classList.remove("lune-nouvelle");
+    }
+  }
 }
 
-function followScrollLune(wrapper) {
-  if (!wrapper) return;
+// Injection du widget lunaire (auto si theme lunaire)
+function injectLunarWidgetIfNeeded() {
+  const theme = document.body.className;
+  if (!theme.includes("theme-lunaire")) return;
 
-  const handler = () => {
+  if (document.getElementById('lune-widget')) return;
+
+  setTimeout(() => {
+    const wrapper = document.createElement('div');
+    wrapper.id = 'lune-widget';
+
+    const lune = document.createElement('div');
+    lune.classList.add('lune-img');
+    lune.style.backgroundImage = `url('/img/lune/lune-pleine.png')`;
+    wrapper.appendChild(lune);
+    document.body.appendChild(wrapper);
+
+    const pourcentage = getMoonPhasePercentage();
+    applyLunarShadow(lune, pourcentage);
+
+    applySavedLuneSize(wrapper);
+    setupLuneClickCycle(wrapper);
+    followScrollLune(wrapper);
+  }, 50);
+}
+
+// Suit le scroll
+function followScrollLune(lune) {
+  if (!lune) return;
+  const updatePosition = () => {
+    const wrapper = document.getElementById('lune-widget');
+    if (!wrapper) return;
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const luneHeight = wrapper.offsetHeight;
@@ -42,15 +71,23 @@ function followScrollLune(wrapper) {
 
     wrapper.style.position = 'absolute';
     wrapper.style.top = `${top}px`;
-    wrapper.style.right = wrapper.classList.contains('lune-super') ? '-200px' : '20px';
+    wrapper.style.left = 'unset';
+    wrapper.style.bottom = 'unset';
+
+    if (wrapper.classList.contains('lune-super')) {
+      wrapper.style.right = '-200px';
+    } else {
+      wrapper.style.right = '20px';
+    }
   };
 
   window.removeEventListener('scroll', followScrollLune._handler);
-  window.addEventListener('scroll', handler);
-  followScrollLune._handler = handler;
-  handler();
+  window.addEventListener('scroll', updatePosition);
+  followScrollLune._handler = updatePosition;
+  updatePosition();
 }
 
+// Taille sauvegardée
 function applySavedLuneSize(wrapper) {
   if (!wrapper || window.innerWidth <= 1024) return;
 
@@ -66,6 +103,7 @@ function applySavedLuneSize(wrapper) {
   followScrollLune(wrapper);
 }
 
+// Cycle de clics
 function setupLuneClickCycle(wrapper) {
   if (!wrapper || window.innerWidth <= 1024) return;
 
@@ -87,31 +125,5 @@ function setupLuneClickCycle(wrapper) {
   });
 }
 
-/**
- * Fonction principale appelée par le thème
- */
-export function updateLunarWidget(theme) {
-  const existing = document.getElementById('lune-widget');
-  if (existing) existing.remove();
-
-  if (theme !== 'theme-lunaire') return;
-
-  setTimeout(() => {
-    const wrapper = document.createElement('div');
-    wrapper.id = 'lune-widget';
-
-    const lune = document.createElement('div');
-    lune.classList.add('lune-img');
-    lune.style.backgroundImage = `url('/img/lune/lune-pleine.png')`;
-
-    wrapper.appendChild(lune);
-    document.body.appendChild(wrapper);
-
-    const percent = getMoonPhasePercentage();
-    const fraction = getPhaseFraction();
-    applyLunarShadow(lune, percent, fraction);
-    applySavedLuneSize(wrapper);
-    setupLuneClickCycle(wrapper);
-    followScrollLune(wrapper);
-  }, 50);
-}
+// Lancement auto au chargement
+document.addEventListener("DOMContentLoaded", injectLunarWidgetIfNeeded);
