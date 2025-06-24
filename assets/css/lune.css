@@ -1,7 +1,7 @@
 /* 🌙 lune.css – Styles du widget lunaire dynamique */
 
 html, body {
-  overflow-x: hidden; /* Évite l’apparition de la barre horizontale */
+  overflow-x: hidden;
 }
 
 /* Conteneur lunaire */
@@ -32,29 +32,41 @@ body.theme-lunaire .lune-img {
   z-index: 1;
 }
 
-/* Ombre dynamique réaliste via ::before */
+/* Masque progressif en opacité (ombrage réaliste) */
 body.theme-lunaire .lune-img::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at var(--ombre-cote, left),
-    rgba(0, 0, 0, 1) var(--ombre-start, 50%),
-    rgba(0, 0, 0, 0) var(--ombre-end, 100%)
-  );
   border-radius: 50%;
   z-index: 2;
   pointer-events: none;
   transition: all 0.5s ease;
+
+  background: radial-gradient(
+    circle at var(--ombre-cote, left),
+    rgba(0, 0, 0, var(--ombre-opacity, 0.7)) var(--ombre-start, 30%),
+    rgba(0, 0, 0, 0) var(--ombre-end, 100%)
+  );
 }
 
-/* Nouvelle lune visuellement très sombre */
+/* Nouvelle lune — très sombre */
 body.theme-lunaire #lune-widget.lune-nouvelle .lune-img::before {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.92);
 }
 
+/* Super Lune */
+body.theme-lunaire #lune-widget.lune-super {
+  width: 480px;
+  height: 480px;
+  bottom: -120px;
+  right: -200px;
+  opacity: 0.9;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 10;
+}
 
-/* Interactivité uniquement sur desktop */
+/* Desktop : clics activés */
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
     pointer-events: auto;
