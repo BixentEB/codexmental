@@ -27,6 +27,13 @@ function applyLunarShadow(luneElement, phasePercentage) {
   luneElement.style.setProperty('--ombre-cote', isWaxing ? 'left' : 'right');
   luneElement.style.setProperty('--ombre-start', `${ombreStart}%`);
   luneElement.style.setProperty('--ombre-end', `${ombreEnd}%`);
+
+  if (percent <= 2) {
+  luneElement.classList.add("lune-nouvelle");
+} else {
+  luneElement.classList.remove("lune-nouvelle");
+}
+
 }
 
 
