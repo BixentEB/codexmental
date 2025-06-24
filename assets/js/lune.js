@@ -11,6 +11,8 @@ function getMoonPhasePercentage(date = new Date()) {
 }
 
 // Applique un masque d’ombre CSS en fonction de la lunaison
+// 🛰️ Collaboration Vincent x IA (Chatgpt) – Codex Mental
+// 💡 99.99 % de bon code, 0.01 % d’ombre au tableau. Mais on la corrige vite. ;)
 function applyLunarShadow(luneElement, phasePercentage) {
   if (!luneElement) return;
 
