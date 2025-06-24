@@ -22,7 +22,7 @@ function getMoonData(date = new Date()) {
 }
 
 /**
- * 🌒 Applique l’ombre CSS réaliste selon illumination et sens
+ * 🌒 Applique l'ombre CSS réaliste selon illumination et sens
  */
 function applyLunarShadow(luneElement) {
   if (!luneElement) return;
@@ -31,7 +31,11 @@ function applyLunarShadow(luneElement) {
   const rounded = Math.round(illumination);
 
   const ombreWidth = `${100 - rounded}%`;
-  const ombreOffset = isWaxing ? `${100 - rounded}%` : `0%`;
+  
+  // CORRECTION : Inversion de la logique d'offset
+  // Lune croissante (premier croissant) : ombre à gauche, croissant visible à droite
+  // Lune décroissante (dernier croissant) : ombre à droite, croissant visible à gauche
+  const ombreOffset = isWaxing ? `0%` : `${rounded}%`;
 
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
