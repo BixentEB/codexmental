@@ -1,11 +1,11 @@
 /* 🌙 lune.css – Styles du widget lunaire dynamique (Codex Mental – Vincent x IA) */
 
-/* === 🌌 Base anti débordement === */
+/* === 🌌 Anti débordement horizontal global === */
 html, body {
   overflow-x: hidden;
 }
 
-/* === 🌓 Lune standard === */
+/* === 🌕 Lune standard – Image + ombre interne === */
 body.theme-lunaire #lune-widget {
   position: absolute;
   right: 20px;
@@ -17,6 +17,7 @@ body.theme-lunaire #lune-widget {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  overflow: hidden;
   pointer-events: none;
   opacity: 0.85;
   z-index: 20;
@@ -24,33 +25,38 @@ body.theme-lunaire #lune-widget {
   transition: all 0.5s ease;
 }
 
-/* === 🌑 Nouvelle lune (optionnel : rendu sombre total) === */
+/* === 🌑 Nouvelle lune – pas d’image, disque noir === */
 body.theme-lunaire #lune-widget.lune-nouvelle {
   background-image: none;
   background-color: black;
 }
 
-/* === 🌘 Ombre dynamique selon phase – injectée via JS (avec variables CSS) === */
-/* === 🌘 Ombre dynamique selon phase – rectangle ajusté === */
-#lune-widget::before {
+/* === 🌘 Masque d’ombre injecté par JS – style général === */
+#lune-widget .ombre-lunaire {
   content: "";
   position: absolute;
-  width: var(--ombre-width, 50%);
-  height: 100%;
   top: 0;
-  left: var(--ombre-offset, 0%);
-  background: rgba(0, 0, 0, 0.92);
-  border-radius: 50%;
-  pointer-events: none;
+  bottom: 0;
+  width: 50%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.95) 60%, transparent 100%);
   transition: all 0.5s ease;
-  z-index: 2;
+  z-index: 5;
+  pointer-events: none;
 }
 
+/* === 🌒 Ombre à gauche (lune croissante) === */
+#lune-widget[data-phase="waxing"] .ombre-lunaire {
+  left: 0;
+  transform: scaleX(1);
+}
 
+/* === 🌖 Ombre à droite (lune décroissante) === */
+#lune-widget[data-phase="waning"] .ombre-lunaire {
+  right: 0;
+  transform: scaleX(-1);
+}
 
-
-
-/* === 🌕 Super lune – taille géante et décalée (desktop only) === */
+/* === 🌕 Super lune – version géante (desktop) === */
 body.theme-lunaire #lune-widget.lune-super {
   width: 480px;
   height: 480px;
@@ -61,7 +67,7 @@ body.theme-lunaire #lune-widget.lune-super {
   cursor: pointer;
 }
 
-/* === 💻 Interactivité activée uniquement sur grands écrans === */
+/* === 💻 Activation des interactions uniquement sur grands écrans === */
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
     pointer-events: auto;
