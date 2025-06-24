@@ -15,14 +15,18 @@ function applyLunarShadow(luneElement, phasePercentage) {
   if (!luneElement) return;
 
   const percent = Math.round(phasePercentage);
-  const isWaxing = percent < 50; // Lune croissante
-  const ombreStart = isWaxing ? 100 - percent * 2 : 0;
-  const ombreEnd = isWaxing ? 100 : (percent - 50) * 2;
+
+  // Lune croissante = 0% → 50% (croissant visible à DROITE)
+  // Lune décroissante = 50% → 100% (croissant visible à GAUCHE)
+  const isWaxing = percent <= 50;
+  const ombreStart = isWaxing ? 0 : (percent - 50) * 2;
+  const ombreEnd = isWaxing ? percent * 2 : 100;
 
   luneElement.style.setProperty('--ombre-cote', isWaxing ? 'left' : 'right');
   luneElement.style.setProperty('--ombre-start', `${ombreStart}%`);
   luneElement.style.setProperty('--ombre-end', `${ombreEnd}%`);
 }
+
 
 
 /**
