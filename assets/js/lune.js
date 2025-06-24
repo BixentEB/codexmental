@@ -18,7 +18,6 @@ function applyLunarShadow(luneElement, phasePercentage) {
   const isWaxing = percent <= 50;
   const lightPercent = isWaxing ? percent * 2 : (100 - percent) * 2;
 
-  // Création d’un masque radial directionnel simulant l’ombre
   const gradient = isWaxing
     ? `linear-gradient(to left, black ${100 - lightPercent}%, transparent ${100 - lightPercent}%)`
     : `linear-gradient(to right, black ${100 - lightPercent}%, transparent ${100 - lightPercent}%)`;
@@ -30,7 +29,6 @@ function applyLunarShadow(luneElement, phasePercentage) {
   luneElement.style.webkitMaskSize = "cover";
   luneElement.style.maskSize = "cover";
 
-  // Classe optionnelle pour la nouvelle lune
   const wrapper = luneElement.parentElement;
   if (wrapper) {
     if (percent <= 2) {
@@ -39,37 +37,6 @@ function applyLunarShadow(luneElement, phasePercentage) {
       wrapper.classList.remove("lune-nouvelle");
     }
   }
-}
-
-
-  appliquerMasqueVisuelLunaire(luneElement, percent);
-}
-
-// Injecte un masque visuel en dégradé selon le pourcentage lunaire
-function appliquerMasqueVisuelLunaire(luneElement, percent) {
-  let masque = luneElement.querySelector('.masque-lunaire');
-  if (!masque) {
-    masque = document.createElement('div');
-    masque.className = 'masque-lunaire';
-    luneElement.appendChild(masque);
-  }
-
-  const inverse = percent > 50;
-  const valeur = inverse ? 100 - percent : percent;
-
-  masque.style.cssText = `
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    pointer-events: none;
-    mix-blend-mode: multiply;
-    background: radial-gradient(
-      circle at ${inverse ? '70%' : '30%'} center,
-      rgba(0, 0, 0, 0) ${valeur}%,
-      rgba(0, 0, 0, 0.85) ${valeur + 5}%,
-      rgba(0, 0, 0, 1) 100%
-    );
-  `;
 }
 
 /**
@@ -81,7 +48,6 @@ export function updateLunarWidget(theme) {
 
   if (theme === 'theme-lunaire') {
     setTimeout(() => {
-      // Création du conteneur et de l'image interne
       const wrapper = document.createElement('div');
       wrapper.id = 'lune-widget';
 
