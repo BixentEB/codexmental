@@ -30,14 +30,11 @@ function applyLunarShadow(luneElement) {
   const { illumination, isWaxing } = getMoonData();
   const rounded = Math.round(illumination);
 
-  // Variante gradient
-const ombreCote = isWaxing ? 'right' : 'left';
-const start = `${50 - illumination / 2}%`;
-const end = `${50 + illumination / 2}%`;
+  const ombreWidth = `${100 - rounded}%`;
+  const ombreOffset = isWaxing ? `${100 - rounded}%` : `0%`;
 
-luneElement.style.setProperty('--ombre-cote', ombreCote);
-luneElement.style.setProperty('--ombre-start', start);
-luneElement.style.setProperty('--ombre-end', end);
+  luneElement.style.setProperty('--ombre-width', ombreWidth);
+  luneElement.style.setProperty('--ombre-offset', ombreOffset);
 
   if (rounded <= 2) {
     luneElement.classList.add('lune-nouvelle');
