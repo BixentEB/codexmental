@@ -3,18 +3,13 @@
 // Version simplifiée avec ::after dynamique (inspiré de madsstoumann) – Juin 2025
 // ====================================================================================================
 
+// Calcule le pourcentage précis de lunaison (0 à 100 %) – depuis le 1er janvier 2001
 function getMoonPhasePercentage(date = new Date()) {
-  // 🌑 Base réelle : Nouvelle lune du 11 janvier 2024 à 11:57 UTC
-  const base = new Date('2024-01-11T11:57:00Z');
-  const diff = (date - base) / (1000 * 60 * 60 * 24); // jours depuis base
-  const lunations = diff / 29.530588853; // moyenne synodique
-  const phase = lunations % 1;
-
-  // 🌘 Retourne pourcentage de face éclairée (0 = nouvelle lune, 1 = pleine lune, puis retour à 0)
-  const illumination = Math.round(100 * (1 - Math.cos(phase * 2 * Math.PI)) / 2);
-  return illumination;
+  const base = new Date('2001-01-01T00:00:00Z');
+  const diff = (date - base) / (1000 * 60 * 60 * 24);
+  const lunations = 0.20439731 + diff * 0.03386319269;
+  return (lunations % 1) * 100;
 }
-
 
 // Applique les variables CSS pour simuler l’éclairage lunaire
 function applyLunarShadow(luneElement, phasePercentage) {
