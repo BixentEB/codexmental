@@ -1,5 +1,6 @@
 // ====================================================================================================
 // lune.js – Gestion du widget lunaire dynamique (Vincent x IA – Codex Mental)
+// Version simplifiée avec ::after dynamique (inspiré de madsstoumann) – Juin 2025
 // ====================================================================================================
 
 // Calcule le pourcentage précis de lunaison (0 à 100 %) – depuis le 1er janvier 2001
@@ -18,17 +19,11 @@ function applyLunarShadow(luneElement, phasePercentage) {
   const isWaxing = percent <= 50;
   const lightPercent = isWaxing ? percent * 2 : (100 - percent) * 2;
 
-  const gradient = isWaxing
-    ? `linear-gradient(to left, black ${100 - lightPercent}%, transparent ${100 - lightPercent}%)`
-    : `linear-gradient(to right, black ${100 - lightPercent}%, transparent ${100 - lightPercent}%)`;
+  // On injecte les variables CSS pour le ::after
+  luneElement.style.setProperty('--illum', `${100 - lightPercent}%`);
+  luneElement.style.setProperty('--side', isWaxing ? '0%' : 'auto');
 
-  luneElement.style.webkitMaskImage = gradient;
-  luneElement.style.maskImage = gradient;
-  luneElement.style.webkitMaskRepeat = "no-repeat";
-  luneElement.style.maskRepeat = "no-repeat";
-  luneElement.style.webkitMaskSize = "cover";
-  luneElement.style.maskSize = "cover";
-
+  // Classe spéciale si nouvelle lune
   const wrapper = luneElement.parentElement;
   if (wrapper) {
     if (percent <= 2) {
