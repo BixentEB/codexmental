@@ -7,17 +7,15 @@
  * 📆 Données lunaires : illumination et sens (croissante/décroissante)
  */
 function getMoonData(date = new Date()) {
-  const base = new Date('2024-01-11T11:57:00Z'); // Nouvelle lune réelle
+  const base = new Date('2024-01-11T11:57:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
   const phase = lunations % 1;
   const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
-  const isWaxing = phase < 0.5; // avant pleine lune
-
+  const isWaxing = phase < 0.5;
   return {
     illumination: illumination * 100,
-    isWaxing,
-    phase
+    isWaxing
   };
 }
 
@@ -30,8 +28,9 @@ function applyLunarShadow(luneElement) {
   const { illumination, isWaxing } = getMoonData();
   const rounded = Math.round(illumination);
 
+  // Ombre fine pour croissant
   const ombreWidth = `${100 - rounded}%`;
-  const ombreOffset = isWaxing ? `${100 - rounded}%` : `0%`;
+  const ombreOffset = isWaxing ? `0%` : `${rounded}%`;
 
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
