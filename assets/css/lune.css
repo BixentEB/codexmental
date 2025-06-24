@@ -31,19 +31,20 @@ body.theme-lunaire #lune-widget.lune-nouvelle {
 }
 
 /* === 🌘 Ombre dynamique selon phase – injectée via JS (avec variables CSS) === */
-body.theme-lunaire #lune-widget::before {
+#lune-widget::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--ombre-width, 50%);
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  inset: 0;
   border-radius: 50%;
-  transform: translateX(var(--ombre-offset, 0%));
-  transition: all 0.5s ease;
+  background: radial-gradient(
+    circle at var(--ombre-cote, left),
+    rgba(0, 0, 0, 0.92) var(--ombre-start, 49.8%),
+    transparent var(--ombre-end, 50%)
+  );
   pointer-events: none;
+  transition: all 0.5s ease;
 }
+
 
 /* === 🌕 Super lune – taille géante et décalée (desktop only) === */
 body.theme-lunaire #lune-widget.lune-super {
