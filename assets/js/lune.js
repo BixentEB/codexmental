@@ -1,17 +1,18 @@
-// ========================================================
-// lune.js – Gestion du widget lunaire dynamique
-// ========================================================
+// ====================================================================================================
+// lune.js – Gestion du widget lunaire dynamique - nouvelle correction intégrant nouvel index lunaire
+// ====================================================================================================
 
 /**
- * Calcule l’index de phase lunaire (0 à 7)
+ * Calcule l’index de phase lunaire (28 à 30 phases)
  * Basé sur la date de référence du 1er janvier 2001
  */
-function getMoonPhaseIndex(date = new Date()) {
+function getMoonPhasePercentage(date = new Date()) {
   const base = new Date('2001-01-01T00:00:00Z');
-  const diff = (date - base) / (1000 * 60 * 60 * 24); // jours
+  const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = 0.20439731 + diff * 0.03386319269;
-  return Math.floor((lunations % 1) * 8);
+  return (lunations % 1) * 100; // pourcentage de 0 à 100
 }
+
 
 /**
  * Met à jour le widget lunaire selon le thème actif
