@@ -22,13 +22,13 @@ function applyLunarShadow(luneElement, percent) {
   if (!luneElement) return;
 
   const illumination = Math.round(percent);
-  const isWaxing = illumination <= 50;
+  const isWaxing = (percent < 50); // Croissant si < 50%
 
   // Calcule les dimensions du masque (ombre) selon illumination
   const ombreWidth = `${100 - illumination}%`;
   const ombreOffset = isWaxing
-    ? `0%`
-    : `${illumination}%`; // phase décroissante : décale l’ombre
+  ? `${100 - illumination}%` // ombre à droite pour croissante
+  : `0%`;                     // ombre à gauche pour décroissante
 
   // Application dynamique
   luneElement.style.setProperty('--ombre-width', ombreWidth);
