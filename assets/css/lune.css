@@ -37,6 +37,18 @@ body.theme-lunaire #lune-widget.lune-super {
   transition: all 0.5s ease;
 }
 
+#lune-widget::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at var(--ombre-cote, left), rgba(0,0,0,1) var(--ombre-start, 50%), transparent var(--ombre-end, 50%));
+  border-radius: 50%;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+
 /* Interactivité uniquement sur desktop */
 @media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
