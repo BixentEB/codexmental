@@ -24,11 +24,6 @@ body.theme-lunaire #lune-widget {
   transition: all 0.5s ease;
 }
 
-/* === 🌑 Nouvelle lune (optionnel : rendu sombre total) === */
-body.theme-lunaire #lune-widget.lune-nouvelle {
-  background-image: none;
-  background-color: black;
-}
 
 /* === 🌘 Ombre dynamique selon phase – injectée via JS (avec variables CSS) === */
 /* === 🌘 Ombre dynamique selon phase – rectangle ajusté === */
@@ -45,9 +40,6 @@ body.theme-lunaire #lune-widget.lune-nouvelle {
   transition: all 0.5s ease;
   z-index: 2;
 }
-
-
-
 
 
 /* === 🌕 Super lune – taille géante et décalée (desktop only) === */
