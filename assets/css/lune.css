@@ -26,7 +26,6 @@ body.theme-lunaire #lune-widget {
 
 
 /* === 🌘 Ombre dynamique selon phase – injectée via JS (avec variables CSS) === */
-/* === 🌘 Ombre dynamique selon phase – rectangle ajusté === */
 #lune-widget::before {
   content: "";
   position: absolute;
@@ -36,12 +35,13 @@ body.theme-lunaire #lune-widget {
   left: var(--ombre-offset, 0%);
   background: rgba(0, 0, 0, 0.92);
   border-radius: 50%;
-  /* Essaye d'ajuster légèrement : */
+
+  /* ⚙️ Ajustement visuel pour atténuer le trait de démarcation */
   transform: scale(0.99);
+
   pointer-events: none;
   transition: all 0.5s ease;
   z-index: 2;
-}
 
   
 
