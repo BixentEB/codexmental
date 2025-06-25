@@ -39,12 +39,6 @@ function applyLunarShadow(luneElement) {
 
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
-
-  if (rounded <= 2) {
-    luneElement.classList.add('lune-nouvelle');
-  } else {
-    luneElement.classList.remove('lune-nouvelle');
-  }
 }
 
 /**
