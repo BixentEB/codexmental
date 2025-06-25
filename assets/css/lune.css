@@ -36,11 +36,14 @@ body.theme-lunaire #lune-widget {
   left: var(--ombre-offset, 0%);
   background: rgba(0, 0, 0, 0.92);
   border-radius: 50%;
+  /* Essaye d'ajuster légèrement : */
+  transform: scale(1.02); /* ou scale(0.98) */
   pointer-events: none;
   transition: all 0.5s ease;
   z-index: 2;
 }
 
+  
 
 /* === 🌕 Super lune – taille géante et décalée (desktop only) === */
 body.theme-lunaire #lune-widget.lune-super {
