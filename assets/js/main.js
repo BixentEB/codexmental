@@ -24,47 +24,47 @@ import { initEtoileFilante } from '/assets/js/etoile-filante.js';
   setTheme(savedTheme);
 })();
 
-// ✅ Définir le thème actuel globalement
-const currentTheme = document.body.className;
-
-// === 🌌 Activer les étoiles filantes (si thème stellaire)
+// === DOM Ready
 window.addEventListener("DOMContentLoaded", () => {
+  const currentTheme = document.body.className;
+
+  // 🌌 Étoile filante pour le thème stellaire
   if (currentTheme === "theme-stellaire") {
     console.log("🌌 Lancement de l’étoile filante...");
     initEtoileFilante();
   }
 
-  // === Import dynamique du widget lunaire (si thème lunaire)
-  if (currentTheme === 'theme-lunaire') {
+  // 🌙 Widget lunaire SVG pour thème lunaire
+  if (currentTheme === "theme-lunaire") {
     import('/assets/js/lune-svg.js')
       .then(module => {
-        console.log("[LUNE SVG] Chargement dynamique...");
+        console.log("🌙 Lune SVG chargée.");
         module.updateLunarWidget(currentTheme);
       })
       .catch(err => console.error("❌ Échec chargement lune-svg.js :", err));
   }
+
+  // 🧩 Injection menu & footer
+  injectPartial('menu-placeholder', '/menu.html');
+  injectPartial('footer-placeholder', '/footer.html');
+
+  // 📅 Charger événements astronomiques
+  fetch('/arc/events-astro-2025.json')
+    .then(res => res.json())
+    .then(data => afficherNoteAstro(data));
+
+  // 🛰️ Intro animée + badge astro
+  lancerIntroAstro();
+  activerBadgeAstro();
 });
 
 // === ⬆️ Bouton de retour en haut
 setupScrollButton();
-
-// === 🧩 Injection menu & footer
-injectPartial('menu-placeholder', '/menu.html');
-injectPartial('footer-placeholder', '/footer.html');
-
-// === 📅 Charger événements astronomiques
-fetch('/arc/events-astro-2025.json')
-  .then(res => res.json())
-  .then(data => afficherNoteAstro(data));
-
-// === 🛰️ Intro animée + badge astro
-lancerIntroAstro();
-activerBadgeAstro();
 
 // === 🍔 Log bouton burger (si présent)
 document.getElementById("menu-toggle")?.addEventListener("click", () => {
   console.log("Burger clicked");
 });
 
-// === 🌐 Rendre la fonction globale pour les boutons
+// === 🌐 Rendre globale la fonction de changement de thème
 window.setTheme = setTheme;
