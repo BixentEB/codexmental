@@ -42,8 +42,7 @@ body.theme-lunaire #lune-widget {
   pointer-events: none;
   transition: all 0.5s ease;
   z-index: 1;
-
-  
+}
 
 /* === 🌕 Super lune – taille géante et décalée (desktop only) === */
 body.theme-lunaire #lune-widget.lune-super {
@@ -86,10 +85,10 @@ body.theme-lunaire #lune-widget.lune-super {
 /* ✅ Lune compacte et fixe sur mobile */
 @media screen and (max-width: 768px) {
   #lune-widget {
-    width: 30vw;
-    height: 30vw;
-    max-width: 120px;
-    max-height: 120px;
+    width: 25vw;
+    height: 25vw;
+    max-width: 100px;
+    max-height: 100px;
     position: fixed;
     bottom: 12px;
     right: 12px;
@@ -102,4 +101,18 @@ body.theme-lunaire #lune-widget.lune-super {
   html, body {
     overflow-x: hidden !important;
   }
+}
+
+  html, body {
+    overflow-x: hidden !important;
+  }
+}
+
+
+/* ✅ N'affiche l'ombre que si le thème lunaire est actif */
+#lune-widget::before {
+  display: none;
+}
+body.theme-lunaire #lune-widget::before {
+  display: block;
 }
