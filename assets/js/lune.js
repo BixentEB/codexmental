@@ -37,12 +37,16 @@ function applyLunarShadow(luneElement) {
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
 
-  // ✨ Masquer totalement la lune si < 1%
+  
+ // ✨ Affichage réaliste même en dessous de 1% d’illumination
   if (illumination < 1) {
-    luneElement.classList.add('lune-nouvelle');
-  } else {
-    luneElement.classList.remove('lune-nouvelle');
-  }
+  luneElement.classList.add('lune-nouvelle');
+  luneElement.style.setProperty('--ombre-width', '98%'); // laisse un mini croissant
+  luneElement.style.setProperty('--ombre-offset', isWaxing ? '0%' : '2%');
+} else {
+  luneElement.classList.remove('lune-nouvelle');
+}
+
 
   // 🌌 Débogage (console)
   console.log(`[LUNE] Illumination: ${illumination.toFixed(1)}% | Phase: ${(rounded)}% | Croissante: ${isWaxing}`);
