@@ -64,24 +64,7 @@ body.theme-lunaire #lune-widget.lune-super {
   }
 }
 
-@media screen and (max-width: 768px) {
-  .lune {
-    width: 80vw;              /* Adapté à la taille de l’écran */
-    height: 80vw;
-    max-width: none;
-    max-height: none;
-    position: relative !important; /* évite les débordements */
-    margin: 2rem auto;
-    display: block;
-    transform: none;          /* au cas où une rotation serait définie */
-  }
 
-  /* Si la lune est dans un conteneur fixe */
-  .cadre-lune, .moon-wrapper {
-    width: 100% !important;
-    overflow: visible;
-    padding: 1rem;
-  }
 }
 
 /* ✅ PATCH INTERACTIVITÉ LUNAIRE PC + CORRECTION MASQUE */
@@ -103,15 +86,20 @@ body.theme-lunaire #lune-widget.lune-super {
 /* ✅ Lune compacte et fixe sur mobile */
 @media screen and (max-width: 768px) {
   #lune-widget {
-    width: 35vw;
-    height: 35vw;
-    max-width: none;
-    max-height: none;
+    width: 30vw;
+    height: 30vw;
+    max-width: 120px;
+    max-height: 120px;
     position: fixed;
     bottom: 12px;
     right: 12px;
     z-index: 100;
-    pointer-events: none;
+    pointer-events: none !important;
     opacity: 0.9;
+    transition: all 0.4s ease;
+  }
+
+  html, body {
+    overflow-x: hidden !important;
   }
 }
