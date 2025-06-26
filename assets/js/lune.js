@@ -7,13 +7,13 @@
  * 📆 Données lunaires : illumination et sens (croissante/décroissante)
  */
 function getMoonData(date = new Date()) {
-  // ✨ Nouvelle référence : Nouvelle lune du 6 juin 2025 à 12:38 UTC
-  const base = new Date('2025-06-06T12:38:00Z');
+  // Base révisée pour coller au premier croissant visible à 1-2%
+  const base = new Date('2024-01-11T07:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
   const phase = lunations % 1;
   const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
-  const isWaxing = phase < 0.5;
+  const isWaxing = phase < 0.5; // avant pleine lune
 
   return {
     illumination: illumination * 100,
@@ -37,12 +37,15 @@ function applyLunarShadow(luneElement) {
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
 
-  // ✨ Masque total si lune invisible – ajout de la classe CSS
+  // ✨ Masquer totalement la lune si < 1%
   if (illumination < 1) {
     luneElement.classList.add('lune-nouvelle');
   } else {
     luneElement.classList.remove('lune-nouvelle');
   }
+
+  // 🌌 Débogage (console)
+  console.log(`[LUNE] Illumination: ${illumination.toFixed(1)}% | Phase: ${(rounded)}% | Croissante: ${isWaxing}`);
 }
 
 /**
