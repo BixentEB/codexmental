@@ -7,7 +7,8 @@
  * 📆 Données lunaires : illumination et sens (croissante/décroissante)
  */
 function getMoonData(date = new Date()) {
-  const base = new Date('2024-01-11T07:00:00Z'); // test nouvelle référence ou 06h si besoin - ancienne 2024-01-11T11:57:00Z
+  // Base révisée pour coller au premier croissant visible à 1-2%
+  const base = new Date('2024-01-11T07:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
   const phase = lunations % 1;
@@ -22,7 +23,7 @@ function getMoonData(date = new Date()) {
 }
 
 /**
- * 🌒 Applique l'ombre CSS réaliste selon illumination et sens
+ * 🌓 Applique l'ombre CSS réaliste selon illumination et sens
  */
 function applyLunarShadow(luneElement) {
   if (!luneElement) return;
@@ -31,14 +32,17 @@ function applyLunarShadow(luneElement) {
   const rounded = Math.round(illumination);
 
   const ombreWidth = `${100 - rounded}%`;
-  
-  // CORRECTION : Inversion de la logique d'offset
-  // Lune croissante (premier croissant) : ombre à gauche, croissant visible à droite
-  // Lune décroissante (dernier croissant) : ombre à droite, croissant visible à gauche
   const ombreOffset = isWaxing ? `0%` : `${rounded}%`;
 
   luneElement.style.setProperty('--ombre-width', ombreWidth);
   luneElement.style.setProperty('--ombre-offset', ombreOffset);
+
+  // ✨ Optionnel : masquer totalement la lune si < 1%
+  if (illumination < 1) {
+    luneElement.classList.add('lune-nouvelle');
+  } else {
+    luneElement.classList.remove('lune-nouvelle');
+  }
 }
 
 /**
@@ -130,13 +134,12 @@ function setupLuneClickCycle(lune) {
   lune.style.cursor = 'pointer';
 
   lune.addEventListener('click', () => {
-    // Limite les tailles selon la taille d'écran
-    const maxIndex = window.innerWidth <= 568 ? 0 :      // Téléphone: 1 seule taille (150px)
-                     window.innerWidth <= 1024 ? 2 :     // Tablette: 3 tailles (150px, 250px, 350px)
-                     3;                                   // Desktop: toutes les tailles
+    const maxIndex = window.innerWidth <= 568 ? 0 :
+                     window.innerWidth <= 1024 ? 2 :
+                     3;
 
     index = (index + 1) % (maxIndex + 1);
-    
+
     lune.style.width = tailles[index];
     lune.style.height = tailles[index];
     lune.classList.remove('lune-super');
@@ -146,4 +149,3 @@ function setupLuneClickCycle(lune) {
     followScrollLune(lune);
   });
 }
-
