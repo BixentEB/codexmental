@@ -153,3 +153,10 @@ export function updateLunarWidget() {
   window.addEventListener('resize', followScrollLuneSVG);
   followScrollLuneSVG();
 }
+
+// ⏳ Magie du rafraîchissement horaire 
+setInterval(() => {
+  const { illumination, isWaxing } = getMoonData(new Date()); // Recalcule avec l'heure actuelle
+  setMoonPhaseSVG(illumination, isWaxing); // Met à jour le visuel
+  console.log("Lune rafraîchie à", new Date().toLocaleTimeString()); // Optionnel : vérifie dans la console
+}, 1 * 60 * 60 * 1000); // 1 x 60 minutes x 60 secondes x 1000 ms = 1 heure
