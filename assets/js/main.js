@@ -4,7 +4,6 @@
 
 // === 📦 Modules à effets de bord ===
 import '/assets/js/canvas.js';
-import '/assets/js/lune.js';
 import '/assets/js/theme-hours.js';
 import '/assets/js/theme-special.js';
 import '/assets/js/theme-cards.js';
@@ -59,5 +58,12 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 
 // === 🌐 Rendre la fonction globale pour les boutons
 window.setTheme = setTheme;
+
+// === Import Lune dynamique SVG 
+if (currentTheme === 'theme-lunaire') {
+  import('/assets/js/lune-svg.js').then(module => {
+    module.updateLunarWidget(currentTheme);
+  });
+}
 
 
