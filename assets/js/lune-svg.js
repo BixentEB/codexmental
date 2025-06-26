@@ -105,3 +105,16 @@ export function updateLunarWidget(theme) {
   window.addEventListener('resize', followScrollLuneSVG);
   followScrollLuneSVG();
 }
+
+(function initTheme() {
+  const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
+  document.body.className = savedTheme;
+  setTheme(savedTheme);
+
+  // 🌙 Initialiser la lune SVG si nécessaire
+  if (savedTheme === 'theme-lunaire') {
+    import('/assets/js/lune-svg.js').then(module => {
+      module.updateLunarWidget(savedTheme);
+    });
+  }
+})();
