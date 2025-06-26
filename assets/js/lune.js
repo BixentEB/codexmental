@@ -45,21 +45,9 @@ function applyLunarShadow(luneElement) {
  * 🌕 Initialise le widget lunaire (appelé dynamiquement)
  */
 export function updateLunarWidget(theme) {
-  const lune = document.getElementById('lune-widget');
-
-  if (theme !== 'theme-lunaire') {
-    if (lune && lune.parentNode) {
-      lune.parentNode.removeChild(lune); // nettoyage passif
-    }
-    return;
-  }
-
-  if (lune) return;
-
-  
   if (theme !== 'theme-lunaire') return;
 
-  if (document.readyState !== 'complete' {
+  if (document.readyState !== 'complete') {
     window.addEventListener('load', () => updateLunarWidget(theme), { once: true });
     return;
   }
