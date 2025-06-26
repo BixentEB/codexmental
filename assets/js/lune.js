@@ -130,7 +130,13 @@ function setupLuneClickCycle(lune) {
   lune.style.cursor = 'pointer';
 
   lune.addEventListener('click', () => {
-    index = (index + 1) % tailles.length;
+    // Limite les tailles selon la taille d'écran
+    const maxIndex = window.innerWidth <= 568 ? 0 :      // Téléphone: 1 seule taille (150px)
+                     window.innerWidth <= 1024 ? 2 :     // Tablette: 3 tailles (150px, 250px, 350px)
+                     3;                                   // Desktop: toutes les tailles
+
+    index = (index + 1) % (maxIndex + 1);
+    
     lune.style.width = tailles[index];
     lune.style.height = tailles[index];
     lune.classList.remove('lune-super');
@@ -140,3 +146,4 @@ function setupLuneClickCycle(lune) {
     followScrollLune(lune);
   });
 }
+
