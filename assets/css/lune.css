@@ -1,11 +1,4 @@
-/* 🌙 lune.css – Styles du widget lunaire dynamique (Codex Mental – Vincent x IA) */
-
-/* === 🌌 Base anti débordement === */
-html, body {
-  overflow-x: hidden;
-}
-
-/* === 🌓 Lune standard === */
+/* === 🌓 Lune standard - UNIQUEMENT theme-lunaire === */
 body.theme-lunaire #lune-widget {
   position: absolute;
   right: 20px;
@@ -24,9 +17,8 @@ body.theme-lunaire #lune-widget {
   transition: all 0.5s ease;
 }
 
-
-/* === 🌘 Ombre dynamique selon phase – injectée via JS (avec variables CSS) === */
-#lune-widget::before {
+/* === 🌘 Ombre dynamique - UNIQUEMENT theme-lunaire === */
+body.theme-lunaire #lune-widget::before {
   content: "";
   position: absolute;
   width: var(--ombre-width, 50%);
@@ -35,16 +27,13 @@ body.theme-lunaire #lune-widget {
   left: var(--ombre-offset, 0%);
   background: rgba(0, 0, 0, 0.92);
   border-radius: 50%;
-
-  /* ⚙️ Ajustement visuel pour atténuer le trait de démarcation */
   transform: scale(0.99);
-
   pointer-events: none;
   transition: all 0.5s ease;
-  z-index: 1;
+  z-index: 2;
 }
 
-/* === 🌕 Super lune – taille géante et décalée (desktop only) === */
+/* === 🌕 Super lune - UNIQUEMENT theme-lunaire === */
 body.theme-lunaire #lune-widget.lune-super {
   width: 480px;
   height: 480px;
@@ -55,26 +44,7 @@ body.theme-lunaire #lune-widget.lune-super {
   cursor: pointer;
 }
 
-/* === 💻 Interactivité activée uniquement sur grands écrans === */
-@media screen and (min-width: 1025px) {
-  body.theme-lunaire #lune-widget {
-    pointer-events: auto;
-    cursor: pointer;
-  }
-}
-
-
-}
-
-/* ✅ PATCH INTERACTIVITÉ LUNAIRE PC + CORRECTION MASQUE */
-
-/* Corrige ::before mal fermé */
-#lune-widget::before {
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* ✅ Interaction activée sur PC */
+/* Responsive aussi avec le préfixe */
 @media screen and (min-width: 769px) {
   body.theme-lunaire #lune-widget {
     pointer-events: auto !important;
@@ -82,9 +52,8 @@ body.theme-lunaire #lune-widget.lune-super {
   }
 }
 
-/* ✅ Lune compacte et fixe sur mobile */
 @media screen and (max-width: 768px) {
-  #lune-widget {
+  body.theme-lunaire #lune-widget {
     width: 25vw;
     height: 25vw;
     max-width: 100px;
@@ -97,22 +66,4 @@ body.theme-lunaire #lune-widget.lune-super {
     opacity: 0.9;
     transition: all 0.4s ease;
   }
-
-  html, body {
-    overflow-x: hidden !important;
-  }
-}
-
-  html, body {
-    overflow-x: hidden !important;
-  }
-}
-
-
-/* ✅ N'affiche l'ombre que si le thème lunaire est actif */
-#lune-widget::before {
-  display: none;
-}
-body.theme-lunaire #lune-widget::before {
-  display: block;
 }
