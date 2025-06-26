@@ -1,26 +1,28 @@
-/* WIDGET LUNAIRE - VERSION CONSOLIDÉE */
+/* 🌙 WIDGET LUNAIRE - VERSION FINALE (Par Noob-Friendly Dev) 🌙 */
 body.theme-lunaire #svg-lune-widget {
   position: fixed;
   right: 20px;
   bottom: 20px;
   width: 250px;
   height: 250px;
-  z-index: 1000;
+  z-index: 10; /* Bas par défaut */
   opacity: 0.85;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 12px rgba(138, 180, 248, 0.4)); /* Bleu lunaire */
   transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
   cursor: pointer;
 }
 
+/* Mode Super-Lune (desktop) */
 body.theme-lunaire #svg-lune-widget.super-lune {
   width: 500px;
   height: 500px;
   bottom: -120px;
   right: -200px;
   opacity: 0.95;
+  z-index: 1000; /* Élevé quand agrandi */
 }
 
-/* Structure SVG */
+/* Style du SVG */
 body.theme-lunaire #svg-lune-widget svg {
   width: 100%;
   height: 100%;
@@ -28,39 +30,50 @@ body.theme-lunaire #svg-lune-widget svg {
   background: transparent;
 }
 
-/* Couches lunaires */
+/* Lune fantôme (arrière-plan) */
 body.theme-lunaire #svg-lune-widget svg image:first-child {
-  filter: brightness(0.3) opacity(0.08) contrast(0.7);
+  filter: brightness(0.35) opacity(0.12) contrast(0.8);
 }
 
+/* Croissant visible */
 body.theme-lunaire #svg-lune-widget svg image:last-child {
-  filter: brightness(1.15) contrast(1.25) drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+  filter: brightness(1.15) contrast(1.25) drop-shadow(0 0 4px rgba(200, 220, 255, 0.6));
   transition: filter 0.3s ease;
 }
 
-/* Interactions */
+/* Effets au survol */
 body.theme-lunaire #svg-lune-widget:hover {
   opacity: 1;
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+  filter: drop-shadow(0 0 20px rgba(138, 180, 248, 0.6));
   transform: scale(1.05);
 }
 
 body.theme-lunaire #svg-lune-widget:hover svg image:last-child {
-  filter: brightness(1.25) contrast(1.35) drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
+  filter: brightness(1.3) contrast(1.4) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }
 
-/* Responsive */
+/* Version Mobile */
 @media (max-width: 568px) {
   body.theme-lunaire #svg-lune-widget {
-    width: 150px;
-    height: 150px;
-    right: 10px;
-    bottom: 10px;
+    width: 180px;
+    height: 180px;
+    right: 15px;
+    bottom: 15px;
+    z-index: 5; /* Reste derrière le texte */
+    opacity: 0.7;
   }
+  
+  /* Désactive l'agrandissement en mobile */
   body.theme-lunaire #svg-lune-widget.super-lune {
-    width: 250px;
-    height: 250px;
-    bottom: -50px;
-    right: -50px;
+    width: 180px;
+    height: 180px;
+    bottom: 15px;
+    right: 15px;
+    z-index: 5;
   }
+}
+
+/* Transition de l'ombre (pour le JS) */
+body.theme-lunaire #svg-lune-widget svg circle#ombre {
+  transition: cx 0.5s cubic-bezier(0.33, 1, 0.68, 1);
 }
