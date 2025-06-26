@@ -7,7 +7,7 @@
  * 📆 Données lunaires : illumination et sens (croissante/décroissante)
  */
 function getMoonData(date = new Date()) {
-  const base = new Date('2024-01-11T06:00:00Z'); // test nouvelle référence ou 06h si besoin - ancienne 2024-01-11T11:57:00Z
+  const base = new Date('2024-01-11T07:00:00Z'); // test nouvelle référence ou 06h si besoin - ancienne 2024-01-11T11:57:00Z
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
   const phase = lunations % 1;
