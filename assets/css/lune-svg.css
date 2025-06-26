@@ -11,3 +11,21 @@ body.theme-lunaire #svg-lune-widget {
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
   transition: all 0.5s ease;
 }
+
+body.theme-lunaire #svg-lune-widget.super-lune {
+  width: 480px;
+  height: 480px;
+  bottom: -120px;
+  right: -200px;
+  opacity: 0.95;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* === 💻 Interactivité activée uniquement sur grands écrans === */
+@media screen and (min-width: 1025px) {
+  body.theme-lunaire #svg-lune-widget {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+}
