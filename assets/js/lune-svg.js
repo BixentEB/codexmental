@@ -1,6 +1,6 @@
 function getMoonData(date = new Date()) {
-  // Nouvelle lune de référence plus récente : 6 juin 2025
-  const base = new Date('2025-06-06T12:38:00Z');
+  // Nouvelle lune : 25 juin 2025 (d'après les calendriers lunaires)
+  const base = new Date('2025-06-25T00:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
   const phase = (lunations % 1 + 1) % 1; // Normaliser entre 0 et 1
