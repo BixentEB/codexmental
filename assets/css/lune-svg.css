@@ -41,7 +41,7 @@ body.theme-lunaire #svg-lune-widget.super-lune {
 }
 
 /* Styles pour le SVG */
-#svg-lune-widget svg {
+body.theme-lunaire #svg-lune-widget svg {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -53,4 +53,13 @@ body.theme-lunaire #svg-lune-widget:hover {
   opacity: 1;
   filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
   transform: scale(1.05);
+}
+
+/* Ajoutez à votre fichier CSS */
+body.theme-lunaire #svg-lune-widget svg image {
+  filter: brightness(1.1) contrast(1.2);
+}
+
+body.theme-lunaire #svg-lune-widget svg circle#ombre {
+  transition: cx 0.5s ease-out;
 }
