@@ -1,10 +1,14 @@
 function getMoonData(date = new Date()) {
-  const base = new Date('2024-01-11T07:00:00Z');
+  // Nouvelle lune de référence plus récente : 6 juin 2025
+  const base = new Date('2025-06-06T12:38:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
-  const phase = lunations % 1;
+  const phase = (lunations % 1 + 1) % 1; // Normaliser entre 0 et 1
+  
+  // Calcul correct de l'illumination
   const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
   const isWaxing = phase < 0.5;
+  
   return {
     illumination: illumination * 100,
     isWaxing,
@@ -57,7 +61,7 @@ function insertSVGWidget() {
           <circle id="ombre" cx="50" cy="50" r="50" fill="black" />
         </mask>
       </defs>
-      <circle cx="50" cy="50" r="50" fill="#f5f5dc" mask="url(#mask-lune)" />
+      <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" mask="url(#mask-lune)" />
     </svg>
   `;
 
