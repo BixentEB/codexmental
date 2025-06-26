@@ -61,3 +61,16 @@
 
 }
 
+@media (max-width: 768px) {
+  body.theme-lunaire #article-viewer *,
+  body.theme-lunaire .article *,
+  body.theme-lunaire .bloc * {
+    display: block !important;
+    writing-mode: initial !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    transform: none !important;
+  }
+}
+
