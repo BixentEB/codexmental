@@ -1,0 +1,12 @@
+body.theme-lunaire #svg-lune-widget {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 200px;
+  height: 200px;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+  transition: all 0.5s ease;
+}
