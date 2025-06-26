@@ -17,7 +17,7 @@ function setMoonPhaseSVG(illumination, isWaxing) {
   if (!ombre) return;
   const minVisible = 0.015;
   const adjusted = Math.max(illumination, minVisible);
-  const shift = 45 * (1 - adjusted); // modéré pour laisser un fin croissant
+  const shift = 45 * (1 - adjusted);
   const offset = isWaxing ? shift : -shift;
   ombre.setAttribute('cx', 50 + offset);
 }
@@ -28,8 +28,9 @@ function insertSVGWidget() {
 
   const wrapper = document.createElement('div');
   wrapper.id = 'svg-lune-widget';
+
   wrapper.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+    <svg id="svg-lune" viewBox="0 0 100 100" class="moon-svg" width="100%" height="100%">
       <defs>
         <mask id="mask-lune">
           <rect x="0" y="0" width="100" height="100" fill="white" />
@@ -39,7 +40,36 @@ function insertSVGWidget() {
       <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" mask="url(#mask-lune)" />
     </svg>
   `;
+
   document.body.appendChild(wrapper);
+
+  setupLuneClickCycle(wrapper);
+}
+
+function setupLuneClickCycle(wrapper) {
+  if (!wrapper) return;
+
+  const tailles = ['150px', '250px', '350px', '500px'];
+  const classes = ['', '', '', 'super-lune'];
+  let index = parseInt(localStorage.getItem('luneTailleIndex')) || 1;
+
+  wrapper.style.width = tailles[index];
+  wrapper.style.height = tailles[index];
+  wrapper.classList.remove('super-lune');
+  if (classes[index]) wrapper.classList.add(classes[index]);
+
+  wrapper.style.cursor = 'pointer';
+  wrapper.addEventListener('click', () => {
+    const maxIndex = window.innerWidth <= 568 ? 0 :
+                     window.innerWidth <= 1024 ? 2 : 3;
+    index = (index + 1) % (maxIndex + 1);
+    wrapper.style.width = tailles[index];
+    wrapper.style.height = tailles[index];
+    wrapper.classList.remove('super-lune');
+    if (classes[index]) wrapper.classList.add(classes[index]);
+
+    localStorage.setItem('luneTailleIndex', index);
+  });
 }
 
 export function updateLunarWidget(theme) {
