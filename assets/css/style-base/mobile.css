@@ -29,17 +29,16 @@
     margin-bottom: 1rem;
   }
 
-#article-viewer {
-  all: unset;
-  display: block;
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  line-height: 1.6;
-  white-space: normal;
-  overflow-wrap: break-word;
-}
-
+  #article-viewer {
+    all: unset;
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
 
   #article-viewer * {
     white-space: normal !important;
@@ -58,9 +57,9 @@
     margin-bottom: 1.2rem;
     font-size: 1rem;
   }
-
 }
 
+/* === 🌙 Correctif spécial blog mobile + thème lunaire === */
 @media (max-width: 768px) {
   body.theme-lunaire #article-viewer *,
   body.theme-lunaire .article *,
@@ -72,5 +71,32 @@
     overflow-wrap: break-word !important;
     transform: none !important;
   }
-}
 
+  body.theme-lunaire #article-viewer blockquote,
+  body.theme-lunaire #article-viewer figure,
+  body.theme-lunaire #article-viewer figcaption {
+    display: block !important;
+    white-space: normal !important;
+    writing-mode: initial !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    transform: none !important;
+    font-family: 'Roboto', sans-serif !important;
+    line-height: 1.6 !important;
+    width: 100% !important;
+  }
+
+  body.theme-lunaire #article-viewer blockquote {
+    border-left: 4px solid rgba(255,255,255,0.15);
+    padding-left: 1rem;
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+
+  body.theme-lunaire #article-viewer figcaption {
+    font-size: 0.85rem;
+    text-align: left;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.5rem;
+  }
+}
