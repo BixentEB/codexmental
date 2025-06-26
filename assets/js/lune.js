@@ -59,6 +59,8 @@ export function updateLunarWidget(theme) {
 
   const lune = document.createElement('div');
   lune.id = 'lune-widget';
+  lune.style.zIndex = '25';
+  lune.style.pointerEvents = 'auto';
 
   if (!document.body) return;
   document.body.appendChild(lune);
@@ -101,7 +103,7 @@ export function followScrollLune(lune) {
  * 📏 Applique la taille sauvegardée (ou par défaut)
  */
 function applySavedLuneSize(lune) {
-  if (!lune || window.innerWidth <= 1024) return;
+  if (!lune) return;
 
   const tailles = ['150px', '250px', '350px', '500px'];
   const classes = ['', '', '', 'lune-super'];
@@ -119,7 +121,7 @@ function applySavedLuneSize(lune) {
  * 🔁 Clics cycliques sur la lune pour changer sa taille
  */
 function setupLuneClickCycle(lune) {
-  if (!lune || window.innerWidth <= 1024) return;
+  if (!lune) return;
 
   const tailles = ['150px', '250px', '350px', '500px'];
   const classes = ['', '', '', 'lune-super'];
