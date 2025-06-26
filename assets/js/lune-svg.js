@@ -69,7 +69,24 @@ function setupLuneClickCycle(wrapper) {
     if (classes[index]) wrapper.classList.add(classes[index]);
 
     localStorage.setItem('luneTailleIndex', index);
+    followScrollLuneSVG(); // mise à jour immédiate
   });
+}
+
+function followScrollLuneSVG() {
+  const lune = document.getElementById('svg-lune-widget');
+  if (!lune) return;
+
+  const scrollTop = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const luneHeight = lune.offsetHeight;
+  const top = scrollTop + windowHeight - luneHeight - 20;
+
+  lune.style.position = 'absolute';
+  lune.style.top = `${top}px`;
+  lune.style.bottom = 'unset';
+  lune.style.left = 'unset';
+  lune.style.right = lune.classList.contains('super-lune') ? '-200px' : '20px';
 }
 
 export function updateLunarWidget(theme) {
@@ -83,31 +100,8 @@ export function updateLunarWidget(theme) {
   insertSVGWidget();
   const { illumination, isWaxing } = getMoonData();
   setMoonPhaseSVG(illumination / 100, isWaxing);
+
+  window.addEventListener('scroll', followScrollLuneSVG);
+  window.addEventListener('resize', followScrollLuneSVG);
+  followScrollLuneSVG();
 }
-
-/* Console log */
-function insertSVGWidget() {
-  console.log("[LUNE SVG] Insertion du widget SVG…"); // ← log ici
-
-  const old = document.getElementById('svg-lune-widget');
-  if (old) old.remove();
-
-  const wrapper = document.createElement('div');
-  wrapper.id = 'svg-lune-widget';
-  wrapper.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" class="moon-svg" width="100%" height="100%">
-      <defs>
-        <mask id="mask-lune">
-          <rect x="0" y="0" width="100" height="100" fill="white" />
-          <circle id="ombre" cx="50" cy="50" r="50" fill="black" />
-        </mask>
-      </defs>
-      <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" mask="url(#mask-lune)" />
-    </svg>
-  `;
-
-  document.body.appendChild(wrapper);
-
-  setupLuneClickCycle(wrapper); // Important pour la super-lune
-}
-
