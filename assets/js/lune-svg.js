@@ -50,17 +50,29 @@ function insertSVGWidget() {
   wrapper.id = 'svg-lune-widget';
 
 wrapper.innerHTML = `
-  <svg id="svg-lune" viewBox="0 0 100 100" class="moon-svg" width="100%" height="100%">
+  <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
     <defs>
+      <filter id="lune-fantome">
+        <!-- Rend l'image très transparente et assombrie -->
+        <feComponentTransfer>
+          <feFuncA type="table" tableValues="0 0.1"/> <!-- Opacité réduite à 10% -->
+        </feComponentTransfer>
+        <feColorMatrix type="matrix" values="
+          0.3 0 0 0 0
+          0 0.3 0 0 0
+          0 0 0.3 0 0
+          0 0 0 1 0
+        "/> <!-- Assombrit l'image -->
+      </filter>
       <mask id="mask-lune">
-        <rect x="0" y="0" width="100" height="100" fill="white" />
-        <circle id="ombre" cx="50" cy="50" r="50" fill="black" />
+        <rect x="0" y="0" width="100" height="100" fill="white"/>
+        <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
       </mask>
     </defs>
     <!-- Lune assombrie en arrière-plan -->
-    <circle cx="50" cy="50" r="50" fill="#222222" opacity="0.3" />
-    <!-- Lune éclairée (masquée) -->
-    <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" mask="url(#mask-lune)" />
+    <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" filter="url(#lune-fantome)"/>
+    <!-- Lune éclairée (phase visible) -->
+    <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" mask="url(#mask-lune)"/>
   </svg>
 `;
 
