@@ -25,19 +25,17 @@ function setMoonPhaseSVG(illumination, isWaxing) {
   let ombreCx;
   
   if (illumination <= 0.1) {
-    // Nouvelle lune : ombre au centre
-    ombreCx = 50;
+    ombreCx = 50; // Nouvelle lune
   } else if (illumination >= 99.9) {
-    // Pleine lune : ombre très décalée
-    ombreCx = isWaxing ? -50 : 150;
+    ombreCx = isWaxing ? -50 : 150; // Pleine lune
   } else {
-    // CORRECTION : logique inversée
+    // CORRECTION APPLIQUÉE :
     if (isWaxing) {
-      // Croissant croissant : illumination à droite, ombre à DROITE
-      ombreCx = 50 + (50 * (1 - progress));
+      // Croissant : ombre à GAUCHE (progress petit = ombre large)
+      ombreCx = 50 - (50 * progress);
     } else {
-      // Croissant décroissant : illumination à gauche, ombre à GAUCHE  
-      ombreCx = 50 - (50 * (1 - progress));
+      // Décroissant : ombre à DROITE
+      ombreCx = 50 + (50 * progress);
     }
   }
   
