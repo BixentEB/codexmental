@@ -1,3 +1,6 @@
+// lune-svg.js – 🌙 Version propre et complète
+
+// 🔁 Données lunaires
 function getMoonData(date = new Date()) {
   const base = new Date('2024-01-11T07:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
@@ -12,16 +15,21 @@ function getMoonData(date = new Date()) {
   };
 }
 
+// 🌓 Ombre dynamique
 function setMoonPhaseSVG(illumination, isWaxing) {
-  const ombre = document.getElementById('ombre');
-  if (!ombre) return;
+  const maskCircle = document.getElementById('ombre');
+  if (!maskCircle) return;
+
   const minVisible = 0.015;
-  const adjusted = Math.max(illumination, minVisible);
-  const shift = 45 * (1 - adjusted);
+  const adjusted = Math.max(illumination, minVisible); // évite 0 pur
+
+  const shift = 45 * (1 - adjusted); // plus c’est noir, plus on décale
   const offset = isWaxing ? shift : -shift;
-  ombre.setAttribute('cx', 50 + offset);
+
+  maskCircle.setAttribute('cx', 50 + offset);
 }
 
+// 🌕 Widget SVG
 function insertSVGWidget() {
   const old = document.getElementById('svg-lune-widget');
   if (old) old.remove();
@@ -42,37 +50,36 @@ function insertSVGWidget() {
   `;
 
   document.body.appendChild(wrapper);
-
   setupLuneClickCycle(wrapper);
 }
 
+// 🔁 Clic pour changer la taille
 function setupLuneClickCycle(wrapper) {
-  if (!wrapper) return;
-
   const tailles = ['150px', '250px', '350px', '500px'];
   const classes = ['', '', '', 'super-lune'];
   let index = parseInt(localStorage.getItem('luneTailleIndex')) || 1;
 
-  wrapper.style.width = tailles[index];
-  wrapper.style.height = tailles[index];
-  wrapper.classList.remove('super-lune');
-  if (classes[index]) wrapper.classList.add(classes[index]);
-
-  wrapper.style.cursor = 'pointer';
-  wrapper.addEventListener('click', () => {
-    const maxIndex = window.innerWidth <= 568 ? 0 :
-                     window.innerWidth <= 1024 ? 2 : 3;
-    index = (index + 1) % (maxIndex + 1);
+  const applySize = () => {
     wrapper.style.width = tailles[index];
     wrapper.style.height = tailles[index];
     wrapper.classList.remove('super-lune');
     if (classes[index]) wrapper.classList.add(classes[index]);
+    followScrollLuneSVG(); // repositionne
+  };
 
+  applySize();
+  wrapper.style.cursor = 'pointer';
+
+  wrapper.addEventListener('click', () => {
+    const maxIndex = window.innerWidth <= 568 ? 0 :
+                     window.innerWidth <= 1024 ? 2 : 3;
+    index = (index + 1) % (maxIndex + 1);
     localStorage.setItem('luneTailleIndex', index);
-    followScrollLuneSVG();
+    applySize();
   });
 }
 
+// 📍 Suit le scroll bas droite
 function followScrollLuneSVG() {
   const lune = document.getElementById('svg-lune-widget');
   if (!lune) return;
@@ -89,6 +96,7 @@ function followScrollLuneSVG() {
   lune.style.right = lune.classList.contains('super-lune') ? '-200px' : '20px';
 }
 
+// 🚀 Point d’entrée exporté
 export function updateLunarWidget() {
   if (document.readyState !== 'complete') {
     window.addEventListener('load', updateLunarWidget, { once: true });
@@ -96,6 +104,7 @@ export function updateLunarWidget() {
   }
 
   insertSVGWidget();
+
   const { illumination, isWaxing } = getMoonData();
   setMoonPhaseSVG(illumination / 100, isWaxing);
 
