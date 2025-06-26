@@ -8,7 +8,7 @@
  */
 function getMoonData(date = new Date()) {
   // Base révisée pour coller au premier croissant visible à 1-2%
-  const base = new Date('2025-06-06T12:38:00Z');
+  const base = new Date('2024-01-11T07:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
   const lunations = diff / 29.530588853;
   const phase = lunations % 1;
