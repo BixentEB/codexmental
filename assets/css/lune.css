@@ -37,7 +37,7 @@ body.theme-lunaire #lune-widget {
   border-radius: 50%;
 
   /* ⚙️ Ajustement visuel pour atténuer le trait de démarcation */
-  transform: scale(0.99);
+  transform: scale(0.98);
 
   pointer-events: none;
   transition: all 0.5s ease;
