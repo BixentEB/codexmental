@@ -21,11 +21,3 @@ body.theme-lunaire #svg-lune-widget.super-lune {
   pointer-events: auto;
   cursor: pointer;
 }
-
-/* === 💻 Interactivité activée uniquement sur grands écrans === */
-@media screen and (min-width: 1025px) {
-  body.theme-lunaire #svg-lune-widget {
-    pointer-events: auto;
-    cursor: pointer;
-  }
-}
