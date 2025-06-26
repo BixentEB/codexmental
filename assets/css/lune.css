@@ -35,10 +35,6 @@ body.theme-lunaire #lune-widget::before {
   z-index: 2;
 }
 
-body.theme-lunaire #lune-widget.lune-nouvelle::before {
-  opacity: 0.7; /* ou 0.5 pour voir un mini halo */
-}
-
 /* === 🌕 Super lune - UNIQUEMENT theme-lunaire === */
 body.theme-lunaire #lune-widget.lune-super {
   width: 480px;
