@@ -20,30 +20,40 @@ function setMoonPhaseSVG(illumination, isWaxing) {
   const ombre = document.getElementById('ombre');
   if (!ombre) return;
   
-  // Calcul correct pour avoir vraiment 1% minimum
-  const minVisible = 1; // 1% minimum
-  const adjustedIllumination = Math.max(illumination, minVisible);
+  // Calcul mathématique correct pour correspondre au pourcentage réel
+  // L'illumination de 0% = nouvelle lune (ombre au centre)
+  // L'illumination de 50% = demi-lune (ombre sur le bord)
+  // L'illumination de 100% = pleine lune (ombre très décalée)
   
-  // Calcul de la position de l'ombre pour créer le croissant
-  // Pour un croissant croissant (waxing), l'ombre vient de la gauche
-  // Pour un croissant décroissant (waning), l'ombre vient de la droite
-  const maxShift = 50; // Distance maximale de déplacement
+  const progress = illumination / 100; // 0 à 1
   
-  if (adjustedIllumination <= 1) {
-    // Phase très mince : positionnement extrême
-    const offset = isWaxing ? -maxShift + 2 : maxShift - 2;
-    ombre.setAttribute('cx', 50 + offset);
-  } else if (adjustedIllumination >= 99) {
-    // Presque pleine lune : ombre très légère
-    const offset = isWaxing ? maxShift - 2 : -maxShift + 2;
-    ombre.setAttribute('cx', 50 + offset);
+  // Calcul de la position de l'ombre basé sur la géométrie lunaire
+  // À 0% : ombre centrée (cx=50)
+  // À 50% : ombre sur le bord (cx=0 ou cx=100)
+  // À 100% : ombre très décalée pour ne pas masquer
+  
+  let ombreCx;
+  
+  if (illumination <= 0.1) {
+    // Nouvelle lune : ombre au centre
+    ombreCx = 50;
+  } else if (illumination >= 99.9) {
+    // Pleine lune : ombre très décalée
+    ombreCx = isWaxing ? 150 : -50;
   } else {
-    // Phase intermédiaire : calcul proportionnel
-    const progress = adjustedIllumination / 100;
-    const shift = maxShift * (1 - progress);
-    const offset = isWaxing ? -shift : shift;
-    ombre.setAttribute('cx', 50 + offset);
+    // Calcul proportionnel correct
+    // Pour un croissant croissant : l'ombre part de droite (100) vers gauche
+    // Pour un croissant décroissant : l'ombre part de gauche (0) vers droite
+    if (isWaxing) {
+      // Croissant croissant : illumination à droite, ombre vient de gauche
+      ombreCx = 100 - (progress * 100);
+    } else {
+      // Croissant décroissant : illumination à gauche, ombre vient de droite  
+      ombreCx = progress * 100;
+    }
   }
+  
+  ombre.setAttribute('cx', ombreCx);
 }
 
 function insertSVGWidget() {
