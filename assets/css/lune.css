@@ -60,10 +60,13 @@ body.theme-lunaire #lune-widget.lune-super {
     max-height: 100px;
     position: fixed;
     bottom: 12px;
-    right: 12px;
+    right: 8px;
     z-index: 100;
     pointer-events: none !important;
     opacity: 0.9;
     transition: all 0.4s ease;
   }
 }
+
+
+
