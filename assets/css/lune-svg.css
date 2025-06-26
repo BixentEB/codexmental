@@ -52,6 +52,21 @@ body.theme-lunaire #svg-lune-widget:hover svg image:last-child {
   filter: brightness(1.3) contrast(1.4) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }
 
+/* Empêche le scroll horizontal */
+body {
+  overflow-x: hidden;
+}
+
+/* Ajustements pour la super-lune */
+body.theme-lunaire #svg-lune-widget.super-lune {
+  overflow: visible;
+  pointer-events: none; /* Désactive les clics sur la partie débordante */
+}
+
+body.theme-lunaire #svg-lune-widget.super-lune svg {
+  pointer-events: auto; /* Réactive les clics sur la partie visible */
+}
+
 /* Version Mobile */
 @media (max-width: 568px) {
   body.theme-lunaire #svg-lune-widget {
