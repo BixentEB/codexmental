@@ -1,23 +1,56 @@
 /** NOUVEAU WIDGET LUNAIRE SVG **/
 body.theme-lunaire #svg-lune-widget {
-  position: absolute;
+  position: fixed; /* Fixed au lieu d'absolute pour le positionnement initial */
   right: 20px;
   bottom: 20px;
-  width: 200px;
-  height: 200px;
-  z-index: 20;
-  pointer-events: none;
+  width: 250px; /* Taille par défaut plus grande */
+  height: 250px;
+  z-index: 1000;
+  pointer-events: auto; /* Activé pour permettre les clics */
   opacity: 0.85;
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
   transition: all 0.5s ease;
+  cursor: pointer;
 }
 
 body.theme-lunaire #svg-lune-widget.super-lune {
-  width: 480px;
-  height: 480px;
+  width: 500px;
+  height: 500px;
   bottom: -120px;
   right: -200px;
   opacity: 0.95;
   pointer-events: auto;
   cursor: pointer;
+}
+
+/* Responsive mobile */
+@media (max-width: 568px) {
+  body.theme-lunaire #svg-lune-widget {
+    width: 150px;
+    height: 150px;
+    right: 10px;
+    bottom: 10px;
+  }
+  
+  body.theme-lunaire #svg-lune-widget.super-lune {
+    width: 250px;
+    height: 250px;
+    bottom: -50px;
+    right: -50px;
+  }
+}
+
+/* Styles pour le SVG */
+#svg-lune-widget svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: transparent;
+}
+
+/* Animation au survol */
+body.theme-lunaire #svg-lune-widget:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+  transform: scale(1.05);
 }
