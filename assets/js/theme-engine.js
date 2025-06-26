@@ -1,5 +1,4 @@
 import { setupCanvas, initParticles, stopParticles } from '/assets/js/canvas.js';
-import { updateLunarWidget, followScrollLune } from '/assets/js/lune.js';
 
 let soleilActif = false;
 
@@ -56,13 +55,3 @@ export async function setTheme(theme) {
     // Si on quitte le thème solaire, désactiver le drapeau
     soleilActif = false;
   }
-
-  // === Scroll dynamique pour thème lunaire ===
-  if (theme === 'theme-lunaire') {
-    window.addEventListener('scroll', followScrollLune);
-    window.addEventListener('resize', followScrollLune);
-  } else {
-    window.removeEventListener('scroll', followScrollLune);
-    window.removeEventListener('resize', followScrollLune);
-  }
-}
