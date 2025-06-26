@@ -17,6 +17,8 @@ body.theme-lunaire #lune-widget {
   transition: all 0.5s ease;
 }
 
+
+
 /* === 🌘 Ombre dynamique - UNIQUEMENT theme-lunaire === */
 body.theme-lunaire #lune-widget::before {
   content: "";
@@ -31,6 +33,10 @@ body.theme-lunaire #lune-widget::before {
   pointer-events: none;
   transition: all 0.5s ease;
   z-index: 2;
+}
+
+body.theme-lunaire #lune-widget.lune-nouvelle::before {
+  opacity: 0.7; /* ou 0.5 pour voir un mini halo */
 }
 
 /* === 🌕 Super lune - UNIQUEMENT theme-lunaire === */
