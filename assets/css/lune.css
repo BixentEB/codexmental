@@ -44,29 +44,10 @@ body.theme-lunaire #lune-widget.lune-super {
   cursor: pointer;
 }
 
-/* Responsive aussi avec le préfixe */
-@media screen and (min-width: 769px) {
+/* === 💻 Interactivité activée uniquement sur grands écrans === */
+@media screen and (min-width: 1025px) {
   body.theme-lunaire #lune-widget {
-    pointer-events: auto !important;
+    pointer-events: auto;
     cursor: pointer;
   }
 }
-
-@media screen and (max-width: 768px) {
-  body.theme-lunaire #lune-widget {
-    width: 25vw;
-    height: 25vw;
-    max-width: 100px;
-    max-height: 100px;
-    position: fixed;
-    bottom: 12px;
-    right: 8px;
-    z-index: 100;
-    pointer-events: none !important;
-    opacity: 0.9;
-    transition: all 0.4s ease;
-  }
-}
-
-
-
