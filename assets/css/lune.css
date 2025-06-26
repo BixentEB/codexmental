@@ -35,10 +35,6 @@ body.theme-lunaire #lune-widget::before {
   z-index: 2;
 }
 
-body.theme-lunaire #lune-widget.lune-nouvelle::before {
-  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.95) 60%, transparent 100%);
-  opacity: 0.95; /* plus doux, mais pas invisible */
-}
 
 
 /* === 🌕 Super lune - UNIQUEMENT theme-lunaire === */
