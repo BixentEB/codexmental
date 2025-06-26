@@ -20,17 +20,7 @@ function setMoonPhaseSVG(illumination, isWaxing) {
   const ombre = document.getElementById('ombre');
   if (!ombre) return;
   
-  // Calcul mathématique correct pour correspondre au pourcentage réel
-  // L'illumination de 0% = nouvelle lune (ombre au centre)
-  // L'illumination de 50% = demi-lune (ombre sur le bord)
-  // L'illumination de 100% = pleine lune (ombre très décalée)
-  
   const progress = illumination / 100; // 0 à 1
-  
-  // Calcul de la position de l'ombre basé sur la géométrie lunaire
-  // À 0% : ombre centrée (cx=50)
-  // À 50% : ombre sur le bord (cx=0 ou cx=100)
-  // À 100% : ombre très décalée pour ne pas masquer
   
   let ombreCx;
   
@@ -39,17 +29,15 @@ function setMoonPhaseSVG(illumination, isWaxing) {
     ombreCx = 50;
   } else if (illumination >= 99.9) {
     // Pleine lune : ombre très décalée
-    ombreCx = isWaxing ? 150 : -50;
+    ombreCx = isWaxing ? -50 : 150;
   } else {
-    // Calcul proportionnel correct
-    // Pour un croissant croissant : l'ombre part de droite (100) vers gauche
-    // Pour un croissant décroissant : l'ombre part de gauche (0) vers droite
+    // CORRECTION : logique inversée
     if (isWaxing) {
-      // Croissant croissant : illumination à droite, ombre vient de gauche
-      ombreCx = 100 - (progress * 100);
+      // Croissant croissant : illumination à droite, ombre à DROITE
+      ombreCx = 50 + (50 * (1 - progress));
     } else {
-      // Croissant décroissant : illumination à gauche, ombre vient de droite  
-      ombreCx = progress * 100;
+      // Croissant décroissant : illumination à gauche, ombre à GAUCHE  
+      ombreCx = 50 - (50 * (1 - progress));
     }
   }
   
