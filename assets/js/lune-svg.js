@@ -1,6 +1,3 @@
-// lune-svg.js – 🌙 Version propre et complète
-
-// 🔁 Données lunaires
 function getMoonData(date = new Date()) {
   const base = new Date('2024-01-11T07:00:00Z');
   const diff = (date - base) / (1000 * 60 * 60 * 24);
@@ -15,21 +12,36 @@ function getMoonData(date = new Date()) {
   };
 }
 
-// 🌓 Ombre dynamique
 function setMoonPhaseSVG(illumination, isWaxing) {
-  const maskCircle = document.getElementById('ombre');
-  if (!maskCircle) return;
-
-  const minVisible = 0.015;
-  const adjusted = Math.max(illumination, minVisible); // évite 0 pur
-
-  const shift = 45 * (1 - adjusted); // plus c’est noir, plus on décale
-  const offset = isWaxing ? shift : -shift;
-
-  maskCircle.setAttribute('cx', 50 + offset);
+  const ombre = document.getElementById('ombre');
+  if (!ombre) return;
+  
+  // Calcul correct pour avoir vraiment 1% minimum
+  const minVisible = 1; // 1% minimum
+  const adjustedIllumination = Math.max(illumination, minVisible);
+  
+  // Calcul de la position de l'ombre pour créer le croissant
+  // Pour un croissant croissant (waxing), l'ombre vient de la gauche
+  // Pour un croissant décroissant (waning), l'ombre vient de la droite
+  const maxShift = 50; // Distance maximale de déplacement
+  
+  if (adjustedIllumination <= 1) {
+    // Phase très mince : positionnement extrême
+    const offset = isWaxing ? -maxShift + 2 : maxShift - 2;
+    ombre.setAttribute('cx', 50 + offset);
+  } else if (adjustedIllumination >= 99) {
+    // Presque pleine lune : ombre très légère
+    const offset = isWaxing ? maxShift - 2 : -maxShift + 2;
+    ombre.setAttribute('cx', 50 + offset);
+  } else {
+    // Phase intermédiaire : calcul proportionnel
+    const progress = adjustedIllumination / 100;
+    const shift = maxShift * (1 - progress);
+    const offset = isWaxing ? -shift : shift;
+    ombre.setAttribute('cx', 50 + offset);
+  }
 }
 
-// 🌕 Widget SVG
 function insertSVGWidget() {
   const old = document.getElementById('svg-lune-widget');
   if (old) old.remove();
@@ -45,7 +57,7 @@ function insertSVGWidget() {
           <circle id="ombre" cx="50" cy="50" r="50" fill="black" />
         </mask>
       </defs>
-      <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" mask="url(#mask-lune)" />
+      <circle cx="50" cy="50" r="50" fill="#f5f5dc" mask="url(#mask-lune)" />
     </svg>
   `;
 
@@ -53,33 +65,42 @@ function insertSVGWidget() {
   setupLuneClickCycle(wrapper);
 }
 
-// 🔁 Clic pour changer la taille
 function setupLuneClickCycle(wrapper) {
+  if (!wrapper) return;
+
   const tailles = ['150px', '250px', '350px', '500px'];
   const classes = ['', '', '', 'super-lune'];
-  let index = parseInt(localStorage.getItem('luneTailleIndex')) || 1;
+  
+  // Utilisation d'une variable en mémoire au lieu de localStorage
+  let index = wrapper.dataset.tailleIndex ? parseInt(wrapper.dataset.tailleIndex) : 1;
 
-  const applySize = () => {
+  function applySizeAndClass() {
     wrapper.style.width = tailles[index];
     wrapper.style.height = tailles[index];
     wrapper.classList.remove('super-lune');
     if (classes[index]) wrapper.classList.add(classes[index]);
-    followScrollLuneSVG(); // repositionne
-  };
+    wrapper.dataset.tailleIndex = index;
+  }
 
-  applySize();
+  applySizeAndClass();
   wrapper.style.cursor = 'pointer';
+  wrapper.style.pointerEvents = 'auto'; // S'assurer que c'est cliquable
 
-  wrapper.addEventListener('click', () => {
-    const maxIndex = window.innerWidth <= 568 ? 0 :
-                     window.innerWidth <= 1024 ? 2 : 3;
+  wrapper.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Logique responsive pour les tailles maximum
+    const maxIndex = window.innerWidth <= 568 ? 1 :  // Mobile : max 250px
+                     window.innerWidth <= 1024 ? 2 : // Tablet : max 350px
+                     3; // Desktop : max 500px
+    
     index = (index + 1) % (maxIndex + 1);
-    localStorage.setItem('luneTailleIndex', index);
-    applySize();
+    applySizeAndClass();
+    followScrollLuneSVG();
   });
 }
 
-// 📍 Suit le scroll bas droite
 function followScrollLuneSVG() {
   const lune = document.getElementById('svg-lune-widget');
   if (!lune) return;
@@ -94,9 +115,9 @@ function followScrollLuneSVG() {
   lune.style.bottom = 'unset';
   lune.style.left = 'unset';
   lune.style.right = lune.classList.contains('super-lune') ? '-200px' : '20px';
+  lune.style.zIndex = '1000';
 }
 
-// 🚀 Point d’entrée exporté
 export function updateLunarWidget() {
   if (document.readyState !== 'complete') {
     window.addEventListener('load', updateLunarWidget, { once: true });
@@ -104,9 +125,11 @@ export function updateLunarWidget() {
   }
 
   insertSVGWidget();
-
   const { illumination, isWaxing } = getMoonData();
-  setMoonPhaseSVG(illumination / 100, isWaxing);
+  setMoonPhaseSVG(illumination, isWaxing);
+
+  // Debug : afficher les valeurs
+  console.log(`Phase lunaire: ${illumination.toFixed(1)}% - ${isWaxing ? 'Croissant' : 'Décroissant'}`);
 
   window.addEventListener('scroll', followScrollLuneSVG);
   window.addEventListener('resize', followScrollLuneSVG);
