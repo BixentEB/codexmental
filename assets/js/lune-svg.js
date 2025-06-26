@@ -69,7 +69,7 @@ function setupLuneClickCycle(wrapper) {
     if (classes[index]) wrapper.classList.add(classes[index]);
 
     localStorage.setItem('luneTailleIndex', index);
-    followScrollLuneSVG(); // mise à jour immédiate
+    followScrollLuneSVG();
   });
 }
 
@@ -89,11 +89,9 @@ function followScrollLuneSVG() {
   lune.style.right = lune.classList.contains('super-lune') ? '-200px' : '20px';
 }
 
-export function updateLunarWidget(theme) {
-  if (theme !== 'theme-lunaire') return;
-
+export function updateLunarWidget() {
   if (document.readyState !== 'complete') {
-    window.addEventListener('load', () => updateLunarWidget(theme), { once: true });
+    window.addEventListener('load', updateLunarWidget, { once: true });
     return;
   }
 
@@ -105,16 +103,3 @@ export function updateLunarWidget(theme) {
   window.addEventListener('resize', followScrollLuneSVG);
   followScrollLuneSVG();
 }
-
-(function initTheme() {
-  const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
-  document.body.className = savedTheme;
-  setTheme(savedTheme);
-
-  // 🌙 Initialiser la lune SVG si nécessaire
-  if (savedTheme === 'theme-lunaire') {
-    import('/assets/js/lune-svg.js').then(module => {
-      module.updateLunarWidget(savedTheme);
-    });
-  }
-})();
