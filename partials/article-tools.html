@@ -1,15 +1,13 @@
-<!-- article-tools.html -->
 <div class="article-tools">
   <div class="btn-share-wrapper">
-    <button class="btn-share-article" onclick="toggleShareMenu()">
+    <button id="share-button" class="btn-share-article">
       <span class="icon">🔗</span> Partager
     </button>
     <div id="share-menu" class="share-menu hidden">
-      <a href="#" onclick="shareTo('facebook')">📘 Facebook</a>
-      <a href="#" onclick="shareTo('twitter')">𝕏 (ex-Twitter)</a>
-      <a href="#" onclick="shareTo('email')">✉️ Email</a>
-      <a href="#" onclick="copierLienArticle()">🔗 Copier le lien</a>
+      <a href="#" data-share="facebook">📘 Facebook</a>
+      <a href="#" data-share="twitter">𝕏 (ex‑Twitter)</a>
+      <a href="#" data-share="email">✉️ Email</a>
+      <a href="#" data-share="copy">🔗 Copier le lien</a>
     </div>
   </div>
-  <!-- Plus tard : autre bouton ici -->
 </div>
