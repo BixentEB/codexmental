@@ -34,28 +34,31 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* 🟢 Burger bouton (menu articles) masqué sur desktop */
+/* 🟢 Bouton burger spécifique au menu articles (masqué en desktop) */
 #viewer-menu-burger {
   position: fixed;
-  top: 70px; /* Sous ton bandeau principal */
-  left: 1em;
-  width: 24px;
-  height: 24px;
-  z-index: 900; /* Inférieur au menu principal */
+  top: 70px; /* sous ton bandeau principal */
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  z-index: 2000; /* bien au-dessus */
   display: none; /* activé en mobile */
   flex-direction: column;
   justify-content: space-between;
-  background: none;
-  border: none;
+  align-items: center;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  padding: 4px;
   cursor: pointer;
 }
 
-/* Barres du burger menu articles */
+/* Barres du burger */
 #viewer-menu-burger span {
   display: block;
-  width: 100%;
-  height: 2px;
-  background: #aaa; /* couleur plus discrète */
+  width: 80%;
+  height: 3px;
+  background: #fff;
   transition: 0.4s;
 }
 
