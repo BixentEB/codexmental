@@ -203,7 +203,7 @@ body:not(.theme-lunaire) #article-viewer {
   position: absolute;
   right: 0;
   top: calc(100% + 10px);
-  background-color: var(--share-bg, rgba(0, 0, 0, 0.95));
+  background-color: var(--share-bg, rgba(0, 0, 0, 0.95)) !important;
   border: 1px solid var(--share-border, rgba(255, 255, 255, 0.3));
   border-radius: 12px;
   padding: 0.8rem;
