@@ -101,22 +101,35 @@ function setupShareButtons() {
   shareBtn.addEventListener('click', e => {
     e.stopPropagation();
 
-    // ✅ Si l'API native existe, on tente le partage natif
     if (navigator.share) {
+      // ✅ Partage natif si disponible (PC ou mobile)
       navigator.share({
         title: document.title,
         text: 'Découvrez cet article !',
         url: window.location.href
       }).catch(err => {
         console.warn("Le partage natif a échoué :", err);
-        // 🚨 Si le partage natif échoue (ou est annulé), on peut décider d'ouvrir le fallback
-        toggleShareMenu();
+        // Sur mobile : fallback copie du lien
+        if (window.innerWidth <= 768) {
+          copyText(window.location.href);
+          alert("Le lien a été copié dans le presse-papiers !");
+        } else {
+          // Sur PC : fallback menu custom
+          toggleShareMenu();
+        }
       });
       return;
     }
 
-    // ✅ Si pas de partage natif, on ouvre le menu custom
-    toggleShareMenu();
+    // ✅ Si pas de navigator.share
+    if (window.innerWidth <= 768) {
+      // Mobile : copie lien
+      copyText(window.location.href);
+      alert("Le lien a été copié dans le presse-papiers !");
+    } else {
+      // PC : menu custom
+      toggleShareMenu();
+    }
   });
 
   if (shareMenu) {
@@ -130,6 +143,7 @@ function setupShareButtons() {
     });
   }
 }
+
 
 
 // --- ouvre/cache le menu de partage
