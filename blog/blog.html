@@ -13,11 +13,9 @@
 
   <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/assets/css/main.css">
-  <link rel="stylesheet" href="/assets/css/style-base/blog.css">
 
   <!-- ⚙️ Script principal -->
   <script type="module" src="/assets/js/main.js"></script>
-  <script defer src="/assets/js/blog.js"></script>
 </head>
 
 <body class="theme-stellaire">
@@ -29,38 +27,23 @@
 
   <!-- 📚 Contenu principal du blog -->
   <main class="blog-layout">
-    <!-- 📂 Menu latéral blog injecté dynamiquement -->
-    <aside id="blog-menu"></aside>
+    <!-- 📂 Menu latéral injecté dynamiquement -->
+    <aside id="viewer-menu"></aside>
 
-    <!-- 📖 Visualiseur d'article -->
+    <!-- 📖 Visualiseur d'article, géré par viewer.js -->
     <section id="article-viewer">
       <div class="placeholder">
         <h2>Bienvenue dans le blog</h2>
         <p>Sélectionnez un article à gauche pour l'afficher ici.</p>
         <br><br><br><br>
-          <blockquote style="font-style: italic; font-size: 0.95rem; border-left: 4px solid rgba(255,255,255,0.1); padding-left: 1rem;">
-  « Si l’IA avait existé à l’époque des pharaons, la grande bibliothèque aurait bien pu partir en cendres, la mémoire du monde, elle, n’aurait jamais brûlé. » 😓
-          </blockquote>
+        <blockquote style="font-style: italic; font-size: 0.95rem; border-left: 4px solid rgba(0,0,0,0.1); padding-left: 1rem;">
+          « Si l’IA avait existé à l’époque des pharaons, la grande bibliothèque aurait bien pu partir en cendres, la mémoire du monde, elle, n’aurait jamais brûlé. »
+        </blockquote>
       </div>
     </section>
   </main>
 
-    <!-- 📜 Fonction de chargement dynamique -->
-  <script>
-    function chargerProjet(nom) {
-      fetch(`/blog/${nom}.html`)
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById("article-viewer").innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById("article-viewer").innerHTML = `<p class='erreur'>Erreur de chargement : ${nom}.html</p>`;
-        });
-    }
-  </script>
-
   <!-- 🦶 Footer injecté dynamiquement -->
-<div id="footer-placeholder"></div>
-
+  <div id="footer-placeholder"></div>
 </body>
 </html>
