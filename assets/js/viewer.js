@@ -57,12 +57,10 @@ function loadContent(viewerEl, url) {
     .then(html => {
       viewerEl.style.opacity = '0';
       viewerEl.innerHTML = html;
-
-      // 💡 Ne pas injecter les outils sur mobile
-      if (window.innerWidth > 768) {
-        injectArticleTools();
-      }
-
+      
+      // Injecte toujours les outils (mobile et desktop)
+      injectArticleTools();
+      
       requestAnimationFrame(() => (viewerEl.style.opacity = '1'));
     })
     .catch(err => {
@@ -101,34 +99,19 @@ function setupShareButtons() {
   shareBtn.addEventListener('click', e => {
     e.stopPropagation();
 
-    // ✅ Si navigator.share existe
-    if (navigator.share) {
+    // Sur mobile avec API native
+    if (navigator.share && window.innerWidth <= 768) {
       navigator.share({
         title: document.title,
         text: 'Découvrez cet article !',
         url: window.location.href
       }).catch(err => {
         console.warn("Le partage natif a échoué :", err);
-        // 🚨 Si échec :
-        if (window.innerWidth <= 768) {
-          // Sur mobile => copie lien
-          copyText(window.location.href);
-          alert("Le lien a été copié dans le presse-papiers !");
-        } else {
-          // Sur PC => ouvre menu custom
-          toggleShareMenu();
-        }
+        // Fallback: montre le menu custom
+        toggleShareMenu();
       });
-      return;
-    }
-
-    // ✅ Si navigator.share n'existe pas
-    if (window.innerWidth <= 768) {
-      // Sur mobile => copie lien
-      copyText(window.location.href);
-      alert("Le lien a été copié dans le presse-papiers !");
     } else {
-      // Sur PC => ouvre menu custom
+      // Sur desktop ou mobile sans API native
       toggleShareMenu();
     }
   });
@@ -145,14 +128,14 @@ function setupShareButtons() {
   }
 }
 
-
-
 // --- ouvre/cache le menu de partage
 function toggleShareMenu(forceHide = false) {
   const menu = document.getElementById('share-menu');
   if (!menu) return;
+  
   if (forceHide || !menu.classList.contains('hidden')) {
     menu.classList.add('hidden');
+    document.removeEventListener('click', outsideHandler);
   } else {
     menu.classList.remove('hidden');
     document.addEventListener('click', outsideHandler);
@@ -165,7 +148,6 @@ function outsideHandler(e) {
   const menu = document.getElementById('share-menu');
   if (menu && !menu.contains(e.target)) {
     toggleShareMenu(true);
-    document.removeEventListener('click', outsideHandler);
   }
 }
 
@@ -173,13 +155,17 @@ function outsideHandler(e) {
 function handleShare(platform) {
   const url = window.location.href;
   let target = '';
-  if (platform === 'facebook')
+  
+  if (platform === 'facebook') {
     target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-  if (platform === 'twitter')
+  } else if (platform === 'twitter') {
     target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
-  if (platform === 'email')
+  } else if (platform === 'email') {
     target = `mailto:?subject=Article&body=${encodeURIComponent(url)}`;
-  if (platform === 'copy') { copyText(url); return; }
+  } else if (platform === 'copy') { 
+    copyText(url); 
+    return; 
+  }
 
   if (target) window.open(target, '_blank');
 }
@@ -188,8 +174,11 @@ function handleShare(platform) {
 function copyText(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
-  } else fallbackCopy(text);
+  } else {
+    fallbackCopy(text);
+  }
 }
+
 function fallbackCopy(text) {
   const ta = document.createElement('textarea');
   ta.value = text;
