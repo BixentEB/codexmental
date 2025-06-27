@@ -1,0 +1,102 @@
+/* 🌐 Base */
+#viewer-menu {
+  background: var(--menu-bg, #222);
+  color: #fff;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+/* Header menu */
+.viewer-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  background: var(--menu-header-bg, #333);
+}
+
+.viewer-menu-header h2 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+#viewer-menu-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+/* Liens */
+.viewer-menu-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.viewer-menu-links li a {
+  display: block;
+  padding: 1em;
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.viewer-menu-links li a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Burger bouton */
+#viewer-menu-burger {
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  width: 30px;
+  height: 30px;
+  z-index: 1100;
+  display: none; /* sera activé en mobile */
+  flex-direction: column;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#viewer-menu-burger span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #fff;
+  transition: 0.4s;
+}
+
+/* État ouvert burger */
+#viewer-menu-burger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+#viewer-menu-burger.open span:nth-child(2) {
+  opacity: 0;
+}
+#viewer-menu-burger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* 🟢 Mobile : menu masqué par défaut */
+@media (max-width: 768px) {
+  #viewer-menu {
+    transform: translateX(-100%);
+  }
+  #viewer-menu.open {
+    transform: translateX(0);
+  }
+  #viewer-menu-burger {
+    display: flex;
+  }
+}
