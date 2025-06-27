@@ -57,7 +57,12 @@ function loadContent(viewerEl, url) {
     .then(html => {
       viewerEl.style.opacity = '0';
       viewerEl.innerHTML = html;
-      injectArticleTools();
+
+      // 💡 Ne pas injecter les outils sur mobile
+      if (window.innerWidth > 768) {
+        injectArticleTools();
+      }
+
       requestAnimationFrame(() => (viewerEl.style.opacity = '1'));
     })
     .catch(err => {
@@ -70,10 +75,18 @@ function loadContent(viewerEl, url) {
 function injectArticleTools() {
   const tools = document.getElementById('article-tools');
   if (!tools) return;
+
   fetch('/partials/article-tools.html')
     .then(r => r.text())
     .then(html => {
       tools.innerHTML = html;
+
+      // 🛡️ Sécurise état initial fermé
+      const shareMenu = document.getElementById('share-menu');
+      if (shareMenu && !shareMenu.classList.contains('hidden')) {
+        shareMenu.classList.add('hidden');
+      }
+
       setupShareButtons();
     })
     .catch(err => console.error('Erreur outils:', err));
@@ -88,24 +101,28 @@ function setupShareButtons() {
   shareBtn.addEventListener('click', e => {
     e.stopPropagation();
     if (navigator.share) {
+      // Ferme le menu custom s'il était ouvert par erreur
+      toggleShareMenu(true);
       navigator.share({
         title: document.title,
         text: 'Découvre cet article !',
         url: window.location.href
       }).catch(() => {});
-    } else {
-      toggleShareMenu();
+      return;
     }
+    toggleShareMenu();
   });
 
-  shareMenu.querySelectorAll('a[data-share]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const platform = a.getAttribute('data-share');
-      handleShare(platform);
-      toggleShareMenu(true);
+  if (shareMenu) {
+    shareMenu.querySelectorAll('a[data-share]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const platform = a.getAttribute('data-share');
+        handleShare(platform);
+        toggleShareMenu(true);
+      });
     });
-  });
+  }
 }
 
 // --- ouvre/cache le menu de partage
@@ -124,7 +141,7 @@ function toggleShareMenu(forceHide = false) {
 // --- ferme au clic extérieur
 function outsideHandler(e) {
   const menu = document.getElementById('share-menu');
-  if (!menu.contains(e.target)) {
+  if (menu && !menu.contains(e.target)) {
     toggleShareMenu(true);
     document.removeEventListener('click', outsideHandler);
   }
