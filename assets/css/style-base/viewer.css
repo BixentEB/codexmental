@@ -93,6 +93,24 @@
   text-align: left;
 }
 
+/* Menu latéral adaptatif pour blog */
+.blog-layout #viewer-menu {
+  width: auto;          /* largeur flexible */
+  max-width: 300px;     /* limite en écran large */
+}
+
+/* Liens de menu, pour éviter qu'un titre bien long agrandisse le menu */
+#viewer-menu ul li a {
+  display: block;
+  max-width: 280px;
+  white-space: normal;
+  overflow-wrap: break-word;
+  /* Ajoute éventuellement ellipsis si besoin :
+     text-overflow: ellipsis;
+     overflow: hidden; */
+}
+
+
 /* === Responsive === */
 @media screen and (max-width: 768px) {
   #article-viewer,
