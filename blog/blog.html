@@ -45,6 +45,20 @@
     </section>
   </main>
 
+    <!-- 📜 Fonction de chargement dynamique -->
+  <script>
+    function chargerProjet(nom) {
+      fetch(`/blog/${nom}.html`)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById("article-viewer").innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById("article-viewer").innerHTML = `<p class='erreur'>Erreur de chargement : ${nom}.html</p>`;
+        });
+    }
+  </script>
+
   <!-- 🦶 Footer injecté dynamiquement -->
 <div id="footer-placeholder"></div>
 
