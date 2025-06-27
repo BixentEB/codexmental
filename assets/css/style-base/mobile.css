@@ -100,3 +100,10 @@
     margin-top: 0.5rem;
   }
 }
+
+@media (max-width: 768px) {
+  .btn-share-wrapper .share-menu {
+    display: none;
+  }
+}
+
