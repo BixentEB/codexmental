@@ -3,55 +3,39 @@
    Structure, typographie, composants, responsive, thèmes
 ============================================================ */
 
-/* === 📐 Structure de base (body, blocs, layout) === */
+/* === 📐 Structure générale === */
 @import url('/assets/css/style-base/layout.css');
-
-/* === ✍️ Typographie (titres, paragraphes) === */
 @import url('/assets/css/style-base/typography.css');
-
-/* === 📩 Formulaires de contact === */
 @import url('/assets/css/style-base/forms.css');
+@import url('/assets/css/style-base/table.css');
+@import url('/assets/css/style-base/images.css');
 
-/* === 🧩 Composants visuels (blocs, boutons) === */
+/* === 🧩 Composants UI (blocs, boutons, menus) === */
 @import url('/assets/css/style-base/components.css');
-
-/* === 📱 Menu mobile === */
+@import url('/assets/css/style-base/menu.css');
 @import url('/assets/css/style-base/menu-mobile.css');
-
-/* === 🛠️ Classes utilitaires (flex, gap, scrollTop, centrage...) === */
 @import url('/assets/css/style-base/utilities.css');
 
-/* === 🖼️ Mise en page Tableaux === */
-@import url('/assets/css/style-base/table.css');
+/* === 🌠 Modules spéciaux === */
+@import url('/assets/css/style-base/astro.css');         /* badges, intro, animations */
+@import url('/assets/css/lune-svg.css');                 /* widget lunaire */
 
-/* === 🌠 Animation astro, badge, intro === */
-@import url('/assets/css/style-base/astro.css');
-@import url('/assets/css/lune-svg.css');
+/* === 🧾 Viewers (blog + atelier) === */
+@import url('/assets/css/style-base/viewer.css');        /* viewer unifié */
+@import url('/assets/css/style-base/blocs.css');         /* style articles */
 
-/* === 🌓 Extensions spécifiques === */
-@import url('/assets/css/style-base/viewer.css');
+/* === 📚 Pages spécifiques === */
 @import url('/assets/css/themes/atelier.css');
-@import url('/assets/css/style-base/blocs.css');
-@import url('/assets/css/helpers.css');
 @import url('/assets/css/style-base/blog.css');
+@import url('/assets/css/style-base/checklist.css');
 
 /* === 🎨 Thèmes dynamiques === */
 @import url('/assets/css/themes/themes.css');
-
-/* === 🌠 BOUTON FLOTTANT POUR MENU THÈMES === */
-@import url('/assets/css/style-base/menu.css');
-
-/* === 🃏 MENU CARTES THÉMATIQUES === */
 @import url('/assets/css/themes/theme-cards.css');
 
-/* === 🃏 ANTI COPY === */
+/* === 🛡️ Utilitaires divers === */
+@import url('/assets/css/helpers.css');
 @import url('/assets/css/anti-copy.css');
 
-/* === ✅ CHECK LIST === */
-@import url('/assets/css/style-base/checklist.css');
-
-/* === 📱 Mobile interface === */
+/* === 📱 Responsive mobile global === */
 @import url('/assets/css/style-base/mobile.css');
-
-/* === 🖼️ Mise en pages IMAGES === */
-@import url('/assets/css/style-base/images.css');
