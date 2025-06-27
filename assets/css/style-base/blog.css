@@ -373,6 +373,11 @@ body.theme-solaire .blog-menu summary:hover {
   color: var(--menu-text-hover);
 }
 
+body.theme-lunaire .share-menu a {
+  color: var(--share-link) !important;
+}
+
+
 .notes-fin {
   margin-top: 3rem;
   padding-bottom: 6rem;
