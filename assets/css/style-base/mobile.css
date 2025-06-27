@@ -109,13 +109,21 @@
 }
 
 @media (max-width: 768px) {
-  .share-menu {
-    display: none !important; /* Force le masquage initial */
-    transform: translateY(100%); /* Position hors écran */
+  #share-menu {
+    position: fixed;
+    bottom: -100%; /* Déplace complètement hors écran */
+    left: 0;
+    right: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease-out;
+    z-index: 1000;
   }
-  
-  .share-menu:not(.hidden) {
-    display: flex !important; /* S'affiche seulement quand .hidden est retiré */
-    transform: translateY(0);
+
+  #share-menu:not(.hidden) {
+    bottom: 0;
+    opacity: 1;
+    visibility: visible;
   }
 }
