@@ -288,11 +288,12 @@ body.theme-stellaire {
   --btn-color: #aeeeff;
   --btn-border: #444;
   --btn-hover: rgba(255, 255, 255, 0.15);
-  --share-bg: rgba(0, 10, 30, 0.95);
+  --share-bg: rgba(5, 10, 20, 0.95); /* noir bleuté profond */
   --share-border: rgba(100, 180, 255, 0.3);
-  --share-link: #aaefff;
+  --share-link: #aeeeff;
   --share-hover: rgba(50, 120, 200, 0.3);
 }
+
 
 body.theme-solaire {
   --btn-bg: rgba(255, 215, 100, 0.1);
@@ -310,9 +311,9 @@ body.theme-lunaire {
   --btn-color: #ddeeff;
   --btn-border: #8899aa;
   --btn-hover: rgba(150, 150, 255, 0.2);
-  --share-bg: rgba(20, 30, 50, 0.95);
-  --share-border: rgba(150, 180, 220, 0.3);
-  --share-link: #ddeeff;
+  --share-bg: rgba(15, 20, 35, 0.95); /* bleu nuit plus foncé */
+  --share-border: rgba(120, 160, 220, 0.3);
+  --share-link: #cce6ff;
   --share-hover: rgba(100, 140, 200, 0.3);
 }
 
