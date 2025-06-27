@@ -29,7 +29,7 @@
 @import url('/assets/css/lune-svg.css');
 
 /* === 🌓 Extensions spécifiques === */
-
+@import url('/assets/css/style-base/viewer.css');
 @import url('/assets/css/themes/atelier.css');
 @import url('/assets/css/style-base/blocs.css');
 @import url('/assets/css/helpers.css');
