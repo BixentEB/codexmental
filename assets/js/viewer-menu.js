@@ -1,3 +1,10 @@
+// Ajoutez ce check au début du fichier
+console.log("[Debug] Chargement viewer-menu.js");
+if (!document.getElementById('viewer-menu')) {
+  console.error("Élément #viewer-menu introuvable !");
+  return; // Stop si l'élément n'existe pas
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Injection dynamique des éléments
   const injectElements = () => {
