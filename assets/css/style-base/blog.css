@@ -212,59 +212,116 @@ body:not(.theme-lunaire) #article-viewer {
   transform: scale(1.03);
 }
 
-/* === style bouton partage pop up avec menu social === */
-.share-menu {
-  background-color: var(--share-bg, rgba(0, 0, 0, 0.95));
-  color: var(--share-color, #fff);
-  border: 1px solid var(--share-border, rgba(255, 255, 255, 0.3));
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  padding: 0.5em;
-  position: absolute;
-  top: 110%;
-  left: 0;
-  display: none;
-  flex-direction: column;
-  gap: 0.4em;
-  z-index: 100;
-  min-width: 140px;
-}
-
-.btn-share-wrapper .share-menu:not(.hidden) {
-  display: flex;
-}
-
-.share-menu a {
-  color: var(--share-link, inherit);
-  text-decoration: none;
-  padding: 0.3em 0.5em;
-  border-radius: 4px;
-  transition: background 0.2s ease;
-}
-.share-menu a:hover {
-  background: var(--share-hover, rgba(255, 255, 255, 0.1));
-}
-
-.share-menu.hidden {
-  display: none;
-}
-
+/* === Nouveau style amélioré pour le menu de partage === */
 .btn-share-wrapper {
   position: relative;
   display: inline-block;
 }
 
-/* === classe utilitaire === */
-.hidden {
-  display: none !important;
+.share-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--share-bg, rgba(0, 0, 0, 0.95));
+  border: 1px solid var(--share-border, rgba(255, 255, 255, 0.3));
+  border-radius: 12px;
+  padding: 0.8rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1000;
+  min-width: 180px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin-bottom: 10px;
 }
 
-/* === Variables de thème spécifiques aux boutons de partage === */
+.share-menu:not(.hidden) {
+  display: flex;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.share-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  color: var(--share-link, inherit);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.share-menu a:hover {
+  background: var(--share-hover, rgba(255, 255, 255, 0.1));
+  transform: translateX(2px);
+}
+
+.share-menu a .icon {
+  font-size: 1.2rem;
+  width: 1.5rem;
+  text-align: center;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Adaptations mobile */
+@media (max-width: 768px) {
+  .share-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    transform: none;
+    border-radius: 16px 16px 0 0;
+    padding: 1.5rem 1rem;
+    width: auto;
+    margin-bottom: 0;
+  }
+  
+  .share-menu:not(.hidden) {
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  .share-menu a {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* === Variables de thème spécifiques aux menus de partage === */
 body.theme-stellaire {
   --btn-bg: rgba(255, 255, 255, 0.05);
   --btn-color: #aeeeff;
   --btn-border: #444;
   --btn-hover: rgba(255, 255, 255, 0.15);
+  --share-bg: rgba(0, 10, 30, 0.95);
+  --share-border: rgba(100, 180, 255, 0.3);
+  --share-link: #aaefff;
+  --share-hover: rgba(50, 120, 200, 0.3);
 }
 
 body.theme-solaire {
@@ -272,6 +329,10 @@ body.theme-solaire {
   --btn-color: #462e01;
   --btn-border: #ffaa00;
   --btn-hover: rgba(255, 180, 50, 0.3);
+  --share-bg: rgba(255, 240, 200, 0.95);
+  --share-border: rgba(255, 180, 50, 0.5);
+  --share-link: #5a3a00;
+  --share-hover: rgba(255, 200, 100, 0.3);
 }
 
 body.theme-lunaire {
@@ -279,6 +340,10 @@ body.theme-lunaire {
   --btn-color: #ddeeff;
   --btn-border: #8899aa;
   --btn-hover: rgba(150, 150, 255, 0.2);
+  --share-bg: rgba(20, 30, 50, 0.95);
+  --share-border: rgba(150, 180, 220, 0.3);
+  --share-link: #ddeeff;
+  --share-hover: rgba(100, 140, 200, 0.3);
 }
 
 body.theme-galactique {
@@ -286,6 +351,10 @@ body.theme-galactique {
   --btn-color: #c2a6ff;
   --btn-border: #5e3aa9;
   --btn-hover: rgba(150, 0, 255, 0.2);
+  --share-bg: rgba(30, 0, 50, 0.95);
+  --share-border: rgba(180, 80, 255, 0.3);
+  --share-link: #e2b5ff;
+  --share-hover: rgba(130, 50, 200, 0.3);
 }
 
 .btn-share-article.clicked {
