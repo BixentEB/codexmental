@@ -84,6 +84,38 @@ function injectArticleTools() {
     .catch(err => console.error('Erreur outils article:', err));
 }
 
+// 👇 Ajoute ce bloc juste après injection des outils d'article dans viewer.js :
+const shareBtn = document.getElementById('share-button');
+shareBtn?.addEventListener('click', async () => {
+  const shareData = {
+    title: document.title,
+    text: 'Découvrez cet article sur Codex Mental',
+    url: window.location.href
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      console.log('✅ Partage mobile réussi');
+    } catch (err) {
+      console.warn('✘ Partage annulé/échoué :', err);
+    }
+  } else {
+    // fallback desktop : copie dans le presse-papier
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        alert('🔗 Lien copié dans le presse‑papier');
+      } catch {
+        prompt('Copiez ce lien :', shareData.url);
+      }
+    } else {
+      prompt('Copiez ce lien :', shareData.url);
+    }
+  }
+});
+
+
 function updateURL(key, value) {
   const url = new URL(window.location);
   url.searchParams.set(key, value);
@@ -95,3 +127,5 @@ function highlightActive(activeLink) {
     link.classList.toggle('active', link === activeLink);
   });
 }
+
+
