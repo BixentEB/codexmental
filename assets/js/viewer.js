@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   const isBlog = path.includes('/blog');
   const isAtelier = path.includes('/atelier');
-  
   const menuEl = document.getElementById('viewer-menu');
   const viewerEl = document.getElementById('article-viewer');
   if (!menuEl || !viewerEl) return;
@@ -24,10 +23,43 @@ document.addEventListener('DOMContentLoaded', () => {
       loadContent(viewerEl, basePath + initial + '.html', true);
     }
   });
+
+  // Réimplémentation de toggleShareMenu et shareTo ici
+  window.toggleShareMenu = function() {
+    const menu = document.getElementById('share-menu');
+    if (!menu) return;
+    menu.classList.toggle('hidden');
+    if (!menu.classList.contains('hidden')) {
+      setTimeout(() => menu.classList.add('hidden'), 5000);
+      document.addEventListener('click', closeShareMenu);
+    }
+  };
+
+  function closeShareMenu(e) {
+    const menu = document.getElementById('share-menu');
+    if (!menu) return;
+    if (!menu.contains(e.target) && !e.target.closest('.btn-share-wrapper')) {
+      menu.classList.add('hidden');
+      document.removeEventListener('click', closeShareMenu);
+    }
+  }
+
+  window.shareTo = function(platform) {
+    const articleParam = new URLSearchParams(window.location.search).get(paramKey);
+    const url = `${window.location.origin}${window.location.pathname}?${paramKey}=${articleParam}`;
+    let shareUrl = '';
+    if (platform === 'facebook') {
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    } else if (platform === 'twitter') {
+      shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
+    } else if (platform === 'email') {
+      shareUrl = `mailto:?subject=Article Codex&body=${encodeURIComponent(url)}`;
+    }
+    if (shareUrl) window.open(shareUrl, '_blank');
+  };
 });
 
-// --- Fonctions utilitaires
-
+// Code indépendant pour le loader & affichage
 function injectMenu(url, callback) {
   fetch(url)
     .then(res => res.text())
@@ -54,20 +86,12 @@ function setupMenuLinks(viewer, basePath, paramKey) {
 
 function loadContent(viewer, url, skipPush = false) {
   fetch(url)
-    .then(res => {
-      if (!res.ok) throw new Error('Contenu introuvable');
-      return res.text();
-    })
+    .then(res => res.ok ? res.text() : Promise.reject())
     .then(html => {
       viewer.style.opacity = '0';
       viewer.innerHTML = html;
-
-      const tools = document.getElementById('article-tools');
-      if (tools) injectArticleTools();
-
-      requestAnimationFrame(() => {
-        viewer.style.opacity = '1';
-      });
+      injectArticleTools();
+      requestAnimationFrame(() => viewer.style.opacity = '1');
     })
     .catch(err => {
       viewer.innerHTML = `<p class="erreur">Erreur de chargement : ${url}</p>`;
@@ -76,45 +100,15 @@ function loadContent(viewer, url, skipPush = false) {
 }
 
 function injectArticleTools() {
+  const toolsContainer = document.getElementById('article-tools');
+  if (!toolsContainer) return;
   fetch('/partials/article-tools.html')
     .then(res => res.text())
     .then(html => {
-      document.getElementById('article-tools').innerHTML = html;
+      toolsContainer.innerHTML = html;
     })
     .catch(err => console.error('Erreur outils article:', err));
 }
-
-// 👇 Ajoute ce bloc juste après injection des outils d'article dans viewer.js :
-const shareBtn = document.getElementById('share-button');
-shareBtn?.addEventListener('click', async () => {
-  const shareData = {
-    title: document.title,
-    text: 'Découvrez cet article sur Codex Mental',
-    url: window.location.href
-  };
-
-  if (navigator.share) {
-    try {
-      await navigator.share(shareData);
-      console.log('✅ Partage mobile réussi');
-    } catch (err) {
-      console.warn('✘ Partage annulé/échoué :', err);
-    }
-  } else {
-    // fallback desktop : copie dans le presse-papier
-    if (navigator.clipboard) {
-      try {
-        await navigator.clipboard.writeText(shareData.url);
-        alert('🔗 Lien copié dans le presse‑papier');
-      } catch {
-        prompt('Copiez ce lien :', shareData.url);
-      }
-    } else {
-      prompt('Copiez ce lien :', shareData.url);
-    }
-  }
-});
-
 
 function updateURL(key, value) {
   const url = new URL(window.location);
@@ -127,5 +121,3 @@ function highlightActive(activeLink) {
     link.classList.toggle('active', link === activeLink);
   });
 }
-
-
