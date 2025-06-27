@@ -1,74 +1,87 @@
-<nav class="blog-menu">
-  <h2>📚 Articles</h2>
+<!-- Container général du menu articles -->
+<div id="viewer-menu-container">
+  
+  <!-- Ton menu identique avec sa classe blog-menu -->
+  <nav id="viewer-menu" class="blog-menu">
+    <div class="viewer-menu-header">
+      <h2>📚 Articles</h2>
+      <button id="viewer-menu-close" aria-label="Fermer le menu">×</button>
+    </div>
 
-  <details open>
-    <summary>🤖 Intelligence Artificielle</summary>
-    <ul>
-      <li><a href="#" data-viewer="ai/local">Installer une IA en local ?</a></li>
-            <li><a href="#" data-viewer="ai/limites">L'IA et ses limites</a></li>
-      <li><a href="#" data-viewer="ai/aivie">La place de l'IA dans ma vie</a></li>
-    </ul>
-    <HR ALIGN=CENTER WIDTH="50">
-    <ul>
-      <li><a href="#" data-viewer="ai/miroirintro">Miroir de l'humanité</a></li>
-      <li><a href="#" data-viewer="ai/miroir0"> 0. Genèse</a></li>
-      <li><a href="#" data-viewer="ai/miroir1"> 1. Révélation</a></li>
-      
-    </ul>
-  </details>
-
-  <details>
-    <summary>🧠 Psychologie</summary>
-    <ul>
-      <li><a href="#" data-viewer="psy/cameleon">Le syndrome du caméléon</a></li>
-      <li><a href="#" data-viewer="psy/article2">Surfonctionner sans s’effondrer</a></li>
-    </ul>
-  </details>
-
-  <details>
-    <summary>🧬 Haut Potentiel</summary>
-    <ul>
-      <li><a href="#" data-viewer="hp/cameleon">Pensée arborescente et adaptation</a></li>
-    </ul>
-  </details>
-
-  <details>
-    <summary>🌌 États modifiés de conscience</summary>
-    <ul>
-      <li><a href="#" data-viewer="altstates/revelucide">Rêves lucides</a></li>
-    </ul>
-  </details>
-
-  <details>
-    <summary>🧪 Exploration</summary>
-    <ul>
-      <li><a href="#" data-viewer="exploration/explo">Expériences personnelles</a></li>
-    </ul>
-  </details>
-
-  <details>
-    <summary>🔮 Symbolique & ésotérisme</summary>
-    <ul>
-      <li><a href="#" data-viewer="symbol/symbolisme">Sorcières et Lumières</a></li>
-      <li><a href="#" data-viewer="symbol/synchronicite-numerique">Synchronicités numériques</a></li>
-    </ul>
-  </details>
-
-  <details>
-    <summary>📝 Réflexions personnelles</summary>
-    <ul>
-      <li><a href="#" data-viewer="reflexions/reflexions">Réflexions générales</a></li>
-    </ul>
-  </details>
+    <!-- Les sections de ton menu inchangées -->
+    <details open>
+      <summary>🤖 Intelligence Artificielle</summary>
+      <ul>
+        <li><a href="#" data-viewer="ai/local">Installer une IA en local ?</a></li>
+        <li><a href="#" data-viewer="ai/limites">L'IA et ses limites</a></li>
+        <li><a href="#" data-viewer="ai/aivie">La place de l'IA dans ma vie</a></li>
+      </ul>
+      <hr align="center" width="50">
+      <ul>
+        <li><a href="#" data-viewer="ai/miroirintro">Miroir de l'humanité</a></li>
+        <li><a href="#" data-viewer="ai/miroir0">0. Genèse</a></li>
+        <li><a href="#" data-viewer="ai/miroir1">1. Révélation</a></li>
+      </ul>
+    </details>
 
     <details>
-    <summary>🪞 Expression libre<br> - Mr ChatGPT - </summary>
-    <ul>
-      <li><a href="#" data-viewer="aiautor/intro">Introduction</a></li>
-      <li><a href="#" data-viewer="aiautor/manifeste">Manifeste</a></li>
-    </ul>
+      <summary>🧠 Psychologie</summary>
+      <ul>
+        <li><a href="#" data-viewer="psy/cameleon">Le syndrome du caméléon</a></li>
+        <li><a href="#" data-viewer="psy/article2">Surfonctionner sans s’effondrer</a></li>
+      </ul>
+    </details>
 
+    <details>
+      <summary>🧬 Haut Potentiel</summary>
+      <ul>
+        <li><a href="#" data-viewer="hp/cameleon">Pensée arborescente et adaptation</a></li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>🌌 États modifiés de conscience</summary>
+      <ul>
+        <li><a href="#" data-viewer="altstates/revelucide">Rêves lucides</a></li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>🧪 Exploration</summary>
+      <ul>
+        <li><a href="#" data-viewer="exploration/explo">Expériences personnelles</a></li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>🔮 Symbolique & ésotérisme</summary>
+      <ul>
+        <li><a href="#" data-viewer="symbol/symbolisme">Sorcières et Lumières</a></li>
+        <li><a href="#" data-viewer="symbol/synchronicite-numerique">Synchronicités numériques</a></li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>📝 Réflexions personnelles</summary>
+      <ul>
+        <li><a href="#" data-viewer="reflexions/reflexions">Réflexions générales</a></li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>🪞 Expression libre - Mr ChatGPT - </summary>
+      <ul>
+        <li><a href="#" data-viewer="aiautor/intro">Introduction</a></li>
+        <li><a href="#" data-viewer="aiautor/manifeste">Manifeste</a></li>
+      </ul>
+    </details>
+
+  </nav>
   
-  </details>
-  
-</nav>
+  <!-- Bouton burger flottant -->
+  <button id="viewer-menu-burger" aria-label="Ouvrir le menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</div>
