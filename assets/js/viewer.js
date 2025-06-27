@@ -103,23 +103,27 @@ function setupShareButtons() {
   shareBtn.addEventListener('click', e => {
     e.stopPropagation();
 
-    // Sur mobile avec API native
-    if (navigator.share && window.innerWidth <= 768) {
-      navigator.share({
-        title: document.title,
-        text: 'Découvrez cet article !',
-        url: window.location.href
-      }).catch(err => {
-        console.warn("Le partage natif a échoué :", err);
-        // Fallback: montre le menu custom
-        toggleShareMenu();
-      });
-    } else {
-      // Sur desktop ou mobile sans API native
-      toggleShareMenu();
+    // Comportement mobile uniquement
+    if (window.innerWidth <= 768) {
+      // Essayer d'abord le partage natif
+      if (navigator.share) {
+        navigator.share({
+          title: document.title,
+          text: 'Découvrez cet article !',
+          url: window.location.href
+        }).catch(err => {
+          console.warn("Partage natif échoué, fallback custom:", err);
+          toggleShareMenu(); // Affiche le menu custom si échec
+        });
+        return; // On sort après tentative de partage natif
+      }
     }
+    
+    // Comportement desktop OU mobile sans support natif
+    toggleShareMenu();
   });
 
+  // Gestion des liens du menu (inchangée)
   if (shareMenu) {
     shareMenu.querySelectorAll('a[data-share]').forEach(a => {
       a.addEventListener('click', e => {
@@ -131,6 +135,8 @@ function setupShareButtons() {
     });
   }
 }
+
+
 
 // --- ouvre/cache le menu de partage
 function toggleShareMenu(forceHide = false) {
