@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewerEl = document.getElementById('article-viewer');
   if (!menuEl || !viewerEl) return;
 
-  // 1️⃣ Injecte menu + setup liens et chargement initial
   injectMenu(menuUrl, () => {
     setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
     const initial = new URLSearchParams(window.location.search).get(paramKey);
@@ -19,18 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// injecte menu externe
-function injectMenu(url, callback) {
-  fetch(url)
-    .then(r => r.text())
-    .then(html => {
-      document.getElementById('viewer-menu').innerHTML = html;
-      callback?.();
-    })
-    .catch(e => console.error('Erreur menu:', e));
+// --- injecte menu
+function injectMenu(url, cb) {
+  fetch(url).then(r => r.text()).then(html => {
+    document.getElementById('viewer-menu').innerHTML = html;
+    cb?.();
+  }).catch(err => console.error('Erreur menu:', err));
 }
 
-// attache les liens du menu
+// --- lien clic dans menu
 function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
   menuEl.querySelectorAll('a[data-viewer]').forEach(link => {
     link.addEventListener('click', e => {
@@ -44,8 +40,8 @@ function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
   });
 }
 
-// charge le contenu + injecte les outils + raccroche partage
-function loadContent(viewerEl, url, skipPush = false) {
+// --- charge contenu + partage
+function loadContent(viewerEl, url) {
   fetch(url)
     .then(r => {
       if (!r.ok) throw new Error('Introuvable');
@@ -55,119 +51,111 @@ function loadContent(viewerEl, url, skipPush = false) {
       viewerEl.style.opacity = '0';
       viewerEl.innerHTML = html;
       injectArticleTools();
-      requestAnimationFrame(() => viewerEl.style.opacity = '1');
+      requestAnimationFrame(() => (viewerEl.style.opacity = '1'));
     })
-    .catch(e => {
+    .catch(err => {
       viewerEl.innerHTML = `<p class="erreur">Erreur chargement : ${url}</p>`;
-      console.error(e);
+      console.error(err);
     });
 }
 
-// injecte le petit menu de partage + rattache le clic principal
+// --- injecte le tpl partage
 function injectArticleTools() {
-  const toolsEl = document.getElementById('article-tools');
-  if (!toolsEl) return;
+  const tools = document.getElementById('article-tools');
+  if (!tools) return;
   fetch('/partials/article-tools.html')
     .then(r => r.text())
     .then(html => {
-      toolsEl.innerHTML = html;
+      tools.innerHTML = html;
       setupShareButtons();
     })
-    .catch(e => console.error('Erreur outils/article-tools:', e));
+    .catch(err => console.error('Erreur outils:', err));
 }
 
-// prépare les boutons de partage
+// --- active les boutons
 function setupShareButtons() {
   const shareBtn = document.getElementById('share-button');
   const shareMenu = document.getElementById('share-menu');
-  if (shareBtn && shareMenu) {
-    shareBtn.addEventListener('click', async e => {
-      e.stopPropagation();
-      if (navigator.share) {
-        try {
-          await navigator.share({ title: document.title, text: 'Découvrez cet article', url: window.location.href });
-        } catch {}
-      } else {
-        toggleShareMenu();
-      }
-    });
+  if (!shareBtn) return;
 
-    shareMenu.querySelectorAll('a[data-share]').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        const platform = a.getAttribute('data-share');
-        handleShareLink(platform);
-        toggleShareMenu(false);
-      });
+  shareBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        text: 'Découvre cet article !',
+        url: window.location.href
+      }).catch(() => {});
+    } else {
+      toggleShareMenu();
+    }
+  });
+
+  shareMenu.querySelectorAll('a[data-share]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const platform = a.getAttribute('data-share');
+      handleShare(platform);
+      toggleShareMenu(true);
     });
-  }
+  });
 }
 
-// toggle menu personnalisé (PC)
-function toggleShareMenu(forceHide) {
+// --- ouvre/ferme le menu
+function toggleShareMenu(forceHide = false) {
   const menu = document.getElementById('share-menu');
   if (!menu) return;
-  if (forceHide || !menu.classList.toggle('hidden')) {
-    document.addEventListener('click', onClickOutsideShareMenu);
-    setTimeout(() => menu.classList.add('hidden'), 5000);
+  if (forceHide || menu.classList.contains('hidden') === false) {
+    menu.classList.toggle('hidden', true);
   } else {
-    menu.classList.add('hidden');
+    menu.classList.toggle('hidden', false);
+    document.addEventListener('click', outsideHandler);
+    setTimeout(() => toggleShareMenu(true), 5000);
   }
 }
 
-// fermer quand on clique hors du menu
-function onClickOutsideShareMenu(e) {
+// --- fermer au clic extérieur
+function outsideHandler(e) {
   const menu = document.getElementById('share-menu');
-  if (!menu) return;
   if (!menu.contains(e.target)) {
-    menu.classList.add('hidden');
-    document.removeEventListener('click', onClickOutsideShareMenu);
+    toggleShareMenu(true);
+    document.removeEventListener('click', outsideHandler);
   }
 }
 
-// selon plateforme, ouvrir partage top ou copier
-function handleShareLink(platform) {
+// --- actions du menu
+function handleShare(platform) {
   const url = window.location.href;
   let target = '';
-  if (platform === 'facebook') {
-    target = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
-  } else if (platform === 'twitter') {
-    target = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(url);
-  } else if (platform === 'email') {
-    target = 'mailto:?subject=Article&body=' + encodeURIComponent(url);
-  } else if (platform === 'copy') {
-    copyText(url);
-    return;
-  }
-  window.open(target, '_blank');
+  if (platform === 'facebook') target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  if (platform === 'twitter')  target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
+  if (platform === 'email')    target = `mailto:?subject=Article&body=${encodeURIComponent(url)}`;
+  if (platform === 'copy') { copyText(url); return; }
+
+  if (target) window.open(target, '_blank');
 }
 
-// fonction solide de copie
+// --- copie solide cross-browser
 function copyText(text) {
-  if (navigator.clipboard?.writeText) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
-  }
+  } else fallbackCopy(text);
 }
-
-// fallback execCommand
 function fallbackCopy(text) {
   const ta = document.createElement('textarea');
   ta.value = text;
   ta.style.position = 'fixed';
   ta.style.opacity = '0';
   document.body.appendChild(ta);
-  ta.focus({ preventScroll: true });
   ta.select();
   document.execCommand('copy');
   document.body.removeChild(ta);
 }
 
-// URL + highlight style
-function updateURL(key, value) {
+// --- utils URL / highlight
+function updateURL(key, val) {
   const u = new URL(window.location);
-  u.searchParams.set(key, value);
+  u.searchParams.set(key, val);
   window.history.pushState({}, '', u);
 }
 function highlightActive(menuEl, link) {
