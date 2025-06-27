@@ -1,123 +1,176 @@
-// viewer.js – moteur unifié Blog + Atelier
+// viewer.js – moteur unifié Blog + Atelier + partage
 
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   const isBlog = path.includes('/blog');
-  const isAtelier = path.includes('/atelier');
+  const paramKey = isBlog ? 'article' : 'projet';
+  const menuUrl = isBlog ? '/blog/blog-menu.html' : '/atelier/atelier-menu.html';
+  const basePath = isBlog ? '/blog/articles/' : '/atelier/';
+
   const menuEl = document.getElementById('viewer-menu');
   const viewerEl = document.getElementById('article-viewer');
   if (!menuEl || !viewerEl) return;
 
-  const menuUrl = isBlog
-    ? '/blog/blog-menu.html'
-    : '/atelier/atelier-menu.html';
-  const basePath = isBlog
-    ? '/blog/articles/'
-    : '/atelier/';
-  const paramKey = isBlog ? 'article' : 'projet';
-
+  // 1️⃣ Injecte menu + setup liens et chargement initial
   injectMenu(menuUrl, () => {
-    setupMenuLinks(viewerEl, basePath, paramKey);
+    setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
     const initial = new URLSearchParams(window.location.search).get(paramKey);
-    if (initial) {
-      loadContent(viewerEl, basePath + initial + '.html', true);
-    }
+    if (initial) loadContent(viewerEl, basePath + initial + '.html', true);
   });
-
-  // Réimplémentation de toggleShareMenu et shareTo ici
-  window.toggleShareMenu = function() {
-    const menu = document.getElementById('share-menu');
-    if (!menu) return;
-    menu.classList.toggle('hidden');
-    if (!menu.classList.contains('hidden')) {
-      setTimeout(() => menu.classList.add('hidden'), 5000);
-      document.addEventListener('click', closeShareMenu);
-    }
-  };
-
-  function closeShareMenu(e) {
-    const menu = document.getElementById('share-menu');
-    if (!menu) return;
-    if (!menu.contains(e.target) && !e.target.closest('.btn-share-wrapper')) {
-      menu.classList.add('hidden');
-      document.removeEventListener('click', closeShareMenu);
-    }
-  }
-
-  window.shareTo = function(platform) {
-    const articleParam = new URLSearchParams(window.location.search).get(paramKey);
-    const url = `${window.location.origin}${window.location.pathname}?${paramKey}=${articleParam}`;
-    let shareUrl = '';
-    if (platform === 'facebook') {
-      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-    } else if (platform === 'twitter') {
-      shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
-    } else if (platform === 'email') {
-      shareUrl = `mailto:?subject=Article Codex&body=${encodeURIComponent(url)}`;
-    }
-    if (shareUrl) window.open(shareUrl, '_blank');
-  };
 });
 
-// Code indépendant pour le loader & affichage
+// injecte menu externe
 function injectMenu(url, callback) {
   fetch(url)
-    .then(res => res.text())
+    .then(r => r.text())
     .then(html => {
       document.getElementById('viewer-menu').innerHTML = html;
-      if (callback) callback();
+      callback?.();
     })
-    .catch(err => console.error('Erreur menu:', err));
+    .catch(e => console.error('Erreur menu:', e));
 }
 
-function setupMenuLinks(viewer, basePath, paramKey) {
-  document.querySelectorAll('#viewer-menu a[data-viewer]').forEach(link => {
+// attache les liens du menu
+function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
+  menuEl.querySelectorAll('a[data-viewer]').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
       const file = link.getAttribute('data-viewer');
-      if (file) {
-        loadContent(viewer, basePath + file + '.html');
-        updateURL(paramKey, file);
-        highlightActive(link);
+      if (!file) return;
+      loadContent(viewerEl, basePath + file + '.html');
+      updateURL(paramKey, file);
+      highlightActive(menuEl, link);
+    });
+  });
+}
+
+// charge le contenu + injecte les outils + raccroche partage
+function loadContent(viewerEl, url, skipPush = false) {
+  fetch(url)
+    .then(r => {
+      if (!r.ok) throw new Error('Introuvable');
+      return r.text();
+    })
+    .then(html => {
+      viewerEl.style.opacity = '0';
+      viewerEl.innerHTML = html;
+      injectArticleTools();
+      requestAnimationFrame(() => viewerEl.style.opacity = '1');
+    })
+    .catch(e => {
+      viewerEl.innerHTML = `<p class="erreur">Erreur chargement : ${url}</p>`;
+      console.error(e);
+    });
+}
+
+// injecte le petit menu de partage + rattache le clic principal
+function injectArticleTools() {
+  const toolsEl = document.getElementById('article-tools');
+  if (!toolsEl) return;
+  fetch('/partials/article-tools.html')
+    .then(r => r.text())
+    .then(html => {
+      toolsEl.innerHTML = html;
+      setupShareButtons();
+    })
+    .catch(e => console.error('Erreur outils/article-tools:', e));
+}
+
+// prépare les boutons de partage
+function setupShareButtons() {
+  const shareBtn = document.getElementById('share-button');
+  const shareMenu = document.getElementById('share-menu');
+  if (shareBtn && shareMenu) {
+    shareBtn.addEventListener('click', async e => {
+      e.stopPropagation();
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: document.title, text: 'Découvrez cet article', url: window.location.href });
+        } catch {}
+      } else {
+        toggleShareMenu();
       }
     });
-  });
-}
 
-function loadContent(viewer, url, skipPush = false) {
-  fetch(url)
-    .then(res => res.ok ? res.text() : Promise.reject())
-    .then(html => {
-      viewer.style.opacity = '0';
-      viewer.innerHTML = html;
-      injectArticleTools();
-      requestAnimationFrame(() => viewer.style.opacity = '1');
-    })
-    .catch(err => {
-      viewer.innerHTML = `<p class="erreur">Erreur de chargement : ${url}</p>`;
-      console.error(err);
+    shareMenu.querySelectorAll('a[data-share]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const platform = a.getAttribute('data-share');
+        handleShareLink(platform);
+        toggleShareMenu(false);
+      });
     });
+  }
 }
 
-function injectArticleTools() {
-  const toolsContainer = document.getElementById('article-tools');
-  if (!toolsContainer) return;
-  fetch('/partials/article-tools.html')
-    .then(res => res.text())
-    .then(html => {
-      toolsContainer.innerHTML = html;
-    })
-    .catch(err => console.error('Erreur outils article:', err));
+// toggle menu personnalisé (PC)
+function toggleShareMenu(forceHide) {
+  const menu = document.getElementById('share-menu');
+  if (!menu) return;
+  if (forceHide || !menu.classList.toggle('hidden')) {
+    document.addEventListener('click', onClickOutsideShareMenu);
+    setTimeout(() => menu.classList.add('hidden'), 5000);
+  } else {
+    menu.classList.add('hidden');
+  }
 }
 
+// fermer quand on clique hors du menu
+function onClickOutsideShareMenu(e) {
+  const menu = document.getElementById('share-menu');
+  if (!menu) return;
+  if (!menu.contains(e.target)) {
+    menu.classList.add('hidden');
+    document.removeEventListener('click', onClickOutsideShareMenu);
+  }
+}
+
+// selon plateforme, ouvrir partage top ou copier
+function handleShareLink(platform) {
+  const url = window.location.href;
+  let target = '';
+  if (platform === 'facebook') {
+    target = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+  } else if (platform === 'twitter') {
+    target = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(url);
+  } else if (platform === 'email') {
+    target = 'mailto:?subject=Article&body=' + encodeURIComponent(url);
+  } else if (platform === 'copy') {
+    copyText(url);
+    return;
+  }
+  window.open(target, '_blank');
+}
+
+// fonction solide de copie
+function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+// fallback execCommand
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus({ preventScroll: true });
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+
+// URL + highlight style
 function updateURL(key, value) {
-  const url = new URL(window.location);
-  url.searchParams.set(key, value);
-  window.history.pushState({}, '', url);
+  const u = new URL(window.location);
+  u.searchParams.set(key, value);
+  window.history.pushState({}, '', u);
 }
-
-function highlightActive(activeLink) {
-  document.querySelectorAll('#viewer-menu a[data-viewer]').forEach(link => {
-    link.classList.toggle('active', link === activeLink);
-  });
+function highlightActive(menuEl, link) {
+  menuEl.querySelectorAll('a[data-viewer]').forEach(a => a.classList.remove('active'));
+  link.classList.add('active');
 }
