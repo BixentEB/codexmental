@@ -100,16 +100,22 @@ function setupShareButtons() {
 
   shareBtn.addEventListener('click', e => {
     e.stopPropagation();
+
+    // ✅ Si l'API native existe, on tente le partage natif
     if (navigator.share) {
-      // Ferme le menu custom s'il était ouvert par erreur
-      toggleShareMenu(true);
       navigator.share({
         title: document.title,
-        text: 'Découvre cet article !',
+        text: 'Découvrez cet article !',
         url: window.location.href
-      }).catch(() => {});
+      }).catch(err => {
+        console.warn("Le partage natif a échoué :", err);
+        // 🚨 Si le partage natif échoue (ou est annulé), on peut décider d'ouvrir le fallback
+        toggleShareMenu();
+      });
       return;
     }
+
+    // ✅ Si pas de partage natif, on ouvre le menu custom
     toggleShareMenu();
   });
 
@@ -124,6 +130,7 @@ function setupShareButtons() {
     });
   }
 }
+
 
 // --- ouvre/cache le menu de partage
 function toggleShareMenu(forceHide = false) {
