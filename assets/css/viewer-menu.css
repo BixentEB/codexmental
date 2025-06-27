@@ -127,11 +127,3 @@
     cursor: pointer;
   }
 }
-
-/* FORÇAGE VISIBLE TEMPORAIRE - À RETIRER APRÈS TESTS */
-#viewer-menu-burger {
-  display: flex !important;
-  background: red !important; /* Couleur choc pour bien le voir */
-  top: 20px !important;
-  left: 20px !important;
-}
