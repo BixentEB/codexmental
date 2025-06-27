@@ -102,7 +102,13 @@
 }
 
 @media (max-width: 768px) {
-  .share-menu.hidden {
-    display: none;
+  .share-menu {
+    display: none !important; /* Force le masquage initial */
+    transform: translateY(100%); /* Position hors écran */
+  }
+  
+  .share-menu:not(.hidden) {
+    display: flex !important; /* S'affiche seulement quand .hidden est retiré */
+    transform: translateY(0);
   }
 }
