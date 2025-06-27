@@ -102,9 +102,7 @@
 }
 
 @media (max-width: 768px) {
-  .btn-share-wrapper .share-menu.hidden {
-    display: none !important;
+  .share-menu.hidden {
+    display: none;
   }
 }
-
-
