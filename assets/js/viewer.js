@@ -58,9 +58,13 @@ function loadContent(viewerEl, url) {
       viewerEl.style.opacity = '0';
       viewerEl.innerHTML = html;
       
-      // Injecte toujours les outils (mobile et desktop)
-      injectArticleTools();
+      // FORCER LE MENU À ÊTRE CACHÉ SUR MOBILE
+      const shareMenu = document.getElementById('share-menu');
+      if (shareMenu && window.innerWidth <= 768) {
+        shareMenu.classList.add('hidden');
+      }
       
+      injectArticleTools();
       requestAnimationFrame(() => (viewerEl.style.opacity = '1'));
     })
     .catch(err => {
