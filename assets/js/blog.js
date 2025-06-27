@@ -1,9 +1,9 @@
-// blog.js – Gère le menu du blog et l'affichage des articles avec liens partageables
+// blog.js – Gestion du menu et chargement dynamique d’articles
 
 document.addEventListener('DOMContentLoaded', () => {
   injectBlogMenu();
 
-  // Vérifie si l’URL contient ?article=...
+  // Si l’URL contient ?article=..., charge l’article automatiquement
   const params = new URLSearchParams(window.location.search);
   const articleParam = params.get('article');
   if (articleParam) {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Injecte le menu spécifique au blog depuis blog-menu.html
+ * Injecte le menu du blog depuis blog-menu.html
  */
 function injectBlogMenu() {
   fetch('blog-menu.html')
@@ -22,17 +22,17 @@ function injectBlogMenu() {
       setupBlogMenuEvents();
     })
     .catch(error => {
-      console.error('Erreur lors du chargement du blog-menu:', error);
+      console.error('Erreur chargement blog-menu:', error);
     });
 }
 
 /**
- * Gère les clics sur le menu pour charger les articles
+ * Attache les handlers de clic aux liens menu
  */
 function setupBlogMenuEvents() {
   const links = document.querySelectorAll('#blog-menu a[data-article]');
   links.forEach(link => {
-    link.addEventListener('click', (e) => {
+    link.addEventListener('click', e => {
       e.preventDefault();
       const articlePath = link.getAttribute('data-article');
       if (articlePath) {
@@ -45,35 +45,30 @@ function setupBlogMenuEvents() {
 }
 
 /**
- * Charge dynamiquement un article dans #article-viewer
- * + injecte les outils d'article (ex: bouton partage)
+ * Charge un article dans #article-viewer
  */
 function loadArticle(url) {
   fetch(url)
-    .then(response => {
-      if (!response.ok) throw new Error('Erreur chargement article');
-      return response.text();
+    .then(res => {
+      if (!res.ok) throw new Error('Erreur chargement article');
+      return res.text();
     })
     .then(html => {
       const viewer = document.getElementById('article-viewer');
       viewer.style.display = 'none';
       viewer.innerHTML = html;
-
-      // Injecte le menu outils d'article
-      injectArticleTools();
-
       void viewer.offsetHeight;
       viewer.style.display = 'block';
     })
-    .catch(error => {
+    .catch(err => {
       document.getElementById('article-viewer').innerHTML =
         `<p class="error">Impossible de charger l’article.</p>`;
-      console.error(error);
+      console.error(err);
     });
 }
 
 /**
- * Met à jour l’URL avec le paramètre ?article=...
+ * Met à jour l’URL avec ?article=
  */
 function updateURL(relativePath) {
   const newUrl = `${window.location.pathname}?article=${relativePath}`;
@@ -81,101 +76,11 @@ function updateURL(relativePath) {
 }
 
 /**
- * Met en surbrillance le lien actif dans le menu
+ * Surligne le lien actif dans le menu
  */
 function setActiveLink(activeLink) {
   document.querySelectorAll('#blog-menu a[data-article]').forEach(link => {
     link.classList.remove('active');
   });
   activeLink.classList.add('active');
-}
-
-/**
- * Copie le lien de l’article affiché dans le presse-papier
- */
-function copierLienArticle() {
-  let articlePath = null;
-
-  const articleEl = document.querySelector('#article-viewer article[id]');
-  if (articleEl) {
-    articlePath = articleEl.id;
-  }
-
-  if (!articlePath) {
-    const params = new URLSearchParams(window.location.search);
-    articlePath = params.get('article');
-  }
-
-  if (articlePath) {
-    const fullUrl = `${window.location.origin}${window.location.pathname}?article=${articlePath}`;
-    navigator.clipboard.writeText(fullUrl).then(() => {
-      console.log(`🔗 Lien copié : ${fullUrl}`);
-      document.querySelectorAll('.btn-share-article').forEach(button => {
-        button.classList.add('clicked');
-        setTimeout(() => button.classList.remove('clicked'), 800);
-      });
-    });
-  } else {
-    alert("Aucun article sélectionné.");
-  }
-}
-
-/**
- * Ouvre / ferme le menu contextuel de partage
- */
-function toggleShareMenu() {
-  const menu = document.getElementById('share-menu');
-  menu.classList.toggle('hidden');
-
-  if (!menu.classList.contains('hidden')) {
-    const handleClickOutside = (event) => {
-      if (!menu.contains(event.target) && !event.target.closest('.btn-share-wrapper')) {
-        menu.classList.add('hidden');
-        document.removeEventListener('click', handleClickOutside);
-      }
-    };
-    setTimeout(() => {
-      document.addEventListener('click', handleClickOutside);
-    }, 0);
-  }
-}
-
-/**
- * Partage vers une plateforme
- */
-function shareTo(platform) {
-  const articleParam = new URLSearchParams(window.location.search).get('article');
-  const url = `${window.location.origin}${window.location.pathname}?article=${articleParam}`;
-
-  let shareUrl = '';
-  switch (platform) {
-    case 'facebook':
-      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-      break;
-    case 'twitter':
-      shareUrl = `https://twitter.com/intent/tweet?text=Regarde cet article !&url=${encodeURIComponent(url)}`;
-      break;
-    case 'email':
-      shareUrl = `mailto:?subject=Article Codex&body=Lis ça : ${encodeURIComponent(url)}`;
-      break;
-  }
-
-  if (shareUrl) {
-    window.open(shareUrl, '_blank');
-  }
-}
-
-/**
- * Injecte dynamiquement le menu outils (partage...) dans l'article
- */
-function injectArticleTools() {
-  const target = document.getElementById('article-tools');
-  if (!target) return;
-
-  fetch('/partials/article-tools.html')
-    .then(res => res.text())
-    .then(html => {
-      target.innerHTML = html;
-    })
-    .catch(err => console.error('Erreur injection article-tools:', err));
 }
