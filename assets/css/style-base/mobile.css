@@ -1,3 +1,10 @@
+/* À mettre en tout début du CSS mobile */
+#share-menu[data-force-hidden] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
 /* === 📱 Responsive Mobile – Codex Mental === */
 @media (max-width: 768px) {
 
