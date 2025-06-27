@@ -4,34 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Atelier – Codex Mental</title>
-
-  <!-- 🌞 Favicon -->
   <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" />
-
-  <!-- 🌐 Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
-
-  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/assets/css/main.css" />
-
-  <!-- ⚙️ Scripts -->
   <script type="module" src="/assets/js/main.js"></script>
 </head>
 
 <body class="theme-stellaire">
-  <!-- 🌌 Canvas de fond -->
+  <!-- 🎨 Canvas d’arrière-plan visuel (étoiles, lune…) -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧠 Menu principal injecté dynamiquement -->
+  <!-- 🧠 Menu principal injecté dynamiquement par main.js -->
   <header id="menu-placeholder"></header>
 
-  <!-- 🧱 Contenu principal -->
   <main class="blog-layout">
-    <!-- 🎨 Menu latéral injecté (projets Atelier) -->
-    <aside id="atelier-menu"></aside>
+    <!-- 🎯 Sidebar Atelier – doit rester “viewer-menu” pour le viewer unifié -->
+    <aside id="viewer-menu"></aside>
 
-    <!-- 📄 Visualiseur central -->
+    <!-- 🧱 Zone de visualisation des projets -->
     <section id="article-viewer">
+      <!-- 🛠️ Ici le viewer.js injectera article + outils de partage -->
+      <div id="article-tools"></div>
+
+      <!-- 📝 Placeholder visible avant choix de projet -->
       <div class="placeholder">
         <h2>Bienvenue dans l'atelier</h2>
         <p>Sélectionnez un projet à gauche pour l'afficher ici.</p>
@@ -39,21 +34,7 @@
     </section>
   </main>
 
-  <!-- 📜 Fonction de chargement dynamique -->
-  <script>
-    function chargerProjet(nom) {
-      fetch(`/atelier/${nom}.html`)
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById("article-viewer").innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById("article-viewer").innerHTML = `<p class='erreur'>Erreur de chargement : ${nom}.html</p>`;
-        });
-    }
-  </script>
-  <!-- 🦶 Footer injecté dynamiquement -->
-<div id="footer-placeholder"></div>
-
+  <!-- 📜 Pied de page injecté par main.js -->
+  <div id="footer-placeholder"></div>
 </body>
 </html>
