@@ -1,40 +1,21 @@
-/* 🌐 Base */
+/* 🌐 Base (desktop) : menu normal */
 #viewer-menu {
-  background: var(--menu-bg, #222);
-  color: #fff;
-  width: 250px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow-y: auto;
-  transition: transform 0.3s ease;
-  z-index: 1000;
-}
-
-/* Header menu */
-.viewer-menu-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1em;
-  background: var(--menu-header-bg, #333);
-}
-
-.viewer-menu-header h2 {
-  margin: 0;
-  font-size: 1.2em;
-}
-
-#viewer-menu-close {
+  position: relative;
+  width: auto;
+  height: auto;
   background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.5em;
-  cursor: pointer;
+  color: inherit;
+  overflow: visible;
+  transform: none;
+  z-index: auto;
 }
 
-/* Liens */
+/* Header du menu masqué sur desktop */
+.viewer-menu-header {
+  display: none;
+}
+
+/* Liens (pour uniformité si besoin) */
 .viewer-menu-links {
   list-style: none;
   padding: 0;
@@ -53,7 +34,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Burger bouton */
+/* Burger bouton masqué sur desktop */
 #viewer-menu-burger {
   position: fixed;
   top: 1em;
@@ -88,14 +69,49 @@
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* 🟢 Mobile : menu masqué par défaut */
+/* 🟢 Mobile : menu en overlay burger */
 @media (max-width: 768px) {
   #viewer-menu {
+    background: var(--menu-bg, #222);
+    color: #fff;
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
     transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
   }
+
   #viewer-menu.open {
     transform: translateX(0);
   }
+
+  /* Header du menu visible en mobile */
+  .viewer-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    background: var(--menu-header-bg, #333);
+  }
+
+  .viewer-menu-header h2 {
+    margin: 0;
+    font-size: 1.2em;
+  }
+
+  #viewer-menu-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+
+  /* Bouton burger visible en mobile */
   #viewer-menu-burger {
     display: flex;
   }
