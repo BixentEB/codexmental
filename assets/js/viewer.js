@@ -4,8 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   const isBlog = path.includes('/blog');
   const paramKey = isBlog ? 'article' : 'projet';
-  const menuUrl = isBlog ? '/blog/blog-menu.html' : '/atelier/atelier-menu.html';
-  const basePath = isBlog ? '/blog/articles/' : '/atelier/';
+  const menuUrl = isBlog
+    ? '/blog/blog-menu.html'
+    : '/atelier/atelier-menu.html';
+  const basePath = isBlog
+    ? '/blog/articles/'
+    : '/atelier/';
 
   const menuEl = document.getElementById('viewer-menu');
   const viewerEl = document.getElementById('article-viewer');
@@ -18,15 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// --- injecte menu
+// --- injecte le menu (blog ou atelier)
 function injectMenu(url, cb) {
-  fetch(url).then(r => r.text()).then(html => {
-    document.getElementById('viewer-menu').innerHTML = html;
-    cb?.();
-  }).catch(err => console.error('Erreur menu:', err));
+  fetch(url)
+    .then(r => r.text())
+    .then(html => {
+      document.getElementById('viewer-menu').innerHTML = html;
+      cb?.();
+    })
+    .catch(err => console.error('Erreur menu:', err));
 }
 
-// --- lien clic dans menu
+// --- clic dans menu -> charge contenu
 function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
   menuEl.querySelectorAll('a[data-viewer]').forEach(link => {
     link.addEventListener('click', e => {
@@ -40,7 +47,7 @@ function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
   });
 }
 
-// --- charge contenu + partage
+// --- charge l'article/projet et injecte outils
 function loadContent(viewerEl, url) {
   fetch(url)
     .then(r => {
@@ -59,7 +66,7 @@ function loadContent(viewerEl, url) {
     });
 }
 
-// --- injecte le tpl partage
+// --- injecte le partial de partage
 function injectArticleTools() {
   const tools = document.getElementById('article-tools');
   if (!tools) return;
@@ -72,7 +79,7 @@ function injectArticleTools() {
     .catch(err => console.error('Erreur outils:', err));
 }
 
-// --- active les boutons
+// --- met en place les handlers du bouton partager
 function setupShareButtons() {
   const shareBtn = document.getElementById('share-button');
   const shareMenu = document.getElementById('share-menu');
@@ -101,20 +108,20 @@ function setupShareButtons() {
   });
 }
 
-// --- ouvre/ferme le menu
+// --- ouvre/cache le menu de partage
 function toggleShareMenu(forceHide = false) {
   const menu = document.getElementById('share-menu');
   if (!menu) return;
-  if (forceHide || menu.classList.contains('hidden') === false) {
-    menu.classList.toggle('hidden', true);
+  if (forceHide || !menu.classList.contains('hidden')) {
+    menu.classList.add('hidden');
   } else {
-    menu.classList.toggle('hidden', false);
+    menu.classList.remove('hidden');
     document.addEventListener('click', outsideHandler);
     setTimeout(() => toggleShareMenu(true), 5000);
   }
 }
 
-// --- fermer au clic extérieur
+// --- ferme au clic extérieur
 function outsideHandler(e) {
   const menu = document.getElementById('share-menu');
   if (!menu.contains(e.target)) {
@@ -123,19 +130,22 @@ function outsideHandler(e) {
   }
 }
 
-// --- actions du menu
+// --- partage vers la plateforme ou copie
 function handleShare(platform) {
   const url = window.location.href;
   let target = '';
-  if (platform === 'facebook') target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-  if (platform === 'twitter')  target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
-  if (platform === 'email')    target = `mailto:?subject=Article&body=${encodeURIComponent(url)}`;
+  if (platform === 'facebook')
+    target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  if (platform === 'twitter')
+    target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
+  if (platform === 'email')
+    target = `mailto:?subject=Article&body=${encodeURIComponent(url)}`;
   if (platform === 'copy') { copyText(url); return; }
 
   if (target) window.open(target, '_blank');
 }
 
-// --- copie solide cross-browser
+// --- copie compatible cross-browser
 function copyText(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
@@ -152,12 +162,14 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// --- utils URL / highlight
+// --- update URL sans reload
 function updateURL(key, val) {
   const u = new URL(window.location);
   u.searchParams.set(key, val);
   window.history.pushState({}, '', u);
 }
+
+// --- surligne l'élément actif
 function highlightActive(menuEl, link) {
   menuEl.querySelectorAll('a[data-viewer]').forEach(a => a.classList.remove('active'));
   link.classList.add('active');
