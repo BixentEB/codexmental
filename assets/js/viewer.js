@@ -4,9 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   const isBlog = path.includes('/blog');
   const paramKey = isBlog ? 'article' : 'projet';
-  const menuUrl = isBlog
-    ? '/blog/blog-menu.html'
-    : '/atelier/atelier-menu.html';
   const basePath = isBlog
     ? '/blog/articles/'
     : '/atelier/';
@@ -15,23 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewerEl = document.getElementById('article-viewer');
   if (!menuEl || !viewerEl) return;
 
-  injectMenu(menuUrl, () => {
-    setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
-    const initial = new URLSearchParams(window.location.search).get(paramKey);
-    if (initial) loadContent(viewerEl, basePath + initial + '.html', true);
-  });
-});
+  // 🟢 Plus de fetch, le menu est déjà dans la page
+  setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
 
-// --- injecte le menu (blog ou atelier)
-function injectMenu(url, cb) {
-  fetch(url)
-    .then(r => r.text())
-    .then(html => {
-      document.getElementById('viewer-menu').innerHTML = html;
-      cb?.();
-    })
-    .catch(err => console.error('Erreur menu:', err));
-}
+  // 🟢 Charge l'article initial si URL contient ?article=...
+  const initial = new URLSearchParams(window.location.search).get(paramKey);
+  if (initial) loadContent(viewerEl, basePath + initial + '.html', true);
+});
 
 // --- clic dans menu -> charge contenu
 function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
@@ -57,13 +44,13 @@ function loadContent(viewerEl, url) {
     .then(html => {
       viewerEl.style.opacity = '0';
       viewerEl.innerHTML = html;
-      
-      // FORCER LE MENU À ÊTRE CACHÉ SUR MOBILE
+
+      // Fermer le menu de partage sur mobile
       const shareMenu = document.getElementById('share-menu');
       if (shareMenu && window.innerWidth <= 768) {
         shareMenu.classList.add('hidden');
       }
-      
+
       injectArticleTools();
       requestAnimationFrame(() => (viewerEl.style.opacity = '1'));
     })
@@ -83,7 +70,6 @@ function injectArticleTools() {
     .then(html => {
       tools.innerHTML = html;
 
-      // 🛡️ Sécurise état initial fermé
       const shareMenu = document.getElementById('share-menu');
       if (shareMenu && !shareMenu.classList.contains('hidden')) {
         shareMenu.classList.add('hidden');
@@ -103,9 +89,7 @@ function setupShareButtons() {
   shareBtn.addEventListener('click', e => {
     e.stopPropagation();
 
-    // Comportement mobile uniquement
     if (window.innerWidth <= 768) {
-      // Essayer d'abord le partage natif
       if (navigator.share) {
         navigator.share({
           title: document.title,
@@ -113,17 +97,15 @@ function setupShareButtons() {
           url: window.location.href
         }).catch(err => {
           console.warn("Partage natif échoué, fallback custom:", err);
-          toggleShareMenu(); // Affiche le menu custom si échec
+          toggleShareMenu();
         });
-        return; // On sort après tentative de partage natif
+        return;
       }
     }
-    
-    // Comportement desktop OU mobile sans support natif
+
     toggleShareMenu();
   });
 
-  // Gestion des liens du menu (inchangée)
   if (shareMenu) {
     shareMenu.querySelectorAll('a[data-share]').forEach(a => {
       a.addEventListener('click', e => {
@@ -136,13 +118,11 @@ function setupShareButtons() {
   }
 }
 
-
-
 // --- ouvre/cache le menu de partage
 function toggleShareMenu(forceHide = false) {
   const menu = document.getElementById('share-menu');
   if (!menu) return;
-  
+
   if (forceHide || !menu.classList.contains('hidden')) {
     menu.classList.add('hidden');
     document.removeEventListener('click', outsideHandler);
@@ -161,20 +141,20 @@ function outsideHandler(e) {
   }
 }
 
-// --- partage vers la plateforme ou copie
+// --- partage vers plateforme ou copie
 function handleShare(platform) {
   const url = window.location.href;
   let target = '';
-  
+
   if (platform === 'facebook') {
     target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
   } else if (platform === 'twitter') {
     target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
   } else if (platform === 'email') {
     target = `mailto:?subject=Article&body=${encodeURIComponent(url)}`;
-  } else if (platform === 'copy') { 
-    copyText(url); 
-    return; 
+  } else if (platform === 'copy') {
+    copyText(url);
+    return;
   }
 
   if (target) window.open(target, '_blank');
