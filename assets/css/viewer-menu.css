@@ -15,7 +15,7 @@
   display: block;
 }
 
-/* Liens (styles complets) - VOTRE STYLE ORIGINAL */
+/* Liens (styles complets) - VOTRE STYLE ORIGINAL NETTOYÉ */
 .viewer-menu-links, 
 #viewer-menu ul {
   list-style: none;
@@ -28,7 +28,6 @@
   padding: 1em;
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: background 0.3s;
 }
 
@@ -50,7 +49,6 @@
   padding: 1em;
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: background 0.3s;
   cursor: pointer;
   font-weight: normal;
@@ -84,7 +82,6 @@
 /* Header du menu - style minimal pour s'intégrer */
 .viewer-menu-header {
   padding: 1em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .viewer-menu-header h2 {
@@ -199,17 +196,12 @@
     background: rgba(255, 255, 255, 0.1);
   }
 
-  #viewer-menu details {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
   #viewer-menu ul {
     background: var(--menu-bg, #222);
   }
 
   #viewer-menu li a {
     color: #fff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   #viewer-menu li a:hover {
