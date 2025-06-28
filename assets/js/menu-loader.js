@@ -13,8 +13,7 @@ async function loadPageMenu() {
                    document.getElementById('menu-container');
   
   if (!container) {
-    console.error("[MenuLoader] Aucun conteneur de menu trouvé");
-    return;
+    return; // Pas de conteneur = pas de menu, c'est tout
   }
 
   // Détection automatique du type de page
@@ -40,6 +39,7 @@ async function loadPageMenu() {
     
     console.log(`[MenuLoader] Menu ${pageType} chargé avec succès`);
   }
+  // Si pas de menuHTML, on ne fait rien = pas de menu affiché
 }
 
 // Fonction pour détecter le type de page
@@ -96,89 +96,19 @@ async function loadMenuFile(pageType) {
   // Test de chaque chemin
   for (const path of pathsToTest) {
     try {
-      console.log(`[MenuLoader] Tentative: ${path}`);
       const response = await fetch(path);
       if (response.ok) {
         const content = await response.text();
-        console.log(`[MenuLoader] Succès avec: ${path}`);
+        console.log(`[MenuLoader] Menu chargé: ${path}`);
         return content;
       }
     } catch (error) {
-      console.log(`[MenuLoader] Échec pour: ${path}`);
+      // On continue silencieusement au chemin suivant
     }
   }
 
-  console.error(`[MenuLoader] Impossible de charger le menu ${pageType}`);
-  return createFallbackMenu(pageType);
-}
-
-// Fonction de fallback avec menu par défaut
-function createFallbackMenu(pageType) {
-  if (pageType === 'atelier') {
-    return `
-      <div id="viewer-menu-container">
-        <nav id="viewer-menu" class="atelier-menu">
-          <div class="viewer-menu-header">
-            <h2>🔧 Atelier</h2>
-            <button id="viewer-menu-close" aria-label="Fermer le menu">×</button>
-          </div>
-
-          <details open>
-            <summary>🛠️ Projets</summary>
-            <ul>
-              <li><a href="#" data-viewer="projets/projet1">Projet 1</a></li>
-              <li><a href="#" data-viewer="projets/projet2">Projet 2</a></li>
-            </ul>
-          </details>
-
-          <details>
-            <summary>💡 Tutoriels</summary>
-            <ul>
-              <li><a href="#" data-viewer="tutos/tuto1">Tutoriel 1</a></li>
-              <li><a href="#" data-viewer="tutos/tuto2">Tutoriel 2</a></li>
-            </ul>
-          </details>
-        </nav>
-      </div>
-    `;
-  }
-  
-  // Fallback pour blog (défaut)
-  return `
-    <div id="viewer-menu-container">
-      <nav id="viewer-menu" class="blog-menu">
-        <div class="viewer-menu-header">
-          <h2>📚 Articles</h2>
-          <button id="viewer-menu-close" aria-label="Fermer le menu">×</button>
-        </div>
-
-        <details open>
-          <summary>🤖 Intelligence Artificielle</summary>
-          <ul>
-            <li><a href="#" data-viewer="ai/local">Installer une IA en local ?</a></li>
-            <li><a href="#" data-viewer="ai/limites">L'IA et ses limites</a></li>
-            <li><a href="#" data-viewer="ai/aivie">La place de l'IA dans ma vie</a></li>
-          </ul>
-        </details>
-
-        <details>
-          <summary>🧠 Psychologie</summary>
-          <ul>
-            <li><a href="#" data-viewer="psy/cameleon">Le syndrome du caméléon</a></li>
-            <li><a href="#" data-viewer="psy/article2">Surfonctionner sans s'effondrer</a></li>
-          </ul>
-        </details>
-
-        <details>
-          <summary>🔮 Symbolique & ésotérisme</summary>
-          <ul>
-            <li><a href="#" data-viewer="symbol/symbolisme">Sorcières et Lumières</a></li>
-            <li><a href="#" data-viewer="symbol/synchronicite-numerique">Synchronicités numériques</a></li>
-          </ul>
-        </details>
-      </nav>
-    </div>
-  `;
+  // Si rien ne marche, on retourne null = pas de menu
+  return null;
 }
 
 // Fonction pour gérer le comportement burger (universelle)
@@ -187,14 +117,8 @@ function initBurgerMenu() {
   const menu = document.getElementById("viewer-menu");
   const closeBtn = document.getElementById("viewer-menu-close");
 
-  if (!burger) {
-    console.warn("[MenuLoader] Bouton burger introuvable");
-    return;
-  }
-
-  if (!menu) {
-    console.warn("[MenuLoader] Menu #viewer-menu introuvable");
-    return;
+  if (!burger || !menu) {
+    return; // Pas de burger ou pas de menu = pas d'interactions
   }
 
   // Événement clic sur le burger
@@ -202,7 +126,6 @@ function initBurgerMenu() {
     e.stopPropagation();
     menu.classList.toggle("open");
     burger.classList.toggle("open");
-    console.log("[MenuLoader] Toggle menu:", menu.classList.contains("open"));
   });
 
   // Événement clic sur le bouton fermer (si existe)
@@ -211,7 +134,6 @@ function initBurgerMenu() {
       e.stopPropagation();
       menu.classList.remove("open");
       burger.classList.remove("open");
-      console.log("[MenuLoader] Menu fermé");
     });
   }
 
@@ -225,6 +147,4 @@ function initBurgerMenu() {
       burger.classList.remove("open");
     }
   });
-
-  console.log("[MenuLoader] Interactions burger initialisées");
 }
