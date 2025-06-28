@@ -30,22 +30,19 @@
 
   <!-- 📚 Contenu principal du blog -->
   <main class="blog-layout">
-    <!-- 📂 Zone d'injection du menu articles -->
-    <!-- Bouton burger seul -->
-<button id="articles-menu-burger" class="burger-button" aria-label="Menu des articles">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
+    <!-- 📂 POINT D'INJECTION pour le menu des articles -->
+    <div id="blog-menu-container">
+      <!-- Le menu sera injecté ici par le script -->
+    </div>
 
-    <!-- 📖 Visualiseur d'article, géré par viewer.js -->
+    <!-- 📖 Visualiseur d'article -->
     <section id="article-viewer">
       <div class="placeholder">
         <h2>Bienvenue dans le blog</h2>
         <p>Sélectionnez un article à gauche pour l'afficher ici.</p>
         <br><br><br><br>
         <blockquote style="font-style: italic; font-size: 0.95rem; border-left: 4px solid rgba(0,0,0,0.1); padding-left: 1rem;">
-          « Si l’IA avait existé à l’époque des pharaons, la grande bibliothèque aurait bien pu partir en cendres, la mémoire du monde, elle, n’aurait jamais brûlé. »
+          « Si l'IA avait existé à l'époque des pharaons, la grande bibliothèque aurait bien pu partir en cendres, la mémoire du monde, elle, n'aurait jamais brûlé. »
         </blockquote>
       </div>
     </section>
@@ -54,8 +51,8 @@
   <!-- 🦶 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
 
-  <!-- 📜 Scripts viewer et menu burger -->
+  <!-- 📜 Scripts -->
   <script src="/assets/js/viewer.js"></script>
-  <script src="/assets/js/viewer-menu.js"></script>
+  <script src="/assets/js/blog-menu-loader.js"></script>
 </body>
 </html>
