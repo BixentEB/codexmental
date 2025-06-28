@@ -13,7 +13,7 @@ async function loadPageMenu() {
                    document.getElementById('menu-container');
   
   if (!container) {
-    return; // Pas de conteneur = pas de menu, c'est tout
+    return; // Pas de conteneur = pas de menu
   }
 
   // Détection automatique du type de page
@@ -39,7 +39,6 @@ async function loadPageMenu() {
     
     console.log(`[MenuLoader] Menu ${pageType} chargé avec succès`);
   }
-  // Si pas de menuHTML, on ne fait rien = pas de menu affiché
 }
 
 // Fonction pour détecter le type de page
@@ -111,16 +110,24 @@ async function loadMenuFile(pageType) {
   return null;
 }
 
-// Fonction pour gérer le comportement burger (universelle)
+// Fonction pour gérer le comportement burger
 function initBurgerMenu() {
   const burger = document.getElementById("viewer-menu-burger");
   const menu = document.getElementById("viewer-menu");
   const closeBtn = document.getElementById("viewer-menu-close");
 
-  if (!burger || !menu) {
-    return; // Pas de burger ou pas de menu = pas d'interactions
+  // Si pas de burger = mode PC normal, le menu reste visible
+  if (!burger) {
+    return;
   }
 
+  // Si pas de menu = échec total
+  if (!menu) {
+    return;
+  }
+
+  // ✅ COMPORTEMENT MOBILE : burger fonctionnel
+  
   // Événement clic sur le burger
   burger.addEventListener("click", (e) => {
     e.stopPropagation();
