@@ -25,12 +25,67 @@
   <!-- 🎨 Canvas d’arrière-plan visuel (étoiles, lune…) -->
   <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
 
-  <!-- 🧠 Menu principal injecté dynamiquement par main.js -->
+  <!-- 🧠 Menu principal (injecté dynamiquement par main.js) -->
   <header id="menu-placeholder"></header>
 
   <main class="blog-layout">
-    <!-- 🎯 Sidebar Atelier – doit rester “viewer-menu” pour le viewer unifié -->
-    <aside id="viewer-menu"></aside>
+
+    <!-- ✅ DEBUT MENU ATELIER -->
+    <div id="viewer-menu-container">
+      <nav id="viewer-menu" class="blog-menu">
+        <div class="viewer-menu-header">
+          <h2>🧪 Projets de l'atelier</h2>
+          <button id="viewer-menu-close" aria-label="Fermer le menu">×</button>
+        </div>
+
+        <details open>
+          <summary>🎬 Introduction</summary>
+          <ul>
+            <li><a href="#" data-viewer="intro">🤔 Définition</a></li>
+          </ul>
+        </details>
+
+        <details open>
+          <summary>📖 Projets en cours</summary>
+          <ul>
+            <li><a href="#" data-viewer="projets/codexia">📖 Codex Mental</a></li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>🧭 Exploration futuriste</summary>
+          <ul>
+            <li><a href="#" data-viewer="explo/modelexplo">🔎 Modèle d'exploration</a></li>
+            <li><a href="#" data-viewer="explo/cryodynamic">♾️ Cryodynamique</a></li>
+            <li><a href="#" data-viewer="explo/polaris">🌬️ POLARIS</a></li>
+            <li><a href="#" data-viewer="explo/solunar">🪞 SOLUNAR</a></li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>🤖 Évolutions de l'IA</summary>
+          <ul>
+            <li><a href="#" data-viewer="aievo/b12">🧬 B12 Project</a></li>
+            <li><a href="#" data-viewer="projets/ia1">📖 IA et outils</a></li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>📲 Applications</summary>
+          <ul>
+            <li><a href="#" data-viewer="apps/heures">⏳ Heures Sacrées</a></li>
+          </ul>
+        </details>
+      </nav>
+
+      <!-- Bouton burger mobile -->
+      <button id="viewer-menu-burger" aria-label="Ouvrir le menu des projets">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <!-- ✅ FIN MENU ATELIER -->
 
     <!-- 🧱 Zone de visualisation des projets -->
     <section id="article-viewer">
@@ -48,7 +103,7 @@
   <!-- 📜 Pied de page injecté par main.js -->
   <div id="footer-placeholder"></div>
 
-  <!-- 📜 Scripts viewer et menu burger -->
+  <!-- 📜 Scripts viewer et burger -->
   <script src="/assets/js/viewer.js"></script>
   <script src="/assets/js/viewer-menu.js"></script>
 </body>
