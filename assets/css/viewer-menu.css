@@ -1,4 +1,8 @@
 /* 🌐 Base (desktop) : menu normal */
+#viewer-menu-container {
+  position: relative;
+}
+
 #viewer-menu {
   position: relative;
   width: auto;
@@ -8,69 +12,39 @@
   overflow: visible;
   transform: none;
   z-index: auto;
+  display: block;
+}
+
+/* Liens (styles complets) */
+.viewer-menu-links, 
+#viewer-menu ul {
+  list-style: none;
   padding: 0;
-  font-size: 0.95em;
-}
-
-/* Header du menu masqué sur desktop */
-.viewer-menu-header {
-  display: none;
-}
-
-/* 🟢 Section des catégories */
-#viewer-menu details {
-  margin: 0.4em 0;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  overflow: hidden;
-}
-
-#viewer-menu summary {
-  cursor: pointer;
-  padding: 0.8em 1em;
-  font-weight: bold;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-#viewer-menu summary:hover {
-  background: rgba(255,255,255,0.1);
-}
-
-#viewer-menu details[open] summary {
-  background: rgba(255,255,255,0.08);
-}
-
-/* 🟢 Liens des articles */
-#viewer-menu li {
-  list-style: none;
+  margin: 0;
 }
 
 #viewer-menu li a {
   display: block;
-  padding: 0.6em 1.2em;
-  text-decoration: none;
+  padding: 1em;
   color: inherit;
-  font-weight: normal;
-  font-size: 0.95em;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.3s;
 }
 
 #viewer-menu li a:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* 🟢 Burger bouton masqué en desktop */
+/* Bouton burger (masqué en desktop) */
 #viewer-menu-burger {
+  display: none;
   position: fixed;
   top: 70px;
   left: 10px;
   width: 30px;
   height: 30px;
   z-index: 2000;
-  display: none;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
@@ -81,7 +55,6 @@
   cursor: pointer;
 }
 
-/* Barres du burger */
 #viewer-menu-burger span {
   display: block;
   width: 80%;
@@ -90,19 +63,15 @@
   transition: 0.4s;
 }
 
-/* État ouvert burger */
-#viewer-menu-burger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(4px, 4px);
-}
-#viewer-menu-burger.open span:nth-child(2) {
-  opacity: 0;
-}
-#viewer-menu-burger.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(4px, -4px);
-}
-
-/* 🟢 Mobile : menu en overlay */
+/* 🟢 Mobile : menu en overlay burger */
 @media (max-width: 768px) {
+  #viewer-menu-container {
+    position: fixed;
+    top: 70px;
+    left: 10px;
+    z-index: 2000;
+  }
+
   #viewer-menu {
     background: var(--menu-bg, #222);
     color: #fff;
@@ -115,13 +84,28 @@
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     z-index: 1000;
-    padding: 0;
   }
 
   #viewer-menu.open {
     transform: translateX(0);
   }
 
+  #viewer-menu-burger {
+    display: flex;
+  }
+
+  /* Animation burger */
+  #viewer-menu-burger.open span:nth-child(1) {
+    transform: rotate(45deg) translate(4px, 4px);
+  }
+  #viewer-menu-burger.open span:nth-child(2) {
+    opacity: 0;
+  }
+  #viewer-menu-burger.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(4px, -4px);
+  }
+
+  /* Header mobile */
   .viewer-menu-header {
     display: flex;
     justify-content: space-between;
@@ -141,10 +125,5 @@
     color: #fff;
     font-size: 1.5em;
     cursor: pointer;
-  }
-
-  /* Bouton burger visible en mobile */
-  #viewer-menu-burger {
-    display: flex;
   }
 }
