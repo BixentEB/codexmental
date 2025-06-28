@@ -1,9 +1,9 @@
-/* =================================
-   MENU BLOG - RESPONSIVE 
-   ================================= */
+/* ========================================
+   MENU ORIGINAL - STYLE COMPACT (THÉMATIQUE)
+   ======================================== */
 
 /* ========== BASE (DESKTOP) ========== */
-#blog-menu-container {
+#blog-menu-container, #atelier-menu-container {
   position: relative;
 }
 
@@ -20,69 +20,119 @@
 #viewer-menu {
   position: relative;
   width: auto;
-  height: auto;
-  background: none;
-  color: inherit;
-  overflow: visible;
-  transform: none;
-  z-index: auto;
+  max-width: 250px;
+  background: var(--menu-bg, rgba(0, 0, 0, 0.1));
+  color: var(--menu-text, inherit);
+  border: 1px solid var(--menu-border, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px var(--menu-shadow, rgba(0, 0, 0, 0.3));
   display: block;
-  border: none;
-  box-shadow: none;
 }
 
-/* Styles des liens */
-.viewer-menu-links, 
-#viewer-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#viewer-menu li a {
-  display: block;
-  padding: 0.8em 1em;
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background 0.3s ease;
-}
-
-#viewer-menu li a:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Header du menu (masqué en desktop) */
+/* Header du menu */
 .viewer-menu-header {
-  display: none;
+  background: var(--menu-header-bg, rgba(0, 0, 0, 0.2));
+  padding: 0.8em 1em;
+  border-bottom: 1px solid var(--menu-border, rgba(255, 255, 255, 0.1));
+}
+
+.viewer-menu-header h2 {
+  margin: 0;
+  font-size: 1.1em;
+  color: var(--menu-header-text, var(--accent-color, #4FC3F7));
+  font-weight: 600;
+}
+
+#viewer-menu-close {
+  display: none; /* Masqué en desktop */
 }
 
 /* Styles pour les details/summary */
 #viewer-menu details {
-  margin-bottom: 0.5em;
+  border-bottom: 1px solid var(--menu-separator, rgba(255, 255, 255, 0.1));
+}
+
+#viewer-menu details:last-child {
+  border-bottom: none;
 }
 
 #viewer-menu summary {
-  padding: 0.8em;
+  padding: 0.8em 1em;
   cursor: pointer;
-  font-weight: 600;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  margin-bottom: 0.3em;
+  font-weight: 500;
+  background: var(--menu-section-bg, rgba(0, 0, 0, 0.1));
+  color: var(--menu-section-text, inherit);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
 }
 
 #viewer-menu summary:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--menu-section-hover, rgba(0, 0, 0, 0.2));
+  color: var(--menu-section-hover-text, var(--accent-color, #4FC3F7));
+}
+
+/* Triangle d'ouverture des details */
+#viewer-menu details > summary {
+  list-style: none;
+}
+
+#viewer-menu details > summary::-webkit-details-marker {
+  display: none;
+}
+
+#viewer-menu details > summary::before {
+  content: '▶';
+  margin-right: 0.5em;
+  transition: transform 0.3s ease;
+  font-size: 0.8em;
+  color: var(--menu-arrow, currentColor);
+}
+
+#viewer-menu details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+/* Liste des liens */
+#viewer-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: var(--menu-list-bg, rgba(0, 0, 0, 0.05));
+}
+
+#viewer-menu li {
+  border-bottom: 1px solid var(--menu-item-separator, rgba(255, 255, 255, 0.05));
+}
+
+#viewer-menu li:last-child {
+  border-bottom: none;
+}
+
+#viewer-menu li a {
+  display: block;
+  padding: 0.6em 1.5em;
+  color: var(--menu-link-text, inherit);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.9em;
+}
+
+#viewer-menu li a:hover {
+  background: var(--menu-link-hover-bg, rgba(0, 0, 0, 0.1));
+  color: var(--menu-link-hover-text, var(--accent-color, #4FC3F7));
+  padding-left: 2em;
 }
 
 /* ========== MOBILE (768px et moins) ========== */
 @media (max-width: 768px) {
   
   /* Container devient le point d'ancrage du burger */
-  #blog-menu-container {
+  #blog-menu-container, #atelier-menu-container {
     position: fixed;
-    top: 80px;
-    left: 15px;
+    top: 20px;
+    left: 20px;
     z-index: 2000;
   }
 
@@ -94,25 +144,26 @@
     align-items: center;
     width: 35px;
     height: 35px;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--burger-bg, rgba(0, 0, 0, 0.7));
+    border: 1px solid var(--burger-border, rgba(255, 255, 255, 0.3));
     border-radius: 6px;
     padding: 6px;
     cursor: pointer;
     position: relative;
     z-index: 2001;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   #viewer-menu-burger:hover {
-    background: rgba(0, 0, 0, 0.9);
+    background: var(--burger-hover-bg, rgba(0, 0, 0, 0.9));
+    border-color: var(--burger-hover-border, var(--accent-color, #4FC3F7));
   }
 
   #viewer-menu-burger span {
     display: block;
     width: 20px;
     height: 3px;
-    background: #fff;
+    background: var(--burger-lines, #fff);
     transition: all 0.3s ease;
     border-radius: 1px;
   }
@@ -136,15 +187,17 @@
     top: 0;
     left: 0;
     width: 280px;
+    max-width: none;
     height: 100vh;
-    background: var(--menu-bg, #1a1a1a);
-    color: #fff;
+    background: var(--menu-mobile-bg, var(--menu-bg, rgba(0, 0, 0, 0.9)));
+    backdrop-filter: blur(10px);
     overflow-y: auto;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     z-index: 1999;
-    border-right: 2px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    border-right: 2px solid var(--menu-mobile-border, var(--accent-color, rgba(255, 255, 255, 0.3)));
+    box-shadow: 2px 0 20px var(--menu-mobile-shadow, rgba(0, 0, 0, 0.5));
+    border-radius: 0;
   }
 
   #viewer-menu.open {
@@ -157,73 +210,68 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.2em;
-    background: var(--menu-header-bg, #333);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--menu-mobile-header-bg, var(--menu-header-bg, rgba(0, 0, 0, 0.3)));
+    border-bottom: 1px solid var(--menu-mobile-border, var(--accent-color, rgba(255, 255, 255, 0.3)));
   }
 
   .viewer-menu-header h2 {
     margin: 0;
     font-size: 1.3em;
-    color: #fff;
+    color: var(--menu-mobile-header-text, var(--accent-color, #4FC3F7));
   }
 
   #viewer-menu-close {
+    display: block;
     background: none;
     border: none;
-    color: #fff;
+    color: var(--menu-close-color, var(--accent-color, #4FC3F7));
     font-size: 1.8em;
     cursor: pointer;
     padding: 0.2em;
     line-height: 1;
+    transition: color 0.3s ease;
   }
 
   #viewer-menu-close:hover {
-    color: #ff6b6b;
+    color: var(--menu-close-hover, #ff6b6b);
+  }
+
+  /* Ajustements des summary en mobile */
+  #viewer-menu summary {
+    padding: 1em 1.2em;
+    font-size: 1em;
   }
 
   /* Ajustements des liens en mobile */
   #viewer-menu li a {
-    padding: 1em 1.2em;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    padding: 0.8em 1.5em;
+    font-size: 0.95em;
   }
 
   #viewer-menu li a:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  /* Ajustements des details en mobile */
-  #viewer-menu summary {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1em 1.2em;
-  }
-
-  #viewer-menu summary:hover {
-    background: rgba(255, 255, 255, 0.2);
+    padding-left: 2.2em;
   }
 }
 
 /* ========== OVERLAY pour fermer en cliquant dehors ========== */
 @media (max-width: 768px) {
-  #viewer-menu.open::before {
+  #viewer-menu.open::after {
     content: '';
     position: fixed;
     top: 0;
     left: 280px;
     width: calc(100vw - 280px);
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--menu-overlay, rgba(0, 0, 0, 0.6));
     z-index: -1;
   }
 }
 
-/* ========== FALLBACK erreur ========== */
-.menu-error {
-  padding: 1em;
-  background: rgba(255, 0, 0, 0.1);
-  border: 1px solid rgba(255, 0, 0, 0.3);
-  border-radius: 4px;
-  color: #ff6b6b;
-  text-align: center;
+/* ========== VARIABLES PAR DÉFAUT (si pas de thème) ========== */
+:root {
+  --menu-bg: rgba(0, 0, 0, 0.1);
+  --menu-text: inherit;
+  --menu-border: rgba(255, 255, 255, 0.1);
+  --menu-shadow: rgba(0, 0, 0, 0.3);
+  --accent-color: #4FC3F7;
 }
