@@ -120,3 +120,11 @@
     display: flex;
   }
 }
+
+/* 🟢 Mobile : renforcer le fond */
+@media (max-width: 768px) {
+  #viewer-menu {
+    background: rgba(20, 20, 30, 0.95); /* Fond presque opaque */
+    backdrop-filter: blur(4px); /* Optionnel : un léger flou derrière */
+  }
+}
