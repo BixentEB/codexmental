@@ -1,5 +1,5 @@
 /* ================
-   Menu principal
+   Menu principal (burger)
 ================= */
 .profil-nav {
   display: flex;
@@ -25,7 +25,10 @@
 }
 
 /* Responsive burger menu */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .profil-nav {
+    display: block;
+  }
   .profil-nav ul {
     display: none;
     flex-direction: column;
@@ -46,9 +49,11 @@
   flex-direction: column;
   gap: 2rem;
   padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* Blocs de contenu */
+/* Blocs de contenu optionnels */
 .bloc-cadre {
   background: #f9f9f9;
   padding: 1.5rem;
@@ -71,13 +76,19 @@
   list-style: none;
 }
 
+@media (max-width: 768px) {
+  .menu-icons-svg {
+    display: none;
+  }
+}
+
 .icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 70px;
   height: 70px;
-  background: rgba(255,255,255,0.05); /* fond léger compatible tous thèmes */
+  background: rgba(255, 255, 255, 0.05); /* fond léger compatible tous thèmes */
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -112,18 +123,3 @@
 .icon-gaming { color: #ffcc00; }
 .icon-voyages { color: #55ffee; }
 .icon-aspirations { color: #ff88ff; }
-
-/* Contenus */
-.icon-contents {
-  max-width: 600px;
-  margin: 2rem auto;
-}
-.content-block {
-  display: none;
-  background: rgba(255,255,255,0.02); /* option léger neutre */
-  padding: 1rem;
-  border-radius: 4px;
-}
-.content-block.active {
-  display: block;
-}
