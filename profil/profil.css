@@ -1,1 +1,60 @@
+/* Menu */
+.profil-nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.profil-nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profil-nav li {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+.burger-btn {
+  display: none;
+}
+
+/* Visualiseur */
+.profil-visualizer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+/* Exemple bloc cadre */
+.bloc-cadre {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+/* Exemple bloc libre */
+.bloc-libre {
+  background: none;
+  padding: 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .profil-nav ul {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+  }
+  .profil-nav.open ul {
+    display: flex;
+  }
+  .burger-btn {
+    display: block;
+  }
+}
 
