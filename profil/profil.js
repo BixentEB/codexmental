@@ -1,44 +1,51 @@
-const burgerBtn = document.querySelector('.burger-btn');
-const nav = document.querySelector('.profil-nav');
-const links = document.querySelectorAll('.profil-nav li[data-section]');
+// 🌿 Sélecteurs communs
 const visualizer = document.querySelector('.profil-visualizer');
 
-// Burger toggle
-burgerBtn.addEventListener('click', () => {
-  nav.classList.toggle('open');
-});
+// 🌟 Burger Menu
+const burgerBtn = document.querySelector('.burger-btn');
+const nav = document.querySelector('.profil-nav');
 
-// Chargement dynamique
-links.forEach(link => {
+// Toggle du menu burger
+if (burgerBtn && nav) {
+  burgerBtn.addEventListener('click', () => {
+    nav.classList.toggle('open');
+  });
+}
+
+// 🌿 Liens du Burger Menu
+document.querySelectorAll('.profil-nav li[data-section]').forEach(link => {
   link.addEventListener('click', () => {
-    const section = link.getAttribute('data-section');
-    fetch(`sections/${section}.html`)
-      .then(res => res.text())
-      .then(html => {
-        visualizer.innerHTML = html;
-        nav.classList.remove('open'); // Fermer le menu mobile
-      });
+    const section = link.dataset.section;
+    loadSection(section);
+    nav.classList.remove('open'); // Fermer le menu après clic
   });
 });
 
-// Optionnel : charger une section par défaut
-window.addEventListener('DOMContentLoaded', () => {
-  fetch(`sections/profil.html`)
-    .then(res => res.text())
+// 🌟 Boutons du menu SVG
+document.querySelectorAll('.menu-icons-svg .icon-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const section = btn.dataset.section || btn.dataset.target; // Pour compatibilité
+    loadSection(section);
+  });
+});
+
+// 🌱 Fonction centrale de chargement
+function loadSection(section) {
+  if (!section) return;
+  fetch(`sections/${section}.html`)
+    .then(res => {
+      if (!res.ok) throw new Error("Fichier introuvable");
+      return res.text();
+    })
     .then(html => {
       visualizer.innerHTML = html;
+    })
+    .catch(err => {
+      visualizer.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
     });
+}
+
+// 🌱 Section par défaut au démarrage
+window.addEventListener('DOMContentLoaded', () => {
+  loadSection('profil');
 });
-
-
-// menu dynamique svg
-document.querySelectorAll('.icon-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.content-block').forEach(div => div.classList.remove('active'));
-    const id = btn.dataset.target;
-    if (id) {
-      document.getElementById(id).classList.add('active');
-    }
-  });
-});
-
