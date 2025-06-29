@@ -7,19 +7,16 @@
   flex-wrap: wrap;
   align-items: center;
 }
-
 .profil-nav ul {
   display: flex;
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .profil-nav li {
   cursor: pointer;
   padding: 0.5rem 1rem;
 }
-
 .burger-btn {
   display: none;
 }
@@ -52,8 +49,6 @@
   max-width: 800px;
   margin: 0 auto;
 }
-
-/* Blocs de contenu optionnels */
 .bloc-cadre {
   background: #f9f9f9;
   padding: 1.5rem;
@@ -75,46 +70,35 @@
   padding: 0;
   list-style: none;
 }
-
 @media (max-width: 768px) {
   .menu-icons-svg {
     display: none;
   }
 }
-
 .icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 70px;
   height: 70px;
-  background: rgba(255, 255, 255, 0.05); /* fond léger compatible tous thèmes */
+  background: rgba(255, 255, 255, 0.05);
   border: none;
   border-radius: 8px;
   cursor: pointer;
 }
 
-/* Icône style de base */
+/* Icône style de base sans fill forcé */
 .icon-svg {
   width: 32px;
   height: 32px;
-  stroke: currentColor;
-  fill: transparent;   /* Contour vide par défaut */
-  stroke-width: 1.5;
-  opacity: 1;
-  transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.2s ease;
+  stroke: none;
+  transition: filter 0.3s ease, transform 0.2s ease;
 }
 
-/* Hover : remplissage + glow */
+/* Hover : glow + scale */
 .icon-btn:hover .icon-svg {
-  fill: currentColor;
   filter: drop-shadow(0 0 6px currentColor);
   transform: scale(1.1);
-}
-
-.icon-gaming .icon-svg {
-  fill: currentColor;
-  stroke: none;
 }
 
 /* Couleurs spécifiques par icône */
@@ -126,11 +110,7 @@
 .icon-voyages { color: #55ffee; }
 .icon-aspirations { color: #ff88ff; }
 
+/* Thème solaire : fond de bouton plus lisible */
 body.theme-solaire .icon-btn {
   background: rgba(0,0,0,0.1);
 }
-
-body.theme-solaire .icon-svg {
-  stroke: #333;
-}
-
