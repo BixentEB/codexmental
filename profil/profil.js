@@ -30,3 +30,15 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+// menu dynamique svg
+document.querySelectorAll('.icon-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.content-block').forEach(div => div.classList.remove('active'));
+    const id = btn.dataset.target;
+    if (id) {
+      document.getElementById(id).classList.add('active');
+    }
+  });
+});
+
