@@ -3,35 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Profil – Codex Mental</title>
-  <link rel="stylesheet" href="/assets/css/base.css">
-  <link rel="stylesheet" href="profil.css">
-</head>
-<body>
-  <header class="profil-header">
-    <h1>Mon Profil</h1>
-    <nav class="profil-nav">
-  <ul>
-    <li data-section="profil">Profil</li>
-    <li data-section="passions">Passions</li>
-    <li data-section="influences/influences">Influences</li>
-    <li data-section="references/references">Références</li>
-    <li data-section="gaming/gaming">Gaming</li>
-    <li data-section="voyages/voyages">Voyages</li>
-    <li data-section="aspirations">Aspirations</li>
-    <li><a href="cv.html" target="_blank">CV</a></li>
-  </ul>
-  <button class="burger-btn" aria-label="Menu">&#9776;</button>
-</nav>
-  </header>
+  <title>Profil – Codex Mental</title>
 
-  <main>
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
+
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
+
+  <!-- 🎨 Styles globaux -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <!-- 🎨 Styles spécifiques Profil -->
+  <link rel="stylesheet" href="profil.css">
+
+  <!-- ⚙️ Script principal du site -->
+  <script type="module" src="/assets/js/main.js"></script>
+</head>
+
+<body class="theme-stellaire">
+  <!-- 🌌 Canvas de fond -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu principal injecté dynamiquement -->
+  <header id="menu-placeholder"></header>
+
+  <!-- 🧱 Contenu principal -->
+  <main class="container profil-main">
+    <h1 class="text-center">Mon Profil</h1>
+
+    <!-- 🎯 Menu spécifique Profil -->
+    <nav class="profil-nav">
+      <ul>
+        <li data-section="profil">Profil</li>
+        <li data-section="passions">Passions</li>
+        <li data-section="influences/influences">Influences</li>
+        <li data-section="references/references">Références</li>
+        <li data-section="gaming/gaming">Gaming</li>
+        <li data-section="voyages/voyages">Voyages</li>
+        <li data-section="aspirations">Aspirations</li>
+        <li><a href="cv.html" target="_blank">CV</a></li>
+      </ul>
+      <button class="burger-btn" aria-label="Menu">&#9776;</button>
+    </nav>
+
+    <!-- 🌿 Visualiseur dynamique -->
     <div class="profil-visualizer">
-      <!-- Le contenu dynamique viendra ici -->
+      <!-- Le contenu dynamique s'affichera ici -->
     </div>
   </main>
 
+  <!-- 🌙 Widget lunaire (injecté dynamiquement si thème lunaire) -->
+
+  <!-- 🦶 Footer injecté dynamiquement -->
+  <div id="footer-placeholder"></div>
+
+  <!-- ⚙️ Script spécifique Profil -->
   <script src="profil.js"></script>
 </body>
 </html>
-
