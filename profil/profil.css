@@ -102,12 +102,11 @@
 
 /* Survol : remplissage + glow */
 .icon-btn:hover .icon-svg {
-  fill: currentColor;
   stroke: currentColor;
+  fill: currentColor;   /* pour remplir */
   filter: drop-shadow(0 0 6px currentColor);
   transform: scale(1.1);
 }
-
 
 /* Couleurs spécifiques par icône */
 .icon-profil { color: #88aaff; }
