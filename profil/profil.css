@@ -58,3 +58,77 @@
   }
 }
 
+
+/* MENU SVG*/
+body {
+  background: #1a1a1a;
+  color: #eee;
+  font-family: Arial, sans-serif;
+}
+
+.menu-icons-svg ul {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  background: #222;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Icône style de base */
+.icon-svg {
+  width: 32px;
+  height: 32px;
+  stroke: currentColor;
+  fill: transparent;
+  stroke-width: 1;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke 0.3s ease, fill 0.5s ease, filter 0.3s ease, transform 0.2s ease;
+}
+
+/* Survol : glow + remplissage */
+.icon-btn:hover .icon-svg {
+  stroke: currentColor;
+  fill: currentColor;
+  filter: drop-shadow(0 0 6px currentColor);
+  transform: scale(1.1);
+}
+
+/* Couleurs spécifiques par icône */
+.icon-profil { color: #88aaff; }
+.icon-passions { color: #ff6699; }
+.icon-influences { color: #66ffaa; }
+.icon-references { color: #ffaa44; }
+.icon-gaming { color: #ffcc00; }
+.icon-voyages { color: #55ffee; }
+
+/* Contenus */
+.icon-contents {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+.content-block {
+  display: none;
+  background: #252525;
+  padding: 1rem;
+  border-radius: 4px;
+}
+.content-block.active {
+  display: block;
+}
+
+
