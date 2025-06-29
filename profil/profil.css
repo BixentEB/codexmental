@@ -1,4 +1,6 @@
-/* Menu */
+/* ================
+   Menu principal
+================= */
 .profil-nav {
   display: flex;
   gap: 1rem;
@@ -22,33 +24,11 @@
   display: none;
 }
 
-/* Visualiseur */
-.profil-visualizer {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 1rem;
-}
-
-/* Exemple bloc cadre */
-.bloc-cadre {
-  background: #f9f9f9;
-  padding: 1.5rem;
-  border-radius: 8px;
-}
-
-/* Exemple bloc libre */
-.bloc-libre {
-  background: none;
-  padding: 0;
-}
-
-/* Responsive */
+/* Responsive burger menu */
 @media (max-width: 600px) {
   .profil-nav ul {
     display: none;
     flex-direction: column;
-    gap: 0;
   }
   .profil-nav.open ul {
     display: flex;
@@ -58,14 +38,30 @@
   }
 }
 
-
-/* MENU SVG*/
-body {
-  background: #1a1a1a;
-  color: #eee;
-  font-family: Arial, sans-serif;
+/* ================
+   Visualiseur
+================= */
+.profil-visualizer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
 }
 
+/* Blocs de contenu */
+.bloc-cadre {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+.bloc-libre {
+  background: none;
+  padding: 0;
+}
+
+/* ================
+   Menu icônes SVG
+================= */
 .menu-icons-svg ul {
   display: flex;
   gap: 0.5rem;
@@ -81,7 +77,7 @@ body {
   justify-content: center;
   width: 70px;
   height: 70px;
-  background: #222;
+  background: rgba(255,255,255,0.05); /* fond léger compatible tous thèmes */
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -115,6 +111,7 @@ body {
 .icon-references { color: #ffaa44; }
 .icon-gaming { color: #ffcc00; }
 .icon-voyages { color: #55ffee; }
+.icon-aspirations { color: #ff88ff; }
 
 /* Contenus */
 .icon-contents {
@@ -123,12 +120,10 @@ body {
 }
 .content-block {
   display: none;
-  background: #252525;
+  background: rgba(255,255,255,0.02); /* option léger neutre */
   padding: 1rem;
   border-radius: 4px;
 }
 .content-block.active {
   display: block;
 }
-
-
