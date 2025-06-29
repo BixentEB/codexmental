@@ -98,14 +98,17 @@
 .icon-svg {
   width: 32px;
   height: 32px;
-  stroke: currentColor;
-  fill: transparent;
+  /* On enlève fill transparent et stroke forcé */
   stroke-width: 1;
   stroke-dasharray: 1000;
   stroke-dashoffset: 0;
   opacity: 1;
-  transition: stroke 0.3s ease, fill 0.5s ease, filter 0.3s ease, transform 0.2s ease;
+  transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.2s ease;
+  /* Important: On utilise currentColor sans override agressif */
+  fill: currentColor;
+  stroke: currentColor;
 }
+
 
 .icon-gaming .icon-svg {
   fill: currentColor;
