@@ -98,16 +98,20 @@
 .icon-svg {
   width: 32px;
   height: 32px;
-  /* On enlève fill transparent et stroke forcé */
-  stroke-width: 1;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 0;
+  stroke: currentColor;
+  fill: transparent;   /* Contour vide par défaut */
+  stroke-width: 1.5;
   opacity: 1;
   transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.2s ease;
-  /* Important: On utilise currentColor sans override agressif */
-  fill: currentColor;
-  stroke: currentColor;
 }
+
+/* Hover : remplissage + glow */
+.icon-btn:hover .icon-svg {
+  fill: currentColor;
+  filter: drop-shadow(0 0 6px currentColor);
+  transform: scale(1.1);
+}
+
 
 
 .icon-gaming .icon-svg {
