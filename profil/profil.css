@@ -87,6 +87,17 @@
   cursor: pointer;
 }
 
+/* Deepseek test */
+.menu-icons-svg svg { 
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* Icône style de base : fil de fer coloré */
 .icon-svg {
   width: 32px;
