@@ -87,7 +87,7 @@
   cursor: pointer;
 }
 
-/* Icône style de base sans fill forcé */
+/* Icône style de base : fil de fer coloré */
 .icon-svg {
   width: 32px;
   height: 32px;
@@ -96,17 +96,19 @@
   stroke-width: 1.5;
   stroke-linejoin: round;
   stroke-linecap: round;
-  opacity: 1;
+  opacity: 0.7;
   transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.2s ease;
 }
 
-/* Survol : glow et scale, sans remplissage intérieur */
+/* Survol : remplissage + glow + couleur plus vive */
 .icon-btn:hover .icon-svg {
   stroke: currentColor;
-  fill: none; /* le plus important : pas de remplissage */
+  fill: currentColor;
+  opacity: 1;
   filter: drop-shadow(0 0 6px currentColor);
   transform: scale(1.1);
 }
+
 
 
 /* Couleurs spécifiques par icône */
