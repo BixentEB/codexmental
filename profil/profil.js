@@ -56,3 +56,22 @@ iconButtons.forEach(btn => {
     btn.querySelector("svg").style.opacity = "1";
   });
 });
+
+// 🌟 Sous-menus dynamiques
+document.addEventListener('click', (event) => {
+  if (event.target.matches('.sous-menu button')) {
+    const btn = event.target;
+    const sub = btn.dataset.subsection;
+    const parent = btn.closest('.profil-visualizer');
+    const section = parent.dataset.section;
+    const container = parent.querySelector('.subsection-container');
+    if (container && section) {
+      fetch(`${section}/${sub}.html`)
+        .then(res => res.text())
+        .then(html => {
+          container.innerHTML = html;
+        });
+    }
+  }
+});
+
