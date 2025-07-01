@@ -12,12 +12,11 @@ if (burgerBtn && nav) {
 }
 
 // 🌿 Liens du menu burger
-document.querySelectorAll('.profil-nav li[data-section]').forEach(link => {
+document.querySelectorAll('.profil-nav li[data-path]').forEach(link => {
   link.addEventListener('click', () => {
-    const section = link.dataset.section;
-    loadSection(section);
+    const path = link.dataset.path;
+    loadSection(path);
     nav.classList.remove('open');
-    // Retirer l'état actif des icônes
     iconButtons.forEach(btn => btn.classList.remove('active'));
   });
 });
@@ -25,18 +24,17 @@ document.querySelectorAll('.profil-nav li[data-section]').forEach(link => {
 // 🌟 Boutons du menu SVG
 iconButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    const section = btn.dataset.section || btn.dataset.target;
-    loadSection(section);
-    // Activer le bouton cliqué
+    const path = btn.dataset.path;
+    loadSection(path);
     iconButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   });
 });
 
 // 🌱 Fonction centrale de chargement
-function loadSection(section) {
-  if (!section) return;
-  fetch(`sections/${section}.html`)
+function loadSection(path) {
+  if (!path) return;
+  fetch(`sections/${path}`)
     .then(res => {
       if (!res.ok) throw new Error("Fichier introuvable");
       return res.text();
@@ -48,18 +46,6 @@ function loadSection(section) {
       visualizer.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
     });
 }
-
-// 🌱 Section par défaut si on est dans /profil/
-window.addEventListener('DOMContentLoaded', () => {
-  const currentPage = window.location.pathname;
-
-  // Si l'URL correspond à /profil/ ou /profil/index.html
-  if (/\/profil(\/(index\.html)?)?$/.test(currentPage)) {
-    loadSection('bio');
-    const bioBtn = document.querySelector('.menu-icons-svg .icon-btn[data-section="bio"]');
-    if (bioBtn) bioBtn.classList.add('active');
-  }
-});
 
 // 🌟 Survol plus clair
 iconButtons.forEach(btn => {
