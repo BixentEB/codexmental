@@ -181,12 +181,22 @@ body.theme-solaire .icon-btn {
   color: #66ffaa;
   border-color: #66ffaa;
 }
+.profil-visualizer[data-section="passions"] .sous-menu button {
+  color: #ff6699;
+  border-color: #ff6699;
+}
+.profil-visualizer[data-section="bio"] .sous-menu button {
+  color: #88aaff;
+  border-color: #88aaff;
+}
+/* etc. */
 
 /* Survol effet néon */
 .sous-menu button:hover {
   opacity: 1;
-  background: rgba(102, 255, 170, 0.1); /* léger fond */
+  background: rgba(102, 255, 170, 0.1); /* vert pale par défaut */
   box-shadow: 0 0 6px currentColor;
   transform: scale(1.05);
 }
+
 
