@@ -179,3 +179,8 @@ body.theme-solaire .icon-btn {
   box-shadow: 0 0 6px var(--accent-color, #fff);
   transform: scale(1.05);
 }
+
+.sous-menu button {
+  color: var(--accent-color, red);
+}
+
