@@ -24,7 +24,7 @@ document.querySelectorAll('.profil-nav li[data-section]').forEach(link => {
 // 🌟 Boutons du menu SVG
 document.querySelectorAll('.menu-icons-svg .icon-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const section = btn.dataset.section || btn.dataset.target; // Pour compatibilité
+    const section = btn.dataset.section || btn.dataset.target; // Compatibilité
     loadSection(section);
   });
 });
@@ -50,24 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
   loadSection('profil');
 });
 
-// Vérifie si on est en mobile (largeur max 768px)
-function toggleBurgerMenu() {
-  const nav = document.querySelector('.profil-nav');
-  if (!nav) return;
-
-  if (window.innerWidth <= 768) {
-    nav.style.display = 'block'; // Affiche sur mobile
-  } else {
-    nav.style.display = 'none'; // Cache sur desktop
-  }
-}
-
-// Exécute au chargement
-window.addEventListener('DOMContentLoaded', toggleBurgerMenu);
-// Et au redimensionnement
-window.addEventListener('resize', toggleBurgerMenu);
-
-// survol plus clair 
+// 🌟 Survol plus clair
 document.querySelectorAll(".icon-btn").forEach(btn => {
   btn.addEventListener("mouseenter", () => {
     btn.querySelector("svg").style.opacity = "0.8";
@@ -76,4 +59,3 @@ document.querySelectorAll(".icon-btn").forEach(btn => {
     btn.querySelector("svg").style.opacity = "1";
   });
 });
-
