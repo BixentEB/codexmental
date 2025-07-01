@@ -92,13 +92,14 @@
   width: 32px;
   height: 32px;
   stroke: currentColor;
-  fill: transparent;
+  fill: currentColor; /* 👈 La correction essentielle */
   stroke-width: 1.5;
   stroke-linejoin: round;
   stroke-linecap: round;
   opacity: 0.7;
   transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.2s ease;
 }
+
 
 /* Survol : remplissage + glow + couleur plus vive */
 .icon-btn:hover .icon-svg {
