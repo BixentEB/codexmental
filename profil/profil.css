@@ -41,7 +41,10 @@
 /* ================
    Visualiseur
 ================= */
-.profil-visualizer {
+.profil-visualizer,
+.profil-visualizer .subsection-container {
+  background: none;
+  color: #fff; /* ou ce que tu veux */
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -49,6 +52,7 @@
   max-width: 800px;
   margin: 0 auto;
 }
+
 .bloc-cadre {
   background: #f9f9f9;
   padding: 1.5rem;
