@@ -29,17 +29,28 @@
   <main class="container profil-main">
     
     <!-- 🌟 Sous-menu texte -->
-   <div class="subsection-container">
-  <nav class="sous-menu">
-    <button data-subsection="coeur">Coups de cœur</button>
-    <button data-subsection="playlist">Playlist</button>
-  </nav>
-  <div class="bloc-cadre">
-    <p><iframe width="560" height="315" src="https://www.youtube.com/embed/_gRMprPamvc?si=35gM36buS1zGjvWc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></p>
-  </div>
-</div>
-    
+  <main class="container profil-main">
+    <div class="subsection-container">
+      <nav class="sous-menu">
+        <button data-subsection="coeur">Coups de cœur</button>
+        <button data-subsection="playlist">Playlist</button>
+      </nav>
+      <div class="bloc-cadre">
+        <p>Choisissez une sous-catégorie ci-dessus.</p>
+      </div>
+    </div>
   </main>
+
+  <!-- 🎯 Script qui demande la couleur au bouton actif -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const activeBtn = document.querySelector('.icon-btn.active');
+    if (activeBtn) {
+      const color = getComputedStyle(activeBtn).color;
+      document.documentElement.style.setProperty('--accent-color', color);
+    }
+  });
+  </script>
 
   <!-- 🦶 Footer -->
   <div id="footer-placeholder"></div>
