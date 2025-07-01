@@ -67,3 +67,13 @@ window.addEventListener('DOMContentLoaded', toggleBurgerMenu);
 // Et au redimensionnement
 window.addEventListener('resize', toggleBurgerMenu);
 
+// survol plus clair 
+document.querySelectorAll(".icon-btn").forEach(btn => {
+  btn.addEventListener("mouseenter", () => {
+    btn.querySelector("svg").style.opacity = "0.8";
+  });
+  btn.addEventListener("mouseleave", () => {
+    btn.querySelector("svg").style.opacity = "1";
+  });
+});
+
