@@ -7,19 +7,16 @@
   flex-wrap: wrap;
   align-items: center;
 }
-
 .profil-nav ul {
   display: flex;
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .profil-nav li {
   cursor: pointer;
   padding: 0.5rem 1rem;
 }
-
 .burger-btn {
   display: none;
 }
@@ -50,13 +47,13 @@
   color: #fff;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 1rem;
+  gap: 1.5rem;
+  padding: 0;
   max-width: 800px;
   margin: 0 auto;
 }
 
-/* Bloc avec léger fond translucide */
+/* Bloc optionnel avec fond léger */
 .bloc-cadre {
   background: rgba(255,255,255,0.05);
   padding: 1.5rem;
@@ -80,13 +77,11 @@
   padding: 0;
   list-style: none;
 }
-
 @media (max-width: 768px) {
   .menu-icons-svg {
     display: none;
   }
 }
-
 .icon-btn {
   display: flex;
   align-items: center;
@@ -99,19 +94,15 @@
   cursor: pointer;
 }
 
-/* Icône style de base : contour seul visible */
+/* Icône style de base */
 .icon-svg {
   width: 32px;
   height: 32px;
   transition: all 0.3s ease;
 }
-
-/* Au repos : masquer le fond intérieur */
 .icon-svg path[opacity="0.2"] {
   fill: none;
 }
-
-/* Au repos : contour coloré léger */
 .icon-svg path:not([opacity]) {
   stroke: currentColor;
   stroke-width: 2;
@@ -120,20 +111,17 @@
   fill: none;
   opacity: 0.85;
 }
-
-/* Survol et actif : glow et remplissage */
+/* Survol et actif */
 .icon-btn:hover .icon-svg,
 .icon-btn.active .icon-svg {
   filter: drop-shadow(0 0 6px currentColor);
   transform: scale(1.1);
 }
-
 .icon-btn:hover .icon-svg path[opacity="0.2"],
 .icon-btn.active .icon-svg path[opacity="0.2"] {
   fill: currentColor;
   opacity: 0.2;
 }
-
 .icon-btn:hover .icon-svg path:not([opacity]),
 .icon-btn.active .icon-svg path:not([opacity]) {
   stroke: currentColor;
@@ -163,46 +151,45 @@ body.theme-solaire .icon-btn {
   justify-content: center;
   flex-wrap: wrap;
   gap: 1rem;
-  padding: 1rem;
-  margin: 1.5rem auto;
-  background: none; /* pas de fond opaque */
+  margin: 0.5rem auto 0 auto; /* rapproché du menu icônes */
+  padding: 0;
+  background: none;
 }
 
-/* Boutons sous-menu */
+/* Boutons sous-menu blancs par défaut */
 .sous-menu button {
   font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
   text-transform: uppercase;
   padding: 0.5rem 1rem;
-  border: 1px solid currentColor;
+  border: 1px solid #fff;
   border-radius: 4px;
   background: transparent;
-  color: currentColor;
-  opacity: 0.8;
+  color: #fff;
+  opacity: 0.9;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* Couleurs dynamiques par rubrique (ajuste au besoin) */
-.profil-visualizer[data-section="influences"] .sous-menu button {
+/* Survol/actif par couleur dynamique */
+.profil-visualizer[data-section="influences"] .sous-menu button:hover,
+.profil-visualizer[data-section="influences"] .sous-menu button:focus {
   color: #66ffaa;
   border-color: #66ffaa;
+  box-shadow: 0 0 6px #66ffaa;
+  opacity: 1;
 }
-
-.profil-visualizer[data-section="passions"] .sous-menu button {
+.profil-visualizer[data-section="passions"] .sous-menu button:hover,
+.profil-visualizer[data-section="passions"] .sous-menu button:focus {
   color: #ff6699;
   border-color: #ff6699;
+  box-shadow: 0 0 6px #ff6699;
+  opacity: 1;
 }
-
-.profil-visualizer[data-section="bio"] .sous-menu button {
+.profil-visualizer[data-section="bio"] .sous-menu button:hover,
+.profil-visualizer[data-section="bio"] .sous-menu button:focus {
   color: #88aaff;
   border-color: #88aaff;
-}
-
-/* Survol effet néon */
-.sous-menu button:hover {
+  box-shadow: 0 0 6px #88aaff;
   opacity: 1;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 6px currentColor;
-  transform: scale(1.05);
 }
