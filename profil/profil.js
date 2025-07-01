@@ -41,6 +41,9 @@ function loadSection(path) {
     })
     .then(html => {
       visualizer.innerHTML = html;
+      // Ajoute automatiquement le data-section pour la couleur
+      const sectionName = path.split("/")[0];
+      visualizer.dataset.section = sectionName;
     })
     .catch(err => {
       visualizer.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
@@ -63,10 +66,10 @@ document.addEventListener('click', (event) => {
     const btn = event.target;
     const sub = btn.dataset.subsection;
     const container = btn.closest('.profil-visualizer').querySelector('.subsection-container');
-    const sectionPath = btn.closest('.sous-menu').dataset.section; // ex: "influences"
+    const section = visualizer.dataset.section; // récupère automatiquement l'info
 
-    if (container && sectionPath && sub) {
-      fetch(`sections/${sectionPath}/${sub}.html`)
+    if (container && section && sub) {
+      fetch(`sections/${section}/${sub}.html`)
         .then(res => {
           if (!res.ok) throw new Error("Fichier introuvable");
           return res.text();
