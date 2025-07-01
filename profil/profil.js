@@ -62,16 +62,20 @@ document.addEventListener('click', (event) => {
   if (event.target.matches('.sous-menu button')) {
     const btn = event.target;
     const sub = btn.dataset.subsection;
-    const parent = btn.closest('.profil-visualizer');
-    const section = parent.dataset.section;
-    const container = parent.querySelector('.subsection-container');
-    if (container && section) {
-      fetch(`${section}/${sub}.html`)
-        .then(res => res.text())
+    const container = btn.closest('.subsection-container') || document.querySelector('.subsection-container');
+    const section = btn.closest('.profil-visualizer')?.dataset.section;
+    if (container && section && sub) {
+      fetch(`sections/${section}/${sub}.html`)
+        .then(res => {
+          if (!res.ok) throw new Error("Fichier introuvable");
+          return res.text();
+        })
         .then(html => {
           container.innerHTML = html;
+        })
+        .catch(err => {
+          container.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
         });
     }
   }
 });
-
