@@ -144,3 +144,45 @@
 body.theme-solaire .icon-btn {
   background: rgba(0,0,0,0.1);
 }
+
+/* Sous-menu centré avec fond */
+.sous-menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 1.5rem auto;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+/* Boutons du sous-menu */
+.sous-menu button {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: currentColor;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Couleur dynamique par rubrique */
+.profil-visualizer[data-section="influences"] .sous-menu button {
+  color: #66ffaa;
+  border-color: #66ffaa;
+}
+
+/* Survol effet néon */
+.sous-menu button:hover {
+  opacity: 1;
+  background: rgba(102, 255, 170, 0.1); /* léger fond */
+  box-shadow: 0 0 6px currentColor;
+  transform: scale(1.05);
+}
+
