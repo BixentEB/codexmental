@@ -129,39 +129,39 @@
 /* ================
    Sous-menu
 ================= */
+/* Sous-menu */
 .sous-menu {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 1rem;
   margin: 0.5rem auto 0 auto;
   padding: 0;
   background: none;
 }
 
-/* Boutons sous-menu */
+/* Boutons sous-menu neutres par défaut */
 .sous-menu button {
   font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
   text-transform: uppercase;
-  padding: 0.4rem 0.9rem;
-  border: 1px solid var(--theme-color, #fff);
+  padding: 0.5rem 1rem;
+  border: 1px solid #fff;
   border-radius: 4px;
   background: transparent;
-  color: var(--theme-color, #fff);
+  color: #fff;
   opacity: 0.9;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* Hover et focus */
-.sous-menu button:hover,
-.sous-menu button:focus {
+/* Hover effet néon */
+.sous-menu button:hover {
   opacity: 1;
-  background: rgba(255,255,255,0.05);
-  box-shadow: 0 0 6px var(--theme-color, #fff);
+  box-shadow: 0 0 6px currentColor;
   transform: scale(1.05);
 }
+
 
 /* Thème solaire : fond plus lisible */
 body.theme-solaire .icon-btn {
