@@ -7,19 +7,16 @@
   flex-wrap: wrap;
   align-items: center;
 }
-
 .profil-nav ul {
   display: flex;
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .profil-nav li {
   cursor: pointer;
   padding: 0.5rem 1rem;
 }
-
 .burger-btn {
   display: none;
 }
@@ -80,13 +77,11 @@
   padding: 0;
   list-style: none;
 }
-
 @media (max-width: 768px) {
   .menu-icons-svg {
     display: none;
   }
 }
-
 .icon-btn {
   display: flex;
   align-items: center;
@@ -105,12 +100,10 @@
   height: 32px;
   transition: all 0.3s ease;
 }
-
 /* Au repos : masquer le fond intérieur */
 .icon-svg path[opacity="0.2"] {
   fill: none;
 }
-
 /* Au repos : contour coloré léger */
 .icon-svg path:not([opacity]) {
   stroke: currentColor;
@@ -120,20 +113,17 @@
   fill: none;
   opacity: 0.85;
 }
-
 /* Survol et actif : glow et remplissage */
 .icon-btn:hover .icon-svg,
 .icon-btn.active .icon-svg {
   filter: drop-shadow(0 0 6px currentColor);
   transform: scale(1.1);
 }
-
 .icon-btn:hover .icon-svg path[opacity="0.2"],
 .icon-btn.active .icon-svg path[opacity="0.2"] {
   fill: currentColor;
   opacity: 0.2;
 }
-
 .icon-btn:hover .icon-svg path:not([opacity]),
 .icon-btn.active .icon-svg path:not([opacity]) {
   stroke: currentColor;
@@ -163,46 +153,29 @@ body.theme-solaire .icon-btn {
   justify-content: center;
   flex-wrap: wrap;
   gap: 1rem;
-  padding: 1rem;
-  margin: 1.5rem auto;
-  background: none; /* pas de fond opaque */
+  margin: 0.5rem auto;
+  padding: 0;
+  background: none;
 }
 
-/* Boutons sous-menu */
 .sous-menu button {
   font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
   text-transform: uppercase;
   padding: 0.5rem 1rem;
-  border: 1px solid currentColor;
+  border: 1px solid var(--accent-color, #fff);
   border-radius: 4px;
   background: transparent;
-  color: currentColor;
+  color: var(--accent-color, #fff);
   opacity: 0.8;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* Couleurs dynamiques par rubrique (ajuste au besoin) */
-.profil-visualizer[data-section="influences"] .sous-menu button {
-  color: #66ffaa;
-  border-color: #66ffaa;
-}
-
-.profil-visualizer[data-section="passions"] .sous-menu button {
-  color: #ff6699;
-  border-color: #ff6699;
-}
-
-.profil-visualizer[data-section="bio"] .sous-menu button {
-  color: #88aaff;
-  border-color: #88aaff;
-}
-
-/* Survol effet néon */
-.sous-menu button:hover {
+.sous-menu button:hover,
+.sous-menu button.active {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 6px currentColor;
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 6px var(--accent-color, #fff);
   transform: scale(1.05);
 }
