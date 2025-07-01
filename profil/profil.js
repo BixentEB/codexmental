@@ -55,9 +55,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Si l'URL correspond à /profil/ ou /profil/index.html
   if (/\/profil(\/(index\.html)?)?$/.test(currentPage)) {
-    loadSection('profil');
-    const profilBtn = document.querySelector('.menu-icons-svg .icon-btn[data-section="profil"]');
-    if (profilBtn) profilBtn.classList.add('active');
+    loadSection('bio');
+    const bioBtn = document.querySelector('.menu-icons-svg .icon-btn[data-section="bio"]');
+    if (bioBtn) bioBtn.classList.add('active');
   }
 });
 
