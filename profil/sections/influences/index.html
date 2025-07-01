@@ -1,10 +1,53 @@
-<div class="profil-visualizer" data-section="influences">
-  <nav class="sous-menu">
-    <button data-subsection="coeur">Coups de cœur</button>
-    <button data-subsection="playlist">Playlist</button>
-  </nav>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Influences – Codex Mental</title>
 
-  <div class="subsection-container">
-    <p>Choisissez une sous-catégorie.</p>
-  </div>
-</div>
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
+
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
+
+  <!-- 🎨 Styles globaux -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <!-- 🎨 Styles spécifiques Profil -->
+  <link rel="stylesheet" href="/profil/profil.css">
+
+  <!-- ⚙️ Script principal (obligatoire si tu veux le menu et la lune etc) -->
+  <script type="module" src="/assets/js/main.js"></script>
+</head>
+
+<body class="theme-stellaire">
+  <!-- 🌌 Canvas de fond -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu principal -->
+  <header id="menu-placeholder"></header>
+
+  <main class="container profil-main">
+    <h1 class="text-center">Mes Influences</h1>
+
+    <!-- 🌟 Sous-menu texte -->
+    <nav class="sous-menu influences-sous-menu">
+      <button data-subsection="coeur">Coups de cœur</button>
+      <button data-subsection="playlist">Playlist</button>
+    </nav>
+
+    <!-- 🎯 Conteneur de sous-section -->
+    <div class="subsection-container">
+      <div class="bloc-cadre">
+        <p>Choisissez une sous-catégorie ci-dessus.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 🦶 Footer injecté dynamiquement -->
+  <div id="footer-placeholder"></div>
+
+  <!-- ⚙️ Script spécifique Profil (obligatoire) -->
+  <script src="/profil/profil.js"></script>
+</body>
+</html>
