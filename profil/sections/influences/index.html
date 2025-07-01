@@ -13,10 +13,9 @@
 
   <!-- 🎨 Styles globaux -->
   <link rel="stylesheet" href="/assets/css/main.css">
-  <!-- 🎨 Styles spécifiques Profil -->
   <link rel="stylesheet" href="/profil/profil.css">
 
-  <!-- ⚙️ Script principal (obligatoire si tu veux le menu et la lune etc) -->
+  <!-- ⚙️ Script principal -->
   <script type="module" src="/assets/js/main.js"></script>
 </head>
 
@@ -31,23 +30,22 @@
     <h1 class="text-center">Mes Influences</h1>
 
     <!-- 🌟 Sous-menu texte -->
- <div class="subsection-container">
-  <nav class="sous-menu">
-    <button data-subsection="coeur">Coups de cœur</button>
-    <button data-subsection="playlist">Playlist</button>
-  </nav>
-  <div class="bloc-cadre">
-    <h2>Bienvenue dans la section Influences</h2>
-    <p>Choisissez une sous-catégorie ci-dessus pour découvrir mes inspirations musicales et culturelles.</p>
-  </div>
-</div>
-
+    <div class="subsection-container">
+      <nav class="sous-menu" data-section="influences">
+        <button data-subsection="coeur">Coups de cœur</button>
+        <button data-subsection="playlist">Playlist</button>
+      </nav>
+      <div class="bloc-cadre">
+        <h2>Bienvenue dans la section Influences</h2>
+        <p>Choisissez une sous-catégorie ci-dessus pour découvrir mes inspirations musicales et culturelles.</p>
+      </div>
+    </div>
   </main>
 
-  <!-- 🦶 Footer injecté dynamiquement -->
+  <!-- 🦶 Footer -->
   <div id="footer-placeholder"></div>
 
-  <!-- ⚙️ Script spécifique Profil (obligatoire) -->
+  <!-- ⚙️ Script spécifique Profil -->
   <script src="/profil/profil.js"></script>
 </body>
 </html>
