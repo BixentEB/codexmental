@@ -87,12 +87,12 @@
   cursor: pointer;
 }
 
-/* Icône style de base : fil de fer coloré */
+/* Icône style de base : contour fin coloré */
 .icon-svg {
   width: 32px;
   height: 32px;
   stroke: currentColor;
-  fill: currentColor; /* 👈 La correction essentielle */
+  fill: none; /* Pas de remplissage par défaut */
   stroke-width: 1.5;
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -100,17 +100,35 @@
   transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.2s ease;
 }
 
-
-/* Survol : remplissage + glow + couleur plus vive */
-.icon-btn:hover .icon-svg {
-  stroke: currentColor;
-  fill: currentColor;
-  opacity: 1;
-  filter: drop-shadow(0 0 6px currentColor);
-  transform: scale(1.1);
+/* Cache le fond duotone (le path avec opacité) au repos */
+.icon-svg path[opacity="0.2"] {
+  fill: none;
 }
 
+/* Affiche uniquement le contour au repos */
+.icon-svg path:not([opacity]) {
+  stroke: currentColor;
+}
 
+/* Survol et actif : remplissage + glow + couleur plus vive */
+.icon-btn:hover .icon-svg,
+.icon-btn.active .icon-svg {
+  opacity: 1;
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+/* Au survol et actif : remplissage léger du fond */
+.icon-btn:hover .icon-svg path[opacity="0.2"],
+.icon-btn.active .icon-svg path[opacity="0.2"] {
+  fill: currentColor;
+}
+
+/* Au survol et actif : contour plein */
+.icon-btn:hover .icon-svg path:not([opacity]),
+.icon-btn.active .icon-svg path:not([opacity]) {
+  stroke: currentColor;
+}
 
 /* Couleurs spécifiques par icône */
 .icon-profil { color: #88aaff; }
