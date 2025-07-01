@@ -87,20 +87,20 @@
   cursor: pointer;
 }
 
-/* Icône style de base : contour fin coloré */
+/* Icône style de base : contour plus visible */
 .icon-svg {
   width: 32px;
   height: 32px;
   stroke: currentColor;
-  fill: none; /* Pas de remplissage par défaut */
-  stroke-width: 1.5;
+  fill: none;
+  stroke-width: 2; /* Plus épais */
   stroke-linejoin: round;
   stroke-linecap: round;
-  opacity: 0.7;
+  opacity: 0.85; /* Plus visible */
   transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease, transform 0.2s ease;
 }
 
-/* Cache le fond duotone (le path avec opacité) au repos */
+/* Cache le fond au repos */
 .icon-svg path[opacity="0.2"] {
   fill: none;
 }
@@ -118,17 +118,19 @@
   filter: drop-shadow(0 0 6px currentColor);
 }
 
-/* Au survol et actif : remplissage léger du fond */
+/* Survol et actif : remplissage plus dense */
 .icon-btn:hover .icon-svg path[opacity="0.2"],
 .icon-btn.active .icon-svg path[opacity="0.2"] {
   fill: currentColor;
+  fill-opacity: 0.35; /* Plus intense qu'avant */
 }
 
-/* Au survol et actif : contour plein */
+/* Survol et actif : contour plein */
 .icon-btn:hover .icon-svg path:not([opacity]),
 .icon-btn.active .icon-svg path:not([opacity]) {
   stroke: currentColor;
 }
+
 
 /* Couleurs spécifiques par icône */
 .icon-profil { color: #88aaff; }
