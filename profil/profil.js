@@ -57,15 +57,16 @@ iconButtons.forEach(btn => {
   });
 });
 
-// 🌟 Sous-menus dynamiques
+// 🌟 Sous-menus dynamiques avec delegation
 document.addEventListener('click', (event) => {
   if (event.target.matches('.sous-menu button')) {
     const btn = event.target;
     const sub = btn.dataset.subsection;
-    const container = btn.closest('.subsection-container') || document.querySelector('.subsection-container');
-    const section = btn.closest('.profil-visualizer')?.dataset.section;
-    if (container && section && sub) {
-      fetch(`sections/${section}/${sub}.html`)
+    const container = btn.closest('.profil-visualizer').querySelector('.subsection-container');
+    const sectionPath = btn.closest('.sous-menu').dataset.section; // ex: "influences"
+
+    if (container && sectionPath && sub) {
+      fetch(`sections/${sectionPath}/${sub}.html`)
         .then(res => {
           if (!res.ok) throw new Error("Fichier introuvable");
           return res.text();
