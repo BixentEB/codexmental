@@ -28,6 +28,10 @@ iconButtons.forEach(btn => {
     loadSection(path);
     iconButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+
+    // 🎨 Définir la couleur héritée dynamique
+    const color = getComputedStyle(btn).color;
+    visualizer.style.setProperty('--accent-color', color);
   });
 });
 
@@ -41,7 +45,7 @@ function loadSection(path) {
     })
     .then(html => {
       visualizer.innerHTML = html;
-      // Ajoute automatiquement le data-section pour la couleur
+      // Ajoute automatiquement le data-section pour les anciens CSS si besoin
       const sectionName = path.split("/")[0];
       visualizer.dataset.section = sectionName;
     })
