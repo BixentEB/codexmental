@@ -21,7 +21,7 @@
   display: none;
 }
 
-/* Responsive burger menu */
+/* Responsive burger */
 @media (max-width: 768px) {
   .profil-nav {
     display: block;
@@ -47,20 +47,20 @@
   color: #fff;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 0;
   max-width: 800px;
   margin: 0 auto;
 }
 
-/* Bloc optionnel avec fond léger */
+/* Bloc optionnel */
 .bloc-cadre {
   background: rgba(255,255,255,0.05);
   padding: 1.5rem;
   border-radius: 8px;
 }
 
-/* Bloc totalement transparent si besoin */
+/* Bloc transparent */
 .bloc-libre {
   background: none;
   padding: 0;
@@ -93,8 +93,6 @@
   border-radius: 8px;
   cursor: pointer;
 }
-
-/* Icône style de base */
 .icon-svg {
   width: 32px;
   height: 32px;
@@ -111,7 +109,6 @@
   fill: none;
   opacity: 0.85;
 }
-/* Survol et actif */
 .icon-btn:hover .icon-svg,
 .icon-btn.active .icon-svg {
   filter: drop-shadow(0 0 6px currentColor);
@@ -129,20 +126,6 @@
   opacity: 1;
 }
 
-/* Couleurs spécifiques par icône */
-.icon-profil { color: #88aaff; }
-.icon-passions { color: #ff6699; }
-.icon-influences { color: #66ffaa; }
-.icon-references { color: #ffaa44; }
-.icon-gaming { color: #ffcc00; }
-.icon-voyages { color: #55ffee; }
-.icon-aspirations { color: #ff88ff; }
-
-/* Thème solaire : fond plus lisible */
-body.theme-solaire .icon-btn {
-  background: rgba(0,0,0,0.1);
-}
-
 /* ================
    Sous-menu
 ================= */
@@ -150,46 +133,37 @@ body.theme-solaire .icon-btn {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin: 0.5rem auto 0 auto; /* rapproché du menu icônes */
+  gap: 0.75rem;
+  margin: 0.5rem auto 0 auto;
   padding: 0;
   background: none;
 }
 
-/* Boutons sous-menu blancs par défaut */
+/* Boutons sous-menu */
 .sous-menu button {
   font-family: 'Orbitron', sans-serif;
   font-size: 0.9rem;
   text-transform: uppercase;
-  padding: 0.5rem 1rem;
-  border: 1px solid #fff;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--theme-color, #fff);
   border-radius: 4px;
   background: transparent;
-  color: #fff;
+  color: var(--theme-color, #fff);
   opacity: 0.9;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* Survol/actif par couleur dynamique */
-.profil-visualizer[data-section="influences"] .sous-menu button:hover,
-.profil-visualizer[data-section="influences"] .sous-menu button:focus {
-  color: #66ffaa;
-  border-color: #66ffaa;
-  box-shadow: 0 0 6px #66ffaa;
+/* Hover et focus */
+.sous-menu button:hover,
+.sous-menu button:focus {
   opacity: 1;
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 6px var(--theme-color, #fff);
+  transform: scale(1.05);
 }
-.profil-visualizer[data-section="passions"] .sous-menu button:hover,
-.profil-visualizer[data-section="passions"] .sous-menu button:focus {
-  color: #ff6699;
-  border-color: #ff6699;
-  box-shadow: 0 0 6px #ff6699;
-  opacity: 1;
-}
-.profil-visualizer[data-section="bio"] .sous-menu button:hover,
-.profil-visualizer[data-section="bio"] .sous-menu button:focus {
-  color: #88aaff;
-  border-color: #88aaff;
-  box-shadow: 0 0 6px #88aaff;
-  opacity: 1;
+
+/* Thème solaire : fond plus lisible */
+body.theme-solaire .icon-btn {
+  background: rgba(0,0,0,0.1);
 }
