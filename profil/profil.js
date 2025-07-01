@@ -25,13 +25,14 @@ document.querySelectorAll('.profil-nav li[data-section]').forEach(link => {
 });
 
 // 🌟 Boutons du menu SVG
-document.querySelectorAll('.menu-icons-svg .icon-btn').forEach(btn => {
+const iconButtons = document.querySelectorAll('.menu-icons-svg .icon-btn');
+iconButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     const section = btn.dataset.section || btn.dataset.target; // Compatibilité
     loadSection(section);
 
     // Retirer l'état actif de tous les boutons
-    document.querySelectorAll('.menu-icons-svg .icon-btn').forEach(b => b.classList.remove('active'));
+    iconButtons.forEach(b => b.classList.remove('active'));
     // Ajouter l'état actif à celui cliqué
     btn.classList.add('active');
   });
@@ -53,12 +54,17 @@ function loadSection(section) {
     });
 }
 
-// 🌱 Section par défaut au démarrage
+// 🌱 Section par défaut au démarrage + Activation seulement si on est dans /profil/
 window.addEventListener('DOMContentLoaded', () => {
-  loadSection('profil');
-  // Optionnel: marquer le premier bouton comme actif au chargement
-  const firstBtn = document.querySelector('.menu-icons-svg .icon-btn[data-section="profil"]');
-  if (firstBtn) firstBtn.classList.add('active');
+  const currentPage = window.location.pathname;
+
+  // Si on est dans le dossier /profil/ ou /profil/index.html
+  if (currentPage.match(/\/profil(\/(index\.html)?)?$/)) {
+    loadSection('profil');
+
+    const profilBtn = document.querySelector('.menu-icons-svg .icon-btn[data-section="profil"]');
+    if (profilBtn) profilBtn.classList.add('active');
+  }
 });
 
 // 🌟 Survol plus clair
