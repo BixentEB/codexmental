@@ -12,7 +12,7 @@ body.theme-solaire .subsection-container {
 body.theme-solaire .profil-visualizer h2,
 body.theme-solaire .profil-visualizer h3,
 body.theme-solaire .profil-visualizer h4 {
-  color: #d35c00;
+  color: #e06b00;
 }
 
 /* Liens visibles */
@@ -53,17 +53,17 @@ body.theme-solaire .sous-menu button.active {
 
 /* Accent text (les classes .accent-text) */
 body.theme-solaire .profil-visualizer .accent-text {
-  color: #cc5500;
+  color: #c14600;
 }
 body.theme-solaire .profil-visualizer .accent-text-2 {
-  color: #ff8000;
+  color: #ff6600;
 }
 body.theme-solaire .profil-visualizer .accent-text-soft {
-  color: #a25a00;
-  opacity: 0.9;
+  color: #8c4a00;
+  opacity: 1;
 }
 body.theme-solaire .profil-visualizer .accent-text-big {
-  color: #d35c00;
+  color: #e06b00;
 }
 
 /* Couleurs spécifiques par icône pour le thème solaire */
