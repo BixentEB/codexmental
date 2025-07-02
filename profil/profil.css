@@ -206,16 +206,45 @@ body.theme-solaire .icon-btn {
 }
 
 /* ================
-   Bloc full
+   Blocs de base
 ================= */
-.bloc-full {
+
+/* Transparent par défaut */
+.bloc-cadre {
+  background: none;
+  padding: 0;
+  margin: 0 auto;
   width: 100%;
   max-width: 1300px;
-  margin: 0 auto;
+}
+
+/* Bloc pleine largeur (sans max-width) */
+.bloc-full {
+  width: 100%;
+  margin: 0;
   background: none;
-  border: none;
-  border-radius: 0;
   padding: 0;
-  box-shadow: none;
+}
+
+/* Bloc avec fond discret */
+.bloc-style {
+  background: rgba(255,255,255,0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+/* Bloc avec fond clair */
+.bloc-style-clair {
+  background: rgba(255,255,255,0.15);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+/* Bloc avec fond sombre */
+.bloc-style-sombre {
+  background: rgba(0,0,0,0.3);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
