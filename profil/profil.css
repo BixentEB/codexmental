@@ -39,7 +39,7 @@
 }
 
 /* ================
-   Visualiseur
+   Visualiseur principal
 ================= */
 .profil-visualizer {
   background: none;
@@ -48,18 +48,31 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  max-width: 800px;
+  max-width: 1200px; /* + large pour PC */
   margin: 0 auto;
 }
 
-/* Bloc avec léger fond translucide */
-.bloc-cadre {
-  background: rgba(255,255,255,0.05);
-  padding: 1.5rem;
-  border-radius: 8px;
+/* ================
+   Sous-sections
+================= */
+.subsection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px; /* + large pour PC */
+  margin: 0 auto;
+  background: none;
+  color: #fff;
 }
 
-/* Bloc totalement transparent si besoin */
+/* Tout transparent par défaut */
+.bloc-cadre,
+.subsection-container .bloc-cadre,
+.subsection-container .bloc-libre {
+  background: none;
+  padding: 0;
+}
 .bloc-libre {
   background: none;
   padding: 0;
@@ -140,7 +153,7 @@ body.theme-solaire .icon-btn {
 }
 
 /* ================
-   Sous-menu
+   Sous-menu boutons
 ================= */
 .sous-menu {
   display: flex;
