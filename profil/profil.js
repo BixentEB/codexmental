@@ -1,4 +1,5 @@
 // 🌿 Sélecteurs communs
+const sousMenu = document.querySelector('.sous-menu');
 const visualizer = document.querySelector('.profil-visualizer');
 const iconButtons = document.querySelectorAll('.menu-icons-svg .icon-btn');
 const burgerBtn = document.querySelector('.burger-btn');
@@ -11,48 +12,38 @@ if (burgerBtn && nav) {
   });
 }
 
-// 🌿 Liens du menu burger
-document.querySelectorAll('.profil-nav li[data-path]').forEach(link => {
-  link.addEventListener('click', () => {
-    const path = link.dataset.path;
-    loadSection(path);
-    nav.classList.remove('open');
-    iconButtons.forEach(btn => btn.classList.remove('active'));
-  });
-});
-
 // 🌟 Boutons du menu SVG
 iconButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    const path = btn.dataset.path;
-    loadSection(path);
-    iconButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    const section = btn.dataset.path;
+    const color = getComputedStyle(btn).color;
 
     // 🎨 Définir la couleur héritée dynamique
-    const color = getComputedStyle(btn).color;
     visualizer.style.setProperty('--accent-color', color);
+    sousMenu.style.setProperty('--accent-color', color);
+
+    // Réinitialiser visualiseur
+    visualizer.innerHTML = '';
+
+    // Charger le sous-menu
+    fetch(`sections/${section}/sousmenu.html`)
+      .then(res => {
+        if (!res.ok) throw new Error("Fichier introuvable");
+        return res.text();
+      })
+      .then(html => {
+        sousMenu.innerHTML = html;
+        sousMenu.dataset.section = section; // stocke la section active
+      })
+      .catch(err => {
+        sousMenu.innerHTML = `<p style="color:red;">Erreur sous-menu : ${err.message}</p>`;
+      });
+
+    // Mettre à jour actif
+    iconButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
   });
 });
-
-// 🌱 Fonction centrale de chargement
-function loadSection(path) {
-  if (!path) return;
-  fetch(`sections/${path}`)
-    .then(res => {
-      if (!res.ok) throw new Error("Fichier introuvable");
-      return res.text();
-    })
-    .then(html => {
-      visualizer.innerHTML = html;
-      // Ajoute automatiquement le data-section
-      const sectionName = path.split("/")[0];
-      visualizer.dataset.section = sectionName;
-    })
-    .catch(err => {
-      visualizer.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
-    });
-}
 
 // 🌟 Survol plus clair
 iconButtons.forEach(btn => {
@@ -69,23 +60,22 @@ document.addEventListener('click', (event) => {
   if (event.target.matches('.sous-menu button')) {
     const btn = event.target;
     const sub = btn.dataset.subsection;
-    const container = btn.closest('.profil-visualizer').querySelector('.subsection-container');
-    const section = visualizer.dataset.section;
+    const section = sousMenu.dataset.section; // récupère la section active
 
-    if (container && section && sub) {
+    if (section && sub) {
       fetch(`sections/${section}/${sub}.html`)
         .then(res => {
           if (!res.ok) throw new Error("Fichier introuvable");
           return res.text();
         })
         .then(html => {
-          container.innerHTML = html;
+          visualizer.innerHTML = html;
         })
         .catch(err => {
-          container.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
+          visualizer.innerHTML = `<p style="color:red;">Erreur contenu : ${err.message}</p>`;
         });
 
-      // Met à jour l'état actif du bouton
+      // Mettre à jour actif
       btn.closest('.sous-menu').querySelectorAll('button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
