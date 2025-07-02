@@ -199,3 +199,10 @@ body.theme-solaire .icon-btn {
 .bloc-cadre {
   margin: 0;
 }
+
+.bloc-full {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
