@@ -213,4 +213,9 @@ body.theme-solaire .icon-btn {
   max-width: 1300px;
   margin: 0 auto;
   background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
+
