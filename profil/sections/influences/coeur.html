@@ -27,30 +27,18 @@
   <header id="menu-placeholder"></header>
 
   <main class="container profil-main">
-    
     <!-- 🌟 Sous-menu texte -->
-  <main class="container profil-main">
-    <div class="subsection-container">
-      <nav class="sous-menu">
-        <button data-subsection="coeur">Coups de cœur</button>
-        <button data-subsection="playlist">Playlist</button>
-      </nav>
-      <div class="bloc-cadre">
-        <p>Choisissez une sous-catégorie ci-dessus.</p>
-      </div>
+    <nav class="sous-menu">
+      <button data-subsection="coeur">Coups de cœur</button>
+      <button data-subsection="playlist">Playlist</button>
+    </nav>
+
+    <div class="subsection-container"></div>
+
+    <div class="bloc-cadre">
+      <p>Choisissez une sous-catégorie ci-dessus pour découvrir mes inspirations musicales et culturelles.</p>
     </div>
   </main>
-
-  <!-- 🎯 Script qui demande la couleur au bouton actif -->
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const activeBtn = document.querySelector('.icon-btn.active');
-    if (activeBtn) {
-      const color = getComputedStyle(activeBtn).color;
-      document.documentElement.style.setProperty('--accent-color', color);
-    }
-  });
-  </script>
 
   <!-- 🦶 Footer -->
   <div id="footer-placeholder"></div>
