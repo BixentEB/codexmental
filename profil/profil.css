@@ -93,6 +93,181 @@
   border-radius: 8px;
   cursor: pointer;
 }
+.icon-svg {
+  width: 32px;
+  height: 32px;
+  transition: all 0.3s ease;
+}
+.icon-svg path[opacity="0.2"] {
+  fill: none;
+}
+.icon-svg path:not([opacity]) {
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.85;
+}
+.icon-btn:hover .icon-svg,
+.icon-btn.active .icon-svg {
+  filter: drop-shadow(0 0 6px currentColor);
+  transform: scale(1.1);
+}
+.icon-btn:hover .icon-svg path[opacity="0.2"],
+.icon-btn.active .icon-svg path[opacity="0.2"] {
+  fill: currentColor;
+  opacity: 0.2;
+}
+.icon-btn:hover .icon-svg path:not([opacity]),
+.icon-btn.active .icon-svg path:not([opacity]) {
+  stroke: currentColor;
+  fill: currentColor;
+  opacity: 1;
+}
+
+/* Couleurs spécifiques par icône */
+.icon-profil { color: #88aaff; }
+.icon-passions { color: #ff6699; }
+.icon-influences { color: #66ffaa; }
+.icon-references { color: #ffaa44; }
+.icon-gaming { color: #ffcc00; }
+.icon-voyages { color: #55ffee; }
+.icon-aspirations { color: #ff88ff; }
+
+/* Thème solaire : fond plus lisible */
+body.theme-solaire .icon-btn {
+  background: rgba(0,0,0,0.1);
+}
+
+/* ================
+   Sous-menu
+================= */
+.sous-menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.5rem auto;
+  padding: 0;
+  background: none;
+}
+.sous-menu button {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent-color, #fff);
+  border-radius: 4px;
+  background: transparent;
+  color: #ffffff; /* Texte blanc par défaut */
+  opacity: 0.8;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.sous-menu button:hover,
+.sous-menu button.active {
+  opacity: 1;
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 6px var(--accent-color, #fff);
+  color: var(--accent-color, #fff);
+  transform: scale(1.05);
+}
+/* ================
+   Menu principal (burger)
+================= */
+.profil-nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.profil-nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.profil-nav li {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+.burger-btn {
+  display: none;
+}
+
+/* Responsive burger menu */
+@media (max-width: 768px) {
+  .profil-nav {
+    display: block;
+  }
+  .profil-nav ul {
+    display: none;
+    flex-direction: column;
+  }
+  .profil-nav.open ul {
+    display: flex;
+  }
+  .burger-btn {
+    display: block;
+  }
+}
+
+/* ================
+   Visualiseur
+================= */
+.profil-visualizer,
+.profil-visualizer .subsection-container {
+  background: none;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Bloc avec léger fond translucide */
+.bloc-cadre {
+  background: rgba(255,255,255,0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+/* Bloc totalement transparent si besoin */
+.bloc-libre {
+  background: none;
+  padding: 0;
+}
+
+/* ================
+   Menu icônes SVG
+================= */
+.menu-icons-svg ul {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 768px) {
+  .menu-icons-svg {
+    display: none;
+  }
+}
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
 /* Icône style de base : contour seul visible */
 .icon-svg {
