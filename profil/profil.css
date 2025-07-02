@@ -248,3 +248,27 @@ body.theme-solaire .icon-btn {
   gap: 1.5rem;
   padding-top: 1.5rem;
 }
+
+/*ACCENTUATION ET COLORATION TEXTES*/
+/* Accent principal (couleur du thème) */
+.profil-visualizer .accent-text {
+  color: var(--accent-primary);
+}
+
+/* Accent secondaire (couleur hover ou complémentaire) */
+.profil-visualizer .accent-text-2 {
+  color: var(--accent-hover);
+}
+
+/* Accent discret (plus doux) */
+.profil-visualizer .accent-text-soft {
+  color: var(--text-secondary, var(--text-primary));
+  opacity: 0.8;
+}
+
+/* Accent important (plus gros) */
+.profil-visualizer .accent-text-big {
+  color: var(--accent-primary);
+  font-size: 1.2em;
+  font-weight: 600;
+}
