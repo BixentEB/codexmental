@@ -45,7 +45,7 @@ function loadSection(path) {
     })
     .then(html => {
       visualizer.innerHTML = html;
-      // Ajoute automatiquement le data-section pour les anciens CSS si besoin
+      // Ajoute automatiquement le data-section
       const sectionName = path.split("/")[0];
       visualizer.dataset.section = sectionName;
     })
@@ -70,7 +70,7 @@ document.addEventListener('click', (event) => {
     const btn = event.target;
     const sub = btn.dataset.subsection;
     const container = btn.closest('.profil-visualizer').querySelector('.subsection-container');
-    const section = visualizer.dataset.section; // récupère automatiquement l'info
+    const section = visualizer.dataset.section;
 
     if (container && section && sub) {
       fetch(`sections/${section}/${sub}.html`)
@@ -84,6 +84,10 @@ document.addEventListener('click', (event) => {
         .catch(err => {
           container.innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
         });
+
+      // Met à jour l'état actif du bouton
+      btn.closest('.sous-menu').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     }
   }
 });
