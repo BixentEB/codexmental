@@ -1,0 +1,69 @@
+/* ================
+   Thème solaire – Profil
+================= */
+
+/* Texte général plus sombre */
+body.theme-solaire .profil-visualizer,
+body.theme-solaire .subsection-container {
+  color: #3b2a0f;
+}
+
+/* Titres plus punchy */
+body.theme-solaire .profil-visualizer h2,
+body.theme-solaire .profil-visualizer h3,
+body.theme-solaire .profil-visualizer h4 {
+  color: #d35c00;
+}
+
+/* Liens visibles */
+body.theme-solaire .profil-visualizer a {
+  color: #cc5500;
+}
+body.theme-solaire .profil-visualizer a:hover {
+  color: #ff8000;
+}
+
+/* Icônes SVG du menu plus contrastées */
+body.theme-solaire .menu-icons-svg .icon-btn {
+  background: rgba(0,0,0,0.1);
+}
+
+body.theme-solaire .menu-icons-svg .icon-svg path:not([opacity]) {
+  stroke: #333; /* gris foncé */
+}
+
+/* Sous-menu boutons plus visibles */
+body.theme-solaire .sous-menu button {
+  border: 1px solid #cc5500;
+  color: #cc5500;
+}
+body.theme-solaire .sous-menu button:hover,
+body.theme-solaire .sous-menu button.active {
+  background: rgba(0,0,0,0.1);
+  box-shadow: 0 0 6px #cc5500;
+  color: #ff8000;
+}
+
+/* Accent text (les classes .accent-text) */
+body.theme-solaire .profil-visualizer .accent-text {
+  color: #cc5500;
+}
+body.theme-solaire .profil-visualizer .accent-text-2 {
+  color: #ff8000;
+}
+body.theme-solaire .profil-visualizer .accent-text-soft {
+  color: #a25a00;
+  opacity: 0.9;
+}
+body.theme-solaire .profil-visualizer .accent-text-big {
+  color: #d35c00;
+}
+
+/* Couleurs spécifiques par icône pour le thème solaire */
+body.theme-solaire .icon-profil { color: #d35400; }
+body.theme-solaire .icon-passions { color: #f39c12; }
+body.theme-solaire .icon-influences { color: #e67e22; }
+body.theme-solaire .icon-references { color: #ca6f1e; }
+body.theme-solaire .icon-gaming { color: #af601a; }
+body.theme-solaire .icon-voyages { color: #b9770e; }
+body.theme-solaire .icon-aspirations { color: #d35400; }
