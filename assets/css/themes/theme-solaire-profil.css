@@ -29,7 +29,13 @@ body.theme-solaire .menu-icons-svg .icon-btn {
 }
 
 body.theme-solaire .menu-icons-svg .icon-svg path:not([opacity]) {
-  stroke: #333; /* gris foncé */
+  stroke: #6b3b00; /* marron foncé plus lisible */
+}
+
+/* Icônes SVG au survol ou actif */
+body.theme-solaire .menu-icons-svg .icon-btn:hover .icon-svg path:not([opacity]),
+body.theme-solaire .menu-icons-svg .icon-btn.active .icon-svg path:not([opacity]) {
+  stroke: #ff8000;
 }
 
 /* Sous-menu boutons plus visibles */
@@ -42,6 +48,7 @@ body.theme-solaire .sous-menu button.active {
   background: rgba(0,0,0,0.1);
   box-shadow: 0 0 6px #cc5500;
   color: #ff8000;
+  border-color: #ff8000;
 }
 
 /* Accent text (les classes .accent-text) */
@@ -67,3 +74,8 @@ body.theme-solaire .icon-references { color: #ca6f1e; }
 body.theme-solaire .icon-gaming { color: #af601a; }
 body.theme-solaire .icon-voyages { color: #b9770e; }
 body.theme-solaire .icon-aspirations { color: #d35400; }
+
+/* Optionnel: plus de contraste sur les titres principaux */
+body.theme-solaire .profil-visualizer h2 {
+  color: #e67e22;
+}
