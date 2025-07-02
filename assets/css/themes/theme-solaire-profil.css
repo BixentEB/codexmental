@@ -23,20 +23,21 @@ body.theme-solaire .profil-visualizer a:hover {
   color: #ff8000;
 }
 
-/* Icônes SVG du menu plus contrastées */
-body.theme-solaire .menu-icons-svg .icon-btn {
-  background: rgba(0,0,0,0.1);
-}
-
+/* Icônes SVG du menu plus visibles même inactives */
 body.theme-solaire .menu-icons-svg .icon-svg path:not([opacity]) {
-  stroke: #6b3b00; /* marron foncé plus lisible */
+  stroke: #6b3b00;        /* marron foncé plus lisible */
+  opacity: 0.85;          /* un peu plus opaque */
+  stroke-width: 1.5;      /* légèrement épaissi */
 }
 
 /* Icônes SVG au survol ou actif */
 body.theme-solaire .menu-icons-svg .icon-btn:hover .icon-svg path:not([opacity]),
 body.theme-solaire .menu-icons-svg .icon-btn.active .icon-svg path:not([opacity]) {
   stroke: #ff8000;
+  opacity: 1;
+  stroke-width: 2;        /* plus fort au survol/actif */
 }
+
 
 /* Sous-menu boutons plus visibles */
 body.theme-solaire .sous-menu button {
