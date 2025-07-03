@@ -2,7 +2,7 @@ let player;
 let isPlaying = false;
 
 // Remplace par TON ID de playlist YouTube
-const playlistId = "PLT-yriVgmcnC9pZ3EtA08WmtcBGWjwxkt&si=8cuZ5xJGC3nnGhhg";
+const playlistId = "PLT-yriVgmcnC9pZ3EtA08WmtcBGWjwxkt";
 
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
