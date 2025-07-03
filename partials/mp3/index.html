@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prototype Lecteur Musique</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Bandeau principal -->
+  <header id="main-banner">
+    <div id="music-icon">&#127925;</div>
+    <div id="visualizer-container">
+      <div id="visualizer">
+        <!-- barres animées -->
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div id="track-title">Titre en cours...</div>
+    </div>
+  </header>
+
+  <!-- Sous-bandeau des contrôles -->
+  <div id="controls-bar" class="hidden">
+    <button id="play">▶️</button>
+    <button id="pause">⏸️</button>
+    <button id="prev">⏮️</button>
+    <button id="next">⏭️</button>
+    <button id="repeat">🔁</button>
+    <input type="range" id="volume" min="0" max="100" value="50">
+    <button id="playlist-toggle">📋 Playlist</button>
+  </div>
+
+  <!-- Playlist déroulante -->
+  <div id="playlist" class="hidden">
+    <ul>
+      <li data-index="0">Musique 1</li>
+      <li data-index="1">Musique 2</li>
+      <li data-index="2">Musique 3</li>
+    </ul>
+  </div>
+
+  <!-- Iframe YouTube caché -->
+  <div id="player-container">
+    <div id="player"></div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="script.js"></script>
+</body>
+</html>
