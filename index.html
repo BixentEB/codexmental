@@ -4,16 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Codex Mental - Intro</title>
+
   <!-- 🌞 Favicon -->
-  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
-  
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" />
+
+  <!-- 🌄 Préchargement image de fond -->
+  <link rel="preload" href="/img/vue-du-bateau-sur-l-eau-la-nuit.jpg" as="image" />
+
+  <!-- 🎨 CSS -->
   <link rel="stylesheet" href="/assets/css/intro.css" />
-  
 </head>
 <body>
   <div id="intro-container">
+    <!-- Image de fond : utile uniquement si tu veux l'animation de zoom -->
     <img src="/img/vue-du-bateau-sur-l-eau-la-nuit.jpg" alt="Codex Mental - Intro" id="intro-bg" />
+
+    <!-- Canvas des étoiles -->
     <canvas id="stars-canvas"></canvas>
+
+    <!-- Contenu centré -->
     <div id="intro-content">
       <img src="/img/logocm1.png" alt="Logo Codex Mental" id="intro-logo" />
       <h1>CODEX MENTAL</h1>
@@ -22,6 +31,8 @@
       <button id="enter-btn">Entrer</button>
     </div>
   </div>
+
+  <!-- ⭐ Scripts -->
   <script src="/assets/js/intro.js"></script>
 </body>
 </html>
