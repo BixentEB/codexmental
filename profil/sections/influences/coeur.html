@@ -1,10 +1,38 @@
+<style>
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Ratio 16:9 */
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+</style>
+
 <section class="bloc-cadre">
   <h3>🎵 Mes Coups de cœur musicaux</h3>
   <p>Voici mes inspirations...</p>
 
   <section class="bloc-style-sombre">
     <p class="accent-text-big">[TL Unreleased] Crimson Leader – Kaiser Crimson Theme</p>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/_gRMprPamvc?si=aMKmdgQisjqhEwHX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/_gRMprPamvc?si=aMKmdgQisjqhEwHX"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
 
     <p>
       ■ <strong>Jeu :</strong> Throne and Liberty (unreleased)<br>
@@ -13,11 +41,9 @@
       <em>Bande originale du combat contre le boss Crimson Leader.</em>
     </p>
 
-    <p>
-    <span class="accent-text-soft">C’est une musique que j’écoute en boucle ces derniers temps. Elle me donne une vraie énergie, surtout le passage plus aigu au violon vers 2:08.</span>
+    <p><span class="accent-text-soft">C’est une musique que j’écoute en boucle ces derniers temps. Elle me donne une vraie énergie, surtout le passage plus aigu au violon vers 2:08.</span></p>
     <p><span class="accent-text-2">C’est étrange, car c’est un donjon que je n’aime pas spécialement : le boss est exigeant et la moindre erreur prolonge le combat, d’autant que la mécanique demande une vraie coordination de l’équipe. Mais avec ce thème, l’expérience devient presque méditative. Je pourrais y rester des heures.</span></p>
-    <span class="accent-text-soft">Le début est joué avec un violon assez sombre qui installe l’ambiance, puis l’arrivée de la partie plus épique (2:08) donne un vrai coup de magie énergique à cette musique.</span>
-   </p>
+    <p><span class="accent-text-soft">Le début est joué avec un violon assez sombre qui installe l’ambiance, puis l’arrivée de la partie plus épique (2:08) donne un vrai coup de magie énergique à cette musique.</span></p>
     
   </section>
 </section>
