@@ -142,6 +142,15 @@ body:not(.theme-lunaire) #article-viewer {
   padding: 0 1rem;
 }
 
+/* Décalage automatique des ancres ciblées par les liens du sommaire */
+[id]:target::before {
+  content: "";
+  display: block;
+  height: 80px; /* Ajuste ici si ton menu est plus petit ou plus grand */
+  margin-top: -80px;
+}
+
+
 @media screen and (max-width: 768px) {
   .blog-layout {
     flex-direction: column;
