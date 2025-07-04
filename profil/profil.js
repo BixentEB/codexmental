@@ -93,3 +93,33 @@ if (window.innerWidth <= 768) {
     mobileContainer.appendChild(clone);
   }
 }
+
+// 🌟 Activer les boutons du menu mobile
+const mobileIconButtons = document.querySelectorAll('.mobile-icons-menu .icon-btn');
+mobileIconButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const section = btn.dataset.path;
+    const color = getComputedStyle(btn).color;
+
+    visualizer.style.setProperty('--accent-color', color);
+    sousMenu.style.setProperty('--accent-color', color);
+
+    visualizer.innerHTML = '';
+
+    fetch(`sections/${section}/sousmenu.html`)
+      .then(res => {
+        if (!res.ok) throw new Error("Fichier introuvable");
+        return res.text();
+      })
+      .then(html => {
+        sousMenu.innerHTML = html;
+        sousMenu.dataset.section = section;
+      })
+      .catch(err => {
+        sousMenu.innerHTML = `<p style="color:red;">Erreur sous-menu : ${err.message}</p>`;
+      });
+
+    mobileIconButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
