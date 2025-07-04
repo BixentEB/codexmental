@@ -37,7 +37,12 @@ function animateStars() {
 }
 animateStars();
 
-// Estompe automatique après 5 sec
+// Affiche le bouton après 4 sec
 setTimeout(() => {
-  document.getElementById('intro-container').classList.add('fade-out');
-}, 5000);
+  document.getElementById('enter-btn').classList.add('visible');
+}, 4000);
+
+// Clic sur le bouton => redirection
+document.getElementById('enter-btn').addEventListener('click', () => {
+  window.location.href = "/home.html"; // adapte ici le nom de ta page principale
+});
