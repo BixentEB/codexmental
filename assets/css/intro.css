@@ -15,7 +15,8 @@ html, body {
   height: 100%;
   overflow: hidden;
   z-index: 9999;
-  background: black; /* fallback si l'image tarde */
+  background: url('/img/vue-du-bateau-sur-l-eau-la-nuit.jpg') center center / cover no-repeat black;
+
 }
 
 /* Image plein écran */
