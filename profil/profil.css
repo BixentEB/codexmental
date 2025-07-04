@@ -282,15 +282,15 @@ body.theme-solaire .icon-btn {
 /* Afficher et styliser uniquement en mobile */
 @media (max-width: 768px) {
   #mobile-icons-container {
-    display: block;
-    position: sticky;
-    top: 70px; /* hauteur de ton header */
-    z-index: 20;
-    background: transparent;
-    backdrop-filter: none;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
+    #mobile-icons-container {
+  position: fixed;
+  top: 64px; /* hauteur de ton header */
+  left: 0;
+  width: 100%;
+  z-index: 999; /* priorité absolue */
+  background: transparent;
+  backdrop-filter: none;
+}
 
   
   .mobile-icons-menu {
