@@ -317,5 +317,11 @@ body.theme-solaire .icon-btn {
     width: 24px;
     height: 24px;
   }
+
+   @media (max-width: 768px) {
+  .sous-menu {
+  margin-top: calc(90px + 50px); /* top + hauteur icônes */
+  }
 }
+
 
