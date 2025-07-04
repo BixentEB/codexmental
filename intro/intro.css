@@ -1,0 +1,72 @@
+/* Conteneur principal */
+#intro-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+/* Image plein écran avec mouvement */
+#intro-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: slowZoom 30s ease-in-out infinite alternate;
+}
+
+/* Animation de zoom/translation */
+@keyframes slowZoom {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.05) translate(0, -1%);
+  }
+}
+
+/* Canvas des étoiles */
+#stars-canvas {
+  position: absolute;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  pointer-events: none;
+}
+
+/* Texte centré et masqué au départ */
+#intro-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  opacity: 0;
+  animation: fadeInText 3s forwards 1s;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Animation d'apparition du texte */
+@keyframes fadeInText {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Signature en style manuscrit */
+.signature {
+  display: block;
+  margin-top: 1em;
+  font-family: cursive;
+  font-size: 1.5em;
+}
+
+/* Estompe après délai */
+#intro-container.fade-out {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
+}
