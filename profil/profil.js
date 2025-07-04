@@ -81,3 +81,15 @@ document.addEventListener('click', (event) => {
     }
   }
 });
+
+// 🌟 Duplication dynamique du menu icônes pour mobile uniquement
+if (window.innerWidth <= 768) {
+  const menu = document.querySelector('.menu-icons-svg ul');
+  const mobileContainer = document.getElementById('mobile-icons-container');
+  if (menu && mobileContainer) {
+    // Clone du <ul>
+    const clone = menu.cloneNode(true);
+    clone.classList.add('mobile-icons-menu');
+    mobileContainer.appendChild(clone);
+  }
+}
