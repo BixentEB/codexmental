@@ -6,11 +6,12 @@ html, body {
   background: #00172B;
 }
 
-/* Conteneur proportionnel */
+/* Conteneur proportionnel avec minimum de hauteur */
 #intro-container {
   position: relative;
   width: 100%;
-  padding-top: 150%; /* Ajuste le ratio ici */
+  padding-top: 150%; /* Ratio hauteur/largeur */
+  min-height: 100vh; /* Toujours au moins plein écran */
   background: url('/img/vue-du-bateau-sur-l-eau-la-nuit.jpg') center top no-repeat;
   background-size: cover;
   color: white;
@@ -40,7 +41,7 @@ html, body {
   animation: fadeInText 3s forwards 1s;
 }
 
-/* Animation texte */
+/* Animation apparition texte */
 @keyframes fadeInText {
   to {
     opacity: 1;
@@ -69,22 +70,4 @@ html, body {
 /* Hover bouton */
 #enter-btn:hover {
   background: rgba(255,255,255,0.1);
-}
-
-/* Indicateur scroll */
-#scroll-indicator {
-  margin-top: 2em;
-  font-size: 2em;
-  opacity: 0.6;
-  animation: bounce 2s infinite;
-}
-
-/* Animation flèche */
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
 }
