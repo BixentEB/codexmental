@@ -320,7 +320,7 @@ body.theme-solaire .icon-btn {
 
    @media (max-width: 768px) {
   .sous-menu {
-  margin-top: calc(90px + 50px); /* top + hauteur icônes */
+   margin-top: 100px; /* adapte cette valeur si besoin */
   }
 }
 
