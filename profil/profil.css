@@ -286,15 +286,15 @@ body.theme-solaire .icon-btn {
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(6px);
+    background: transparent;
+    backdrop-filter: none;
     padding: 0.25rem 0;
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
   .mobile-icons-menu {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly; /* au lieu de space-around */
     gap: 0.2rem;
     padding: 0;
     margin: 0;
