@@ -86,6 +86,14 @@ blockquote {
   opacity: 0.85;
 }
 
+/* Lien caché */
+.secret-link {
+  color: inherit;            /* même couleur que le texte */
+  text-decoration: none;     /* pas de souligné */
+  cursor: pointer;           /* main au survol */
+}
+
+
 
 /* 📱 Responsive : centré sur grand écran, gauche sur mobile */
 .text-center-desktop-left-mobile {
