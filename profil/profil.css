@@ -284,7 +284,7 @@ body.theme-solaire .icon-btn {
   #mobile-icons-container {
     display: block;
     position: sticky;
-    top: 0;
+    top: 60px; /* hauteur de ton header */
     z-index: 20;
     background: transparent;
     backdrop-filter: none;
@@ -292,6 +292,7 @@ body.theme-solaire .icon-btn {
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
+  
   .mobile-icons-menu {
     display: flex;
     justify-content: space-evenly; /* au lieu de space-around */
