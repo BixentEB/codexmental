@@ -1,12 +1,3 @@
-// Cible l'image de préchargement
-const preloadImg = document.getElementById('preload-img');
-
-// Quand l'image est chargée
-preloadImg.onload = () => {
-  startCanvas();
-};
-
-// Fonction qui initialise le canvas étoiles
 function startCanvas() {
   const canvas = document.getElementById('stars-canvas');
   const ctx = canvas.getContext('2d');
@@ -18,7 +9,6 @@ function startCanvas() {
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
-  // Création des étoiles
   const stars = [];
   for (let i = 0; i < 120; i++) {
     stars.push({
@@ -47,6 +37,9 @@ function startCanvas() {
 
   animateStars();
 }
+
+// Lancer le canvas au chargement
+startCanvas();
 
 // Bouton Entrer
 document.getElementById('enter-btn').addEventListener('click', () => {
