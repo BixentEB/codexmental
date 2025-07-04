@@ -284,30 +284,30 @@ body.theme-solaire .icon-btn {
   #mobile-icons-container {
     display: block;
     position: fixed;
-    top: 70px; /* hauteur de ton header */
+    top: 90px;
     left: 0;
     width: 100%;
-    z-index: 999; /* priorité absolue */
+    z-index: 999;
     background: transparent;
     backdrop-filter: none;
   }
 
   .mobile-icons-menu {
     display: flex;
-    justify-content: space-evenly; /* pour bien répartir */
-    gap: 0.2rem;
-    padding: 0;
+    justify-content: center; /* centré + gap uniforme */
+    padding: 0 0.5rem; /* un peu de marge sur les côtés */
+    gap: 0.5rem; /* espace régulier entre les boutons */
     margin: 0;
     list-style: none;
   }
 
   .mobile-icons-menu li {
-    flex: 1 1 auto;
+    flex: 1 0 0; /* chaque icône occupe une largeur identique */
   }
 
   .mobile-icons-menu button {
     flex-direction: column;
-    width: auto;
+    width: 100%; /* remplir toute la largeur attribuée */
     height: auto;
     padding: 0.3rem 0.2rem;
     border-radius: 6px;
@@ -318,3 +318,4 @@ body.theme-solaire .icon-btn {
     height: 24px;
   }
 }
+
