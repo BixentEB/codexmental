@@ -9,6 +9,7 @@ import '/assets/js/theme-special.js';
 import '/assets/js/theme-cards.js';
 import '/assets/js/anti-copy.js';
 import '/assets/js/viewer.js'; // ✅ nouveau moteur unifié blog + atelier
+import '/assets/js/cookie.js';
 
 // === 🔧 Modules à fonctions exportées ===
 import { setTheme } from '/assets/js/theme-engine.js';
