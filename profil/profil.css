@@ -282,20 +282,19 @@ body.theme-solaire .icon-btn {
 /* Afficher et styliser uniquement en mobile */
 @media (max-width: 768px) {
   #mobile-icons-container {
-    #mobile-icons-container {
-  position: fixed;
-  top: 64px; /* hauteur de ton header */
-  left: 0;
-  width: 100%;
-  z-index: 999; /* priorité absolue */
-  background: transparent;
-  backdrop-filter: none;
-}
+    display: block;
+    position: fixed;
+    top: 64px; /* hauteur de ton header */
+    left: 0;
+    width: 100%;
+    z-index: 999; /* priorité absolue */
+    background: transparent;
+    backdrop-filter: none;
+  }
 
-  
   .mobile-icons-menu {
     display: flex;
-    justify-content: space-evenly; /* au lieu de space-around */
+    justify-content: space-evenly; /* pour bien répartir */
     gap: 0.2rem;
     padding: 0;
     margin: 0;
