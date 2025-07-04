@@ -1,18 +1,20 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
   font-family: 'Orbitron', sans-serif;
   overflow-x: hidden;
+  background: #00172B;
 }
 
-/* Section avec fond + scroll */
-#intro-section {
-  min-height: 200vh; /* Hauteur suffisante pour défiler */
-  background: #00172B url('/img/vue-du-bateau-sur-l-eau-la-nuit.jpg') center top no-repeat;
-  background-size: cover;
+/* Conteneur proportionnel */
+#intro-container {
   position: relative;
+  width: 100%;
+  padding-top: 150%; /* Ajuste le ratio ici */
+  background: url('/img/vue-du-bateau-sur-l-eau-la-nuit.jpg') center top no-repeat;
+  background-size: cover;
   color: white;
+  overflow: hidden;
 }
 
 /* Canvas étoiles */
@@ -26,12 +28,14 @@ html, body {
   z-index:1;
 }
 
-/* Contenu */
+/* Contenu centré */
 #intro-content {
-  position: relative;
-  z-index:2;
-  padding-top: 20vh;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
   text-align: center;
+  z-index:2;
   opacity: 0;
   animation: fadeInText 3s forwards 1s;
 }
