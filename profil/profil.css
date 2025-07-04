@@ -284,7 +284,7 @@ body.theme-solaire .icon-btn {
   #mobile-icons-container {
     display: block;
     position: fixed;
-    top: 64px; /* hauteur de ton header */
+    top: 70px; /* hauteur de ton header */
     left: 0;
     width: 100%;
     z-index: 999; /* priorité absolue */
