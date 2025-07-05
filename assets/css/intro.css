@@ -32,7 +32,7 @@ html, body {
 /* Animation de zoom lent */
 @keyframes slowZoom {
   0% {
-    transform: scale(1.05); /* Démarre déjà zoomé un peu */
+    transform: scale(1.07); /* Démarre déjà zoomé un peu */
   }
   100% {
     transform: scale(1.1);  /* Zoom un peu plus */
