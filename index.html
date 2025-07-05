@@ -4,23 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Codex Mental - Intro</title>
-  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" />
-  <link rel="stylesheet" href="/assets/css/intro.css" />
-  <!-- Préchargement image -->
   <link rel="preload" href="/img/vue-du-bateau-sur-l-eau-la-nuit.jpg" as="image" />
+  <link rel="stylesheet" href="/assets/css/intro.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Pacifico&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div id="intro-container">
     <img src="/img/vue-du-bateau-sur-l-eau-la-nuit.jpg" alt="Codex Mental - Intro" id="intro-bg" />
     <canvas id="stars-canvas"></canvas>
+    
     <div id="intro-content">
       <img src="/img/logocm1.png" alt="Logo Codex Mental" id="intro-logo" />
       <h1>CODEX MENTAL</h1>
-      <p>Un laboratoire d’idées et de codes</p>
-      <span class="signature">Vincero</span>
-      <button id="enter-btn">Entrer</button>
+      <p class="subtitle">Un laboratoire d’idées et de codes</p>
     </div>
+
+    <div id="signature">by Vincero</div>
+    <button id="enter-btn">Entrer</button>
   </div>
+  
   <script src="/assets/js/intro.js"></script>
 </body>
 </html>
