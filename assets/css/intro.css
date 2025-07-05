@@ -29,10 +29,14 @@ html, body {
   animation: slowZoom 30s ease-in-out infinite alternate;
 }
 
-/* Zoom lent */
+/* Animation de zoom lent */
 @keyframes slowZoom {
-  0% { transform: scale(1) translate(0,0); }
-  100% { transform: scale(1.05) translate(0,-1%); }
+  0% {
+    transform: scale(1.05); /* Démarre déjà zoomé un peu */
+  }
+  100% {
+    transform: scale(1.1);  /* Zoom un peu plus */
+  }
 }
 
 /* Canvas étoiles */
