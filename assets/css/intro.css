@@ -31,12 +31,8 @@ html, body {
 
 /* Zoom lent */
 @keyframes slowZoom {
-  0% {
-    transform: scale(1) translate(0,0);
-  }
-  100% {
-    transform: scale(1.05) translate(0,-1%);
-  }
+  0% { transform: scale(1) translate(0,0); }
+  100% { transform: scale(1.05) translate(0,-1%); }
 }
 
 /* Canvas étoiles */
@@ -72,20 +68,20 @@ html, body {
 #intro-content h1 {
   color: white;
   opacity: 0;
-  margin: 0.5em 0;
+  margin: 0.3em 0;
   animation: fadeInText 2s forwards 1s;
 }
 
-/* Phrase d'accroche */
-#intro-content p {
+/* Phrase */
+.subtitle {
   color: white;
   opacity: 0;
-  margin: 0.5em 0;
+  margin: 0.3em 0;
   animation: fadeInText 2s forwards 2s;
 }
 
 /* Signature en bas droite */
-#intro-content .signature {
+#signature {
   color: white;
   font-family: 'Pacifico', cursive;
   font-size: 1.2em;
@@ -94,6 +90,7 @@ html, body {
   position: fixed;
   right: 2rem;
   bottom: 2rem;
+  z-index:2;
 }
 
 /* Bouton en bas centré */
@@ -132,10 +129,13 @@ html, body {
     top: 15%;
     transform: translate(-50%, -15%);
   }
-  #intro-content p {
-    font-size: 1rem;
+  #intro-content h1 {
+    font-size: 1.6em;
   }
-  #intro-content .signature {
+  .subtitle {
+    font-size: 1em;
+  }
+  #signature {
     right: 1rem;
     bottom: 1rem;
   }
