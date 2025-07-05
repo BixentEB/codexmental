@@ -58,11 +58,13 @@ html, body {
 
 /* Logo */
 #intro-logo {
-  width: 120px;
+  width: 100px; /* ou la taille souhaitée */
   margin-bottom: 1em;
+  filter: brightness(0) invert(1);
   opacity: 0;
   animation: fadeInLogo 2s forwards 0s;
 }
+
 
 /* Titre */
 #intro-content h1 {
@@ -83,7 +85,7 @@ html, body {
 /* Signature en bas droite */
 #signature {
   color: white;
-  font-family: 'Pacifico', cursive;
+  font-family: 'Great Vibes', cursive; /* Autre possibilité : Sacramento */
   font-size: 1.2em;
   opacity: 0;
   animation: fadeInText 2s forwards 3s;
