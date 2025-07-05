@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcade – Codex Mental</title>
+
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
+
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
+
+  <!-- 🎨 Styles -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+
+  <!-- ⚙️ Script principal -->
+  <script type="module" src="/assets/js/main.js"></script>
+</head>
+
+<body class="theme-stellaire">
+  <!-- 🌌 Canvas de fond -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu injecté dynamiquement -->
+  <header id="menu-placeholder"></header>
+
+  <!-- 🧱 Contenu principal -->
+  <main class="container">
+    <h1 class="text-center">🎮 Codex Mental Arcade</h1>
+
+    <section class="bloc bloc-arcade">
+      <p style="text-align:center; max-width:600px; margin:0 auto 2rem;">
+        Bienvenue dans l’<strong>Arcade Codex Mental</strong>.<br>
+        Ici, tu trouveras des mini-jeux rétro et décalés mettant en scène le <em>Lapin IA</em>, mascotte officielle du vaisseau.<br>
+        Chaque aventure est un clin d’œil à nos délires : menace de morsure, octets volés, balises HTML factices...
+      </p>
+
+      <!-- 🎮 Machine Arcade -->
+      <div id="arcade-machine" style="margin:0 auto; max-width:800px; border:4px solid #444; border-radius:8px; background:#111; padding:1rem;">
+        <div id="arcade-screen" style="width:100%; height:400px; background:#000; color:#0f0; display:flex; align-items:center; justify-content:center;">
+          <p>🕹️ Choisis un jeu pour commencer.</p>
+        </div>
+      </div>
+
+      <!-- 🕹️ Menu des jeux -->
+      <div class="arcade-menu" style="text-align:center; margin-top:1.5rem;">
+        <button class="btn-primary" onclick="loadGame('/atelier/jeux/lapin-pacman.html')">🐰 Lapin IA – Octet Collector</button>
+        <button class="btn-primary" onclick="loadGame('/atelier/jeux/flappy-bunny.html')">✈️ Flappy Bunny – HTML Hunt</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- 🌙 Lune injectée automatiquement si thème lunaire -->
+
+  <!-- 🦶 Footer dynamique -->
+  <div id="footer-placeholder"></div>
+
+  <!-- 🕹️ Script loader de jeu -->
+  <script>
+    function loadGame(url) {
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('arcade-screen').innerHTML = html;
+        })
+        .catch(error => {
+          console.error('Erreur lors du chargement du jeu:', error);
+          document.getElementById('arcade-screen').innerHTML = '<p style="color:red;">❌ Impossible de charger le jeu.</p>';
+        });
+    }
+  </script>
+</body>
+</html>
 
