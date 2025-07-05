@@ -60,7 +60,7 @@ html, body {
   z-index:2;
 }
 
-/* Logo agrandi */
+/* Logo */
 #intro-logo {
   width: 120px;
   margin-bottom: 1em;
@@ -68,31 +68,37 @@ html, body {
   animation: fadeInLogo 2s forwards 0s;
 }
 
-/* Apparition séquentielle */
+/* Titre */
 #intro-content h1 {
   color: white;
   opacity: 0;
+  margin: 0.5em 0;
   animation: fadeInText 2s forwards 1s;
 }
+
+/* Phrase d'accroche */
 #intro-content p {
   color: white;
   opacity: 0;
+  margin: 0.5em 0;
   animation: fadeInText 2s forwards 2s;
 }
+
+/* Signature en bas droite */
 #intro-content .signature {
   color: white;
   font-family: 'Pacifico', cursive;
   font-size: 1.2em;
   opacity: 0;
   animation: fadeInText 2s forwards 3s;
-  position: absolute;
+  position: fixed;
   right: 2rem;
   bottom: 2rem;
 }
 
-/* Bouton plus doux en bas centré */
+/* Bouton en bas centré */
 #enter-btn {
-  position: absolute;
+  position: fixed;
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
