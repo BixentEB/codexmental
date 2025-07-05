@@ -15,42 +15,29 @@ html, body {
   height: 100%;
   overflow: hidden;
   z-index: 9999;
-  background: black;
+  /* Dégradé doux derrière l'image si elle ne remplit pas tout */
+  background: linear-gradient(to bottom, #00172B 0%, #0B2E4B 50%, #00172B 100%);
 }
 
-/* Image de fond */
+/* Image plein écran entière */
 #intro-bg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 15%; /* Ajuste ici (ex: 10%, 20%) */
-  animation: slowZoom 30s ease-in-out infinite alternate;
-}
-
-/* Halo SVG */
-#halo {
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 150px;
-  height: 150px;
-  z-index: 2;
-  pointer-events: none;
+  object-fit: contain; /* Montre toute l'image sans crop */
 }
 
 /* Canvas étoiles */
 #stars-canvas {
   position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Contenu centré */
@@ -60,35 +47,46 @@ html, body {
   left: 50%;
   transform: translate(-50%, -20%);
   text-align: center;
-  z-index:3;
+  z-index: 2;
 }
 
-/* Logo */
+/* Logo avec halo et fade-in */
 #intro-logo {
-  width: 90px;
+  width: 80px;
+  margin-bottom: 1em;
   filter: brightness(0) invert(1);
   opacity: 0;
   animation: fadeInLogo 1.5s forwards 0s;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
 }
 
-/* Texte progressif */
+/* Texte avec fade-in séquentiel */
 #intro-content h1 {
   opacity: 0;
   animation: fadeInText 1.5s forwards 1s;
 }
-
 #intro-content p {
   opacity: 0;
   animation: fadeInText 1.5s forwards 2s;
 }
+#intro-content .signature {
+  opacity: 0;
+  animation: fadeInText 1.5s forwards 3s;
+}
+#enter-btn {
+  opacity: 0;
+  animation: fadeInText 1.5s forwards 4s;
+}
 
+/* Signature */
 .signature {
   display: block;
   margin-top: 1em;
   font-family: cursive;
-  font-size: 1.3em;
-  opacity: 0;
-  animation: fadeInText 1.5s forwards 3s;
+  font-size: 1.2em;
+  text-align: right;
+  padding-right: 1em;
 }
 
 /* Bouton */
@@ -100,40 +98,28 @@ html, body {
   color: #fff;
   font-size: 1em;
   cursor: pointer;
-  opacity: 0;
-  animation: fadeInText 1.5s forwards 4s;
 }
 
-/* Hover */
+/* Hover bouton */
 #enter-btn:hover {
   background: rgba(255,255,255,0.1);
 }
 
 /* Animations */
-@keyframes slowZoom {
-  0% {transform: scale(1) translate(0,0);}
-  100% {transform: scale(1.05) translate(0,-1%);}
-}
-
 @keyframes fadeInLogo {
-  to {opacity: 1;}
+  to {
+    opacity: 1;
+  }
 }
 @keyframes fadeInText {
-  to {opacity: 1;}
+  to {
+    opacity: 1;
+  }
 }
 
-/* Responsive mobile */
-@media (max-width:768px) {
-  #intro-content {
-    top: 15%;
-  }
-  #intro-content p {
-    white-space: pre-line;
-  }
+/* Responsive : bouton plus bas sur mobile */
+@media (max-width: 768px) {
   #enter-btn {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-top: 4em;
   }
 }
