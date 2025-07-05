@@ -74,6 +74,12 @@
           scriptPath = '/arcade/games/pacbunny/v1/pacbunny-v1.js';
         }
 
+        if (url.includes('pacbunny/v2/pacbunny-v2.html')) {
+  cssPath = '/arcade/games/pacbunny/v2/pacbunny-v2.css';
+  scriptPath = '/arcade/games/pacbunny/v2/pacbunny-v2.js';
+}
+
+
         // Si besoin, charge le CSS
         if (cssPath) {
           const link = document.createElement('link');
