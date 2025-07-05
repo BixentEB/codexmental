@@ -10,12 +10,18 @@ function getCookie(name) {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
+  const banner = document.getElementById('cookie-banner');
+  const button = document.getElementById('cookie-accept');
+
   if (!getCookie('cookieConsent')) {
-    document.getElementById('cookie-banner').style.display = 'flex';
+    banner.style.display = 'flex';
+  } else {
+    // Masquer si consentement déjà donné
+    banner.style.display = 'none';
   }
 
-  document.getElementById('cookie-accept').addEventListener('click', function() {
+  button.addEventListener('click', function() {
     setCookie('cookieConsent', 'true', 365);
-    document.getElementById('cookie-banner').style.display = 'none';
+    banner.style.display = 'none';
   });
 });
