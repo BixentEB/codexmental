@@ -109,7 +109,7 @@ html, body {
   background: rgba(0,0,0,0.5);
   border: 1px solid #fff;
   color: #fff;
-  font-size: 1em;
+  font-size: 0.80em;
   opacity: 0;
   cursor: pointer;
   animation: fadeInText 2s forwards 4s;
