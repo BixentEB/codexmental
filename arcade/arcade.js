@@ -1,23 +1,16 @@
 function loadGame(url) {
   const screen = document.getElementById('arcade-screen');
 
-  // Remise à zéro de l'écran et nettoyage des scripts enfants
   screen.innerHTML = '<p style="color:#0f0; text-align:center;">⏳ Chargement en cours...</p>';
 
-  // Supprime tous les <link> précédents qui pointaient sur un CSS de jeu
-  const oldLinks = document.querySelectorAll('link[data-arcade-style]');
-  oldLinks.forEach(link => link.parentNode.removeChild(link));
-
-  // Supprime tous les <script> précédents injectés dans l'écran
-  const oldScripts = screen.querySelectorAll('script');
-  oldScripts.forEach(s => s.parentNode.removeChild(s));
+  document.querySelectorAll('link[data-arcade-style]').forEach(link => link.remove());
+  screen.querySelectorAll('script').forEach(s => s.remove());
 
   fetch(url)
     .then(response => response.text())
     .then(html => {
       screen.innerHTML = html;
 
-      // Détecte quel jeu tu charges
       let cssPath = '';
       let scriptPath = '';
 
@@ -36,7 +29,6 @@ function loadGame(url) {
         scriptPath = '/arcade/games/flappy-bunny.js';
       }
 
-      // Charge le CSS si besoin
       if (cssPath) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -45,7 +37,6 @@ function loadGame(url) {
         document.head.appendChild(link);
       }
 
-      // Charge le JS si besoin
       if (scriptPath) {
         const script = document.createElement('script');
         script.src = scriptPath;
