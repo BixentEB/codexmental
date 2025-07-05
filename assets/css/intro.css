@@ -26,8 +26,10 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Montre toute l'image sans crop */
+  object-fit: cover;
+  animation: slowZoom 30s ease-in-out infinite alternate;
 }
+
 
 /* Canvas étoiles */
 #stars-canvas {
