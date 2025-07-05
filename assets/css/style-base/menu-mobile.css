@@ -64,6 +64,18 @@
   cursor: pointer;
 }
 
+/* 🌞 Thème Solaire – Contraste des liens du menu mobile */
+body.theme-solaire .mobile-menu a {
+  color: #ffcc80; /* Orange clair lisible */
+}
+
+/* Focus (tap/clic) en orange plus vif */
+body.theme-solaire .mobile-menu a:focus {
+  color: #ffc14d; /* Orange un peu plus saturé */
+  text-decoration: underline;
+}
+
+
 /* ===========================
    📏 RESPONSIVE
 =========================== */
@@ -78,3 +90,5 @@
     display: none !important;
   }
 }
+
+
