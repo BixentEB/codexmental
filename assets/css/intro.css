@@ -2,7 +2,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Orbitron', sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
   background: #00172B;
 }
 
@@ -15,11 +15,10 @@ html, body {
   height: 100%;
   overflow: hidden;
   z-index: 9999;
-  /* Dégradé doux derrière l'image si elle ne remplit pas tout */
-  background: linear-gradient(to bottom, #00172B 0%, #0B2E4B 50%, #00172B 100%);
+  background: black;
 }
 
-/* Image plein écran entière */
+/* Image plein écran */
 #intro-bg {
   position: absolute;
   top: 0;
@@ -30,16 +29,25 @@ html, body {
   animation: slowZoom 30s ease-in-out infinite alternate;
 }
 
+/* Zoom lent */
+@keyframes slowZoom {
+  0% {
+    transform: scale(1) translate(0,0);
+  }
+  100% {
+    transform: scale(1.05) translate(0,-1%);
+  }
+}
 
 /* Canvas étoiles */
 #stars-canvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
 }
 
 /* Contenu centré */
@@ -49,79 +57,83 @@ html, body {
   left: 50%;
   transform: translate(-50%, -20%);
   text-align: center;
-  z-index: 2;
+  z-index:2;
 }
 
-/* Logo avec halo et fade-in */
+/* Logo agrandi */
 #intro-logo {
-  width: 80px;
+  width: 120px;
   margin-bottom: 1em;
-  filter: brightness(0) invert(1);
   opacity: 0;
-  animation: fadeInLogo 1.5s forwards 0s;
-  box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
+  animation: fadeInLogo 2s forwards 0s;
 }
 
-/* Texte avec fade-in séquentiel */
+/* Apparition séquentielle */
 #intro-content h1 {
+  color: white;
   opacity: 0;
-  animation: fadeInText 1.5s forwards 1s;
+  animation: fadeInText 2s forwards 1s;
 }
 #intro-content p {
+  color: white;
   opacity: 0;
-  animation: fadeInText 1.5s forwards 2s;
+  animation: fadeInText 2s forwards 2s;
 }
 #intro-content .signature {
-  opacity: 0;
-  animation: fadeInText 1.5s forwards 3s;
-}
-#enter-btn {
-  opacity: 0;
-  animation: fadeInText 1.5s forwards 4s;
-}
-
-/* Signature */
-.signature {
-  display: block;
-  margin-top: 1em;
-  font-family: cursive;
+  color: white;
+  font-family: 'Pacifico', cursive;
   font-size: 1.2em;
-  text-align: right;
-  padding-right: 1em;
+  opacity: 0;
+  animation: fadeInText 2s forwards 3s;
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
 }
 
-/* Bouton */
+/* Bouton plus doux en bas centré */
 #enter-btn {
-  margin-top: 2em;
-  padding: 0.5em 1.5em;
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.6em 1.5em;
   background: rgba(0,0,0,0.5);
   border: 1px solid #fff;
   color: #fff;
   font-size: 1em;
   cursor: pointer;
+  opacity: 0;
+  animation: fadeInText 2s forwards 4s;
+  border-radius: 4px;
+  transition: background 0.3s, transform 0.3s;
 }
-
-/* Hover bouton */
 #enter-btn:hover {
   background: rgba(255,255,255,0.1);
+  transform: translateX(-50%) scale(1.05);
 }
 
 /* Animations */
 @keyframes fadeInLogo {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 @keyframes fadeInText {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
-/* Responsive : bouton plus bas sur mobile */
+/* Responsive mobile */
 @media (max-width: 768px) {
+  #intro-content {
+    top: 15%;
+    transform: translate(-50%, -15%);
+  }
+  #intro-content p {
+    font-size: 1rem;
+  }
+  #intro-content .signature {
+    right: 1rem;
+    bottom: 1rem;
+  }
   #enter-btn {
-    margin-top: 4em;
+    bottom: 1rem;
   }
 }
