@@ -4,29 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Codex Mental - Intro</title>
-  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
-
-   <!-- 🌄 Préchargement image de fond -->
-  <link rel="preload" href="/img/vue-du-bateau-sur-l-eau-la-nuit.jpg" as="image" />
-  
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" />
   <link rel="stylesheet" href="/assets/css/intro.css" />
+  <!-- Préchargement image -->
+  <link rel="preload" href="/img/vue-du-bateau-sur-l-eau-la-nuit.jpg" as="image" />
 </head>
 <body>
   <div id="intro-container">
     <img src="/img/vue-du-bateau-sur-l-eau-la-nuit.jpg" alt="Codex Mental - Intro" id="intro-bg" />
     <canvas id="stars-canvas"></canvas>
-    <svg id="halo" viewBox="0 0 200 200">
-      <circle cx="100" cy="100" r="60" fill="url(#gradient)" opacity="0.3">
-        <animate attributeName="r" values="60;65;60" dur="6s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.3;0.5;0.3" dur="6s" repeatCount="indefinite" />
-      </circle>
-      <defs>
-        <radialGradient id="gradient">
-          <stop offset="0%" stop-color="white"/>
-          <stop offset="100%" stop-color="transparent"/>
-        </radialGradient>
-      </defs>
-    </svg>
     <div id="intro-content">
       <img src="/img/logocm1.png" alt="Logo Codex Mental" id="intro-logo" />
       <h1>CODEX MENTAL</h1>
