@@ -15,11 +15,10 @@ html, body {
   height: 100%;
   overflow: hidden;
   z-index: 9999;
-  background: url('/img/vue-du-bateau-sur-l-eau-la-nuit.jpg') center center / cover no-repeat black;
-
+  background: black;
 }
 
-/* Image plein écran */
+/* Image de fond */
 #intro-bg {
   position: absolute;
   top: 0;
@@ -27,28 +26,31 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 15%; /* Ajuste ici (ex: 10%, 20%) */
   animation: slowZoom 30s ease-in-out infinite alternate;
 }
 
-/* Animation de zoom lent */
-@keyframes slowZoom {
-  0% {
-    transform: scale(1) translate(0,0);
-  }
-  100% {
-    transform: scale(1.05) translate(0,-1%);
-  }
+/* Halo SVG */
+#halo {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 150px;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* Canvas étoiles */
 #stars-canvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
 }
 
 /* Contenu centré */
@@ -58,34 +60,35 @@ html, body {
   left: 50%;
   transform: translate(-50%, -20%);
   text-align: center;
-  z-index: 2;
-  color: white; /* Forcer texte en blanc */
+  z-index:3;
 }
 
-/* Logo avec fade-in */
+/* Logo */
 #intro-logo {
-  width: 150px;
-  margin-bottom: 1em;
-  filter: brightness(0) invert(1); /* Passe le logo en blanc si besoin */
+  width: 90px;
+  filter: brightness(0) invert(1);
   opacity: 0;
-  animation: fadeInLogo 2s forwards 0s;
+  animation: fadeInLogo 1.5s forwards 0s;
 }
 
-/* Texte avec fade-in plus tard */
-#intro-content h1,
-#intro-content p,
-#intro-content .signature,
-#enter-btn {
+/* Texte progressif */
+#intro-content h1 {
   opacity: 0;
-  animation: fadeInText 3s forwards 2s;
+  animation: fadeInText 1.5s forwards 1s;
 }
 
-/* Signature */
+#intro-content p {
+  opacity: 0;
+  animation: fadeInText 1.5s forwards 2s;
+}
+
 .signature {
   display: block;
   margin-top: 1em;
   font-family: cursive;
-  font-size: 1.5em;
+  font-size: 1.3em;
+  opacity: 0;
+  animation: fadeInText 1.5s forwards 3s;
 }
 
 /* Bouton */
@@ -97,22 +100,40 @@ html, body {
   color: #fff;
   font-size: 1em;
   cursor: pointer;
+  opacity: 0;
+  animation: fadeInText 1.5s forwards 4s;
 }
 
-/* Hover bouton */
+/* Hover */
 #enter-btn:hover {
   background: rgba(255,255,255,0.1);
 }
 
 /* Animations */
-@keyframes fadeInLogo {
-  to {
-    opacity: 1;
-  }
+@keyframes slowZoom {
+  0% {transform: scale(1) translate(0,0);}
+  100% {transform: scale(1.05) translate(0,-1%);}
 }
 
+@keyframes fadeInLogo {
+  to {opacity: 1;}
+}
 @keyframes fadeInText {
-  to {
-    opacity: 1;
+  to {opacity: 1;}
+}
+
+/* Responsive mobile */
+@media (max-width:768px) {
+  #intro-content {
+    top: 15%;
+  }
+  #intro-content p {
+    white-space: pre-line;
+  }
+  #enter-btn {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
