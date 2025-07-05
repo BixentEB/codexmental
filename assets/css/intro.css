@@ -109,8 +109,8 @@ html, body {
   background: rgba(0,0,0,0.5);
   border: 1px solid #fff;
   color: #fff;
-  font-size: 0.6em;
-  opacity: 0.3;
+  font-size: 1em;
+  opacity: 0;
   cursor: pointer;
   animation: fadeInText 2s forwards 4s;
   border-radius: 4px;
@@ -126,7 +126,8 @@ html, body {
   bottom: 0.8em; /* Un peu au-dessus du bord */
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.75em;
+  font-size: 0.6em;
+  opacity: 0.3;
   color: rgba(255, 255, 255, 0.4);
   font-style: italic;
   pointer-events: none; /* Pour qu’on ne puisse pas le sélectionner */
