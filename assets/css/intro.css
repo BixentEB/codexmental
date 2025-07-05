@@ -109,9 +109,9 @@ html, body {
   background: rgba(0,0,0,0.5);
   border: 1px solid #fff;
   color: #fff;
-  font-size: 1em;
+  font-size: 0.6em;
+  opacity: 0.3;
   cursor: pointer;
-  opacity: 0;
   animation: fadeInText 2s forwards 4s;
   border-radius: 4px;
   transition: background 0.3s, transform 0.3s;
