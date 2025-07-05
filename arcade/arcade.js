@@ -22,12 +22,12 @@ function loadGame(url) {
       let cssPath = '';
       let scriptPath = '';
 
-      if (url.includes('pacbunny/v1/pacbunny-v1.html')) {
+      if (url.includes('/arcade/games/pacbunny/v1/pacbunny-v1.html')) {
         cssPath = '/arcade/games/pacbunny/v1/pacbunny-v1.css';
         scriptPath = '/arcade/games/pacbunny/v1/pacbunny-v1.js';
       }
 
-      if (url.includes('pacbunny/v2/pacbunny-v2.html')) {
+      if (url.includes('/arcade/games/pacbunny/v2/pacbunny-v2.html')) {
         cssPath = '/arcade/games/pacbunny/v2/pacbunny-v2.css';
         scriptPath = '/arcade/games/pacbunny/v2/pacbunny-v2.js';
       }
