@@ -64,16 +64,17 @@
   cursor: pointer;
 }
 
-/* 🌞 Thème Solaire – Contraste des liens du menu mobile */
-body.theme-solaire .mobile-menu a {
-  color: #ffcc80; /* Orange clair lisible */
+/* 🌞 Thème Solaire – Boutons NON sélectionnés du menu mobile */
+body.theme-solaire .mobile-menu button:not(.active-theme) {
+  color: #ffcc80 !important; /* Orange clair lisible */
 }
 
-/* Focus (tap/clic) en orange plus vif */
-body.theme-solaire .mobile-menu a:focus {
-  color: #ffc14d; /* Orange un peu plus saturé */
+/* Focus si besoin */
+body.theme-solaire .mobile-menu button:not(.active-theme):focus {
+  color: #ffc14d !important;
   text-decoration: underline;
 }
+
 
 
 /* ===========================
