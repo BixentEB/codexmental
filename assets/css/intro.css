@@ -62,7 +62,7 @@ html, body {
 
 /* Logo */
 #intro-logo {
-  width: 100px; /* ou la taille souhaitée */
+  width: 200px; /* ou la taille souhaitée */
   margin-bottom: 1em;
   filter: brightness(0) invert(1);
   opacity: 0;
