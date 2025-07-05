@@ -1,6 +1,10 @@
 // Quand tout est chargé
 window.addEventListener('load', () => {
+  // Démarre le canvas étoiles
   startCanvas();
+
+  // Ajoute la classe qui déclenche le fade-in du logo
+  document.getElementById('intro-logo').classList.add('show');
 });
 
 // Canvas étoiles
