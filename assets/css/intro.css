@@ -121,6 +121,18 @@ html, body {
   transform: translateX(-50%) scale(1.05);
 }
 
+#intro-note {
+  position: absolute;
+  bottom: 0.8em; /* Un peu au-dessus du bord */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75em;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  pointer-events: none; /* Pour qu’on ne puisse pas le sélectionner */
+}
+
+
 /* Animations */
 @keyframes fadeInLogo {
   to { opacity: 1; }
