@@ -57,19 +57,45 @@
   <div id="footer-placeholder"></div>
 
   <!-- 🕹️ Script loader de jeu -->
-  <script>
-    function loadGame(url) {
-      fetch(url)
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById('arcade-screen').innerHTML = html;
-        })
-        .catch(error => {
-          console.error('Erreur lors du chargement du jeu:', error);
-          document.getElementById('arcade-screen').innerHTML = '<p style="color:red;">❌ Impossible de charger le jeu.</p>';
-        });
-    }
-  </script>
+<script>
+  function loadGame(url) {
+    fetch(url)
+      .then(response => response.text())
+      .then(html => {
+        const screen = document.getElementById('arcade-screen');
+        screen.innerHTML = html;
+
+        // Détecte quel jeu et version tu charges
+        let cssPath = '';
+        let scriptPath = '';
+
+        if (url.includes('pacbunny/v1/pacbunny-v1.html')) {
+          cssPath = '/arcade/games/pacbunny/v1/pacbunny-v1.css';
+          scriptPath = '/arcade/games/pacbunny/v1/pacbunny-v1.js';
+        }
+
+        // Si besoin, charge le CSS
+        if (cssPath) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = cssPath;
+          document.head.appendChild(link);
+        }
+
+        // Si besoin, charge le JS
+        if (scriptPath) {
+          const script = document.createElement('script');
+          script.src = scriptPath;
+          screen.appendChild(script);
+        }
+      })
+      .catch(error => {
+        console.error('Erreur lors du chargement du jeu:', error);
+        document.getElementById('arcade-screen').innerHTML = '<p style="color:red;">❌ Impossible de charger le jeu.</p>';
+      });
+  }
+</script>
+
 </body>
 </html>
 
