@@ -1,4 +1,3 @@
-<script>
 function loadGame(url) {
   const screen = document.getElementById('arcade-screen');
 
@@ -59,4 +58,3 @@ function loadGame(url) {
       screen.innerHTML = '<p style="color:red;">❌ Impossible de charger le jeu.</p>';
     });
 }
-</script>
