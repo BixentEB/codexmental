@@ -8,12 +8,12 @@ function loadGame(url) {
     // Intro avec la tête du lapin et son
     screen.innerHTML = `
       <div style="text-align:center;">
-        <img src="/arcade/assets/bunny_intro.png" width="96" height="96" alt="Lapin IA">
+        <img src="https://bixenteb.github.io/cdxmt/games/bunny_intro.png" width="96" height="96" alt="Lapin IA">
         <p style="color:#0f0;">🐰 Prêt à collecter les octets...</p>
       </div>
     `;
 
-    const audio = new Audio('/arcade/assets/start.wav');
+    const audio = new Audio('https://bixenteb.github.io/cdxmt/games/sound/gstart1.mp3');
     audio.play();
 
     // Délai avant chargement
