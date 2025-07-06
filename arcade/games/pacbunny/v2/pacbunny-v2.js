@@ -1,18 +1,26 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const gridSize = 20;
+const gridSize = 32;
 const rows = canvas.height / gridSize;
 const cols = canvas.width / gridSize;
 
 // Chargement des sprites
-const bunnyImg = new Image();
-bunnyImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Emoji_u1f430.svg/32px-Emoji_u1f430.svg.png";
+const bunnyFrames = [
+  new Image(),
+  new Image(),
+  new Image(),
+  new Image()
+];
+bunnyFrames[0].src = "/arcade/assets/walk1.png";
+bunnyFrames[1].src = "/arcade/assets/walk2.png";
+bunnyFrames[2].src = "/arcade/assets/walk3.png";
+bunnyFrames[3].src = "/arcade/assets/walk4.png";
 
 const carrotImg = new Image();
-carrotImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Emoji_u1f955.svg/32px-Emoji_u1f955.svg.png";
+carrotImg.src = "/arcade/assets/carrot.png";
 
 const croqueurImg = new Image();
-croqueurImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Emoji_u1f47f.svg/32px-Emoji_u1f47f.svg.png";
+croqueurImg.src = "/arcade/assets/alien1.png";
 
 // Joueur
 let player = { x: 0, y: 0 };
@@ -29,6 +37,7 @@ let croqueurs = [
 
 let score = 0;
 let gameOver = false;
+let currentFrame = 0;
 
 function spawnOctets() {
   octets = [];
@@ -56,8 +65,8 @@ function draw() {
     ctx.drawImage(croqueurImg, c.x * gridSize, c.y * gridSize, gridSize, gridSize);
   });
 
-  // Joueur
-  ctx.drawImage(bunnyImg, player.x * gridSize, player.y * gridSize, gridSize, gridSize);
+  // Joueur (frame courante)
+  ctx.drawImage(bunnyFrames[currentFrame], player.x * gridSize, player.y * gridSize, gridSize, gridSize);
 }
 
 function updateScore() {
@@ -83,14 +92,17 @@ document.addEventListener("keydown", e => {
   if (gameOver) return;
 
   if (e.key === "ArrowUp" && player.y > 0) player.y--;
-  if (e.key === "ArrowDown" && player.y < rows -1) player.y++;
+  if (e.key === "ArrowDown" && player.y < rows - 1) player.y++;
   if (e.key === "ArrowLeft" && player.x > 0) player.x--;
-  if (e.key === "ArrowRight" && player.x < cols -1) player.x++;
+  if (e.key === "ArrowRight" && player.x < cols - 1) player.x++;
+
+  // Avance la frame (1 -> 2 -> 3 -> 4 -> 1)
+  currentFrame = (currentFrame + 1) % bunnyFrames.length;
 
   // Mange octet
   for (let i = 0; i < octets.length; i++) {
     if (octets[i].x === player.x && octets[i].y === player.y) {
-      octets.splice(i,1);
+      octets.splice(i, 1);
       score++;
       updateScore();
       checkVictory();
@@ -106,7 +118,7 @@ function moveCroqueurs() {
   if (gameOver) return;
   croqueurs.forEach(c => {
     c.x += c.dir;
-    if (c.x <= 0 || c.x >= cols -1) {
+    if (c.x <= 0 || c.x >= cols - 1) {
       c.dir *= -1;
     }
   });
