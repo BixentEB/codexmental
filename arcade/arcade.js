@@ -1,11 +1,47 @@
 function loadGame(url) {
   const screen = document.getElementById('arcade-screen');
 
+  // Vérifie si c'est PacBunny
+  const isPacBunny = url.includes('/arcade/games/pacbunny/');
+
+  if (isPacBunny) {
+    // Intro avec la tête du lapin et son
+    screen.innerHTML = `
+      <div style="text-align:center;">
+        <img src="/arcade/assets/bunny_intro.png" width="96" height="96" alt="Lapin IA">
+        <p style="color:#0f0;">🐰 Prêt à collecter les octets...</p>
+      </div>
+    `;
+
+    const audio = new Audio('/arcade/assets/start.wav');
+    audio.play();
+
+    // Délai avant chargement
+    setTimeout(() => {
+      loadGameContent(url, screen);
+    }, 2000);
+  } else {
+    // Autres jeux : pas d'intro
+    loadGameContent(url, screen);
+  }
+}
+
+/**
+ * Fonction qui charge le HTML/CSS/JS du jeu
+ * @param {string} url
+ * @param {Element} screen
+ */
+function loadGameContent(url, screen) {
+  // Affiche message
   screen.innerHTML = '<p style="color:#0f0; text-align:center;">⏳ Chargement en cours...</p>';
 
+  // Nettoyage CSS
   document.querySelectorAll('link[data-arcade-style]').forEach(link => link.remove());
+
+  // Nettoyage scripts
   screen.querySelectorAll('script').forEach(s => s.remove());
 
+  // Fetch du contenu
   fetch(url)
     .then(response => response.text())
     .then(html => {
