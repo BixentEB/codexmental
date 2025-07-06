@@ -137,26 +137,28 @@ function checkCollision() {
 document.addEventListener("keydown", e => {
   if (gameOver) return;
 
-  if (e.key === "z" && player.y > 0) {
+  const key = e.key.toLowerCase();
+
+  if (key === "z" && player.y > 0) {
     player.y--;
     currentBunnyImg = bunnyUpImg;
   }
-  if (e.key === "s" && player.y < rows - 1) {
+  if (key === "s" && player.y < rows - 1) {
     player.y++;
     currentBunnyImg = bunnyDownImg;
   }
-  if (e.key === "q" && player.x > 0) {
+  if (key === "q" && player.x > 0) {
     player.x--;
     currentBunnyImg = bunnyLeftImg;
     facingRight = false;
   }
-  if (e.key === "d" && player.x < cols - 1) {
+  if (key === "d" && player.x < cols - 1) {
     player.x++;
     currentBunnyImg = bunnyLeftImg;
     facingRight = true;
   }
 
-  e.preventDefault(); // Empêche le scroll
+  e.preventDefault();
 
   // Mange octet
   for (let i = 0; i < octets.length; i++) {
@@ -172,6 +174,7 @@ document.addEventListener("keydown", e => {
   checkCollision();
   draw();
 });
+
 
 function moveCroqueurs() {
   if (gameOver) return;
