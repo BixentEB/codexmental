@@ -1,54 +1,33 @@
-.tabs-container {
-  max-width: 800px;
-  margin: 0 auto;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--primary-bg);
-}
-
+/* Barre d'onglets */
 .tabs {
   display: flex;
   flex-wrap: wrap;
   list-style: none;
-  margin: 0;
+  margin: 0 0 1rem 0;
   padding: 0;
-  background: var(--secondary-bg, #222);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
+/* Onglet */
 .tabs .tab {
-  flex: 1 1 auto;
-  padding: 0.8em;
-  text-align: center;
+  padding: 0.5em 1em;
   cursor: pointer;
-  color: var(--primary-fg);
-  transition: background 0.3s, color 0.3s;
+  font-weight: bold;
+  color: inherit;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s, color 0.3s;
 }
 
+/* Onglet actif */
 .tabs .tab.active {
-  background: var(--accent);
-  color: var(--primary-bg);
+  border-bottom-color: currentColor;
 }
 
-.tab-contents {
-  padding: 1em;
-}
-
+/* Contenus */
 .tab-content {
   display: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
 .tab-content.active {
   display: block;
-  opacity: 1;
-}
-
-/* Mobile empilé */
-@media (max-width: 600px) {
-  .tabs .tab {
-    flex: 100%;
-    text-align: left;
-  }
 }
