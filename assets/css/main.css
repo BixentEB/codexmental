@@ -9,6 +9,7 @@
 @import url('/assets/css/style-base/forms.css');
 @import url('/assets/css/style-base/table.css');
 @import url('/assets/css/style-base/images.css');
+@import url('/assets/css/style-base/onglets.css');
 
 /* === 🧩 Composants UI (blocs, boutons, menus) === */
 @import url('/assets/css/style-base/components.css');
