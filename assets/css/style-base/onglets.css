@@ -1,0 +1,54 @@
+.tabs-container {
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #111; /* ou la couleur de ton thème */
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: #222;
+}
+
+.tabs .tab {
+  flex: 1 1 auto;
+  padding: 0.8em;
+  text-align: center;
+  cursor: pointer;
+  color: #ccc;
+  transition: background 0.3s, color 0.3s;
+}
+
+.tabs .tab.active {
+  background: #444;
+  color: #fff;
+}
+
+.tab-contents {
+  padding: 1em;
+}
+
+.tab-content {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Mobile empilé */
+@media (max-width: 600px) {
+  .tabs .tab {
+    flex: 100%;
+    text-align: left;
+  }
+}
