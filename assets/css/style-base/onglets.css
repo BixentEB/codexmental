@@ -45,6 +45,21 @@
   opacity: 1;
 }
 
+.tabs-container {
+  background: var(--primary-bg);
+  border-color: var(--accent);
+}
+
+.tabs .tab {
+  color: var(--primary-fg);
+}
+
+.tabs .tab.active {
+  background: var(--accent);
+  color: var(--primary-bg);
+}
+
+
 /* Mobile empilé */
 @media (max-width: 600px) {
   .tabs .tab {
