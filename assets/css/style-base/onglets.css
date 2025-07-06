@@ -1,10 +1,10 @@
 .tabs-container {
   max-width: 800px;
   margin: 0 auto;
-  border: 1px solid #333;
+  border: 1px solid var(--accent);
   border-radius: 8px;
   overflow: hidden;
-  background: #111; /* ou la couleur de ton thème */
+  background: var(--primary-bg);
 }
 
 .tabs {
@@ -13,7 +13,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  background: #222;
+  background: var(--secondary-bg, #222);
 }
 
 .tabs .tab {
@@ -21,13 +21,13 @@
   padding: 0.8em;
   text-align: center;
   cursor: pointer;
-  color: #ccc;
+  color: var(--primary-fg);
   transition: background 0.3s, color 0.3s;
 }
 
 .tabs .tab.active {
-  background: #444;
-  color: #fff;
+  background: var(--accent);
+  color: var(--primary-bg);
 }
 
 .tab-contents {
@@ -44,21 +44,6 @@
   display: block;
   opacity: 1;
 }
-
-.tabs-container {
-  background: var(--primary-bg);
-  border-color: var(--accent);
-}
-
-.tabs .tab {
-  color: var(--primary-fg);
-}
-
-.tabs .tab.active {
-  background: var(--accent);
-  color: var(--primary-bg);
-}
-
 
 /* Mobile empilé */
 @media (max-width: 600px) {
