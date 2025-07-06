@@ -60,6 +60,11 @@ function loadGameContent(url, screen) {
         scriptPath = '/arcade/games/pacbunny/v2/pacbunny-v2.js';
       }
 
+      if (url.includes('/arcade/games/pacbunny/v3/pacbunny-v3.html')) {
+        cssPath = '/arcade/games/pacbunny/v3/pacbunny-v3.css';
+        scriptPath = '/arcade/games/pacbunny/v3/pacbunny-v3.js';
+      }
+
       if (url.includes('flappy-bunny.html')) {
         cssPath = '/arcade/games/flappy-bunny.css';
         scriptPath = '/arcade/games/flappy-bunny.js';
