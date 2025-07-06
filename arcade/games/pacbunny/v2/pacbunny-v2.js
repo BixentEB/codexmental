@@ -13,15 +13,26 @@ const bunnyDownImg = new Image();
 bunnyDownImg.src = "https://bixenteb.github.io/cdxmt/games/bfront.png";
 
 const bunnyLeftImg = new Image();
-bunnyLeftImg.src = "https://bixenteb.github.io/cdxmt/games/bleft.png"; // Mets ici ton profil gauche
+bunnyLeftImg.src = "https://bixenteb.github.io/cdxmt/games/bleft.png";
 
-// On utilisera bunnyLeftImg retourné pour la droite
+// Ici tu pourrais mettre un bunnyRightImg si tu veux un sprite séparé
 
 const carrotImg = new Image();
 carrotImg.src = "https://bixenteb.github.io/cdxmt/games/carrot.png";
 
 const croqueurImg = new Image();
-croqueurImg.src = "https://bixenteb.github.io/cdxmt/games/alien.png";
+croqueurImg.src = "https://bixenteb.github.io/cdxmt/games/alien1.png";
+
+// Système de comptage des images
+let imagesLoaded = 0;
+const totalImages = 5; // nombre total d'images
+
+// Quand chaque image est chargée, on incrémente le compteur
+bunnyUpImg.onload = checkAllImagesLoaded;
+bunnyDownImg.onload = checkAllImagesLoaded;
+bunnyLeftImg.onload = checkAllImagesLoaded;
+carrotImg.onload = checkAllImagesLoaded;
+croqueurImg.onload = checkAllImagesLoaded;
 
 // Joueur
 let player = { x: 0, y: 0 };
@@ -41,7 +52,18 @@ let gameOver = false;
 
 // Image actuelle
 let currentBunnyImg = bunnyDownImg;
-let facingRight = false; // Pour savoir si on doit retourner l'image
+let facingRight = false; // Pour flip horizontal si besoin
+
+function checkAllImagesLoaded() {
+  imagesLoaded++;
+  console.log(`Images chargées: ${imagesLoaded}/${totalImages}`);
+  if (imagesLoaded === totalImages) {
+    // Quand toutes les images sont chargées, on démarre le jeu
+    spawnOctets();
+    draw();
+    updateScore();
+  }
+}
 
 function spawnOctets() {
   octets = [];
@@ -69,13 +91,13 @@ function draw() {
     ctx.drawImage(croqueurImg, c.x * gridSize, c.y * gridSize, gridSize, gridSize);
   });
 
-  // Joueur avec gestion du flip horizontal si à droite
+  // Joueur avec flip si besoin
   if (currentBunnyImg === bunnyLeftImg && facingRight) {
     ctx.save();
     ctx.scale(-1, 1);
     ctx.drawImage(
       currentBunnyImg,
-      -(player.x * gridSize + gridSize), // inversion horizontale
+      -(player.x * gridSize + gridSize),
       player.y * gridSize,
       gridSize,
       gridSize
@@ -119,7 +141,7 @@ document.addEventListener("keydown", e => {
     player.y--;
     currentBunnyImg = bunnyUpImg;
   }
-  if (e.key === "s" && player.y < rows -1) {
+  if (e.key === "s" && player.y < rows - 1) {
     player.y++;
     currentBunnyImg = bunnyDownImg;
   }
@@ -128,14 +150,13 @@ document.addEventListener("keydown", e => {
     currentBunnyImg = bunnyLeftImg;
     facingRight = false;
   }
-  if (e.key === "d" && player.x < cols -1) {
+  if (e.key === "d" && player.x < cols - 1) {
     player.x++;
     currentBunnyImg = bunnyLeftImg;
     facingRight = true;
   }
 
-  // Empêcher le scroll de la page
-  e.preventDefault();
+  e.preventDefault(); // Empêche le scroll
 
   // Mange octet
   for (let i = 0; i < octets.length; i++) {
@@ -156,7 +177,7 @@ function moveCroqueurs() {
   if (gameOver) return;
   croqueurs.forEach(c => {
     c.x += c.dir;
-    if (c.x <= 0 || c.x >= cols -1) {
+    if (c.x <= 0 || c.x >= cols - 1) {
       c.dir *= -1;
     }
   });
@@ -166,7 +187,3 @@ function moveCroqueurs() {
 
 // Bouge les ennemis toutes les 500ms
 setInterval(moveCroqueurs, 500);
-
-spawnOctets();
-draw();
-updateScore();
