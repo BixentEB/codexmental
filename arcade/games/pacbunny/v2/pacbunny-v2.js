@@ -1,3 +1,4 @@
+// Canvas setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const gridSize = 32;
@@ -5,31 +6,31 @@ const rows = canvas.height / gridSize;
 const cols = canvas.width / gridSize;
 
 // Chargement des sprites
-const bunnyFrames = [
-  new Image(),
-  new Image(),
-  new Image(),
-  new Image()
-];
-bunnyFrames[0].src = "/arcade/assets/walk1.png";
-bunnyFrames[1].src = "/arcade/assets/walk2.png";
-bunnyFrames[2].src = "/arcade/assets/walk3.png";
-bunnyFrames[3].src = "/arcade/assets/walk4.png";
+const bunnyUpImg = new Image();
+bunnyUpImg.src = "https://bixenteb.github.io/cdxmt/games/bback.png";
+
+const bunnyDownImg = new Image();
+bunnyDownImg.src = "https://bixenteb.github.io/cdxmt/games/bfront.png";
+
+const bunnyLeftImg = new Image();
+bunnyLeftImg.src = "https://bixenteb.github.io/cdxmt/games/bleft.png"; // Mets ici ton profil gauche
+
+// On utilisera bunnyLeftImg retourné pour la droite
 
 const carrotImg = new Image();
-carrotImg.src = "/arcade/assets/carrot.png";
+carrotImg.src = "https://bixenteb.github.io/cdxmt/games/carrot.png";
 
 const croqueurImg = new Image();
-croqueurImg.src = "/arcade/assets/alien1.png";
+croqueurImg.src = "https://bixenteb.github.io/cdxmt/games/alien.png";
 
 // Joueur
 let player = { x: 0, y: 0 };
 
-// Octets (carottes)
+// Octets
 let octets = [];
 const totalOctets = 5;
 
-// Ennemis croqueurs
+// Ennemis
 let croqueurs = [
   { x: 5, y: 5, dir: 1 },
   { x: 10, y: 10, dir: -1 }
@@ -37,7 +38,10 @@ let croqueurs = [
 
 let score = 0;
 let gameOver = false;
-let currentFrame = 0;
+
+// Image actuelle
+let currentBunnyImg = bunnyDownImg;
+let facingRight = false; // Pour savoir si on doit retourner l'image
 
 function spawnOctets() {
   octets = [];
@@ -65,8 +69,27 @@ function draw() {
     ctx.drawImage(croqueurImg, c.x * gridSize, c.y * gridSize, gridSize, gridSize);
   });
 
-  // Joueur (frame courante)
-  ctx.drawImage(bunnyFrames[currentFrame], player.x * gridSize, player.y * gridSize, gridSize, gridSize);
+  // Joueur avec gestion du flip horizontal si à droite
+  if (currentBunnyImg === bunnyLeftImg && facingRight) {
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.drawImage(
+      currentBunnyImg,
+      -(player.x * gridSize + gridSize), // inversion horizontale
+      player.y * gridSize,
+      gridSize,
+      gridSize
+    );
+    ctx.restore();
+  } else {
+    ctx.drawImage(
+      currentBunnyImg,
+      player.x * gridSize,
+      player.y * gridSize,
+      gridSize,
+      gridSize
+    );
+  }
 }
 
 function updateScore() {
@@ -88,16 +111,31 @@ function checkCollision() {
   });
 }
 
+// Gestion des touches ZQSD
 document.addEventListener("keydown", e => {
   if (gameOver) return;
 
-  if (e.key === "ArrowUp" && player.y > 0) player.y--;
-  if (e.key === "ArrowDown" && player.y < rows - 1) player.y++;
-  if (e.key === "ArrowLeft" && player.x > 0) player.x--;
-  if (e.key === "ArrowRight" && player.x < cols - 1) player.x++;
+  if (e.key === "z" && player.y > 0) {
+    player.y--;
+    currentBunnyImg = bunnyUpImg;
+  }
+  if (e.key === "s" && player.y < rows -1) {
+    player.y++;
+    currentBunnyImg = bunnyDownImg;
+  }
+  if (e.key === "q" && player.x > 0) {
+    player.x--;
+    currentBunnyImg = bunnyLeftImg;
+    facingRight = false;
+  }
+  if (e.key === "d" && player.x < cols -1) {
+    player.x++;
+    currentBunnyImg = bunnyLeftImg;
+    facingRight = true;
+  }
 
-  // Avance la frame (1 -> 2 -> 3 -> 4 -> 1)
-  currentFrame = (currentFrame + 1) % bunnyFrames.length;
+  // Empêcher le scroll de la page
+  e.preventDefault();
 
   // Mange octet
   for (let i = 0; i < octets.length; i++) {
@@ -118,7 +156,7 @@ function moveCroqueurs() {
   if (gameOver) return;
   croqueurs.forEach(c => {
     c.x += c.dir;
-    if (c.x <= 0 || c.x >= cols - 1) {
+    if (c.x <= 0 || c.x >= cols -1) {
       c.dir *= -1;
     }
   });
