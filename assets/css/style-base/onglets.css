@@ -78,22 +78,32 @@ body.theme-stellaire .tabs .tab:hover {
   border-bottom: 3px solid var(--accent-primary);
 }
 
-
-
+/* ==========================================
+📱 RESPONSIVE ONGLET COMPACT (<= 600px)
+========================================== */
 @media (max-width: 600px) {
+
+  /* La barre d'onglets ne passe plus en colonne */
   .tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    display: flex !important;      /* S'assure qu'on reste en flex */
+    flex-wrap: nowrap !important;  /* PAS de retour à la ligne */
+    overflow-x: auto !important;   /* Scroll horizontal si déborde */
+    -webkit-overflow-scrolling: touch; /* Inertie iOS */
   }
+
+  /* Chaque onglet reste sur une seule ligne */
   .tabs .tab {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    border-radius: 0;
-    border: none;
-    border-bottom: 2px solid transparent;
+    flex: 0 0 auto;                /* Taille auto sans grandir */
+    white-space: nowrap;           /* Empêche le retour ligne */
+    border-radius: 0;              /* Optionnel : bords carrés */
+    border: none;                  /* Pas de bordure verticale */
+    margin-right: 0.2em;           /* Petit espacement entre onglets */
   }
+
+  /* Onglet actif : bordure plus visible */
   .tabs .tab.active {
-    border-bottom-color: var(--accent, rgba(255,255,255,0.2));
+    border-bottom: 2px solid var(--accent, rgba(255,255,255,0.2));
+    /* On peut ajouter un fond si souhaité */
+    /* background: var(--accent-primary, rgba(255,255,255,0.15)); */
   }
 }
-
