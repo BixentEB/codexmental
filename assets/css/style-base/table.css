@@ -142,3 +142,14 @@ table.scroll-horizontal td:first-child {
   cursor: pointer;
   font-size: 1rem;
 }
+
+/* 🌌 Codex Table : scroll horizontal sur mobile */
+@media screen and (max-width: 768px) {
+  .codex-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    min-width: 600px;
+  }
+}
+
