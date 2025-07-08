@@ -140,3 +140,14 @@ body.theme-stellaire .blog-menu a.active {
   color: #aad8ff !important;
   font-weight: bold;
 }
+
+/* ONGLETS */
+body.theme-stellaire .tabs .tab {
+  background: rgba(120, 180, 255, 0.08); /* voile bleu doux */
+  color: var(--text-secondary, #aad8ff);
+}
+
+body.theme-stellaire .tabs .tab.active {
+  background: var(--accent-primary, #77caff);
+  color: #000; /* texte noir pour contraste maximal */
+}
