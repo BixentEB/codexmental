@@ -145,3 +145,33 @@
     transform: none;
   }
 }
+
+@media screen and (max-width: 768px) {
+  #article-viewer *,
+  #viewer * {
+    display: block;
+    white-space: normal;
+    writing-mode: initial;
+    transform: none;
+  }
+
+  #article-viewer table,
+  #viewer table,
+  #article-viewer table *,
+  #viewer table * {
+    display: table !important;
+    white-space: normal !important;
+  }
+
+  #article-viewer table tr,
+  #viewer table tr {
+    display: table-row !important;
+  }
+
+  #article-viewer table td,
+  #viewer table td,
+  #article-viewer table th,
+  #viewer table th {
+    display: table-cell !important;
+  }
+}
