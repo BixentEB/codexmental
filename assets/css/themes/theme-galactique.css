@@ -92,3 +92,14 @@ body.theme-galactique .blog-menu a.active {
   color: #ddbaff !important;
   font-weight: bold;
 }
+
+/* ONGLETS */
+body.theme-galactique .tabs .tab {
+  background: rgba(179, 136, 255, 0.1); /* voile violet léger */
+  color: var(--text-secondary, #cbbafc);
+}
+
+body.theme-galactique .tabs .tab.active {
+  background: var(--accent-primary, #b388ff);
+  color: #fff;
+}
