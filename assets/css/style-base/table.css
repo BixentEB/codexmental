@@ -14,7 +14,7 @@ th, td {
 
 thead th {
   font-weight: bold;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* ligne plus marquée */
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 tbody td {
@@ -42,12 +42,102 @@ td:nth-child(3) {
   width: 50%;
 }
 
-/* Responsive minimal */
+/* 🪄 Responsive minimal */
 @media screen and (max-width: 768px) {
   table {
-    font-size: 0.85rem;
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  table th, table td {
-    padding: 8px 10px;
+
+  table {
+    min-width: 600px;
+  }
+
+  table::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.2));
+    pointer-events: none;
   }
 }
+
+/* TABLEAUX SCROLLS + RESPONSIVE MOBILE */
+
+/* 🌌 Scroll vertical */
+table.scroll-vertical {
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* 🌌 Scroll horizontal */
+table.scroll-horizontal {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  min-width: 600px;
+  position: relative;
+}
+
+/* 🌌 Sticky header */
+table.scroll-vertical thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* 🌌 Sticky first column */
+table.scroll-horizontal th:first-child,
+table.scroll-horizontal td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: inherit; /* hérite du thème */
+}
+
+/* 🌌 Petit message indicatif */
+.table-note {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 0.3rem;
+  cursor: pointer;
+}
+
+/* 🌌 Overlay plein écran */
+.table-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Conteneur du tableau dans l'overlay */
+.table-overlay .table-container {
+  background: rgba(0,0,0,0.8);
+  padding: 1rem;
+  max-height: 90%;
+  max-width: 90%;
+  overflow: auto;
+  border-radius: 8px;
+}
+
+/* Bouton fermer */
+.table-overlay .close-btn {
+  text-align: right;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
