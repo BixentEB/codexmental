@@ -80,21 +80,20 @@ body.theme-stellaire .tabs .tab:hover {
 
 
 
-/* Mobile empilé */
 @media (max-width: 600px) {
   .tabs {
-    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
   .tabs .tab {
-    margin-right: 0;
+    flex: 0 0 auto;
+    white-space: nowrap;
     border-radius: 0;
     border: none;
-    border-left: 4px solid transparent;
+    border-bottom: 2px solid transparent;
   }
   .tabs .tab.active {
-    border-left-color: var(--accent, rgba(255,255,255,0.2));
-    border-bottom: none;
-    transform: none;
-    box-shadow: none;
+    border-bottom-color: var(--accent, rgba(255,255,255,0.2));
   }
 }
+
