@@ -51,6 +51,12 @@
   opacity: 1;
 }
 
+/* effet hover doux */
+.tabs .tab:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+
 /* Mobile empilé */
 @media (max-width: 600px) {
   .tabs {
