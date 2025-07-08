@@ -109,4 +109,14 @@ body.theme-lunaire .blog-menu a.active {
 }
 
 
+/* ONGLETS */
+body.theme-lunaire .tabs .tab {
+  background: rgba(90, 130, 200, 0.1); /* voile bleu doux */
+  color: var(--text-secondary, #aaccee);
+}
+
+body.theme-lunaire .tabs .tab.active {
+  background: var(--accent-primary, #3b7dd8);
+  color: #fff;
+}
 
