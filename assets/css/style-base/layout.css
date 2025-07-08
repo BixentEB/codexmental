@@ -220,3 +220,14 @@ footer .theme-buttons {
   --bloc-border: rgba(255, 255, 255, 0.15);
   --bloc-shadow: rgba(0, 0, 0, 0.2);
 }
+
+/* RESPONSIVE MOBILE LUNE EN ARRIERE */
+@media (max-width: 568px) {
+  main.container,
+  .tabs-section,
+  .bloc,
+  .tab-content.active {
+    position: relative;
+    z-index: 10;
+  }
+}
