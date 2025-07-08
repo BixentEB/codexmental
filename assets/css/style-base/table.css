@@ -28,7 +28,7 @@ table.compact td {
   font-size: 0.9rem;
 }
 
-/* 🎯 Alignement précis */
+/* 🎯 Alignement précis pour tableaux génériques */
 th:nth-child(1),
 td:nth-child(1) {
   width: 25%;
@@ -40,6 +40,33 @@ td:nth-child(2) {
 th:nth-child(3),
 td:nth-child(3) {
   width: 50%;
+}
+
+/* 🌟 Tables spécifiques Codex */
+.codex-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  min-width: 600px; /* Évite compression */
+}
+
+.codex-table th,
+.codex-table td {
+  padding: 12px 20px;
+  vertical-align: top;
+}
+
+/* Colonne chiffres étroite */
+.codex-table th:nth-child(2),
+.codex-table td:nth-child(2) {
+  width: 120px;
+}
+
+/* Colonne texte long limitée */
+.codex-table th:nth-child(3),
+.codex-table td:nth-child(3) {
+  max-width: 300px;
+  word-break: break-word;
 }
 
 /* TABLEAUX SCROLLS + RESPONSIVE MOBILE */
@@ -115,4 +142,3 @@ table.scroll-horizontal td:first-child {
   cursor: pointer;
   font-size: 1rem;
 }
-
