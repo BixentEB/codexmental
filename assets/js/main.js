@@ -11,7 +11,7 @@ import '/assets/js/anti-copy.js';
 import '/assets/js/viewer.js'; // ✅ nouveau moteur unifié blog + atelier
 import '/assets/js/cookie.js';
 import '/assets/js/onglets.js';
-
+import '/assets/js/table.js';
 
 // === 🔧 Modules à fonctions exportées ===
 import { setTheme } from '/assets/js/theme-engine.js';
