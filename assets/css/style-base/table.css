@@ -61,6 +61,21 @@ table.compact td {
   white-space: normal !important;
 }
 
+@media screen and (max-width: 768px) {
+  table th,
+  table td {
+    font-size: 0.85rem; /* plus petit */
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .codex-table th,
+  .codex-table td {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+}
+
 
 /* ❌ Pas de media queries mobile */
 /* ❌ Pas de overflow-x */
