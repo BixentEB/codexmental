@@ -47,6 +47,21 @@ table.compact td {
   word-break: break-word;
 }
 
+/* 🌌 RAZ totale du responsive tableau */
+.codex-table {
+  display: table !important;
+  width: 100% !important;
+  table-layout: auto !important;
+  min-width: auto !important;
+  overflow: visible !important;
+}
+
+.codex-table th,
+.codex-table td {
+  white-space: normal !important;
+}
+
+
 /* ❌ Pas de media queries mobile */
 /* ❌ Pas de overflow-x */
 /* ❌ Pas de min-width */
