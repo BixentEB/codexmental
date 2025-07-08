@@ -40,15 +40,26 @@ document.querySelectorAll("table.codex-table").forEach(table => {
     note.addEventListener("click", () => {
       const overlay = document.getElementById("tableOverlay");
       const content = document.getElementById("tableContent");
-      content.innerHTML = table.outerHTML;
-      overlay.style.display = "flex";
+
+      if (overlay && content) {
+        content.innerHTML = table.outerHTML;
+        overlay.style.display = "flex";
+      } else {
+        console.log("⚠️ Overlay introuvable : impossible d'afficher le tableau en plein écran.");
+      }
     });
   }
 });
 
-// Bouton fermer overlay
-document.getElementById("closeOverlay").addEventListener("click", () => {
-  const overlay = document.getElementById("tableOverlay");
-  overlay.style.display = "none";
-  document.getElementById("tableContent").innerHTML = "";
-});
+// Sécurité bouton fermer overlay
+const closeButton = document.getElementById("closeOverlay");
+if (closeButton) {
+  closeButton.addEventListener("click", () => {
+    const overlay = document.getElementById("tableOverlay");
+    const content = document.getElementById("tableContent");
+    if (overlay && content) {
+      overlay.style.display = "none";
+      content.innerHTML = "";
+    }
+  });
+}
