@@ -1,4 +1,3 @@
-
 // Configurable
 const thresholds = {
   pc: { rows: 10, cols: 6 },
@@ -10,8 +9,8 @@ const isMobile = window.innerWidth <= 768;
 const maxRows = isMobile ? thresholds.mobile.rows : thresholds.pc.rows;
 const maxCols = isMobile ? thresholds.mobile.cols : thresholds.pc.cols;
 
-// Cibler tous les tableaux
-document.querySelectorAll("table").forEach(table => {
+// Cibler UNIQUEMENT les tableaux avec .codex-table
+document.querySelectorAll("table.codex-table").forEach(table => {
   const rowCount = table.querySelectorAll("tr").length;
   const colCount = table.querySelectorAll("tr:first-child th, tr:first-child td").length;
 
