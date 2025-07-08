@@ -127,3 +127,15 @@
     visibility: visible;
   }
 }
+
+body.theme-lunaire .tabs {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+}
+body.theme-lunaire .tabs .tab {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
