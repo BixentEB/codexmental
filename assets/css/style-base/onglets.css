@@ -74,6 +74,11 @@ body.theme-stellaire .tabs .tab:hover {
   transition: opacity 0.5s ease;
 }
 
+.tabs .tab.active {
+  border-bottom: 3px solid var(--accent-primary);
+}
+
+
 
 /* Mobile empilé */
 @media (max-width: 600px) {
