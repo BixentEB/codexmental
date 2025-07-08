@@ -15,8 +15,8 @@
   padding: 0.6em 1.2em;
   cursor: pointer;
   font-weight: bold;
-  color: inherit;
-  background: rgba(255,255,255,0.05); /* Onglet non actif */
+  color: var(--text-primary, inherit);
+  background: var(--tab-bg, rgba(255,255,255,0.05));
   margin-right: 0.2em;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -27,8 +27,8 @@
 
 /* Onglet actif */
 .tabs .tab.active {
-  background: var(--accent, rgba(255,255,255,0.1));
-  color: #fff;
+  background: var(--accent, rgba(255,255,255,0.2));
+  color: var(--accent-text, #fff);
   transform: translateY(1px);
   z-index: 1;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
