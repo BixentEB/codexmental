@@ -42,31 +42,6 @@ td:nth-child(3) {
   width: 50%;
 }
 
-/* 🪄 Responsive minimal */
-@media screen and (max-width: 768px) {
-  table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  table {
-    min-width: 600px;
-  }
-
-  table::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(0,0,0,0.2));
-    pointer-events: none;
-  }
-}
-
 /* TABLEAUX SCROLLS + RESPONSIVE MOBILE */
 
 /* 🌌 Scroll vertical */
