@@ -68,9 +68,9 @@
 
 /* === 🌙 Correctif spécial blog mobile + thème lunaire === */
 @media (max-width: 768px) {
-  body.theme-lunaire #article-viewer *,
-  body.theme-lunaire .article *,
-  body.theme-lunaire .bloc * {
+  body.theme-lunaire #article-viewer *:not(.tab-content),
+  body.theme-lunaire .article *:not(.tab-content),
+  body.theme-lunaire .bloc *:not(.tab-content) {
     display: block !important;
     writing-mode: initial !important;
     white-space: normal !important;
