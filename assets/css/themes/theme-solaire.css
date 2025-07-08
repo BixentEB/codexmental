@@ -149,3 +149,14 @@ body.theme-solaire .blog-menu summary {
 body.theme-solaire .blog-menu details[open] summary {
   color: var(--menu-text-hover) !important;
 }
+
+/* Onglets colorés */
+body.theme-solaire .tabs .tab {
+  background: rgba(255, 193, 7, 0.1); /* fond plus chaud pour les inactifs */
+  color: #6d4706; /* texte foncé lisible */
+}
+
+body.theme-solaire .tabs .tab.active {
+  background: var(--accent-primary, #f57f17); /* fond accent solaire */
+  color: #fff; /* texte blanc dessus */
+}
