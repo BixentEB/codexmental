@@ -47,17 +47,7 @@ table.compact td {
   word-break: break-word;
 }
 
-/* 🌌 Responsive - Scroll horizontal sur mobile */
-@media screen and (max-width: 768px) {
-  .codex-table {
-    display: table; /* ⚠️ reste un tableau */
-    overflow-x: auto;
-    width: 100%;
-    min-width: 600px; /* ou + grand si besoin */
-  }
-
-  .codex-table th,
-  .codex-table td {
-    white-space: nowrap; /* empêche le stacking */
-  }
-}
+/* ❌ Pas de media queries mobile */
+/* ❌ Pas de overflow-x */
+/* ❌ Pas de min-width */
+/* ❌ Pas de white-space: nowrap */
