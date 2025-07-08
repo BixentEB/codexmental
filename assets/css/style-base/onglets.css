@@ -69,6 +69,10 @@ body.theme-stellaire .tabs .tab:hover {
   background: rgba(120,180,255,0.15);
 }
 
+/* TRANSITION DOUCE */
+.tab-content {
+  transition: opacity 0.5s ease;
+}
 
 
 /* Mobile empilé */
