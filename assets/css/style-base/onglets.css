@@ -56,6 +56,20 @@
   background: rgba(255,255,255,0.1);
 }
 
+body.theme-solaire .tabs .tab:hover {
+  background: rgba(255, 193, 7, 0.15);
+}
+body.theme-lunaire .tabs .tab:hover {
+  background: rgba(90, 130, 200, 0.15);
+}
+body.theme-galactique .tabs .tab:hover {
+  background: rgba(179,136,255,0.15);
+}
+body.theme-stellaire .tabs .tab:hover {
+  background: rgba(120,180,255,0.15);
+}
+
+
 
 /* Mobile empilé */
 @media (max-width: 600px) {
