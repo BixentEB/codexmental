@@ -1,4 +1,4 @@
-/* 🌌 Tableaux stylisés */
+/* 🌌 Tableaux stylisés globaux */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -14,40 +14,55 @@ th, td {
 
 thead th {
   font-weight: bold;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* ligne plus marquée */
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 tbody td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 👌 Compactage intelligent */
+/* Compactage intelligent */
 table.compact th,
 table.compact td {
   padding: 6px 12px;
   font-size: 0.9rem;
 }
 
-/* 🎯 Alignement précis */
-th:nth-child(1),
-td:nth-child(1) {
-  width: 25%;
-}
-th:nth-child(2),
-td:nth-child(2) {
-  width: 25%;
-}
-th:nth-child(3),
-td:nth-child(3) {
-  width: 50%;
+/* 🌟 Tables spécifiques Codex */
+.codex-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
 }
 
-/* Responsive minimal */
-@media screen and (max-width: 768px) {
-  table {
-    font-size: 0.85rem;
-  }
-  table th, table td {
-    padding: 8px 10px;
-  }
+/* Largeurs colonnes si 3 colonnes */
+.codex-table th:nth-child(2),
+.codex-table td:nth-child(2) {
+  width: 140px;
 }
+
+.codex-table th:nth-child(3),
+.codex-table td:nth-child(3) {
+  max-width: 300px;
+  word-break: break-word;
+}
+
+/* 🌌 RAZ totale du responsive tableau */
+.codex-table {
+  display: table !important;
+  width: 100% !important;
+  table-layout: auto !important;
+  min-width: auto !important;
+  overflow: visible !important;
+}
+
+.codex-table th,
+.codex-table td {
+  white-space: normal !important;
+}
+
+
+/* ❌ Pas de media queries mobile */
+/* ❌ Pas de overflow-x */
+/* ❌ Pas de min-width */
+/* ❌ Pas de white-space: nowrap */
