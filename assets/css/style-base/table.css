@@ -1,4 +1,4 @@
-/* 🌌 Tableaux stylisés */
+/* 🌌 Tableaux stylisés globaux */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -21,25 +21,11 @@ tbody td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 👌 Compactage intelligent */
+/* Compactage intelligent */
 table.compact th,
 table.compact td {
   padding: 6px 12px;
   font-size: 0.9rem;
-}
-
-/* 🎯 Alignement précis pour tableaux génériques */
-th:nth-child(1),
-td:nth-child(1) {
-  width: 25%;
-}
-th:nth-child(2),
-td:nth-child(2) {
-  width: 25%;
-}
-th:nth-child(3),
-td:nth-child(3) {
-  width: 50%;
 }
 
 /* 🌟 Tables spécifiques Codex */
@@ -47,122 +33,31 @@ td:nth-child(3) {
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
-  min-width: 600px; /* Évite compression */
 }
 
-.codex-table th,
-.codex-table td {
-  padding: 12px 20px;
-  vertical-align: top;
-}
-
-/* Colonne chiffres étroite */
+/* Largeurs colonnes si 3 colonnes */
 .codex-table th:nth-child(2),
 .codex-table td:nth-child(2) {
-  width: 120px;
+  width: 140px;
 }
 
-/* Colonne texte long limitée */
 .codex-table th:nth-child(3),
 .codex-table td:nth-child(3) {
   max-width: 300px;
   word-break: break-word;
 }
 
-/* TABLEAUX SCROLLS + RESPONSIVE MOBILE */
-
-/* 🌌 Scroll vertical */
-table.scroll-vertical {
-  display: block;
-  max-height: 300px;
-  overflow-y: auto;
-  position: relative;
-}
-
-/* 🌌 Scroll horizontal */
-table.scroll-horizontal {
-  display: block;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  min-width: 600px;
-  position: relative;
-}
-
-/* 🌌 Sticky header */
-table.scroll-vertical thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-/* 🌌 Sticky first column */
-table.scroll-horizontal th:first-child,
-table.scroll-horizontal td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  background: inherit; /* hérite du thème */
-}
-
-/* 🌌 Petit message indicatif */
-.table-note {
-  font-size: 0.85rem;
-  color: #aaa;
-  margin-bottom: 0.3rem;
-  cursor: pointer;
-}
-
-/* 🌌 Overlay plein écran */
-.table-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.9);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-}
-
-/* Conteneur du tableau dans l'overlay */
-.table-overlay .table-container {
-  background: rgba(0,0,0,0.8);
-  padding: 1rem;
-  max-height: 90%;
-  max-width: 90%;
-  overflow: auto;
-  border-radius: 8px;
-}
-
-/* Bouton fermer */
-.table-overlay .close-btn {
-  text-align: right;
-  margin-bottom: 0.5rem;
-  color: #fff;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-/* 🌌 Codex Table : scroll horizontal sur mobile */
+/* 🌌 Responsive - Scroll horizontal sur mobile */
 @media screen and (max-width: 768px) {
   .codex-table {
-    display: block;
+    display: table; /* ⚠️ reste un tableau */
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    min-width: 600px;
+    width: 100%;
+    min-width: 600px; /* ou + grand si besoin */
+  }
+
+  .codex-table th,
+  .codex-table td {
+    white-space: nowrap; /* empêche le stacking */
   }
 }
-
-@media screen and (max-width: 768px) {
-  .codex-table::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(0,0,0,0.2));
-    pointer-events: none;
-  }
-}
-
