@@ -9,24 +9,46 @@ const isMobile = window.innerWidth <= 768;
 const maxRows = isMobile ? thresholds.mobile.rows : thresholds.pc.rows;
 const maxCols = isMobile ? thresholds.mobile.cols : thresholds.pc.cols;
 
-console.log("=== DEBUG TABLES ===");
+// Cibler UNIQUEMENT les tableaux codex-table
+document.querySelectorAll("table.codex-table").forEach(table => {
+  const rows = table.querySelectorAll("tr").length;
+  const firstRow = table.querySelector("tr");
+  if (!firstRow) return; // Sécurité si pas de tr
 
-// Lister tous les tableaux ciblés
-document.querySelectorAll("table").forEach((table, index) => {
-  const rowCount = table.querySelectorAll("tr").length;
-  const colCount = table.querySelectorAll("tr:first-child th, tr:first-child td").length;
-  
-  console.log(`Table #${index + 1}:`);
-  console.log("- InnerHTML (truncated):", table.innerHTML.substring(0, 200) + "...");
-  console.log(`- Rows: ${rowCount}`);
-  console.log(`- Columns: ${colCount}`);
-  console.log(`- Parent classes: ${table.parentNode.className}`);
-  
-  // Simuler les classes qu'on aurait appliquées
-  if (rowCount > maxRows) {
-    console.log("-> DEV NOTE: Ce tableau recevrait scroll-vertical");
+  const cols = firstRow.querySelectorAll("th, td").length;
+
+  let hasScroll = false;
+
+  if (rows > maxRows) {
+    table.classList.add("scroll-vertical");
+    hasScroll = true;
   }
-  if (colCount > maxCols) {
-    console.log("-> DEV NOTE: Ce tableau recevrait scroll-horizontal");
+
+  if (cols > maxCols) {
+    table.classList.add("scroll-horizontal");
+    hasScroll = true;
   }
+
+  // Ajouter le message cliquable seulement si scroll activé
+  if (hasScroll) {
+    const note = document.createElement("div");
+    note.textContent = "👉 Cliquer pour agrandir";
+    note.className = "table-note";
+
+    table.parentNode.insertBefore(note, table);
+
+    note.addEventListener("click", () => {
+      const overlay = document.getElementById("tableOverlay");
+      const content = document.getElementById("tableContent");
+      content.innerHTML = table.outerHTML;
+      overlay.style.display = "flex";
+    });
+  }
+});
+
+// Bouton fermer overlay
+document.getElementById("closeOverlay").addEventListener("click", () => {
+  const overlay = document.getElementById("tableOverlay");
+  overlay.style.display = "none";
+  document.getElementById("tableContent").innerHTML = "";
 });
