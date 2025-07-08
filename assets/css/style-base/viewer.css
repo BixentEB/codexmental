@@ -175,3 +175,21 @@
     display: table-cell !important;
   }
 }
+
+@media screen and (max-width: 768px) {
+  #article-viewer table,
+  #article-viewer table thead,
+  #article-viewer table tbody,
+  #article-viewer table tr,
+  #article-viewer table th,
+  #article-viewer table td,
+  #viewer table,
+  #viewer table thead,
+  #viewer table tbody,
+  #viewer table tr,
+  #viewer table th,
+  #viewer table td {
+    display: revert !important;
+    white-space: revert !important;
+  }
+}
