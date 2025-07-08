@@ -1,3 +1,4 @@
+
 // Configurable
 const thresholds = {
   pc: { rows: 10, cols: 6 },
