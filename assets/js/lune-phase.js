@@ -1,8 +1,8 @@
+// lune-phase.js
 import SunCalc from 'https://cdn.jsdelivr.net/npm/suncalc/+esm';
 
 /**
- * Calcule la phase lunaire pour aujourd’hui et retourne un objet événement.
- * @returns {Object}
+ * Retourne l'événement phase lunaire du jour.
  */
 export function getLunarPhaseEvent() {
   const today = new Date();
