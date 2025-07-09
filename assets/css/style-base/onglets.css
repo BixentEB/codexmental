@@ -9,6 +9,12 @@
   position: relative;
 }
 
+/* Titre de classeur */
+.tabs-section h2 {
+  margin-bottom: 0.5em;
+}
+
+
 /* Onglet style classeur */
 .tabs .tab {
   position: relative;
