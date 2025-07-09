@@ -81,6 +81,12 @@ h1.text-center {
   margin-bottom: 2.5rem;
 }
 
+/* TITRE HOME ESPACE */
+body.home main.container {
+  padding-top: 2.5rem;
+}
+
+
 
 /* ✍️ Mise en forme des citations générales */
 blockquote {
