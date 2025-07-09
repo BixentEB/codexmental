@@ -75,6 +75,13 @@ main.container {
   margin: 2rem 0;
 }
 
+/* TITRE AERE */
+h1.text-center {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+
 /* ✍️ Mise en forme des citations générales */
 blockquote {
   font-style: italic;
