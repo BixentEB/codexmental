@@ -64,10 +64,8 @@
     margin-bottom: 1.2rem;
     font-size: 1rem;
   }
-}
 
-/* === 🌙 Correctif spécial blog mobile + thème lunaire === */
-@media (max-width: 768px) {
+  /* === 🌙 Correctif spécial blog mobile + thème lunaire === */
   body.theme-lunaire #article-viewer *:not(.tab-content),
   body.theme-lunaire .article *:not(.tab-content),
   body.theme-lunaire .bloc *:not(.tab-content) {
@@ -106,9 +104,7 @@
     color: rgba(255,255,255,0.5);
     margin-top: 0.5rem;
   }
-}
 
-@media (max-width: 768px) {
   #share-menu {
     position: fixed;
     bottom: -100%; /* Déplace complètement hors écran */
@@ -126,19 +122,37 @@
     opacity: 1;
     visibility: visible;
   }
+
+  /* === 📱 Forcer onglets empilés sur mobile tous thèmes confondus === */
+  .tabs {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+  }
+
+  .tabs .tab {
+    display: block !important;
+    flex: none !important;
+    width: 100% !important;
+    white-space: normal !important;
+  }
 }
 
+/* === 🌙 Spécifique thème lunaire (desktop uniquement) === */
 body.theme-lunaire .tabs {
   display: flex !important;
   flex-wrap: nowrap !important;
   overflow-x: auto !important;
 }
+
 body.theme-lunaire .tabs .tab {
   display: inline-flex !important;
   flex: 0 0 auto !important;
   white-space: nowrap !important;
 }
 
+/* Correction ponctuation globale */
 h1, h2, h3, h4, h5, h6 {
   hanging-punctuation: none;
 }
