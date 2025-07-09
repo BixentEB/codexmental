@@ -20,6 +20,7 @@ import { setupScrollButton } from '/assets/js/scroll.js';
 import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 import { initEtoileFilante } from '/assets/js/etoile-filante.js';
+import { getLunarPhaseEvent } from '/assets/js/lune-phase.js'; // 🌙 calcul dynamique lune
 
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
@@ -52,10 +53,37 @@ window.addEventListener("DOMContentLoaded", () => {
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
 
-  // 📅 Charger événements astronomiques
+  // 📅 Charger événements astronomiques et ajouter la phase lunaire dynamique
+  let lunarEvent = null;
+  try {
+    lunarEvent = getLunarPhaseEvent();
+  } catch (e) {
+    console.error("❌ Erreur lors du calcul de la phase lunaire:", e);
+  }
+
   fetch('/arc/events-astro-2025.json')
     .then(res => res.json())
-    .then(data => afficherNoteAstro(data));
+    .then(data => {
+      const today = new Date();
+      const todayExtraEvents = data.filter(ev => {
+        const date = new Date(ev.date);
+        return (
+          date.getDate() === today.getDate() &&
+          date.getMonth() === today.getMonth() &&
+          date.getFullYear() === today.getFullYear()
+        );
+      });
+
+      const allEventsToday = lunarEvent ? [lunarEvent, ...todayExtraEvents] : todayExtraEvents;
+
+      afficherNoteAstro(allEventsToday);
+    })
+    .catch(e => {
+      console.error("❌ Erreur lors du chargement des événements JSON:", e);
+      if (lunarEvent) {
+        afficherNoteAstro([lunarEvent]);
+      }
+    });
 
   // 🛰️ Intro animée + badge astro
   lancerIntroAstro();
