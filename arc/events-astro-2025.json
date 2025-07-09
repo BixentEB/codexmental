@@ -1,11 +1,4 @@
 [
-    {
-    "date": "2025-07-10",
-    "type": "solar_eclipse",
-    "name": "Éclipse solaire totale",
-    "message": "TEST",
-    "themeEffect": "solar_eclipse"
-  },
   {
     "date": "2025-04-08",
     "type": "solar_eclipse",
