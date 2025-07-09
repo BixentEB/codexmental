@@ -1,12 +1,12 @@
-/* À mettre en tout début du CSS mobile */
-#share-menu[data-force-hidden] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
 /* === 📱 Responsive Mobile – Codex Mental === */
 @media (max-width: 768px) {
+
+  /* Forcer masquage du menu partage */
+  #share-menu[data-force-hidden] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
 
   .blog-wrapper {
     display: flex;
@@ -65,7 +65,40 @@
     font-size: 1rem;
   }
 
-  /* === 🌙 Correctif spécial blog mobile + thème lunaire === */
+  #share-menu {
+    position: fixed;
+    bottom: -100%; /* Déplace complètement hors écran */
+    left: 0;
+    right: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease-out;
+    z-index: 1000;
+  }
+
+  #share-menu:not(.hidden) {
+    bottom: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Forcer onglets empilés sur mobile tous thèmes confondus */
+  .tabs {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+  }
+
+  .tabs .tab {
+    display: block !important;
+    flex: none !important;
+    width: 100% !important;
+    white-space: normal !important;
+  }
+
+  /* 🌙 Correctif spécial blog mobile + thème lunaire */
   body.theme-lunaire #article-viewer *:not(.tab-content),
   body.theme-lunaire .article *:not(.tab-content),
   body.theme-lunaire .bloc *:not(.tab-content) {
@@ -105,54 +138,8 @@
     margin-top: 0.5rem;
   }
 
-  #share-menu {
-    position: fixed;
-    bottom: -100%; /* Déplace complètement hors écran */
-    left: 0;
-    right: 0;
-    width: 100%;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.4s ease-out;
-    z-index: 1000;
+  /* Correction ponctuation globale */
+  h1, h2, h3, h4, h5, h6 {
+    hanging-punctuation: none;
   }
-
-  #share-menu:not(.hidden) {
-    bottom: 0;
-    opacity: 1;
-    visibility: visible;
-  }
-
-  /* === 📱 Forcer onglets empilés sur mobile tous thèmes confondus === */
-  .tabs {
-    display: flex !important;
-    flex-direction: column !important;
-    flex-wrap: nowrap !important;
-    overflow: visible !important;
-  }
-
-  .tabs .tab {
-    display: block !important;
-    flex: none !important;
-    width: 100% !important;
-    white-space: normal !important;
-  }
-}
-
-/* === 🌙 Spécifique thème lunaire (desktop uniquement) === */
-body.theme-lunaire .tabs {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-}
-
-body.theme-lunaire .tabs .tab {
-  display: inline-flex !important;
-  flex: 0 0 auto !important;
-  white-space: nowrap !important;
-}
-
-/* Correction ponctuation globale */
-h1, h2, h3, h4, h5, h6 {
-  hanging-punctuation: none;
 }
