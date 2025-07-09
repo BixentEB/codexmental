@@ -52,10 +52,35 @@ window.addEventListener("DOMContentLoaded", () => {
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
 
+  // CHARGEMENT EVENTS DYNAMIQUES ASTRO
   // 📅 Charger événements astronomiques
-  fetch('/arc/events-astro-2025.json')
-    .then(res => res.json())
-    .then(data => afficherNoteAstro(data));
+  import { getLunarPhaseEvent } from '/assets/js/lune-phase.js';
+
+// 🟢 Appel du calcul dynamique
+const lunarEvent = getLunarPhaseEvent();
+
+// 🟢 Fetch du JSON des autres événements
+fetch('/arc/events-astro-2025.json')
+  .then(res => res.json())
+  .then(data => {
+    // On conserve tous les événements qui tombent aujourd'hui
+    const today = new Date();
+    const todayExtraEvents = data.filter(ev => {
+      const date = new Date(ev.date);
+      return (
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
+      );
+    });
+
+    // On regroupe la lune + les autres événements
+    const allEventsToday = [lunarEvent, ...todayExtraEvents];
+
+    // On affiche le tout
+    afficherNoteAstro(allEventsToday);
+  });
+
 
   // 🛰️ Intro animée + badge astro
   lancerIntroAstro();
