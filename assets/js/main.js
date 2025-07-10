@@ -75,4 +75,14 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 });
 
 // === 🌐 Rendre globale la fonction de changement de thème
-window.setTheme = setTheme;
+window.setTheme = (theme) => {
+  document.body.className = theme;
+  setTheme(theme);
+
+  // Réinitialise le texte
+  currentAlertText = "";
+
+  // Relance l’intro pour charger les infos du nouveau thème
+  lancerIntroAstro();
+};
+
