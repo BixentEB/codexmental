@@ -6,6 +6,7 @@ import { IDS } from '/assets/js/ids.js';
 
 let currentAlertText = "";
 let isTyping = false;
+let currentTimeout = null;
 
 export function setCurrentAlertText(text) {
   currentAlertText = text;
@@ -63,9 +64,19 @@ export function typewriter(element, text, speed = 45, callback) {
 
 export function lancerIntroAstro(theme) {
   const bloc = document.getElementById(IDS.ASTRO);
-  if (!bloc || isTyping) return;
-  isTyping = true;
+  if (!bloc) return;
 
+  // 🧹 Annule les anciens timers si on relance
+  if (currentTimeout) {
+    clearTimeout(currentTimeout);
+    currentTimeout = null;
+  }
+
+  if (isTyping) {
+    isTyping = false;
+  }
+
+  isTyping = true;
   bloc.textContent = '';
 
   const messages = [
@@ -91,7 +102,7 @@ export function lancerIntroAstro(theme) {
     cursorSpan.className = 'cursor-blink';
     bloc.appendChild(cursorSpan);
 
-    setTimeout(() => {
+    currentTimeout = setTimeout(() => {
       cursorSpan.remove();
 
       const messageFinal = getCurrentAlertText()?.trim()
@@ -101,7 +112,12 @@ export function lancerIntroAstro(theme) {
       bloc.textContent += ' ';
       typewriter(bloc, messageFinal, 45, () => {
         isTyping = false;
-        setTimeout(() => lancerIntroAstro(theme), 10000);
+
+        // ⏳ Choisir un délai selon le contenu
+        const isFallback = !getCurrentAlertText()?.trim() || getCurrentAlertText().includes('Aucune donnée');
+        const delay = isFallback ? 5000 : 15000; // 5s si fallback, 15s si vrai contenu
+
+        currentTimeout = setTimeout(() => lancerIntroAstro(theme), delay);
       });
     }, 2000);
   });
