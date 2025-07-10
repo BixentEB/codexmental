@@ -42,17 +42,10 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     emoji = "🌘";
   }
 
-  // Première estimation avec la date actuelle
   let times = SunCalc.getMoonTimes(date, lat, lng);
-
-  // Si lever ou coucher sont passés, recalculer avec +1 jour
-  const riseTime = times.rise ? new Date(times.rise) : null;
-  const setTime = times.set ? new Date(times.set) : null;
-
   const tomorrow = new Date(date);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  // Options pour affichage
   const options = { hour: '2-digit', minute: '2-digit' };
 
   let riseStr = "—";
@@ -65,26 +58,45 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     riseStr = "Pas de lever aujourd'hui";
     setStr = "—";
   } else {
-    // Si le lever est passé, recalculer pour le prochain lever
-    let riseToDisplay = riseTime;
-    if (riseTime && riseTime < now) {
-      const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
-      riseToDisplay = t.rise ? new Date(t.rise) : null;
-    }
-    // Si le coucher est passé, recalculer pour le prochain coucher
-    let setToDisplay = setTime;
-    if (setTime && setTime < now) {
-      const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
-      setToDisplay = t.set ? new Date(t.set) : null;
-    }
+    let riseTime = times.rise ? new Date(times.rise) : null;
+    let setTime = times.set ? new Date(times.set) : null;
 
-    riseStr = riseToDisplay
-      ? `${riseToDisplay.toLocaleTimeString('fr-FR', options)} (${riseToDisplay > now ? 'à venir' : 'déjà levée'})`
-      : "Pas de lever";
+    // Si les deux sont passés, aller chercher demain
+    if (setTime && setTime < now && riseTime && riseTime < now) {
+      const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
+      riseTime = t.rise ? new Date(t.rise) : null;
+      setTime = t.set ? new Date(t.set) : null;
 
-    setStr = setToDisplay
-      ? `${setToDisplay.toLocaleTimeString('fr-FR', options)} (${setToDisplay > now ? 'à venir' : 'déjà couchée'})`
-      : "Pas de coucher";
+      riseStr = riseTime
+        ? `${riseTime.toLocaleTimeString('fr-FR', options)} (à venir)`
+        : "Pas de lever";
+      setStr = setTime
+        ? `${setTime.toLocaleTimeString('fr-FR', options)} (à venir)`
+        : "Pas de coucher";
+    } else {
+      // Cas: lever est passé mais pas coucher = actuellement levée
+      if (riseTime && setTime && riseTime <= now && setTime > now) {
+        riseStr = `${riseTime.toLocaleTimeString('fr-FR', options)} (déjà levée)`;
+        setStr = `${setTime.toLocaleTimeString('fr-FR', options)} (à venir)`;
+      }
+      // Cas: pas encore levée
+      else if (riseTime && riseTime > now) {
+        riseStr = `${riseTime.toLocaleTimeString('fr-FR', options)} (à venir)`;
+        setStr = setTime
+          ? `${setTime.toLocaleTimeString('fr-FR', options)}`
+          : "—";
+      }
+      // Cas: déjà couchée
+      else if (setTime && setTime < now) {
+        const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
+        riseStr = t.rise
+          ? `${new Date(t.rise).toLocaleTimeString('fr-FR', options)} (à venir)`
+          : "Pas de lever";
+        setStr = t.set
+          ? `${new Date(t.set).toLocaleTimeString('fr-FR', options)} (à venir)`
+          : "Pas de coucher";
+      }
+    }
   }
 
   return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Lever : ${riseStr} ${emoji} Coucher : ${setStr}`;
