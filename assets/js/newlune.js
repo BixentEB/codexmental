@@ -1,71 +1,72 @@
 export function updateLunarWidget(SunCalc) {
-  console.log("✅ newlune.js lancé avec SunCalc.");
+  console.log("✅ Module lunaire chargé avec SunCalc");
 
   if (!document.body.classList.contains("theme-lunaire")) {
-    console.log("🌙 Thème lunaire non actif, rien à faire.");
+    console.log("🌙 Thème lunaire non actif, arrêt du module");
     return;
   }
 
-  // Nettoyage
-  const old = document.getElementById("svg-lune-widget");
-  if (old) old.remove();
+  // Nettoyage des éléments existants
+  const existingWidget = document.getElementById("svg-lune-widget");
+  if (existingWidget) existingWidget.remove();
 
-  const wrapper = document.createElement("div");
-  wrapper.id = "svg-lune-widget";
-  wrapper.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+  // Création du SVG
+  const widget = document.createElement("div");
+  widget.id = "svg-lune-widget";
+  widget.innerHTML = `
+    <svg id="svg-lune" viewBox="0 0 100 100" width="100" height="100">
       <defs>
         <mask id="mask-lune">
-          <rect width="100%" height="100%" fill="white"/>
-          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
+          <rect x="0" y="0" width="100" height="100" fill="white"/>
+          <circle id="lune-ombre" cx="50" cy="50" r="50" fill="black"/>
         </mask>
       </defs>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="url(#lune-fantome)"/>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
+      <image href="/img/lune/lune-pleine.png" width="100" height="100" opacity="0.2"/>
+      <image href="/img/lune/lune-pleine.png" width="100" height="100" mask="url(#mask-lune)"/>
     </svg>
   `;
-  document.body.appendChild(wrapper);
+  document.body.appendChild(widget);
 
   function getMoonData() {
-    const moon = SunCalc.getMoonIllumination(new Date());
+    const now = new Date();
+    const moonData = SunCalc.getMoonIllumination(now);
     return {
-      illumination: moon.fraction * 100,
-      isWaxing: moon.phase < 0.5
+      illumination: moonData.fraction * 100,
+      isWaxing: moonData.phase < 0.5
     };
   }
 
-  function setMoonPhaseSVG(illumination, isWaxing) {
-    const ombre = document.getElementById("ombre");
+  function updateMoonDisplay(illumination, isWaxing) {
+    const ombre = document.getElementById("lune-ombre");
     if (!ombre) return;
 
-    // Normalisation entre 0 et 100
-    const adjustedIllumination = Math.min(100, Math.max(0, illumination));
-    let ombreCx;
+    // Calcul de la position du masque (inversé car le masque cache la lune)
+    const phase = 100 - Math.min(100, Math.max(0, illumination));
+    let positionX;
 
-    if (adjustedIllumination <= 0.1) {
-      // Nouvelle Lune (masque total)
-      ombreCx = 50;
-    } else if (adjustedIllumination >= 99.9) {
-      // Pleine Lune (masque invisible)
-      ombreCx = 150;
+    if (phase <= 0.1) { // Pleine lune
+      positionX = 150; // Masque hors de la vue
+    } else if (phase >= 99.9) { // Nouvelle lune
+      positionX = 50; // Masque centré
     } else {
-      // Phases intermédiaires (déplacement progressif)
-      const progress = adjustedIllumination / 100;
-      const offset = 100 * (0.5 - progress);
-      ombreCx = isWaxing ? 50 + offset : 50 - offset;
+      const offset = 50 * (phase / 100);
+      positionX = isWaxing ? 50 - offset : 50 + offset;
     }
 
-    ombre.setAttribute("cx", ombreCx);
-    console.log(`🌙 Phase: ${adjustedIllumination.toFixed(1)}% | CX: ${ombreCx} | ${isWaxing ? "Croissant" : "Décroissant"}`);
+    ombre.setAttribute("cx", positionX);
+    console.log(`🌝 Phase: ${illumination.toFixed(1)}% | Direction: ${isWaxing ? "Croissante" : "Décroissante"} | Position: ${positionX}`);
   }
 
   // Initialisation
   const { illumination, isWaxing } = getMoonData();
-  setMoonPhaseSVG(illumination, isWaxing);
+  updateMoonDisplay(illumination, isWaxing);
 
-  // Mise à jour toutes les heures
-  setInterval(() => {
+  // Mise à jour périodique (toutes les heures)
+  const updateInterval = setInterval(() => {
     const { illumination, isWaxing } = getMoonData();
-    setMoonPhaseSVG(illumination, isWaxing);
+    updateMoonDisplay(illumination, isWaxing);
   }, 3600000);
+
+  // Nettoyage si nécessaire
+  return () => clearInterval(updateInterval);
 }
