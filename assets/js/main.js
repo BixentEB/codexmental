@@ -23,7 +23,11 @@ import { initThemeObserver } from '/assets/js/theme-observer.js';
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
-  document.body.className = savedTheme;
+  // Retire toutes les anciennes classes de thème avant d'ajouter la nouvelle
+  document.body.classList.remove(
+    ...Array.from(document.body.classList).filter(c => c.startsWith('theme-'))
+  );
+  document.body.classList.add(savedTheme);
   setTheme(savedTheme);
 })();
 
@@ -46,6 +50,10 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 // === 🌐 Rendre globale la fonction de changement de thème
 window.setTheme = (theme) => {
   localStorage.setItem('codexTheme', theme);
-  document.body.className = theme;
+  // Retire toutes les anciennes classes de thème avant d'ajouter la nouvelle
+  document.body.classList.remove(
+    ...Array.from(document.body.classList).filter(c => c.startsWith('theme-'))
+  );
+  document.body.classList.add(theme);
   setTheme(theme);
 };
