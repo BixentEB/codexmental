@@ -6,37 +6,44 @@ export function updateLunarWidget(SunCalc) {
     return;
   }
 
-  // Nettoyage
   const old = document.getElementById("svg-lune-widget");
   if (old) old.remove();
 
-  // Création du conteneur
   const wrapper = document.createElement("div");
   wrapper.id = "svg-lune-widget";
   wrapper.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
+        <filter id="lune-fantome">
+          <feComponentTransfer>
+            <feFuncA type="table" tableValues="0 0.08"/>
+          </feComponentTransfer>
+          <feColorMatrix type="matrix"
+            values="0.2 0 0 0 0
+                    0 0.2 0 0 0
+                    0 0 0.2 0 0
+                    0 0 0 1 0"/>
+        </filter>
         <mask id="mask-lune">
           <rect width="100%" height="100%" fill="white"/>
           <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
         </mask>
       </defs>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"/>
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="url(#lune-fantome)"/>
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
     </svg>
   `;
   document.body.appendChild(wrapper);
 
-  // Fonction de calcul SunCalc
   function getMoonData() {
     const moon = SunCalc.getMoonIllumination(new Date());
     return {
       illumination: moon.fraction * 100,
-      isWaxing: moon.phase < 0.5
+      // On inverse ici pour que la logique corresponde aux croissants classiques
+      isWaxing: moon.phase >= 0.5
     };
   }
 
-  // Fonction d'affichage
   function setMoonPhaseSVG(illumination, isWaxing) {
     const ombre = document.getElementById("ombre");
     if (!ombre) return;
@@ -57,12 +64,10 @@ export function updateLunarWidget(SunCalc) {
     ombre.setAttribute("cx", ombreCx);
   }
 
-  // Initialisation immédiate
   const { illumination, isWaxing } = getMoonData();
-  console.log(`🌙 Illumination réelle: ${illumination.toFixed(1)}% - ${isWaxing ? "Croissante" : "Décroissante"}`);
+  console.log(`🌙 Illumination réelle: ${illumination.toFixed(1)}% - ${isWaxing ? "Croissante (classique)" : "Décroissante (classique)"}`);
   setMoonPhaseSVG(illumination, isWaxing);
 
-  // Mise à jour automatique toutes les heures
   setInterval(() => {
     const { illumination, isWaxing } = getMoonData();
     setMoonPhaseSVG(illumination, isWaxing);
