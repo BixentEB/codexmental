@@ -1,18 +1,28 @@
-/* 🌙 WIDGET LUNAIRE - VERSION ULTIME */
+/* 🌙 WIDGET LUNAIRE - VERSION FINALE (Par Noob-Friendly Dev) 🌙 */
 body.theme-lunaire #svg-lune-widget {
   position: fixed;
   right: 20px;
   bottom: 20px;
   width: 250px;
   height: 250px;
-  z-index: 10;
+  z-index: 10; /* Bas par défaut */
   opacity: 0.85;
-  filter: drop-shadow(0 0 12px rgba(138, 180, 248, 0.4));
+  filter: drop-shadow(0 0 12px rgba(138, 180, 248, 0.4)); /* Bleu lunaire */
   transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
   cursor: pointer;
 }
 
-/* SVG */
+/* Mode Super-Lune (desktop) */
+body.theme-lunaire #svg-lune-widget.super-lune {
+  width: 500px;
+  height: 500px;
+  bottom: -120px;
+  right: -200px;
+  opacity: 0.95;
+  z-index: 1000; /* Élevé quand agrandi */
+}
+
+/* Style du SVG */
 body.theme-lunaire #svg-lune-widget svg {
   width: 100%;
   height: 100%;
@@ -20,77 +30,65 @@ body.theme-lunaire #svg-lune-widget svg {
   background: transparent;
 }
 
-/* Masque synchronisé avec le JS */
-body.theme-lunaire #svg-lune-widget circle#lune-mask-circle {
-  transition: cx 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+/* Lune fantôme (arrière-plan) */
+body.theme-lunaire #svg-lune-widget svg image:first-child {
+  filter: brightness(0.35) opacity(0.12) contrast(0.8);
 }
 
-/* Lune fantôme (arrière-plan flouté) */
-body.theme-lunaire #svg-lune-widget svg image.lune-background {
-  filter: 
-    brightness(0.4) 
-    opacity(0.15) 
-    contrast(0.9) 
-    blur(0.8px); /* Flou réaliste ajouté */
+/* Croissant visible */
+body.theme-lunaire #svg-lune-widget svg image:last-child {
+  filter: brightness(1.15) contrast(1.25) drop-shadow(0 0 4px rgba(200, 220, 255, 0.6));
+  transition: filter 0.3s ease;
 }
 
-/* Lune principale (avec halo) */
-body.theme-lunaire #svg-lune-widget svg image.lune-foreground {
-  filter: 
-    brightness(1.25) 
-    contrast(1.3) 
-    drop-shadow(0 0 6px rgba(200, 220, 255, 0.7)) 
-    url(#lune-glow); /* Effet de glow */
-  transition: all 0.4s ease-out;
-}
-
-/* Définition du glow (à ajouter dans le SVG) */
-body.theme-lunaire #svg-lune-widget svg defs #lune-glow {
-  /* Filtre de lueur plus prononcée */
-  width: 130%;
-  height: 130%;
-  x: -15%;
-  y: -15%;
-}
-
-/* Effets au survol (version enrichie) */
+/* Effets au survol */
 body.theme-lunaire #svg-lune-widget:hover {
-  opacity: 0.92;
-  filter: drop-shadow(0 0 20px rgba(138, 180, 248, 0.8));
-  transform: scale(1.06);
+  opacity: 1;
+  filter: drop-shadow(0 0 20px rgba(138, 180, 248, 0.6));
+  transform: scale(1.05);
 }
 
-body.theme-lunaire #svg-lune-widget:hover svg image.lune-foreground {
-  filter: 
-    brightness(1.4) 
-    contrast(1.5) 
-    drop-shadow(0 0 12px rgba(255, 255, 255, 0.9))
-    url(#lune-glow);
+body.theme-lunaire #svg-lune-widget:hover svg image:last-child {
+  filter: brightness(1.3) contrast(1.4) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
 }
 
-/* Mode Super-Lune (avec effets accentués) */
+/* Empêche le scroll horizontal */
+body {
+  overflow-x: hidden;
+}
+
+/* Ajustements pour la super-lune */
 body.theme-lunaire #svg-lune-widget.super-lune {
-  width: 500px;
-  height: 500px;
-  bottom: -120px;
-  right: -200px;
-  opacity: 0.98;
-  z-index: 1000;
-  filter: drop-shadow(0 0 25px rgba(138, 180, 248, 0.6));
+  overflow: visible;
+  pointer-events: none; /* Désactive les clics sur la partie débordante */
 }
 
-/* Mobile (adaptation des effets) */
+body.theme-lunaire #svg-lune-widget.super-lune svg {
+  pointer-events: auto; /* Réactive les clics sur la partie visible */
+}
+
+/* Version Mobile */
 @media (max-width: 568px) {
   body.theme-lunaire #svg-lune-widget {
     width: 180px;
     height: 180px;
-    opacity: 0.78;
+    right: 15px;
+    bottom: 15px;
+    z-index: 5; /* Reste derrière le texte */
+    opacity: 0.7;
   }
   
-  body.theme-lunaire #svg-lune-widget svg image.lune-foreground {
-    filter: 
-      brightness(1.2) 
-      contrast(1.25) 
-      drop-shadow(0 0 4px rgba(200, 220, 255, 0.6));
+  /* Désactive l'agrandissement en mobile */
+  body.theme-lunaire #svg-lune-widget.super-lune {
+    width: 180px;
+    height: 180px;
+    bottom: 15px;
+    right: 15px;
+    z-index: 5;
   }
+}
+
+/* Transition de l'ombre (pour le JS) */
+body.theme-lunaire #svg-lune-widget svg circle#ombre {
+  transition: cx 0.5s cubic-bezier(0.33, 1, 0.68, 1);
 }
