@@ -1,5 +1,6 @@
 // ========================================================
 // intro-astro.js – Message animé d’introduction + alerte astro
+// Fichiers liés à Intro-astro : astro-moon.js
 // ========================================================
 
 import { IDS } from '/assets/js/ids.js';
