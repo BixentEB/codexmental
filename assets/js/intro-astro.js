@@ -36,7 +36,7 @@ export function afficherNoteAstro(data, theme) {
   const bloc = document.getElementById(IDS.ASTRO);
   if (!bloc) return;
 
-  if (theme === 'theme-lunaire') {
+  if (theme.includes('theme-lunaire')) {
     // 🌙 Thème lunaire => SunCalc complet
     currentAlertText = getFullMoonInfo();
   } else {
