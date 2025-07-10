@@ -65,6 +65,7 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
       ? `${setTime.toLocaleTimeString('fr-FR', options)} (${setTime > now ? 'à venir' : 'déjà couchée'})`
       : "Pas de coucher";
 
+    // Séparateurs dynamiques avec l'emoji lunaire
     timeInfo = `${emoji} Lever : ${riseStr} ${emoji} Coucher : ${setStr}`;
   }
 
