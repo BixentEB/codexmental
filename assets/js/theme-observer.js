@@ -2,13 +2,13 @@
 // theme-observer.js – Détection dynamique du changement de thème
 // ========================================================
 
-import { afficherNoteAstro, lancerIntroAstro } from "/assets/js/intro-astro.js";
+import { afficherNoteAstro, lancerIntroAstro, setCurrentAlertText } from "/assets/js/intro-astro.js";
 
-// Variable globale pour stocker les événements JSON (injectée depuis main.js)
-export let astroData = [];
+let astroData = [];
+let dataLoaded = false;
 
 /**
- * Retourne le nom du thème actif sous forme simple ("lunaire", "solaire", "stellaire", "galactique")
+ * Retourne le nom du thème actif
  */
 function detectCurrentTheme() {
   const body = document.body;
@@ -20,87 +20,88 @@ function detectCurrentTheme() {
 }
 
 /**
- * Relance l'affichage et widgets selon le thème actif
+ * Gère l'activation d'un thème
+ */
+function handleThemeChange(currentTheme) {
+  console.log(`🔄 Activation du thème : ${currentTheme}`);
+
+  // Nettoyer le widget lunaire
+  const moon = document.getElementById("svg-lune-widget");
+  if (moon) {
+    console.log("🧹 Suppression du widget lunaire.");
+    moon.remove();
+  }
+
+  if (currentTheme === "lunaire") {
+    console.log("🌙 Thème lunaire : chargement modules...");
+    Promise.all([
+      import("https://esm.sh/suncalc"),
+      import("/assets/js/newmoon.js"),
+      import("/assets/js/astro-lunaire.js")
+    ])
+      .then(([SunCalcModule, moonModule, lunarModule]) => {
+        moonModule.updateNewMoonWidget(SunCalcModule.default);
+        if (typeof lunarModule.getFullMoonInfo === "function") {
+          setCurrentAlertText(lunarModule.getFullMoonInfo());
+        } else {
+          setCurrentAlertText("🌙 Aucune donnée lunaire disponible.");
+        }
+        lancerIntroAstro(currentTheme);
+      })
+      .catch(err => console.error("❌ Échec chargement modules lunaires:", err));
+    return;
+  }
+
+  if (currentTheme === "solaire") {
+    setCurrentAlertText("☀️ Les données solaires ne sont pas encore disponibles.");
+    lancerIntroAstro(currentTheme);
+    return;
+  }
+
+  if (currentTheme === "stellaire" || currentTheme === "galactique") {
+    if (!dataLoaded) {
+      fetch('/arc/events-astro-2025.json')
+        .then(res => res.json())
+        .then(data => {
+          astroData = data;
+          dataLoaded = true;
+          console.log("✅ Événements astro chargés.");
+          afficherNoteAstro(astroData, currentTheme);
+        })
+        .catch(err => {
+          console.error("❌ Erreur chargement événements astro:", err);
+          setCurrentAlertText("🪐 Impossible de charger les événements.");
+          lancerIntroAstro(currentTheme);
+        });
+    } else {
+      afficherNoteAstro(astroData, currentTheme);
+    }
+    return;
+  }
+
+  setCurrentAlertText('🌌 Thème inconnu.');
+  lancerIntroAstro(currentTheme);
+}
+
+/**
+ * Initialise l'observateur de thème
  */
 export function initThemeObserver() {
   let previousTheme = null;
 
-  new MutationObserver(() => {
+  const observer = new MutationObserver(() => {
     const currentTheme = detectCurrentTheme();
-    console.log(`🔄 Changement de thème détecté : ${previousTheme} → ${currentTheme}`);
-
-    if (!currentTheme) {
-      console.warn("⚠️ Aucun thème détecté.");
-      return;
-    }
-
-    if (currentTheme === previousTheme) {
-      console.log("ℹ️ Même thème que précédemment, pas de relance.");
-      return;
-    }
-
+    if (!currentTheme || currentTheme === previousTheme) return;
     previousTheme = currentTheme;
+    handleThemeChange(currentTheme);
+  });
 
-    // Nettoyer le widget lunaire si présent
-    const moon = document.getElementById("svg-lune-widget");
-    if (moon) {
-      console.log("🧹 Suppression du widget lunaire.");
-      moon.remove();
-    }
-
-    // Reset du texte
-    if (typeof currentAlertText !== "undefined") {
-      currentAlertText = "";
-    } else {
-      console.warn("⚠️ currentAlertText est indéfini !");
-    }
-
-    // Recharger le widget et infos selon thème
-    if (currentTheme === "lunaire") {
-      console.log("🌙 Thème lunaire : chargement SunCalc + astro-lunaire + newmoon.js");
-      Promise.all([
-        import("https://esm.sh/suncalc"),
-        import("/assets/js/newmoon.js"),
-        import("/assets/js/astro-lunaire.js")
-      ])
-        .then(([SunCalcModule, moonModule, lunarModule]) => {
-          console.log("🌙 Modules lunaires chargés.");
-          // Met à jour la lune SVG
-          moonModule.updateNewMoonWidget(SunCalcModule.default);
-          // Récupère et injecte le texte
-          if (typeof lunarModule.getFullMoonInfo === "function") {
-            window.currentAlertText = lunarModule.getFullMoonInfo();
-          } else {
-            window.currentAlertText = "🌙 Aucune donnée lunaire disponible.";
-          }
-          lancerIntroAstro(currentTheme);
-        })
-        .catch(err => console.error("❌ Échec chargement modules lunaires:", err));
-      return; // Ne passe pas plus bas
-    }
-
-    // Pour le thème solaire (bientôt)
-    if (currentTheme === "solaire") {
-      console.log("☀️ Thème solaire activé. (à compléter)");
-      window.currentAlertText = "☀️ Les données solaires ne sont pas encore disponibles.";
-      lancerIntroAstro(currentTheme);
-      return;
-    }
-
-    // Pour stellaire ou galactique
-    if (currentTheme === "stellaire" || currentTheme === "galactique") {
-      console.log(`🌌 Thème ${currentTheme} activé, chargement des événements.`);
-      if (astroData?.length) {
-        afficherNoteAstro(astroData, currentTheme);
-      } else {
-        window.currentAlertText = `🌌 Aucune donnée pour le thème ${currentTheme}.`;
-        lancerIntroAstro(currentTheme);
-      }
-      return;
-    }
-
-  }).observe(document.body, {
+  observer.observe(document.body, {
     attributes: true,
     attributeFilter: ["class"]
   });
+
+  // Activation initiale
+  const initialTheme = detectCurrentTheme();
+  handleThemeChange(initialTheme);
 }
