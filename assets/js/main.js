@@ -73,10 +73,42 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
   console.log("Burger clicked");
 });
 
-// === 🌐 Rendre globale la fonction de changement de thème
-window.setTheme = (theme) => {
-  // Sauvegarde le thème choisi
-  localStorage.setItem('codexTheme', theme);
-  // Recharge la page pour tout recharger proprement
-  window.location.reload();
-};
+
+// === 🌗 Relance dynamique lors du changement de thème
+new MutationObserver(() => {
+  console.log("🔄 Changement de thème détecté.");
+
+  const theme = document.body.className;
+
+  // Nettoyer l'ancien widget lunaire si présent
+  const moon = document.getElementById("svg-lune-widget");
+  if (moon) {
+    console.log("🌙 Suppression de l'ancien widget lunaire.");
+    moon.remove();
+  }
+
+  // Réinitialiser le texte
+  currentAlertText = "";
+
+  // Relancer l'intro
+  lancerIntroAstro();
+
+  // 🌙 Recharger le widget lunaire si thème lunaire actif
+  if (theme === "theme-lunaire") {
+    Promise.all([
+      import('https://esm.sh/suncalc'),
+      import('/assets/js/newmoon.js')
+    ])
+      .then(([SunCalcModule, moonModule]) => {
+        console.log("🌙 Moon widget loaded (MutationObserver).");
+        moonModule.updateNewMoonWidget(SunCalcModule.default);
+      })
+      .catch(err => console.error("❌ Échec chargement newmoon.js ou SunCalc :", err));
+  }
+
+  // Ici tu pourras plus tard ajouter : if (theme === "theme-solaire") {...}
+}).observe(document.body, {
+  attributes: true,
+  attributeFilter: ["class"]
+});
+
