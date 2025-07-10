@@ -1,16 +1,14 @@
 export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js launched with SunCalc and original CSS structure.");
+  console.log("✅ newmoon.js launched with SunCalc and original structure.");
 
   if (!document.body.classList.contains("theme-lunaire")) {
-    console.log("🌙 Lunar theme inactive, no widget displayed.");
     return;
   }
 
-  // Remove existing widget if any
-  const existingWidget = document.getElementById('svg-lune-widget');
-  if (existingWidget) existingWidget.remove();
+  // Remove any existing widget
+  const existing = document.getElementById('svg-lune-widget');
+  if (existing) existing.remove();
 
-  // Create the container
   const container = document.createElement('div');
   container.id = 'svg-lune-widget';
 
@@ -39,30 +37,28 @@ export function updateNewMoonWidget(SunCalc) {
 
   document.body.appendChild(container);
 
-  // Update moon phase using SunCalc
-  function updateMoonPhase() {
+  function updatePhase() {
     const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
-    const maskCircle = document.getElementById('ombre');
-    if (!maskCircle) return;
+    const ombre = document.getElementById('ombre');
+    if (!ombre) return;
 
     const illumination = fraction * 100;
-    let cxValue;
+    let cx;
 
     if (illumination <= 0.1) {
-      cxValue = 50; // New moon
-    } else if (illumination >= 99.9) {
-      cxValue = phase < 0.5 ? -50 : 150; // Full moon
+      cx = 50;
+    } else if (illumination >= 95) {
+      cx = phase < 0.5 ? -50 : 150;
     } else {
-      cxValue = phase < 0.5
+      cx = phase < 0.5
         ? 50 - (50 * illumination / 100)
         : 50 + (50 * illumination / 100);
     }
 
-    maskCircle.setAttribute('cx', cxValue);
-    console.log(`🌙 SunCalc Illumination: ${illumination.toFixed(1)}% | cx=${cxValue}`);
+    ombre.setAttribute('cx', cx);
+    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% (cx=${cx})`);
   }
 
-  // Initialize
-  updateMoonPhase();
-  setInterval(updateMoonPhase, 3600000);
+  updatePhase();
+  setInterval(updatePhase, 3600000);
 }
