@@ -1,3 +1,7 @@
+// ========================================================
+// astro-solaire.js – Données solaires avec SunCalc
+// ========================================================
+
 import SunCalc from 'https://esm.sh/suncalc';
 
 /**
@@ -25,6 +29,6 @@ export function getSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
     ? `${new Date(times.sunset).toLocaleTimeString('fr-FR', options)}`
     : "—";
 
-  return `☀️ Le soleil est actuellement à ${altitudeDeg}° d'altitude et ${azimuthDeg}° d'azimut. 
+  return `☀️ Le soleil est actuellement à ${altitudeDeg}° d'altitude et ${azimuthDeg}° d'azimut.
 🌅 Lever : ${riseStr} • 🌇 Coucher : ${setStr}`;
 }
