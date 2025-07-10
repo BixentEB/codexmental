@@ -1,5 +1,5 @@
 // ========================================================
-// main.js – Point d'entrée central de Codex Mental 
+// main.js – Point d'entrée central de Codex Mental
 // ========================================================
 
 // === 📦 Modules à effets de bord ===
@@ -8,7 +8,7 @@ import '/assets/js/theme-hours.js';
 import '/assets/js/theme-special.js';
 import '/assets/js/theme-cards.js';
 import '/assets/js/anti-copy.js';
-import '/assets/js/viewer.js';
+import '/assets/js/viewer.js'; // ✅ nouveau moteur unifié blog + atelier
 import '/assets/js/cookie.js';
 import '/assets/js/onglets.js';
 import '/assets/js/table.js';
@@ -38,19 +38,15 @@ window.addEventListener("DOMContentLoaded", () => {
     initEtoileFilante();
   }
 
-// 🌙 Widget lunaire SVG avec SunCalc importé dynamiquement
-if (currentTheme === "theme-lunaire") {
-  import('https://esm.sh/suncalc')
-    .then(module => {
-      const SunCalc = module.default;
-      import('/assets/js/newlune.js')
-        .then(luneModule => {
-          luneModule.updateLunarWidget(SunCalc);
-        });
-    })
-    .catch(err => console.error("Erreur lune:", err));
-}
-
+  // 🌙 Widget lunaire SVG pour thème lunaire
+  if (currentTheme === "theme-lunaire") {
+    import('/assets/js/lune-svg.js')
+      .then(module => {
+        console.log("🌙 Lune SVG chargée.");
+        module.updateLunarWidget(currentTheme);
+      })
+      .catch(err => console.error("❌ Échec chargement lune-svg.js :", err));
+  }
 
   // 🧩 Injection menu & footer
   injectPartial('menu-placeholder', '/menu.html');
