@@ -42,62 +42,51 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     emoji = "🌘";
   }
 
-  let times = SunCalc.getMoonTimes(date, lat, lng);
-  const tomorrow = new Date(date);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
   const options = { hour: '2-digit', minute: '2-digit' };
+
+  let times = SunCalc.getMoonTimes(date, lat, lng);
+
+  // Si toujours visible ou absente
+  if (times.alwaysUp) {
+    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌕 Toujours visible.`;
+  }
+  if (times.alwaysDown) {
+    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌑 Pas de lever aujourd'hui.`;
+  }
+
+  let rise = times.rise ? new Date(times.rise) : null;
+  let set = times.set ? new Date(times.set) : null;
 
   let riseStr = "—";
   let setStr = "—";
 
-  if (times.alwaysUp) {
-    riseStr = "Toujours visible";
-    setStr = "—";
-  } else if (times.alwaysDown) {
-    riseStr = "Pas de lever aujourd'hui";
-    setStr = "—";
-  } else {
-    let riseTime = times.rise ? new Date(times.rise) : null;
-    let setTime = times.set ? new Date(times.set) : null;
+  // Cas 1 : La lune est levée maintenant
+  if (rise && set && rise <= now && now < set) {
+    riseStr = `${rise.toLocaleTimeString('fr-FR', options)} (déjà levée)`;
+    setStr = `${set.toLocaleTimeString('fr-FR', options)} (à venir)`;
+  }
+  // Cas 2 : La lune n'est pas encore levée
+  else if (rise && now < rise) {
+    riseStr = `${rise.toLocaleTimeString('fr-FR', options)} (à venir)`;
+    setStr = set
+      ? `${set.toLocaleTimeString('fr-FR', options)}`
+      : "—";
+  }
+  // Cas 3 : La lune est déjà couchée
+  else if (set && now >= set) {
+    const tomorrow = new Date(date);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
+    const riseTomorrow = t.rise ? new Date(t.rise) : null;
+    const setTomorrow = t.set ? new Date(t.set) : null;
 
-    // Si les deux sont passés, aller chercher demain
-    if (setTime && setTime < now && riseTime && riseTime < now) {
-      const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
-      riseTime = t.rise ? new Date(t.rise) : null;
-      setTime = t.set ? new Date(t.set) : null;
-
-      riseStr = riseTime
-        ? `${riseTime.toLocaleTimeString('fr-FR', options)} (à venir)`
-        : "Pas de lever";
-      setStr = setTime
-        ? `${setTime.toLocaleTimeString('fr-FR', options)} (à venir)`
-        : "Pas de coucher";
-    } else {
-      // Cas: lever est passé mais pas coucher = actuellement levée
-      if (riseTime && setTime && riseTime <= now && setTime > now) {
-        riseStr = `${riseTime.toLocaleTimeString('fr-FR', options)} (déjà levée)`;
-        setStr = `${setTime.toLocaleTimeString('fr-FR', options)} (à venir)`;
-      }
-      // Cas: pas encore levée
-      else if (riseTime && riseTime > now) {
-        riseStr = `${riseTime.toLocaleTimeString('fr-FR', options)} (à venir)`;
-        setStr = setTime
-          ? `${setTime.toLocaleTimeString('fr-FR', options)}`
-          : "—";
-      }
-      // Cas: déjà couchée
-      else if (setTime && setTime < now) {
-        const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
-        riseStr = t.rise
-          ? `${new Date(t.rise).toLocaleTimeString('fr-FR', options)} (à venir)`
-          : "Pas de lever";
-        setStr = t.set
-          ? `${new Date(t.set).toLocaleTimeString('fr-FR', options)} (à venir)`
-          : "Pas de coucher";
-      }
-    }
+    riseStr = riseTomorrow
+      ? `${riseTomorrow.toLocaleTimeString('fr-FR', options)} (demain)`
+      : "Pas de lever";
+    setStr = setTomorrow
+      ? `${setTomorrow.toLocaleTimeString('fr-FR', options)} (demain)`
+      : "Pas de coucher";
   }
 
-  return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Lever : ${riseStr} ${emoji} Coucher : ${setStr}`;
+  return `🌙 La lune est actuellement à ${illum}% (${label}) 🌕 Lever : ${riseStr} 🌕 Coucher : ${setStr}`;
 }
