@@ -37,6 +37,31 @@ export function updateNewMoonWidget(SunCalc) {
 
   document.body.appendChild(container);
 
+  // Size cycle on click
+  const sizes = [
+    { w: "150px", h: "150px", class: "" },
+    { w: "250px", h: "250px", class: "" },
+    { w: "500px", h: "500px", class: "super-lune" }
+  ];
+  let sizeIndex = 1; // Start medium
+
+  function applySize() {
+    container.style.width = sizes[sizeIndex].w;
+    container.style.height = sizes[sizeIndex].h;
+    container.classList.remove("super-lune");
+    if (sizes[sizeIndex].class) {
+      container.classList.add(sizes[sizeIndex].class);
+    }
+  }
+  applySize();
+
+  container.addEventListener("click", (e) => {
+    e.preventDefault();
+    sizeIndex = (sizeIndex + 1) % sizes.length;
+    applySize();
+  });
+
+  // Update moon phase using SunCalc
   function updatePhase() {
     const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
     const ombre = document.getElementById('ombre');
