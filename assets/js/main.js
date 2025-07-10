@@ -8,7 +8,7 @@ import '/assets/js/theme-hours.js';
 import '/assets/js/theme-special.js';
 import '/assets/js/theme-cards.js';
 import '/assets/js/anti-copy.js';
-import '/assets/js/viewer.js'; // ✅ nouveau moteur unifié blog + atelier
+import '/assets/js/viewer.js';
 import '/assets/js/cookie.js';
 import '/assets/js/onglets.js';
 import '/assets/js/table.js';
@@ -32,36 +32,29 @@ import { initEtoileFilante } from '/assets/js/etoile-filante.js';
 window.addEventListener("DOMContentLoaded", () => {
   const currentTheme = document.body.className;
 
-  // 🌌 Étoile filante pour le thème stellaire
   if (currentTheme === "theme-stellaire") {
-    console.log("🌌 Lancement de l’étoile filante...");
     initEtoileFilante();
   }
 
-  // 🌙 Newmoon SVG widget with SunCalc
   if (currentTheme === "theme-lunaire") {
     Promise.all([
       import('https://esm.sh/suncalc'),
       import('/assets/js/newmoon.js')
     ])
     .then(([SunCalcModule, moonModule]) => {
-      console.log("🌙 Newmoon.js and SunCalc loaded.");
       moonModule.updateNewMoonWidget(SunCalcModule.default);
     })
     .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
   }
 
-  // 🧩 Injection menu & footer
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
 
-  // 📅 Charger événements astronomiques
   fetch('/arc/events-astro-2025.json')
     .then(res => res.json())
-    .then(data => afficherNoteAstro(data));
+    .then(data => afficherNoteAstro(data, currentTheme));
 
-  // 🛰️ Intro animée + badge astro
-  lancerIntroAstro();
+  lancerIntroAstro(currentTheme);
   activerBadgeAstro();
 });
 
@@ -80,23 +73,17 @@ window.setTheme = (theme) => {
   setTheme(theme);
 };
 
-// === 🌗 Relance automatique IntroAstro quand le thème change
-new MutationObserver((mutationsList) => {
+// === 🌗 Relance automatique IntroAstro et widgets quand le thème change
+new MutationObserver(() => {
   const currentTheme = document.body.className;
   console.log(`🔄 Thème changé détecté: ${currentTheme}`);
 
-  // On réinitialise le texte
+  // Réinitialise l’intro
   currentAlertText = "";
-
-  // Relance IntroAstro avec le thème actif
   lancerIntroAstro(currentTheme);
-}).observe(document.body, {
-  attributes: true,
-  attributeFilter: ["class"]
-});
 
-  // 🌙 Recharger le widget lunaire si thème lunaire actif
-  if (theme === "theme-lunaire") {
+  // Recharge le widget lunaire si besoin
+  if (currentTheme === "theme-lunaire") {
     Promise.all([
       import('https://esm.sh/suncalc'),
       import('/assets/js/newmoon.js')
@@ -108,9 +95,8 @@ new MutationObserver((mutationsList) => {
       .catch(err => console.error("❌ Échec chargement newmoon.js ou SunCalc :", err));
   }
 
-  // Ici tu pourras plus tard ajouter : if (theme === "theme-solaire") {...}
+  // Tu pourras ajouter plus tard les widgets solaires ici
 }).observe(document.body, {
   attributes: true,
   attributeFilter: ["class"]
 });
-
