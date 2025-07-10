@@ -1,157 +1,79 @@
-// =====================
-// 🌙 CALCUL PRECIS DES PHASES LUNAIRES
-// =====================
-function getMoonData(date = new Date()) {
-  const moon = SunCalc.getMoonIllumination(date);
+// newlune.js
 
-  return {
-    illumination: moon.fraction * 100,           // 0–100%
-    isWaxing: moon.phase < 0.5,                  // true si croissante
-    phase: moon.phase                            // 0=new, 0.5=full
-  };
-}
+export function updateLunarWidget() {
+  console.log("✅ newlune.js chargé");
 
-// =====================
-// 🎨 AFFICHAGE DU WIDGET SVG
-// =====================
-function setMoonPhaseSVG(illumination, isWaxing) {
-  const ombre = document.getElementById('ombre');
-  if (!ombre) return;
-
-  const progress = illumination / 100;
-  let ombreCx;
-
-  if (illumination <= 0.1) {
-    ombreCx = 50; // nouvelle lune
-  } else if (illumination >= 99.9) {
-    ombreCx = isWaxing ? -50 : 150; // pleine lune
-  } else {
-    ombreCx = isWaxing
-      ? 50 - (50 * progress)
-      : 50 + (50 * progress);
+  if (!document.body.classList.contains("theme-lunaire")) {
+    console.log("🌙 Thème lunaire non actif, rien à faire.");
+    return;
   }
 
-  ombre.setAttribute('cx', ombreCx);
-}
-
-// =====================
-// 🎨 CREATION DU WIDGET SVG
-// =====================
-function insertSVGWidget() {
-  const old = document.getElementById('svg-lune-widget');
+  // Nettoyer si déjà existant
+  const old = document.getElementById("svg-lune-widget");
   if (old) old.remove();
 
-  const wrapper = document.createElement('div');
-  wrapper.id = 'svg-lune-widget';
+  // Créer le conteneur
+  const wrapper = document.createElement("div");
+  wrapper.id = "svg-lune-widget";
+  wrapper.style.position = "fixed";
+  wrapper.style.bottom = "20px";
+  wrapper.style.right = "20px";
+  wrapper.style.width = "250px";
+  wrapper.style.height = "250px";
+  wrapper.style.zIndex = "1000";
+  wrapper.style.cursor = "pointer";
+
+  // Création du SVG minimal sans filtre pour être sûr que ça s'affiche
   wrapper.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <filter id="lune-fantome">
-          <feComponentTransfer>
-            <feFuncA type="table" tableValues="0 0.08"/>
-          </feComponentTransfer>
-          <feColorMatrix type="matrix" values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 1 0"/>
-        </filter>
-        <mask id="mask-lune">
-          <rect width="100%" height="100%" fill="white"/>
-          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
-        </mask>
-      </defs>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="url(#lune-fantome)"/>
+      <mask id="mask-lune">
+        <rect width="100%" height="100%" fill="white"/>
+        <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
+      </mask>
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
     </svg>
   `;
 
   document.body.appendChild(wrapper);
-  setupLuneClickCycle(wrapper);
-}
 
-// =====================
-// 🖱 INTERACTIONS
-// =====================
-function setupLuneClickCycle(wrapper) {
-  if (!wrapper) return;
-
-  const tailles = ['150px', '250px', '350px', '500px'];
-  const classes = ['', '', '', 'super-lune'];
-  let index = wrapper.dataset.tailleIndex ? parseInt(wrapper.dataset.tailleIndex) : 1;
-
-  function applySizeAndClass() {
-    wrapper.style.width = tailles[index];
-    wrapper.style.height = tailles[index];
-    wrapper.classList.remove('super-lune');
-    if (classes[index]) wrapper.classList.add(classes[index]);
-    wrapper.dataset.tailleIndex = index;
+  // Fonction de calcul avec SunCalc
+  function getMoonData() {
+    const moon = SunCalc.getMoonIllumination(new Date());
+    return {
+      illumination: moon.fraction * 100,
+      isWaxing: moon.phase < 0.5
+    };
   }
 
-  applySizeAndClass();
-  wrapper.style.cursor = 'pointer';
+  // Fonction d'affichage
+  function setMoonPhaseSVG(illumination, isWaxing) {
+    const ombre = document.getElementById("ombre");
+    if (!ombre) return;
 
-  wrapper.addEventListener('click', (e) => {
-    e.preventDefault();
-    const maxIndex = window.innerWidth <= 568 ? 1 : window.innerWidth <= 1024 ? 2 : 3;
-    index = (index + 1) % (maxIndex + 1);
-    applySizeAndClass();
-    followScrollLuneSVG();
-  });
-}
+    const progress = illumination / 100;
+    let ombreCx;
 
-// =====================
-// 🖱 SUIVI DU SCROLL
-// =====================
-function followScrollLuneSVG() {
-  const lune = document.getElementById('svg-lune-widget');
-  if (!lune) return;
+    if (illumination <= 0.1) {
+      ombreCx = 50;
+    } else if (illumination >= 99.9) {
+      ombreCx = isWaxing ? -50 : 150;
+    } else {
+      ombreCx = isWaxing
+        ? 50 - (50 * progress)
+        : 50 + (50 * progress);
+    }
 
-  const scrollTop = window.scrollY;
-  const top = scrollTop + window.innerHeight - lune.offsetHeight - 20;
-
-  lune.style.position = 'absolute';
-  lune.style.top = `${top}px`;
-  lune.style.right = lune.classList.contains('super-lune') ? '-200px' : '20px';
-  lune.style.zIndex = '1000';
-}
-
-// =====================
-// 🔄 GESTION AUTOMATIQUE
-// =====================
-let moonInterval = null;
-
-function manageMoonWidget() {
-  if (moonInterval) clearInterval(moonInterval);
-  const widget = document.getElementById('svg-lune-widget');
-
-  if (!document.body.classList.contains('theme-lunaire')) {
-    if (widget) widget.remove();
-    return;
+    ombre.setAttribute("cx", ombreCx);
   }
 
-  insertSVGWidget();
+  // Initialiser
   const { illumination, isWaxing } = getMoonData();
+  console.log(`🌙 Illumination actuelle: ${illumination.toFixed(1)}% - ${isWaxing ? "Croissante" : "Décroissante"}`);
   setMoonPhaseSVG(illumination, isWaxing);
 
-  moonInterval = setInterval(() => {
-    const data = getMoonData();
-    setMoonPhaseSVG(data.illumination, data.isWaxing);
+  // Rafraîchir chaque heure
+  setInterval(() => {
+    const { illumination, isWaxing } = getMoonData();
+    setMoonPhaseSVG(illumination, isWaxing);
   }, 3600000);
-
-  window.addEventListener('scroll', followScrollLuneSVG);
-  window.addEventListener('resize', followScrollLuneSVG);
-}
-
-// =====================
-// 🚀 INITIALISATION
-// =====================
-export function updateLunarWidget() {
-  if (document.readyState !== 'complete') {
-    window.addEventListener('load', updateLunarWidget, { once: true });
-    return;
-  }
-
-  new MutationObserver(manageMoonWidget).observe(document.body, {
-    attributes: true,
-    attributeFilter: ['class']
-  });
-
-  manageMoonWidget();
 }
