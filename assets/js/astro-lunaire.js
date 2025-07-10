@@ -63,7 +63,6 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     riseStr = "Pas de lever aujourd'hui";
     setStr = "—";
   } else {
-    // Si coucher déjà passé, on prend le prochain cycle
     if (setTime && now > setTime) {
       riseTime = timesTomorrow.rise ? new Date(timesTomorrow.rise) : null;
       setTime = timesTomorrow.set ? new Date(timesTomorrow.set) : null;
@@ -74,7 +73,6 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
         ? `${setTime.toLocaleTimeString('fr-FR', options)} (demain)`
         : "—";
     } else {
-      // Sinon on garde les horaires d'aujourd'hui
       riseStr = riseTime
         ? `${riseTime.toLocaleTimeString('fr-FR', options)}`
         : "—";
@@ -85,7 +83,7 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
   }
 
   const status = pos.altitude > 0
-    ? `${emoji} La lune est actuellement visible au-dessus de l’horizon.`
+    ? `${emoji} La lune est visible actuellement au-dessus de l’horizon.`
     : `${emoji} La lune est actuellement sous l’horizon.`;
 
   return `🌙 La lune est actuellement à ${illum}% (${label})
