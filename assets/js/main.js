@@ -8,7 +8,7 @@ import '/assets/js/theme-hours.js';
 import '/assets/js/theme-special.js';
 import '/assets/js/theme-cards.js';
 import '/assets/js/anti-copy.js';
-import '/assets/js/viewer.js'; // ✅ nouveau moteur unifié blog + atelier
+import '/assets/js/viewer.js';
 import '/assets/js/cookie.js';
 import '/assets/js/onglets.js';
 import '/assets/js/table.js';
@@ -38,14 +38,14 @@ window.addEventListener("DOMContentLoaded", () => {
     initEtoileFilante();
   }
 
-  // 🌙 Widget lunaire SVG pour thème lunaire
+  // 🌙 Widget lunaire SVG avec le nouveau script
   if (currentTheme === "theme-lunaire") {
-    import('/assets/js/lune-svg.js')
+    import('/assets/js/newlune.js')
       .then(module => {
-        console.log("🌙 Lune SVG chargée.");
+        console.log("🌙 newlune.js chargé.");
         module.updateLunarWidget(currentTheme);
       })
-      .catch(err => console.error("❌ Échec chargement lune-svg.js :", err));
+      .catch(err => console.error("❌ Échec chargement newlune.js :", err));
   }
 
   // 🧩 Injection menu & footer
