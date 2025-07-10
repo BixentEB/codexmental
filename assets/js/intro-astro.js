@@ -3,10 +3,17 @@
 // ========================================================
 
 import { IDS } from '/assets/js/ids.js';
-import { getFullMoonInfo } from '/assets/js/astro-lunaire.js';
 
-export let currentAlertText = "";
+let currentAlertText = "";
 let isTyping = false;
+
+export function setCurrentAlertText(text) {
+  currentAlertText = text;
+}
+
+export function getCurrentAlertText() {
+  return currentAlertText;
+}
 
 export function isToday(dateStr) {
   const today = new Date();
@@ -23,14 +30,14 @@ export function afficherNoteAstro(data, theme) {
   if (!bloc) return;
 
   if (theme === "lunaire") {
-    currentAlertText = getFullMoonInfo();
+    setCurrentAlertText("🌙 Données lunaires en cours de chargement...");
   } else {
     const todayAlerts = data.filter(ev => isToday(ev.date));
     if (todayAlerts.length > 0) {
       const eventsText = todayAlerts.map(ev => ev.message).join(' • ');
-      currentAlertText = eventsText;
+      setCurrentAlertText(eventsText);
     } else {
-      currentAlertText = '🪐 Aucune donnée à ce jour.';
+      setCurrentAlertText('🪐 Aucune donnée à ce jour.');
     }
   }
 
@@ -87,8 +94,8 @@ export function lancerIntroAstro(theme) {
     setTimeout(() => {
       cursorSpan.remove();
 
-      const messageFinal = currentAlertText?.trim()
-        ? currentAlertText
+      const messageFinal = getCurrentAlertText()?.trim()
+        ? getCurrentAlertText()
         : '🪐 Aucune donnée à ce jour.';
 
       bloc.textContent += ' ';
