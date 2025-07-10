@@ -52,8 +52,14 @@ export function typewriter(element, text, speed = 45, callback) {
   let i = 0;
 
   const interval = setInterval(() => {
-    const char = document.createTextNode(text.charAt(i));
-    element.appendChild(char);
+    const char = text.charAt(i);
+
+    if (char === '\n') {
+      element.appendChild(document.createElement('br'));
+    } else {
+      element.appendChild(document.createTextNode(char));
+    }
+
     i++;
     if (i >= text.length) {
       clearInterval(interval);
