@@ -3,9 +3,7 @@
 // ========================================================
 
 import { IDS } from '/assets/js/ids.js';
-
-// On importe SunCalc depuis le CDN
-import SunCalc from 'https://esm.sh/suncalc';
+import { getFullMoonInfo } from '/assets/js/astro-lunaire.js';
 
 export let currentAlertText = "";
 let isTyping = false;
@@ -26,37 +24,6 @@ export function isToday(dateStr) {
 }
 
 /**
- * Calcule la phase lunaire du jour avec SunCalc
- * @returns {string}
- */
-function getMoonPhaseText() {
-  const moon = SunCalc.getMoonIllumination(new Date());
-  const illum = (moon.fraction * 100).toFixed(1);
-  const phase = moon.phase;
-
-  let label = "Nouvelle lune";
-  if (phase < 0.03 || phase > 0.97) {
-    label = "Nouvelle lune";
-  } else if (phase < 0.22) {
-    label = "Premier croissant";
-  } else if (phase < 0.28) {
-    label = "Premier quartier";
-  } else if (phase < 0.47) {
-    label = "Gibbeuse croissante";
-  } else if (phase < 0.53) {
-    label = "Pleine lune";
-  } else if (phase < 0.72) {
-    label = "Gibbeuse décroissante";
-  } else if (phase < 0.78) {
-    label = "Dernier quartier";
-  } else {
-    label = "Dernier croissant";
-  }
-
-  return `🌙 La lune est actuellement à ${illum}% (${label}).`;
-}
-
-/**
  * Filtre les événements astronomiques du jour et prépare le message
  * @param {Array} data - Liste des événements astronomiques
  */
@@ -64,18 +31,22 @@ export function afficherNoteAstro(data) {
   const bloc = document.getElementById(IDS.ASTRO);
   if (!bloc) return;
 
-  const todayAlerts = data.filter(ev => isToday(ev.date));
-
-  const moonMessage = getMoonPhaseText();
-
-  if (todayAlerts.length > 0) {
-    const eventsText = todayAlerts.map(ev => ev.message).join(' • ');
-    currentAlertText = `${eventsText} • ${moonMessage}`;
+  if (document.body.classList.contains('theme-lunaire')) {
+    // 🌙 Thème lunaire => uniquement SunCalc complet
+    currentAlertText = getFullMoonInfo();
   } else {
-    currentAlertText = moonMessage;
+    // Les autres thèmes => événements JSON
+    const todayAlerts = data.filter(ev => isToday(ev.date));
+
+    if (todayAlerts.length > 0) {
+      const eventsText = todayAlerts.map(ev => ev.message).join(' • ');
+      currentAlertText = eventsText;
+    } else {
+      currentAlertText = '🪐 Aucune donnée à ce jour.';
+    }
   }
 
-  lancerIntroAstro(); // Lance l’animation textuelle
+  lancerIntroAstro();
 }
 
 /**
