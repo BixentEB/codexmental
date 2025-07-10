@@ -73,6 +73,13 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
   console.log("Burger clicked");
 });
 
+// === Window set theme basic
+window.setTheme = (theme) => {
+  localStorage.setItem('codexTheme', theme);
+  document.body.className = theme;
+  setTheme(theme);
+};
+
 
 // === 🌗 Relance dynamique lors du changement de thème
 new MutationObserver(() => {
