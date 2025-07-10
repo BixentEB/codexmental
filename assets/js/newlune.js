@@ -1,5 +1,5 @@
-export function updateLunarWidget() {
-  console.log("✅ newlune.js lancé (calcul interne, pas SunCalc).");
+export function updateLunarWidget(SunCalc) {
+  console.log("✅ newlune.js lancé avec SunCalc.");
 
   if (!document.body.classList.contains("theme-lunaire")) {
     console.log("🌙 Thème lunaire non actif, rien à faire.");
@@ -15,16 +15,6 @@ export function updateLunarWidget() {
   wrapper.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
-        <filter id="lune-fantome">
-          <feComponentTransfer>
-            <feFuncA type="table" tableValues="0 0.08"/>
-          </feComponentTransfer>
-          <feColorMatrix type="matrix"
-            values="0.2 0 0 0 0
-                    0 0.2 0 0 0
-                    0 0 0.2 0 0
-                    0 0 0 1 0"/>
-        </filter>
         <mask id="mask-lune">
           <rect width="100%" height="100%" fill="white"/>
           <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
@@ -37,17 +27,10 @@ export function updateLunarWidget() {
   document.body.appendChild(wrapper);
 
   function getMoonData() {
-    const base = new Date('2025-06-25T00:00:00Z');
-    const diff = (Date.now() - base) / (1000 * 60 * 60 * 24);
-    const lunations = diff / 29.530588853;
-    const phase = (lunations % 1 + 1) % 1;
-
-    const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
-    const isWaxing = phase < 0.5;
-
+    const moon = SunCalc.getMoonIllumination(new Date());
     return {
-      illumination: illumination * 100,
-      isWaxing
+      illumination: moon.fraction * 100,
+      isWaxing: moon.phase < 0.5
     };
   }
 
@@ -55,26 +38,32 @@ export function updateLunarWidget() {
     const ombre = document.getElementById("ombre");
     if (!ombre) return;
 
-    const progress = illumination / 100;
+    // Normalisation entre 0 et 100
+    const adjustedIllumination = Math.min(100, Math.max(0, illumination));
     let ombreCx;
 
-    if (illumination <= 0.1) {
+    if (adjustedIllumination <= 0.1) {
+      // Nouvelle Lune (masque total)
       ombreCx = 50;
-    } else if (illumination >= 99.9) {
-      ombreCx = isWaxing ? -50 : 150;
+    } else if (adjustedIllumination >= 99.9) {
+      // Pleine Lune (masque invisible)
+      ombreCx = 150;
     } else {
-      ombreCx = isWaxing
-        ? 50 - (50 * progress)
-        : 50 + (50 * progress);
+      // Phases intermédiaires (déplacement progressif)
+      const progress = adjustedIllumination / 100;
+      const offset = 100 * (0.5 - progress);
+      ombreCx = isWaxing ? 50 + offset : 50 - offset;
     }
 
     ombre.setAttribute("cx", ombreCx);
+    console.log(`🌙 Phase: ${adjustedIllumination.toFixed(1)}% | CX: ${ombreCx} | ${isWaxing ? "Croissant" : "Décroissant"}`);
   }
 
+  // Initialisation
   const { illumination, isWaxing } = getMoonData();
-  console.log(`🌙 Illumination calculée: ${illumination.toFixed(1)}%`);
   setMoonPhaseSVG(illumination, isWaxing);
 
+  // Mise à jour toutes les heures
   setInterval(() => {
     const { illumination, isWaxing } = getMoonData();
     setMoonPhaseSVG(illumination, isWaxing);
