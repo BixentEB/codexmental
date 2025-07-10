@@ -1,90 +1,70 @@
-export function updateLunarWidget() {
-  console.log("✅ newlune.js chargé");
+export function updateLunarWidget(SunCalc) {
+  console.log("✅ newlune.js lancé avec SunCalc.");
 
   if (!document.body.classList.contains("theme-lunaire")) {
     console.log("🌙 Thème lunaire non actif, rien à faire.");
     return;
   }
 
-  // Fonction qui fait tout une fois SunCalc prêt
-  function initLune() {
-    console.log("🌙 SunCalc détecté, initialisation lune.");
+  // Nettoyage
+  const old = document.getElementById("svg-lune-widget");
+  if (old) old.remove();
 
-    // Nettoyage
-    const old = document.getElementById("svg-lune-widget");
-    if (old) old.remove();
+  // Création du conteneur
+  const wrapper = document.createElement("div");
+  wrapper.id = "svg-lune-widget";
+  wrapper.innerHTML = `
+    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+      <defs>
+        <mask id="mask-lune">
+          <rect width="100%" height="100%" fill="white"/>
+          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
+        </mask>
+      </defs>
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"/>
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
+    </svg>
+  `;
+  document.body.appendChild(wrapper);
 
-    // Création du conteneur
-    const wrapper = document.createElement("div");
-    wrapper.id = "svg-lune-widget";
+  // Fonction de calcul SunCalc
+  function getMoonData() {
+    const moon = SunCalc.getMoonIllumination(new Date());
+    return {
+      illumination: moon.fraction * 100,
+      isWaxing: moon.phase < 0.5
+    };
+  }
 
-    wrapper.innerHTML = `
-      <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-        <defs>
-          <mask id="mask-lune">
-            <rect width="100%" height="100%" fill="white"/>
-            <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
-          </mask>
-        </defs>
-        <image href="/img/lune/lune-pleine.png" width="100%" height="100%"/>
-        <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
-      </svg>
-    `;
+  // Fonction d'affichage
+  function setMoonPhaseSVG(illumination, isWaxing) {
+    const ombre = document.getElementById("ombre");
+    if (!ombre) return;
 
-    document.body.appendChild(wrapper);
+    const progress = illumination / 100;
+    let ombreCx;
 
-    // Fonction de calcul SunCalc
-    function getMoonData() {
-      const moon = SunCalc.getMoonIllumination(new Date());
-      return {
-        illumination: moon.fraction * 100,
-        isWaxing: moon.phase < 0.5
-      };
+    if (illumination <= 0.1) {
+      ombreCx = 50;
+    } else if (illumination >= 99.9) {
+      ombreCx = isWaxing ? -50 : 150;
+    } else {
+      ombreCx = isWaxing
+        ? 50 - (50 * progress)
+        : 50 + (50 * progress);
     }
 
-    // Fonction d'affichage
-    function setMoonPhaseSVG(illumination, isWaxing) {
-      const ombre = document.getElementById("ombre");
-      if (!ombre) return;
+    ombre.setAttribute("cx", ombreCx);
+  }
 
-      const progress = illumination / 100;
-      let ombreCx;
+  // Initialisation immédiate
+  const { illumination, isWaxing } = getMoonData();
+  console.log(`🌙 Illumination réelle: ${illumination.toFixed(1)}% - ${isWaxing ? "Croissante" : "Décroissante"}`);
+  setMoonPhaseSVG(illumination, isWaxing);
 
-      if (illumination <= 0.1) {
-        ombreCx = 50;
-      } else if (illumination >= 99.9) {
-        ombreCx = isWaxing ? -50 : 150;
-      } else {
-        ombreCx = isWaxing
-          ? 50 - (50 * progress)
-          : 50 + (50 * progress);
-      }
-
-      ombre.setAttribute("cx", ombreCx);
-    }
-
-    // Initialisation
+  // Mise à jour automatique toutes les heures
+  setInterval(() => {
     const { illumination, isWaxing } = getMoonData();
-    console.log(`🌙 Illumination réelle: ${illumination.toFixed(1)}% - ${isWaxing ? "Croissante" : "Décroissante"}`);
     setMoonPhaseSVG(illumination, isWaxing);
-
-    // Rafraîchissement
-    setInterval(() => {
-      const { illumination, isWaxing } = getMoonData();
-      setMoonPhaseSVG(illumination, isWaxing);
-    }, 3600000);
-  }
-
-  // Vérifier si SunCalc est prêt
-  if (window.SunCalc) {
-    initLune();
-  } else {
-    console.log("⏳ SunCalc pas encore chargé, on attend...");
-    const checkInterval = setInterval(() => {
-      if (window.SunCalc) {
-        clearInterval(checkInterval);
-        initLune();
-      }
-    }, 100);
-  }
+  }, 3600000);
 }
