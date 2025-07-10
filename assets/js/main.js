@@ -80,26 +80,20 @@ window.setTheme = (theme) => {
   setTheme(theme);
 };
 
+// === 🌗 Relance automatique IntroAstro quand le thème change
+new MutationObserver((mutationsList) => {
+  const currentTheme = document.body.className;
+  console.log(`🔄 Thème changé détecté: ${currentTheme}`);
 
-
-// === 🌗 Relance dynamique lors du changement de thème
-new MutationObserver(() => {
-  console.log("🔄 Changement de thème détecté.");
-
-  const theme = document.body.className;
-
-  // Nettoyer l'ancien widget lunaire si présent
-  const moon = document.getElementById("svg-lune-widget");
-  if (moon) {
-    console.log("🌙 Suppression de l'ancien widget lunaire.");
-    moon.remove();
-  }
-
-  // Réinitialiser le texte
+  // On réinitialise le texte
   currentAlertText = "";
 
-  // Relancer l'intro
-  lancerIntroAstro();
+  // Relance IntroAstro avec le thème actif
+  lancerIntroAstro(currentTheme);
+}).observe(document.body, {
+  attributes: true,
+  attributeFilter: ["class"]
+});
 
   // 🌙 Recharger le widget lunaire si thème lunaire actif
   if (theme === "theme-lunaire") {
