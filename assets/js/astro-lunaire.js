@@ -7,7 +7,6 @@ import SunCalc from 'https://esm.sh/suncalc';
  * @param {number} lng
  * @returns {string}
  */
-
 export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const moon = SunCalc.getMoonIllumination(date);
@@ -43,31 +42,50 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     emoji = "🌘";
   }
 
-  const times = SunCalc.getMoonTimes(date, lat, lng);
+  // Première estimation avec la date actuelle
+  let times = SunCalc.getMoonTimes(date, lat, lng);
 
-  let timeInfo = "";
+  // Si lever ou coucher sont passés, recalculer avec +1 jour
+  const riseTime = times.rise ? new Date(times.rise) : null;
+  const setTime = times.set ? new Date(times.set) : null;
+
+  const tomorrow = new Date(date);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // Options pour affichage
+  const options = { hour: '2-digit', minute: '2-digit' };
+
+  let riseStr = "—";
+  let setStr = "—";
 
   if (times.alwaysUp) {
-    timeInfo = "La lune est visible toute la journée.";
+    riseStr = "Toujours visible";
+    setStr = "—";
   } else if (times.alwaysDown) {
-    timeInfo = "La lune reste sous l’horizon aujourd’hui.";
+    riseStr = "Pas de lever aujourd'hui";
+    setStr = "—";
   } else {
-    const riseTime = times.rise ? new Date(times.rise) : null;
-    const setTime = times.set ? new Date(times.set) : null;
+    // Si le lever est passé, recalculer pour le prochain lever
+    let riseToDisplay = riseTime;
+    if (riseTime && riseTime < now) {
+      const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
+      riseToDisplay = t.rise ? new Date(t.rise) : null;
+    }
+    // Si le coucher est passé, recalculer pour le prochain coucher
+    let setToDisplay = setTime;
+    if (setTime && setTime < now) {
+      const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
+      setToDisplay = t.set ? new Date(t.set) : null;
+    }
 
-    const options = { hour: '2-digit', minute: '2-digit' };
-
-    const riseStr = riseTime
-      ? `${riseTime.toLocaleTimeString('fr-FR', options)} (${riseTime > now ? 'à venir' : 'déjà levée'})`
+    riseStr = riseToDisplay
+      ? `${riseToDisplay.toLocaleTimeString('fr-FR', options)} (${riseToDisplay > now ? 'à venir' : 'déjà levée'})`
       : "Pas de lever";
 
-    const setStr = setTime
-      ? `${setTime.toLocaleTimeString('fr-FR', options)} (${setTime > now ? 'à venir' : 'déjà couchée'})`
+    setStr = setToDisplay
+      ? `${setToDisplay.toLocaleTimeString('fr-FR', options)} (${setToDisplay > now ? 'à venir' : 'déjà couchée'})`
       : "Pas de coucher";
-
-    // Séparateurs dynamiques avec l'emoji lunaire
-    timeInfo = `${emoji} Lever : ${riseStr} ${emoji} Coucher : ${setStr}`;
   }
 
-  return `🌙 La lune est actuellement à ${illum}% (${label}) ${timeInfo}`;
+  return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Lever : ${riseStr} ${emoji} Coucher : ${setStr}`;
 }
