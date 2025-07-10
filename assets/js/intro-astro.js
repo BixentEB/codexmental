@@ -4,6 +4,9 @@
 
 import { IDS } from '/assets/js/ids.js';
 
+// On importe SunCalc depuis le CDN
+import SunCalc from 'https://esm.sh/suncalc';
+
 export let currentAlertText = "";
 let isTyping = false;
 
@@ -23,6 +26,37 @@ export function isToday(dateStr) {
 }
 
 /**
+ * Calcule la phase lunaire du jour avec SunCalc
+ * @returns {string}
+ */
+function getMoonPhaseText() {
+  const moon = SunCalc.getMoonIllumination(new Date());
+  const illum = (moon.fraction * 100).toFixed(1);
+  const phase = moon.phase;
+
+  let label = "Nouvelle lune";
+  if (phase < 0.03 || phase > 0.97) {
+    label = "Nouvelle lune";
+  } else if (phase < 0.22) {
+    label = "Premier croissant";
+  } else if (phase < 0.28) {
+    label = "Premier quartier";
+  } else if (phase < 0.47) {
+    label = "Gibbeuse croissante";
+  } else if (phase < 0.53) {
+    label = "Pleine lune";
+  } else if (phase < 0.72) {
+    label = "Gibbeuse décroissante";
+  } else if (phase < 0.78) {
+    label = "Dernier quartier";
+  } else {
+    label = "Dernier croissant";
+  }
+
+  return `🌙 La lune est actuellement à ${illum}% (${label}).`;
+}
+
+/**
  * Filtre les événements astronomiques du jour et prépare le message
  * @param {Array} data - Liste des événements astronomiques
  */
@@ -32,13 +66,13 @@ export function afficherNoteAstro(data) {
 
   const todayAlerts = data.filter(ev => isToday(ev.date));
 
+  const moonMessage = getMoonPhaseText();
+
   if (todayAlerts.length > 0) {
-    currentAlertText = todayAlerts.map(ev => ev.message).join(' • ');
-    todayAlerts.forEach(ev => {
-    //  if (ev.themeEffect) lancerAnimation(ev.themeEffect); // effet visuel à lancer
-    });
+    const eventsText = todayAlerts.map(ev => ev.message).join(' • ');
+    currentAlertText = `${eventsText} • ${moonMessage}`;
   } else {
-    currentAlertText = "🌌 Aucun phénomène remarquable aujourd’hui. Les étoiles se reposent en silence.";
+    currentAlertText = moonMessage;
   }
 
   lancerIntroAstro(); // Lance l’animation textuelle
@@ -46,10 +80,6 @@ export function afficherNoteAstro(data) {
 
 /**
  * Animation machine à écrire
- * @param {HTMLElement} element - Élément cible
- * @param {string} text - Texte à écrire
- * @param {number} speed - Vitesse d’écriture (ms par caractère)
- * @param {Function} callback - Callback final optionnel
  */
 export function typewriter(element, text, speed = 45, callback) {
   if (!element || typeof text !== 'string') return;
@@ -69,7 +99,7 @@ export function typewriter(element, text, speed = 45, callback) {
 }
 
 /**
- * Lance le message d’intro animé (séquence ambiance + info astro)
+ * Lance le message d’intro animé
  */
 export function lancerIntroAstro() {
   const bloc = document.getElementById(IDS.ASTRO);
@@ -92,7 +122,6 @@ export function lancerIntroAstro() {
 
   const entry = messages[Math.floor(Math.random() * messages.length)];
 
-  // ✅ Affiche icône + texte
   typewriter(bloc, `${entry.icon} ${entry.text}`, 45, () => {
     bloc.textContent += ' ';
 
