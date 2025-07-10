@@ -1,7 +1,7 @@
 // ========================================================
 // intro-astro.js – Message animé d’introduction + alerte astro
 // Fichiers liés :
-//   - astro-moon.js : fournit les infos précises de la lune via SunCalc
+//   - astro-lunaire.js : fournit les infos précises de la lune via SunCalc
 //   - events-astro-2025.json : liste des événements spéciaux
 // Utilisé uniquement pour l'affichage textuel, sans lien avec le widget SVG
 // ========================================================
