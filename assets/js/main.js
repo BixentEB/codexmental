@@ -86,3 +86,13 @@ window.setTheme = (theme) => {
   lancerIntroAstro();
 };
 
+// === 🌗 Relance automatique IntroAstro quand le thème change (par MutationObserver)
+new MutationObserver(() => {
+  console.log("🔄 Changement de thème détecté, relance IntroAstro.");
+  currentAlertText = "";
+  lancerIntroAstro();
+}).observe(document.body, {
+  attributes: true,
+  attributeFilter: ["class"]
+});
+
