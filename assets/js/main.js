@@ -38,19 +38,18 @@ window.addEventListener("DOMContentLoaded", () => {
     initEtoileFilante();
   }
 
-// 🌙 Newmoon SVG widget with SunCalc
-if (currentTheme === "theme-lunaire") {
-  Promise.all([
-    import('https://esm.sh/suncalc'),
-    import('/assets/js/newmoon.js')
-  ])
-  .then(([SunCalcModule, moonModule]) => {
-    console.log("🌙 Newmoon.js and SunCalc loaded.");
-    moonModule.updateNewMoonWidget(SunCalcModule.default);
-  })
-  .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
-}
-
+  // 🌙 Newmoon SVG widget with SunCalc
+  if (currentTheme === "theme-lunaire") {
+    Promise.all([
+      import('https://esm.sh/suncalc'),
+      import('/assets/js/newmoon.js')
+    ])
+    .then(([SunCalcModule, moonModule]) => {
+      console.log("🌙 Newmoon.js and SunCalc loaded.");
+      moonModule.updateNewMoonWidget(SunCalcModule.default);
+    })
+    .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+  }
 
   // 🧩 Injection menu & footer
   injectPartial('menu-placeholder', '/menu.html');
@@ -76,23 +75,8 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 
 // === 🌐 Rendre globale la fonction de changement de thème
 window.setTheme = (theme) => {
-  document.body.className = theme;
-  setTheme(theme);
-
-  // Réinitialise le texte
-  currentAlertText = "";
-
-  // Relance l’intro pour charger les infos du nouveau thème
-  lancerIntroAstro();
+  // Sauvegarde le thème choisi
+  localStorage.setItem('codexTheme', theme);
+  // Recharge la page pour tout recharger proprement
+  window.location.reload();
 };
-
-// === 🌗 Relance automatique IntroAstro quand le thème change (par MutationObserver)
-new MutationObserver(() => {
-  console.log("🔄 Changement de thème détecté, relance IntroAstro.");
-  currentAlertText = "";
-  lancerIntroAstro();
-}).observe(document.body, {
-  attributes: true,
-  attributeFilter: ["class"]
-});
-
