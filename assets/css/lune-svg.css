@@ -20,6 +20,13 @@ body.theme-lunaire #svg-lune-widget.super-lune {
   right: -200px;
   opacity: 0.95;
   z-index: 1000; /* Élevé quand agrandi */
+  filter: drop-shadow(0 0 10px rgba(138, 180, 248, 0.3)); /* Halo plus doux */
+  overflow: visible;
+  pointer-events: none; /* Désactive les clics sur la partie débordante */
+}
+
+body.theme-lunaire #svg-lune-widget.super-lune svg {
+  pointer-events: auto; /* Réactive les clics sur la partie visible */
 }
 
 /* Style du SVG */
@@ -41,6 +48,15 @@ body.theme-lunaire #svg-lune-widget svg image:last-child {
   transition: filter 0.3s ease;
 }
 
+/* Super-Lune - adoucir la lune zoomée */
+body.theme-lunaire #svg-lune-widget.super-lune svg image:last-child {
+  filter:
+    brightness(1.15)
+    contrast(1.15)
+    drop-shadow(0 0 6px rgba(200, 220, 255, 0.5))
+    blur(0.6px);
+}
+
 /* Effets au survol */
 body.theme-lunaire #svg-lune-widget:hover {
   opacity: 1;
@@ -55,16 +71,6 @@ body.theme-lunaire #svg-lune-widget:hover svg image:last-child {
 /* Empêche le scroll horizontal */
 body {
   overflow-x: hidden;
-}
-
-/* Ajustements pour la super-lune */
-body.theme-lunaire #svg-lune-widget.super-lune {
-  overflow: visible;
-  pointer-events: none; /* Désactive les clics sur la partie débordante */
-}
-
-body.theme-lunaire #svg-lune-widget.super-lune svg {
-  pointer-events: auto; /* Réactive les clics sur la partie visible */
 }
 
 /* Version Mobile */
