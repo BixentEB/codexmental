@@ -1,5 +1,5 @@
 // ========================================================
-// main.js – Point d'entrée central de Codex Mental
+// main.js – Point d'entrée central de Codex Mental 
 // ========================================================
 
 // === 📦 Modules à effets de bord ===
