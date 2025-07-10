@@ -1,7 +1,7 @@
 import SunCalc from 'https://esm.sh/suncalc';
 
 /**
- * Retourne un texte complet d'infos lunaires avec indication des heures futures
+ * Retourne un texte complet d'infos lunaires
  * @param {Date} date
  * @param {number} lat
  * @param {number} lng
@@ -45,8 +45,10 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
   const options = { hour: '2-digit', minute: '2-digit' };
 
   let times = SunCalc.getMoonTimes(date, lat, lng);
+  let rise = times.rise ? new Date(times.rise) : null;
+  let set = times.set ? new Date(times.set) : null;
 
-  // Si toujours visible ou absente
+  // Cas toujours visible ou absente
   if (times.alwaysUp) {
     return `🌙 La lune est actuellement à ${illum}% (${label}) 🌕 Toujours visible.`;
   }
@@ -54,39 +56,37 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     return `🌙 La lune est actuellement à ${illum}% (${label}) 🌑 Pas de lever aujourd'hui.`;
   }
 
-  let rise = times.rise ? new Date(times.rise) : null;
-  let set = times.set ? new Date(times.set) : null;
-
-  let riseStr = "—";
-  let setStr = "—";
-
-  // Cas 1 : La lune est levée maintenant
-  if (rise && set && rise <= now && now < set) {
-    riseStr = `${rise.toLocaleTimeString('fr-FR', options)} (déjà levée)`;
-    setStr = `${set.toLocaleTimeString('fr-FR', options)} (à venir)`;
-  }
-  // Cas 2 : La lune n'est pas encore levée
-  else if (rise && now < rise) {
-    riseStr = `${rise.toLocaleTimeString('fr-FR', options)} (à venir)`;
-    setStr = set
-      ? `${set.toLocaleTimeString('fr-FR', options)}`
-      : "—";
-  }
-  // Cas 3 : La lune est déjà couchée
-  else if (set && now >= set) {
+  // Cas déjà couchée
+  if (set && now > set) {
     const tomorrow = new Date(date);
     tomorrow.setDate(tomorrow.getDate() + 1);
     const t = SunCalc.getMoonTimes(tomorrow, lat, lng);
     const riseTomorrow = t.rise ? new Date(t.rise) : null;
     const setTomorrow = t.set ? new Date(t.set) : null;
 
-    riseStr = riseTomorrow
-      ? `${riseTomorrow.toLocaleTimeString('fr-FR', options)} (demain)`
-      : "Pas de lever";
-    setStr = setTomorrow
-      ? `${setTomorrow.toLocaleTimeString('fr-FR', options)} (demain)`
-      : "Pas de coucher";
+    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌑 Prochain lever : ${
+      riseTomorrow ? riseTomorrow.toLocaleTimeString('fr-FR', options) : "—"
+    } • Prochain coucher : ${
+      setTomorrow ? setTomorrow.toLocaleTimeString('fr-FR', options) : "—"
+    }`;
   }
 
-  return `🌙 La lune est actuellement à ${illum}% (${label}) 🌕 Lever : ${riseStr} 🌕 Coucher : ${setStr}`;
+  // Cas pas encore levée
+  if (rise && now < rise) {
+    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌙 Lever à ${rise.toLocaleTimeString('fr-FR', options)} • Coucher à ${
+      set ? set.toLocaleTimeString('fr-FR', options) : "—"
+    }`;
+  }
+
+  // Cas levée maintenant
+  if (rise && set && rise <= now && now < set) {
+    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌙 Levée depuis ${
+      rise.toLocaleTimeString('fr-FR', options)
+    } • Coucher à ${
+      set ? set.toLocaleTimeString('fr-FR', options) : "—"
+    }`;
+  }
+
+  // Fallback
+  return `🌙 La lune est actuellement à ${illum}% (${label}).`;
 }
