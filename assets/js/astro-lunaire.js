@@ -50,10 +50,10 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
 
   // Cas toujours visible ou absente
   if (times.alwaysUp) {
-    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌕 Toujours visible.`;
+    return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Toujours visible.`;
   }
   if (times.alwaysDown) {
-    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌑 Pas de lever aujourd'hui.`;
+    return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Pas de lever aujourd'hui.`;
   }
 
   // Cas déjà couchée
@@ -64,27 +64,29 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     const riseTomorrow = t.rise ? new Date(t.rise) : null;
     const setTomorrow = t.set ? new Date(t.set) : null;
 
-    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌑 Prochain lever : ${
+    return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Prochain lever : ${
       riseTomorrow ? riseTomorrow.toLocaleTimeString('fr-FR', options) : "—"
-    } • Prochain coucher : ${
+    } ${emoji} Prochain coucher : ${
       setTomorrow ? setTomorrow.toLocaleTimeString('fr-FR', options) : "—"
     }`;
   }
 
   // Cas pas encore levée
   if (rise && now < rise) {
-    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌙 Lever à ${rise.toLocaleTimeString('fr-FR', options)} • Coucher à ${
+    return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Lever : ${
+      rise.toLocaleTimeString('fr-FR', options)
+    } (à venir) ${emoji} Coucher : ${
       set ? set.toLocaleTimeString('fr-FR', options) : "—"
     }`;
   }
 
   // Cas levée maintenant
   if (rise && set && rise <= now && now < set) {
-    return `🌙 La lune est actuellement à ${illum}% (${label}) 🌙 Levée depuis ${
+    return `🌙 La lune est actuellement à ${illum}% (${label}) ${emoji} Levée depuis ${
       rise.toLocaleTimeString('fr-FR', options)
-    } • Coucher à ${
+    } ${emoji} Coucher : ${
       set ? set.toLocaleTimeString('fr-FR', options) : "—"
-    }`;
+    } (à venir)`;
   }
 
   // Fallback
