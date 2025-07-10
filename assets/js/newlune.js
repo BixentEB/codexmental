@@ -1,5 +1,3 @@
-// newlune.js
-
 export function updateLunarWidget() {
   console.log("✅ newlune.js chargé");
 
@@ -8,35 +6,30 @@ export function updateLunarWidget() {
     return;
   }
 
-  // Nettoyer si déjà existant
+  // Nettoyage
   const old = document.getElementById("svg-lune-widget");
   if (old) old.remove();
 
-  // Créer le conteneur
+  // Création du conteneur
   const wrapper = document.createElement("div");
   wrapper.id = "svg-lune-widget";
-  wrapper.style.position = "fixed";
-  wrapper.style.bottom = "20px";
-  wrapper.style.right = "20px";
-  wrapper.style.width = "250px";
-  wrapper.style.height = "250px";
-  wrapper.style.zIndex = "1000";
-  wrapper.style.cursor = "pointer";
 
-  // Création du SVG minimal sans filtre pour être sûr que ça s'affiche
   wrapper.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <mask id="mask-lune">
-        <rect width="100%" height="100%" fill="white"/>
-        <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
-      </mask>
+      <defs>
+        <mask id="mask-lune">
+          <rect width="100%" height="100%" fill="white"/>
+          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
+        </mask>
+      </defs>
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"/>
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
     </svg>
   `;
 
   document.body.appendChild(wrapper);
 
-  // Fonction de calcul avec SunCalc
+  // Fonction de calcul SunCalc
   function getMoonData() {
     const moon = SunCalc.getMoonIllumination(new Date());
     return {
@@ -66,12 +59,12 @@ export function updateLunarWidget() {
     ombre.setAttribute("cx", ombreCx);
   }
 
-  // Initialiser
+  // Initialisation
   const { illumination, isWaxing } = getMoonData();
-  console.log(`🌙 Illumination actuelle: ${illumination.toFixed(1)}% - ${isWaxing ? "Croissante" : "Décroissante"}`);
+  console.log(`🌙 Illumination réelle: ${illumination.toFixed(1)}% - ${isWaxing ? "Croissante" : "Décroissante"}`);
   setMoonPhaseSVG(illumination, isWaxing);
 
-  // Rafraîchir chaque heure
+  // Rafraîchissement
   setInterval(() => {
     const { illumination, isWaxing } = getMoonData();
     setMoonPhaseSVG(illumination, isWaxing);
