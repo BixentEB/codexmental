@@ -27,7 +27,7 @@ import { initThemeObserver } from '/assets/js/theme-observer.js';
   document.body.classList.remove(
     ...Array.from(document.body.classList).filter(c => c.startsWith('theme-'))
   );
-  document.body.classList.add(savedTheme);
+  document.body.classList.add(savedTheme); // ICI, savedTheme doit déjà être du type "theme-lunaire"
   setTheme(savedTheme);
 })();
 
@@ -49,8 +49,8 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 
 // === 🌐 Rendre globale la fonction de changement de thème
 window.setTheme = (theme) => {
+  // theme DOIT être du type "theme-lunaire", "theme-stellaire", etc.
   localStorage.setItem('codexTheme', theme);
-  // Retire toutes les anciennes classes de thème avant d'ajouter la nouvelle
   document.body.classList.remove(
     ...Array.from(document.body.classList).filter(c => c.startsWith('theme-'))
   );
