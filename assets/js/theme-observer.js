@@ -53,10 +53,27 @@ function handleThemeChange(currentTheme) {
   }
 
   if (currentTheme === "solaire") {
-    setCurrentAlertText("☀️ Les données solaires ne sont pas encore disponibles.");
-    lancerIntroAstro(currentTheme);
-    return;
-  }
+  console.log("☀️ Thème solaire : chargement des données SunCalc...");
+  Promise.all([
+    import("https://esm.sh/suncalc"),
+    import("/assets/js/astro-solaire.js")
+  ])
+    .then(([SunCalcModule, solarModule]) => {
+      if (typeof solarModule.getSunInfo === "function") {
+        setCurrentAlertText(solarModule.getSunInfo());
+      } else {
+        setCurrentAlertText("☀️ Aucune donnée solaire disponible.");
+      }
+      lancerIntroAstro(currentTheme);
+    })
+    .catch(err => {
+      console.error("❌ Erreur modules solaires:", err);
+      setCurrentAlertText("☀️ Impossible de charger les données solaires.");
+      lancerIntroAstro(currentTheme);
+    });
+  return;
+}
+
 
   if (currentTheme === "stellaire" || currentTheme === "galactique") {
     if (!dataLoaded) {
