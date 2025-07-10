@@ -40,15 +40,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
 // 🌙 Widget lunaire SVG avec SunCalc importé dynamiquement
 if (currentTheme === "theme-lunaire") {
-  Promise.all([
-    import('https://esm.sh/suncalc'),
-    import('/assets/js/newlune.js')
-  ])
-    .then(([SunCalcModule, luneModule]) => {
-      console.log("🌙 SunCalc et newlune.js chargés.");
-      luneModule.updateLunarWidget(SunCalcModule.default);
+  import('https://esm.sh/suncalc')
+    .then(module => {
+      const SunCalc = module.default;
+      import('/assets/js/newlune.js')
+        .then(luneModule => {
+          luneModule.updateLunarWidget(SunCalc);
+        });
     })
-    .catch(err => console.error("❌ Échec chargement SunCalc ou newlune.js :", err));
+    .catch(err => console.error("Erreur lune:", err));
 }
 
 
