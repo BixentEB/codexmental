@@ -28,15 +28,16 @@ export function isToday(dateStr) {
 }
 
 /**
- * Filtre les événements astronomiques du jour et prépare le message
+ * Génère le texte astro en fonction du thème actif
  * @param {Array} data - Liste des événements astronomiques
+ * @param {string} theme - Nom du thème courant
  */
-export function afficherNoteAstro(data) {
+export function afficherNoteAstro(data, theme) {
   const bloc = document.getElementById(IDS.ASTRO);
   if (!bloc) return;
 
-  if (document.body.classList.contains('theme-lunaire')) {
-    // 🌙 Thème lunaire => uniquement SunCalc complet
+  if (theme === 'theme-lunaire') {
+    // 🌙 Thème lunaire => SunCalc complet
     currentAlertText = getFullMoonInfo();
   } else {
     // Les autres thèmes => événements JSON
@@ -50,7 +51,7 @@ export function afficherNoteAstro(data) {
     }
   }
 
-  lancerIntroAstro();
+  lancerIntroAstro(theme);
 }
 
 /**
@@ -75,8 +76,9 @@ export function typewriter(element, text, speed = 45, callback) {
 
 /**
  * Lance le message d’intro animé
+ * @param {string} theme - Nom du thème courant
  */
-export function lancerIntroAstro() {
+export function lancerIntroAstro(theme) {
   const bloc = document.getElementById(IDS.ASTRO);
   if (!bloc || isTyping) return;
   isTyping = true;
@@ -97,6 +99,8 @@ export function lancerIntroAstro() {
 
   const entry = messages[Math.floor(Math.random() * messages.length)];
 
+  console.log(`🌗 IntroAstro lancé pour le thème: ${theme}`);
+
   typewriter(bloc, `${entry.icon} ${entry.text}`, 45, () => {
     bloc.textContent += ' ';
 
@@ -114,7 +118,8 @@ export function lancerIntroAstro() {
       bloc.textContent += ' ';
       typewriter(bloc, messageFinal, 45, () => {
         isTyping = false;
-        setTimeout(lancerIntroAstro, 10000);
+        // Redémarre l’animation après 10 secondes
+        setTimeout(() => lancerIntroAstro(theme), 10000);
       });
     }, 2000);
   });
