@@ -1,9 +1,6 @@
 // ========================================================
 // intro-astro.js – Message animé d’introduction + alerte astro
-// Fichiers liés :
-//   - astro-lunaire.js : fournit les infos précises de la lune via SunCalc
-//   - events-astro-2025.json : liste des événements spéciaux
-// Utilisé uniquement pour l'affichage textuel, sans lien avec le widget SVG
+// Fichiers liés : astro-lunaire.js
 // ========================================================
 
 import { IDS } from '/assets/js/ids.js';
@@ -12,11 +9,6 @@ import { getFullMoonInfo } from '/assets/js/astro-lunaire.js';
 export let currentAlertText = "";
 let isTyping = false;
 
-/**
- * Vérifie si une date correspond à aujourd’hui
- * @param {string} dateStr - Date au format ISO
- * @returns {boolean}
- */
 export function isToday(dateStr) {
   const today = new Date();
   const date = new Date(dateStr);
@@ -27,22 +19,14 @@ export function isToday(dateStr) {
   );
 }
 
-/**
- * Génère le texte astro en fonction du thème actif
- * @param {Array} data - Liste des événements astronomiques
- * @param {string} theme - Nom du thème courant
- */
 export function afficherNoteAstro(data, theme) {
   const bloc = document.getElementById(IDS.ASTRO);
   if (!bloc) return;
 
-  if (theme.includes('theme-lunaire')) {
-    // 🌙 Thème lunaire => SunCalc complet
+  if (theme === "lunaire") {
     currentAlertText = getFullMoonInfo();
   } else {
-    // Les autres thèmes => événements JSON
     const todayAlerts = data.filter(ev => isToday(ev.date));
-
     if (todayAlerts.length > 0) {
       const eventsText = todayAlerts.map(ev => ev.message).join(' • ');
       currentAlertText = eventsText;
@@ -54,9 +38,6 @@ export function afficherNoteAstro(data, theme) {
   lancerIntroAstro(theme);
 }
 
-/**
- * Animation machine à écrire
- */
 export function typewriter(element, text, speed = 45, callback) {
   if (!element || typeof text !== 'string') return;
 
@@ -74,10 +55,6 @@ export function typewriter(element, text, speed = 45, callback) {
   }, speed);
 }
 
-/**
- * Lance le message d’intro animé
- * @param {string} theme - Nom du thème courant
- */
 export function lancerIntroAstro(theme) {
   const bloc = document.getElementById(IDS.ASTRO);
   if (!bloc || isTyping) return;
@@ -118,7 +95,6 @@ export function lancerIntroAstro(theme) {
       bloc.textContent += ' ';
       typewriter(bloc, messageFinal, 45, () => {
         isTyping = false;
-        // Redémarre l’animation après 10 secondes
         setTimeout(() => lancerIntroAstro(theme), 10000);
       });
     }, 2000);
