@@ -104,3 +104,16 @@ body:not(.theme-lunaire):not(.index) #badge-astro {
   opacity: 0.9;
   transition: opacity 0.3s ease;
 }
+
+/* Affichage des alertes dans home */
+#intro-astro {
+  display: block;
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 700px;
+  margin: 1.5rem auto;
+  padding: 1em;
+  word-break: break-word;
+}
