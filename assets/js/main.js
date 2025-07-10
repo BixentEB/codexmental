@@ -38,15 +38,19 @@ window.addEventListener("DOMContentLoaded", () => {
     initEtoileFilante();
   }
 
-  // 🌙 Widget lunaire SVG pour thème lunaire
-  if (currentTheme === "theme-lunaire") {
-    import('/assets/js/lune-svg.js')
-      .then(module => {
-        console.log("🌙 Lune SVG chargée.");
-        module.updateLunarWidget(currentTheme);
-      })
-      .catch(err => console.error("❌ Échec chargement lune-svg.js :", err));
-  }
+// 🌙 Newmoon SVG widget with SunCalc
+if (currentTheme === "theme-lunaire") {
+  Promise.all([
+    import('https://esm.sh/suncalc'),
+    import('/assets/js/newmoon.js')
+  ])
+  .then(([SunCalcModule, moonModule]) => {
+    console.log("🌙 Newmoon.js and SunCalc loaded.");
+    moonModule.updateNewMoonWidget(SunCalcModule.default);
+  })
+  .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+}
+
 
   // 🧩 Injection menu & footer
   injectPartial('menu-placeholder', '/menu.html');
