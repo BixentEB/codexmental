@@ -7,6 +7,7 @@ import { IDS } from '/assets/js/ids.js';
 let currentAlertText = "";
 let isTyping = false;
 let currentTimeout = null;
+let currentInterval = null; // Nouveau : référence de l'intervalle actif
 
 export function setCurrentAlertText(text) {
   currentAlertText = text;
@@ -51,7 +52,13 @@ export function typewriter(element, text, speed = 45, callback) {
   element.innerHTML = '';
   let i = 0;
 
-  const interval = setInterval(() => {
+  // Nouveau : clear l'ancien intervalle s'il existe
+  if (currentInterval) {
+    clearInterval(currentInterval);
+    currentInterval = null;
+  }
+
+  currentInterval = setInterval(() => {
     const char = text.charAt(i);
 
     if (char === '\n') {
@@ -62,7 +69,8 @@ export function typewriter(element, text, speed = 45, callback) {
 
     i++;
     if (i >= text.length) {
-      clearInterval(interval);
+      clearInterval(currentInterval);
+      currentInterval = null;
       if (callback) callback();
     }
   }, speed);
@@ -72,14 +80,15 @@ export function lancerIntroAstro(theme) {
   const bloc = document.getElementById(IDS.ASTRO);
   if (!bloc) return;
 
-  // 🧹 Annule les anciens timers si on relance
+  // 🧹 Annule les anciens timers et intervalles si on relance
   if (currentTimeout) {
     clearTimeout(currentTimeout);
     currentTimeout = null;
   }
 
-  if (isTyping) {
-    isTyping = false;
+  if (currentInterval) {
+    clearInterval(currentInterval);
+    currentInterval = null;
   }
 
   isTyping = true;
@@ -119,9 +128,8 @@ export function lancerIntroAstro(theme) {
       typewriter(bloc, messageFinal, 45, () => {
         isTyping = false;
 
-        // ⏳ Choisir un délai selon le contenu
         const isFallback = !getCurrentAlertText()?.trim() || getCurrentAlertText().includes('Aucune donnée');
-        const delay = isFallback ? 5000 : 15000; // 5s si fallback, 15s si vrai contenu
+        const delay = isFallback ? 5000 : 15000;
 
         currentTimeout = setTimeout(() => lancerIntroAstro(theme), delay);
       });
