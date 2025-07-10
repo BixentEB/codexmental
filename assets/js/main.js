@@ -1,5 +1,5 @@
 // ========================================================
-// main.js – Point d'entrée central de Codex Mental 
+// main.js – Point d'entrée central de Codex Mental
 // ========================================================
 
 // === 📦 Modules à effets de bord ===
@@ -17,29 +17,50 @@ import '/assets/js/table.js';
 import { setTheme } from '/assets/js/theme-engine.js';
 import { injectPartial } from '/assets/js/partials.js';
 import { setupScrollButton } from '/assets/js/scroll.js';
+import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
-import { initThemeObserver } from '/assets/js/theme-observer.js';
+import { initEtoileFilante } from '/assets/js/etoile-filante.js';
 
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
-  // Retire toutes les anciennes classes de thème avant d'ajouter la nouvelle
-  document.body.classList.remove(
-    ...Array.from(document.body.classList).filter(c => c.startsWith('theme-'))
-  );
-  document.body.classList.add(savedTheme); // ICI, savedTheme doit déjà être du type "theme-lunaire"
+  document.body.className = savedTheme;
   setTheme(savedTheme);
 })();
 
 // === DOM Ready
 window.addEventListener("DOMContentLoaded", () => {
+  const currentTheme = document.body.className;
+
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
   activerBadgeAstro();
   setupScrollButton();
 
-  // === Démarre l'observateur de thème (il gère tout l'astro et les widgets)
-  initThemeObserver();
+  // 🌌 Étoile filante
+  if (currentTheme === "theme-stellaire") {
+    initEtoileFilante();
+  }
+
+  // 🌙 Lune SVG
+  if (currentTheme === "theme-lunaire") {
+    Promise.all([
+      import('https://esm.sh/suncalc'),
+      import('/assets/js/newmoon.js')
+    ])
+      .then(([SunCalcModule, moonModule]) => {
+        moonModule.updateNewMoonWidget(SunCalcModule.default);
+      })
+      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+  }
+
+  // 📅 Charger événements et lancer intro
+  fetch('/arc/events-astro-2025.json')
+    .then(res => res.json())
+    .then(data => {
+      afficherNoteAstro(data, currentTheme);
+      lancerIntroAstro(currentTheme);
+    });
 });
 
 // === 🍔 Log bouton burger (si présent)
@@ -49,11 +70,32 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 
 // === 🌐 Rendre globale la fonction de changement de thème
 window.setTheme = (theme) => {
-  // theme DOIT être du type "theme-lunaire", "theme-stellaire", etc.
   localStorage.setItem('codexTheme', theme);
-  document.body.classList.remove(
-    ...Array.from(document.body.classList).filter(c => c.startsWith('theme-'))
-  );
-  document.body.classList.add(theme);
+  document.body.className = theme;
   setTheme(theme);
+
+  // 🌌 Étoile filante
+  if (theme === "theme-stellaire") {
+    initEtoileFilante();
+  }
+
+  // 🌙 Lune SVG
+  if (theme === "theme-lunaire") {
+    Promise.all([
+      import('https://esm.sh/suncalc'),
+      import('/assets/js/newmoon.js')
+    ])
+      .then(([SunCalcModule, moonModule]) => {
+        moonModule.updateNewMoonWidget(SunCalcModule.default);
+      })
+      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+  }
+
+  // 📅 Charger événements et relancer intro
+  fetch('/arc/events-astro-2025.json')
+    .then(res => res.json())
+    .then(data => {
+      afficherNoteAstro(data, theme);
+      lancerIntroAstro(theme);
+    });
 };
