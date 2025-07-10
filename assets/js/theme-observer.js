@@ -1,107 +1,80 @@
 // ========================================================
-// theme-observer.js – Observer les changements de thème
+// main.js – Point d'entrée central de Codex Mental 
 // ========================================================
 
-import { lancerIntroAstro } from '/assets/js/intro-astro.js';
+// === 📦 Modules à effets de bord ===
+import '/assets/js/canvas.js';
+import '/assets/js/theme-hours.js';
+import '/assets/js/theme-special.js';
+import '/assets/js/theme-cards.js';
+import '/assets/js/anti-copy.js';
+import '/assets/js/viewer.js';
+import '/assets/js/cookie.js';
+import '/assets/js/onglets.js';
+import '/assets/js/table.js';
+
+// === 🔧 Modules à fonctions exportées ===
+import { setTheme } from '/assets/js/theme-engine.js';
+import { injectPartial } from '/assets/js/partials.js';
+import { setupScrollButton } from '/assets/js/scroll.js';
+import { afficherNoteAstro, lancerIntroAstro } from '/assets/js/intro-astro.js';
+import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 import { initEtoileFilante } from '/assets/js/etoile-filante.js';
+import { initThemeObserver } from '/assets/js/theme-observer.js';
 
-// Variable pour éviter les déclenchements multiples
-let currentAlertText = "";
-let previousTheme = null;
+// === 🌠 Initialiser le thème visuel dès le chargement
+(function initTheme() {
+  const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
+  document.body.className = savedTheme;
+  setTheme(savedTheme);
+})();
 
-// === 🎯 Fonction pour charger le widget approprié selon le thème
-function loadThemeWidget(theme) {
-  switch(theme) {
-    case "lunaire":
-      console.log("🌙 Chargement du widget lunaire...");
-      Promise.all([
-        import('https://esm.sh/suncalc'),
-        import('/assets/js/newmoon.js')
-      ])
-        .then(([SunCalcModule, moonModule]) => {
-          console.log("🌙 Moon widget loaded.");
-          moonModule.updateNewMoonWidget(SunCalcModule.default);
-        })
-        .catch(err => console.error("❌ Échec chargement newmoon.js :", err));
-      break;
-      
-    case "solaire":
-      console.log("☀️ Chargement du widget solaire...");
-      // Quand tu auras ton module solaire :
-      // import('/assets/js/sun-widget.js')
-      //   .then(sunModule => {
-      //     console.log("☀️ Sun widget loaded.");
-      //     sunModule.updateSunWidget();
-      //   })
-      //   .catch(err => console.error("❌ Échec chargement sun-widget.js :", err));
-      break;
-      
-    case "stellaire":
-      console.log("⭐ Activation des étoiles filantes...");
-      initEtoileFilante();
-      break;
-      
-    default:
-      console.log("🎨 Thème par défaut, pas de widget spécifique");
-  }
-}
-
-// === 🔄 Fonction pour détecter le thème actuel
-function detectCurrentTheme() {
-  const body = document.body;
+// === DOM Ready
+window.addEventListener("DOMContentLoaded", () => {
+  const currentTheme = document.body.className;
   
-  if (body.classList.contains("theme-lunaire")) {
-    return "lunaire";
-  } else if (body.classList.contains("theme-solaire")) {
-    return "solaire";
-  } else if (body.classList.contains("theme-stellaire")) {
-    return "stellaire";
+  // Initialise le widget selon le thème actuel
+  if (currentTheme === "theme-stellaire") {
+    initEtoileFilante();
+  }
+  if (currentTheme === "theme-lunaire") {
+    Promise.all([
+      import('https://esm.sh/suncalc'),
+      import('/assets/js/newmoon.js')
+    ])
+    .then(([SunCalcModule, moonModule]) => {
+      moonModule.updateNewMoonWidget(SunCalcModule.default);
+    })
+    .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
   }
   
-  return null;
-}
+  // Initialise les composants
+  injectPartial('menu-placeholder', '/menu.html');
+  injectPartial('footer-placeholder', '/footer.html');
+  
+  // Charge les événements astro
+  fetch('/arc/events-astro-2025.json')
+    .then(res => res.json())
+    .then(data => afficherNoteAstro(data, currentTheme));
+  
+  lancerIntroAstro(currentTheme);
+  activerBadgeAstro();
+  
+  // 🎯 Initialise l'observer des changements de thème
+  initThemeObserver();
+});
 
-// === 🌗 Fonction principale d'initialisation de l'observer
-export function initThemeObserver() {
-  const observer = new MutationObserver(() => {
-    const currentTheme = detectCurrentTheme();
-    const fullClassName = document.body.className;
-    
-    // Ne déclenche l'action que si le thème a vraiment changé
-    if (currentTheme !== previousTheme) {
-      console.log(`🔄 Changement de thème: ${previousTheme} → ${currentTheme}`);
-      
-      // Réinitialise l'intro
-      currentAlertText = "";
-      lancerIntroAstro(fullClassName);
-      
-      // Charge le widget approprié
-      if (currentTheme) {
-        loadThemeWidget(currentTheme);
-      }
-      
-      previousTheme = currentTheme;
-    }
-  });
-  
-  // Démarre l'observation
-  observer.observe(document.body, {
-    attributes: true,
-    attributeFilter: ["class"]
-  });
-  
-  // Initialise le thème actuel
-  previousTheme = detectCurrentTheme();
-  
-  console.log("🎯 Theme observer initialized");
-  return observer;
-}
+// === ⬆️ Bouton de retour en haut
+setupScrollButton();
 
-// === 🔧 Fonction utilitaire pour forcer un rechargement du widget
-export function reloadCurrentThemeWidget() {
-  const currentTheme = detectCurrentTheme();
-  if (currentTheme) {
-    console.log(`🔄 Rechargement forcé du widget: ${currentTheme}`);
-    loadThemeWidget(currentTheme);
-  }
-}
+// === 🍔 Log bouton burger (si présent)
+document.getElementById("menu-toggle")?.addEventListener("click", () => {
+  console.log("Burger clicked");
+});
+
+// === 🌐 Rendre globale la fonction de changement de thème
+window.setTheme = (theme) => {
+  localStorage.setItem('codexTheme', theme);
+  document.body.className = theme;
+  setTheme(theme);
+};
