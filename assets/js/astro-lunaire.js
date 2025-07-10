@@ -1,3 +1,13 @@
+import SunCalc from 'https://esm.sh/suncalc';
+
+/**
+ * Retourne un texte complet d'infos lunaires avec indication des heures futures
+ * @param {Date} date
+ * @param {number} lat
+ * @param {number} lng
+ * @returns {string}
+ */
+
 export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const moon = SunCalc.getMoonIllumination(date);
