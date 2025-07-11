@@ -67,14 +67,14 @@ body.theme-lunaire #svg-lune-widget.super-lune svg {
   pointer-events: auto;
 }
 
-/* Version Mobile - corrigée et sans doublons */
+/* Version Mobile - une seule petite lune non cliquable */
 @media (max-width: 568px) {
   /* Masquer complètement la super-lune */
   body.theme-lunaire #svg-lune-widget.super-lune {
     display: none;
   }
 
-  /* Afficher la version réduite uniquement si pas en super-lune */
+  /* Version unique petite et non cliquable */
   body.theme-lunaire #svg-lune-widget {
     width: 180px;
     height: 180px;
@@ -82,10 +82,10 @@ body.theme-lunaire #svg-lune-widget.super-lune svg {
     bottom: 15px;
     z-index: 5;
     opacity: 0.7;
+    cursor: default;
+    pointer-events: none; /* pas cliquable */
   }
 }
-
-
 
 /* Transition de l'ombre (pour le JS) */
 body.theme-lunaire #svg-lune-widget svg circle#ombre {
