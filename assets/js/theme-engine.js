@@ -67,41 +67,44 @@ export function adaptLuneResponsive() {
   const width = window.innerWidth;
 
   if (width <= 568) {
-    // Petits écrans : petite lune unique
+    // MOBILE : Une seule taille fixe, pas de clic possible
     lune.classList.remove('super-lune');
     lune.style.width = '180px';
     lune.style.height = '180px';
     lune.style.right = '15px';
     lune.style.bottom = '15px';
     lune.style.opacity = '0.7';
-    lune.style.transform = 'none'; // pas d'agrandissement
-    lune.style.pointerEvents = 'none'; // non cliquable
+    lune.style.transform = 'none';
+    lune.style.pointerEvents = 'none'; // Désactive les clics
     lune.style.cursor = 'default';
+    lune.style.zIndex = '5';
 
   } else if (width <= 768) {
-    // Tablettes et grands téléphones
-    lune.style.pointerEvents = 'auto'; // cliquable
+    // TABLETTE : 2 tailles disponibles (normale et super-lune)
+    lune.style.pointerEvents = 'auto'; // Active les clics
     lune.style.cursor = 'pointer';
-    lune.style.opacity = '0.85';
+    lune.style.opacity = '0.8';
+    lune.style.zIndex = '10';
 
     if (lune.classList.contains('super-lune')) {
-      // Si super-lune, taille moyenne
-      lune.style.width = '350px';
-      lune.style.height = '350px';
-      lune.style.right = '-80px';
+      // Taille super-lune pour tablette
+      lune.style.width = '320px';
+      lune.style.height = '320px';
+      lune.style.right = '-60px';
       lune.style.bottom = '-60px';
-      lune.style.transform = 'none';
+      lune.style.opacity = '0.9';
+      lune.style.zIndex = '1000';
     } else {
-      // Taille normale
-      lune.style.width = '250px';
-      lune.style.height = '250px';
-      lune.style.right = '20px';
-      lune.style.bottom = '20px';
-      lune.style.transform = 'none';
+      // Taille normale pour tablette
+      lune.style.width = '200px';
+      lune.style.height = '200px';
+      lune.style.right = '15px';
+      lune.style.bottom = '15px';
     }
+    lune.style.transform = 'none';
 
   } else {
-    // Grands écrans : styles normaux (laisse le CSS gérer)
+    // DESKTOP : 3 tailles disponibles (laisse le CSS gérer)
     lune.style.width = '';
     lune.style.height = '';
     lune.style.right = '';
@@ -110,6 +113,7 @@ export function adaptLuneResponsive() {
     lune.style.transform = '';
     lune.style.pointerEvents = '';
     lune.style.cursor = '';
+    lune.style.zIndex = '';
   }
 }
 
