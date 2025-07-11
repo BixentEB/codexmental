@@ -67,7 +67,7 @@ export function adaptLuneResponsive() {
   const width = window.innerWidth;
 
   if (width <= 568) {
-    // MOBILE : Une seule taille fixe, pas de clic possible
+    // Mobile : petite taille fixe, pas de clic
     lune.classList.remove('super-lune');
     lune.style.width = '180px';
     lune.style.height = '180px';
@@ -75,36 +75,29 @@ export function adaptLuneResponsive() {
     lune.style.bottom = '15px';
     lune.style.opacity = '0.7';
     lune.style.transform = 'none';
-    lune.style.pointerEvents = 'none'; // Désactive les clics
+    lune.style.pointerEvents = 'none';
     lune.style.cursor = 'default';
-    lune.style.zIndex = '5';
 
   } else if (width <= 768) {
-    // TABLETTE : 2 tailles disponibles (normale et super-lune)
-    lune.style.pointerEvents = 'auto'; // Active les clics
+    // Tablet : seulement deux tailles (normale et moyenne)
+    lune.style.pointerEvents = 'auto';
     lune.style.cursor = 'pointer';
-    lune.style.opacity = '0.8';
-    lune.style.zIndex = '10';
+    lune.style.opacity = '0.85';
 
+    // Si super-lune était active, on revient à la taille normale
     if (lune.classList.contains('super-lune')) {
-      // Taille super-lune pour tablette
-      lune.style.width = '320px';
-      lune.style.height = '320px';
-      lune.style.right = '-60px';
-      lune.style.bottom = '-60px';
-      lune.style.opacity = '0.9';
-      lune.style.zIndex = '1000';
-    } else {
-      // Taille normale pour tablette
-      lune.style.width = '200px';
-      lune.style.height = '200px';
-      lune.style.right = '15px';
-      lune.style.bottom = '15px';
+      lune.classList.remove('super-lune');
     }
-    lune.style.transform = 'none';
+
+    // On laisse le CSS gérer la taille normale
+    lune.style.width = '';
+    lune.style.height = '';
+    lune.style.right = '';
+    lune.style.bottom = '';
+    lune.style.transform = '';
 
   } else {
-    // DESKTOP : 3 tailles disponibles (laisse le CSS gérer)
+    // Desktop : comportement normal avec toutes les tailles
     lune.style.width = '';
     lune.style.height = '';
     lune.style.right = '';
@@ -113,11 +106,5 @@ export function adaptLuneResponsive() {
     lune.style.transform = '';
     lune.style.pointerEvents = '';
     lune.style.cursor = '';
-    lune.style.zIndex = '';
   }
 }
-
-// Exécute au chargement
-window.addEventListener('load', adaptLuneResponsive);
-// Exécute au redimensionnement
-window.addEventListener('resize', adaptLuneResponsive);
