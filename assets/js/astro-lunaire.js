@@ -35,14 +35,14 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
 
   // 🌙 Phase avec distinction croissante/décroissante
   if (illum > 98) {
-    if (phase < 0.48) {
-      label = "Pleine lune (croissante)";
-    } else if (phase > 0.52) {
-      label = "Pleine lune (décroissante)";
-    } else {
-      label = "Pleine lune";
-    }
-    emoji = "🌕";
+  if (phase < 0.48) {
+    label = "Pleine lune, croissante";
+  } else if (phase > 0.52) {
+    label = "Pleine lune, décroissante";
+  } else {
+    label = "Pleine lune";
+  }
+  emoji = "🌕";
   } else if (phase < 0.03 || phase > 0.97) {
     label = "Nouvelle lune";
     emoji = "🌑";
