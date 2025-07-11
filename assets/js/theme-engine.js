@@ -65,10 +65,14 @@ export function adaptLuneResponsive() {
   if (!lune) return;
 
   const width = window.innerWidth;
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-  if (width <= 568) {
-    // Mobile: taille fixe, pas de clic, pas de transition
+  // ===== MOBILE (petit écran OU appareil tactile) =====
+  if (width <= 568 || isTouchDevice) {
+    // Reset complet de l'état
     lune.classList.remove('super-lune');
+    
+    // Application des styles forcés
     lune.style.cssText = `
       width: 180px !important;
       height: 180px !important;
@@ -80,28 +84,42 @@ export function adaptLuneResponsive() {
       cursor: default !important;
       transition: none !important;
     `;
-    // Désactive complètement le SVG aussi
+
+    // Désactivation totale des interactions
+    lune.onclick = null;
+    lune.ontouchstart = null;
+    lune.ontouchend = null;
+    
+    // Blocage des events sur le SVG et ses enfants
     const svg = lune.querySelector('svg');
     if (svg) {
-      svg.style.pointerEvents = 'none !important';
+      svg.style.cssText = `
+        pointer-events: none !important;
+        touch-action: none !important;
+      `;
     }
 
-  } else if (width <= 768) {
-    // Tablet: seulement deux tailles (normale/moyenne)
+  } 
+  // ===== TABLETTE (568px - 768px) =====
+  else if (width <= 768) {
+    // On force la taille moyenne (pas de super-lune)
     lune.classList.remove('super-lune');
+    
     lune.style.cssText = `
-      pointer-events: auto !important;
-      cursor: pointer !important;
-      opacity: 0.85 !important;
       width: 250px !important;
       height: 250px !important;
       right: 20px !important;
       bottom: 20px !important;
+      opacity: 0.85 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
       transform: none !important;
     `;
 
-  } else {
-    // Desktop: reset complet pour laisser le CSS faire son travail
+  } 
+  // ===== DESKTOP (>768px) =====
+  else {
+    // Reset complet pour laisser le CSS gérer
     lune.style.cssText = '';
     lune.removeAttribute('style');
   }
