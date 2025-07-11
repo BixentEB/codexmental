@@ -14,7 +14,8 @@ import SunCalc from 'https://esm.sh/suncalc';
 export function getSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
   
   // Position actuelle du soleil
   const pos = SunCalc.getPosition(now, lat, lng);
