@@ -1,12 +1,5 @@
 import SunCalc from 'https://esm.sh/suncalc';
 
-/**
- * Retourne un texte complet d'infos lunaires
- * @param {Date} date
- * @param {number} lat
- * @param {number} lng
- * @returns {string}
- */
 export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const moon = SunCalc.getMoonIllumination(date);
@@ -43,7 +36,8 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     emoji = "🌘";
   }
 
-  const options = { hour: '2-digit', minute: '2-digit' };
+  const optionsTime = { hour: '2-digit', minute: '2-digit' };
+  const optionsDateTime = { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' };
 
   const timesToday = SunCalc.getMoonTimes(date, lat, lng);
   const tomorrow = new Date(date);
@@ -67,17 +61,17 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
       riseTime = timesTomorrow.rise ? new Date(timesTomorrow.rise) : null;
       setTime = timesTomorrow.set ? new Date(timesTomorrow.set) : null;
       riseStr = riseTime
-        ? `${riseTime.toLocaleTimeString('fr-FR', options)} (demain)`
+        ? riseTime.toLocaleString('fr-FR', optionsDateTime)
         : "—";
       setStr = setTime
-        ? `${setTime.toLocaleTimeString('fr-FR', options)} (demain)`
+        ? setTime.toLocaleString('fr-FR', optionsDateTime)
         : "—";
     } else {
       riseStr = riseTime
-        ? `${riseTime.toLocaleTimeString('fr-FR', options)}`
+        ? riseTime.toLocaleString('fr-FR', optionsDateTime)
         : "—";
       setStr = setTime
-        ? `${setTime.toLocaleTimeString('fr-FR', options)}`
+        ? setTime.toLocaleString('fr-FR', optionsDateTime)
         : "—";
     }
   }
@@ -88,5 +82,6 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
 
   return `🌙 La lune est actuellement à ${illum}% (${label})
 ${status}
-${emoji} Prochain lever : ${riseStr} ${emoji} Prochain coucher : ${setStr}`;
+${emoji} Prochain lever : ${riseStr}
+${emoji} Prochain coucher : ${setStr}`;
 }
