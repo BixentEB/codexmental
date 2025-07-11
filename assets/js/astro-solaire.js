@@ -1,7 +1,7 @@
 import SunCalc from 'https://esm.sh/suncalc';
 
 /**
- * Retourne un texte d'infos solaires au format complet et lisible.
+ * Retourne un texte d'infos solaires robuste.
  * @param {Date} date
  * @param {number} lat
  * @param {number} lng
@@ -11,6 +11,7 @@ export function getFullSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const pos = SunCalc.getPosition(now, lat, lng);
 
+  // Altitude et azimut toujours disponibles
   const altitudeDeg = (pos.altitude * 180 / Math.PI).toFixed(1);
   const azimuthDeg = (pos.azimuth * 180 / Math.PI).toFixed(1);
 
@@ -24,6 +25,7 @@ export function getFullSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
     minute: '2-digit'
   };
 
+  // Calcul des horaires sur aujourd'hui et demain
   const timesToday = SunCalc.getTimes(date, lat, lng);
   const tomorrow = new Date(date);
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -31,10 +33,15 @@ export function getFullSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
 
   const events = [];
 
-  if (timesToday.sunrise) events.push({ type: 'Lever', time: new Date(timesToday.sunrise) });
-  if (timesToday.sunset) events.push({ type: 'Coucher', time: new Date(timesToday.sunset) });
-  if (timesTomorrow.sunrise) events.push({ type: 'Lever', time: new Date(timesTomorrow.sunrise) });
-  if (timesTomorrow.sunset) events.push({ type: 'Coucher', time: new Date(timesTomorrow.sunset) });
+  // Vérifier la présence de chaque propriété avant de l'utiliser
+  if (timesToday && timesToday.sunrise) events.push({ type: 'Lever', time: new Date(timesToday.sunrise) });
+  if (timesToday && timesToday.sunset) events.push({ type: 'Coucher', time: new Date(timesToday.sunset) });
+  if (timesTomorrow && timesTomorrow.sunrise) events.push({ type: 'Lever', time: new Date(timesTomorrow.sunrise) });
+  if (timesTomorrow && timesTomorrow.sunset) events.push({ type: 'Coucher', time: new Date(timesTomorrow.sunset) });
+
+  if (events.length === 0) {
+    return `☀️ Aucune donnée solaire disponible.`;
+  }
 
   const futureEvents = events.filter(e => e.time > now).sort((a, b) => a.time - b.time);
 
