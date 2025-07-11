@@ -53,3 +53,62 @@ export async function setTheme(theme) {
     soleilActif = false;
   }
 }
+
+// Modification tailles lune sur différents écrans
+function adaptLuneResponsive() {
+  const lune = document.querySelector('body.theme-lunaire #svg-lune-widget');
+  if (!lune) return;
+
+  const width = window.innerWidth;
+
+  if (width <= 568) {
+    // Petits écrans : petite lune unique
+    lune.classList.remove('super-lune');
+    lune.style.width = '180px';
+    lune.style.height = '180px';
+    lune.style.right = '15px';
+    lune.style.bottom = '15px';
+    lune.style.opacity = '0.7';
+    lune.style.transform = 'none'; // pas d'agrandissement
+    lune.style.pointerEvents = 'none'; // non cliquable
+    lune.style.cursor = 'default';
+
+  } else if (width <= 768) {
+    // Tablettes et grands téléphones
+    lune.style.pointerEvents = 'auto'; // cliquable
+    lune.style.cursor = 'pointer';
+    lune.style.opacity = '0.85';
+
+    if (lune.classList.contains('super-lune')) {
+      // Si super-lune, taille moyenne
+      lune.style.width = '350px';
+      lune.style.height = '350px';
+      lune.style.right = '-80px';
+      lune.style.bottom = '-60px';
+      lune.style.transform = 'none';
+    } else {
+      // Taille normale
+      lune.style.width = '250px';
+      lune.style.height = '250px';
+      lune.style.right = '20px';
+      lune.style.bottom = '20px';
+      lune.style.transform = 'none';
+    }
+
+  } else {
+    // Grands écrans : styles normaux (laisse le CSS gérer)
+    lune.style.width = '';
+    lune.style.height = '';
+    lune.style.right = '';
+    lune.style.bottom = '';
+    lune.style.opacity = '';
+    lune.style.transform = '';
+    lune.style.pointerEvents = '';
+    lune.style.cursor = '';
+  }
+}
+
+// Exécute au chargement
+window.addEventListener('load', adaptLuneResponsive);
+// Exécute au redimensionnement
+window.addEventListener('resize', adaptLuneResponsive);
