@@ -12,6 +12,11 @@ export async function setTheme(theme) {
   // Appliquer la classe de thème au body
   document.body.className = theme;
 
+  // Si on vient d'activer le thème lunaire, adapter la lune responsive
+  if (theme === 'theme-lunaire') {
+    adaptLuneResponsive();
+  }
+
   // Sauvegarder le thème choisi
   localStorage.setItem('codexTheme', theme);
 
@@ -54,8 +59,8 @@ export async function setTheme(theme) {
   }
 }
 
-// Modification tailles lune sur différents écrans
-function adaptLuneResponsive() {
+// Modification tailles lune sur différents écrans (Responsive Lune)
+export function adaptLuneResponsive() {
   const lune = document.querySelector('body.theme-lunaire #svg-lune-widget');
   if (!lune) return;
 
