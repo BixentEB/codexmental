@@ -71,3 +71,26 @@ body.theme-lunaire #svg-lune-widget.super-lune svg {
 body.theme-lunaire #svg-lune-widget svg circle#ombre {
   transition: cx 0.5s cubic-bezier(0.33, 1, 0.68, 1);
 }
+
+/* Règles additionnelles pour la responsive de la lune */
+/* Version Tablette (768px et moins) - 2 tailles disponibles */
+@media (max-width: 768px) and (min-width: 569px) {
+  body.theme-lunaire #svg-lune-widget {
+    width: 200px;
+    height: 200px;
+    right: 15px;
+    bottom: 15px;
+    opacity: 0.8;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  
+  body.theme-lunaire #svg-lune-widget.super-lune {
+    width: 320px;
+    height: 320px;
+    bottom: -60px;
+    right: -60px;
+    opacity: 0.9;
+    z-index: 1000;
+  }
+}
