@@ -38,32 +38,34 @@ export function getSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
     return date.toLocaleDateString('fr-FR', options);
   };
 
-  // Logique intelligente pour le lever du soleil
+  // Logique intelligente : priorité au cycle jour/nuit
   let riseStr = "—";
   let riseDate = null;
-  
-  if (todayTimes.sunrise && now < todayTimes.sunrise) {
-    // Le lever d'aujourd'hui n'est pas encore passé
-    riseStr = todayTimes.sunrise.toLocaleTimeString('fr-FR', options);
-    riseDate = today;
-  } else if (tomorrowTimes.sunrise) {
-    // Le lever d'aujourd'hui est passé, on prend celui de demain
-    riseStr = tomorrowTimes.sunrise.toLocaleTimeString('fr-FR', options);
-    riseDate = tomorrow;
-  }
-  
-  // Logique intelligente pour le coucher du soleil
   let setStr = "—";
   let setDate = null;
   
   if (todayTimes.sunset && now < todayTimes.sunset) {
     // Le coucher d'aujourd'hui n'est pas encore passé
+    // → Afficher le coucher d'aujourd'hui + le lever de demain
     setStr = todayTimes.sunset.toLocaleTimeString('fr-FR', options);
     setDate = today;
-  } else if (tomorrowTimes.sunset) {
-    // Le coucher d'aujourd'hui est passé, on prend celui de demain
-    setStr = tomorrowTimes.sunset.toLocaleTimeString('fr-FR', options);
-    setDate = tomorrow;
+    
+    if (tomorrowTimes.sunrise) {
+      riseStr = tomorrowTimes.sunrise.toLocaleTimeString('fr-FR', options);
+      riseDate = tomorrow;
+    }
+  } else {
+    // Le coucher d'aujourd'hui est passé
+    // → Afficher le lever de demain + le coucher de demain
+    if (tomorrowTimes.sunrise) {
+      riseStr = tomorrowTimes.sunrise.toLocaleTimeString('fr-FR', options);
+      riseDate = tomorrow;
+    }
+    
+    if (tomorrowTimes.sunset) {
+      setStr = tomorrowTimes.sunset.toLocaleTimeString('fr-FR', options);
+      setDate = tomorrow;
+    }
   }
 
   // Construction du message avec format de date complet
