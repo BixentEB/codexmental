@@ -44,9 +44,15 @@ export function getSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   let setStr = "—";
   let setDate = null;
   
+  // Debug : affichons l'heure actuelle et les heures de lever/coucher
+  console.log("Heure actuelle:", now.toLocaleTimeString('fr-FR'));
+  console.log("Coucher aujourd'hui:", todayTimes.sunset ? todayTimes.sunset.toLocaleTimeString('fr-FR') : "N/A");
+  console.log("Lever demain:", tomorrowTimes.sunrise ? tomorrowTimes.sunrise.toLocaleTimeString('fr-FR') : "N/A");
+  
   if (todayTimes.sunset && now < todayTimes.sunset) {
     // Le coucher d'aujourd'hui n'est pas encore passé
     // → Afficher le coucher d'aujourd'hui + le lever de demain
+    console.log("Cas 1: Coucher d'aujourd'hui pas encore passé");
     setStr = todayTimes.sunset.toLocaleTimeString('fr-FR', options);
     setDate = today;
     
@@ -57,6 +63,7 @@ export function getSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   } else {
     // Le coucher d'aujourd'hui est passé
     // → Afficher le lever de demain + le coucher de demain
+    console.log("Cas 2: Coucher d'aujourd'hui déjà passé");
     if (tomorrowTimes.sunrise) {
       riseStr = tomorrowTimes.sunrise.toLocaleTimeString('fr-FR', options);
       riseDate = tomorrow;
