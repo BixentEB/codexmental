@@ -27,38 +27,49 @@ export function getSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   
   const options = { hour: '2-digit', minute: '2-digit' };
   
+  // Fonction pour formater la date comme "ven. 11 juillet"
+  const formatDate = (date) => {
+    const options = { 
+      weekday: 'short', 
+      day: 'numeric', 
+      month: 'long' 
+    };
+    return date.toLocaleDateString('fr-FR', options);
+  };
+
   // Logique intelligente pour le lever du soleil
   let riseStr = "—";
-  let riseDate = "aujourd'hui";
+  let riseDate = null;
   
   if (todayTimes.sunrise && now < todayTimes.sunrise) {
     // Le lever d'aujourd'hui n'est pas encore passé
     riseStr = todayTimes.sunrise.toLocaleTimeString('fr-FR', options);
-    riseDate = "aujourd'hui";
+    riseDate = today;
   } else if (tomorrowTimes.sunrise) {
     // Le lever d'aujourd'hui est passé, on prend celui de demain
     riseStr = tomorrowTimes.sunrise.toLocaleTimeString('fr-FR', options);
-    riseDate = "demain";
+    riseDate = tomorrow;
   }
   
   // Logique intelligente pour le coucher du soleil
   let setStr = "—";
-  let setDate = "aujourd'hui";
+  let setDate = null;
   
   if (todayTimes.sunset && now < todayTimes.sunset) {
     // Le coucher d'aujourd'hui n'est pas encore passé
     setStr = todayTimes.sunset.toLocaleTimeString('fr-FR', options);
-    setDate = "aujourd'hui";
+    setDate = today;
   } else if (tomorrowTimes.sunset) {
     // Le coucher d'aujourd'hui est passé, on prend celui de demain
     setStr = tomorrowTimes.sunset.toLocaleTimeString('fr-FR', options);
-    setDate = "demain";
+    setDate = tomorrow;
   }
 
-  // Construction du message avec indication du jour si nécessaire
-  const riseText = riseDate === "demain" ? `${riseStr} (demain)` : riseStr;
-  const setText = setDate === "demain" ? `${setStr} (demain)` : setStr;
+  // Construction du message avec format de date complet
+  const riseText = riseDate ? `${formatDate(riseDate)} – ${riseStr}` : riseStr;
+  const setText = setDate ? `${formatDate(setDate)} – ${setStr}` : setStr;
 
   return `☀️ Le soleil est actuellement à ${altitudeDeg}° d'altitude et ${azimuthDeg}° d'azimut.
-🌅 Lever : ${riseText} • 🌇 Coucher : ${setText}`;
+🌅 Prochain lever : ${riseText}
+🌇 Prochain coucher : ${setText}`;
 }
