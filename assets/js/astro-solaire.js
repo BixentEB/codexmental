@@ -1,11 +1,7 @@
-// ========================================================
-// astro-solaire.js – Données solaires avec SunCalc
-// ========================================================
-
 import SunCalc from 'https://esm.sh/suncalc';
 
 /**
- * Retourne un texte complet d'infos solaires
+ * Retourne un texte d'infos solaires
  * @param {Date} date
  * @param {number} lat
  * @param {number} lng
@@ -14,14 +10,14 @@ import SunCalc from 'https://esm.sh/suncalc';
 export function getFullSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const pos = SunCalc.getPosition(now, lat, lng);
-  const timesToday = SunCalc.getTimes(date, lat, lng);
-
-  const tomorrow = new Date(date);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const timesTomorrow = SunCalc.getTimes(tomorrow, lat, lng);
+  const times = SunCalc.getTimes(date, lat, lng);
 
   const altitudeDeg = (pos.altitude * 180 / Math.PI).toFixed(1);
   const azimuthDeg = (pos.azimuth * 180 / Math.PI).toFixed(1);
+
+  if (!times.sunrise || !times.sunset) {
+    return `☀️ Aucune donnée solaire disponible.`;
+  }
 
   const optionsDate = {
     weekday: 'short',
@@ -33,31 +29,14 @@ export function getFullSunInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
     minute: '2-digit'
   };
 
-  const events = [];
-
-  if (timesToday.sunrise) events.push({ type: 'Lever', time: new Date(timesToday.sunrise) });
-  if (timesToday.sunset) events.push({ type: 'Coucher', time: new Date(timesToday.sunset) });
-  if (timesTomorrow.sunrise) events.push({ type: 'Lever', time: new Date(timesTomorrow.sunrise) });
-  if (timesTomorrow.sunset) events.push({ type: 'Coucher', time: new Date(timesTomorrow.sunset) });
-
-  const futureEvents = events.filter(e => e.time > now).sort((a, b) => a.time - b.time);
-
-  const nextRise = futureEvents.find(e => e.type === 'Lever');
-  const nextSet = futureEvents.find(e => e.type === 'Coucher');
-
-  const riseStr = nextRise
-    ? `${nextRise.time.toLocaleDateString('fr-FR', optionsDate)} – ${nextRise.time.toLocaleTimeString('fr-FR', optionsTime)}`
-    : "—";
-
-  const setStr = nextSet
-    ? `${nextSet.time.toLocaleDateString('fr-FR', optionsDate)} – ${nextSet.time.toLocaleTimeString('fr-FR', optionsTime)}`
-    : "—";
+  const riseStr = `${new Date(times.sunrise).toLocaleDateString('fr-FR', optionsDate)} – ${new Date(times.sunrise).toLocaleTimeString('fr-FR', optionsTime)}`;
+  const setStr = `${new Date(times.sunset).toLocaleDateString('fr-FR', optionsDate)} – ${new Date(times.sunset).toLocaleTimeString('fr-FR', optionsTime)}`;
 
   const status = pos.altitude > 0
     ? `☀️ Le soleil est visible au-dessus de l’horizon.`
     : `☀️ Le soleil est sous l’horizon.`;
 
   return `${status}
-🌅 Prochain lever : ${riseStr}
-🌇 Prochain coucher : ${setStr}`;
+🌅 Lever : ${riseStr}
+🌇 Coucher : ${setStr}`;
 }
