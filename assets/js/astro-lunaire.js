@@ -1,44 +1,28 @@
-/**
- * ========================================================
- * Codex Mental – intro-astro.js
- * ========================================================
- *
- * 🧭 CONTEXTE
- * Script qui gère l'affichage dynamique des messages astronomiques.
- * 
- * ✨ FONCTIONNALITÉS
- * - Animation typewriter avec un seul intervalle actif.
- * - Affichage d'un message initial ("Connexion...") puis du message final.
- * - Détection du thème actif (lunaire, solaire, etc.).
- * - Délai variable selon la présence d'une vraie donnée.
- *
- * 🔧 CONTRAINTES
- * - Ne jamais avoir plusieurs typewriter() simultanés (évite les textes corrompus).
- * - Nettoyer les timers et intervalles au changement de thème.
- * - Pas de fond autour du bloc par défaut, juste un texte centré.
- * - Largeur max et line-height gérés par le CSS.
- *
- * 🛠 DERNIÈRE MISE À JOUR
- * - Ajout de clearInterval() pour éviter les chevauchements.
- * - Ajout de toLocaleString() si besoin pour afficher la date complète.
- * - Gestion propre du curseur clignotant.
- *
- * 🚀 REMARQUES
- * - Si des anomalies apparaissent en changeant rapidement de thème,
- *   vérifier que clearTimeout() et clearInterval() sont bien appelés.
- * - Voir aussi astro-lunaire.js pour la génération des messages.
- */
-
-
 import SunCalc from 'https://esm.sh/suncalc';
 
 /**
- * Retourne un texte complet d'infos lunaires
- * @param {Date} date
- * @param {number} lat
- * @param {number} lng
- * @returns {string}
+ * ========================================================
+ * Codex Mental – astro-lunaire.js
+ * ========================================================
+ *
+ * 🧭 CONTEXTE
+ * Script qui génère les informations lunaires en temps réel.
+ * 
+ * ✨ FONCTIONNALITÉS
+ * - Détermine la phase et l'illumination de la Lune.
+ * - Affiche si elle est visible ou non.
+ * - Calcule les prochains horaires de lever et coucher.
+ * - Indique si la pleine lune est croissante ou décroissante.
+ *
+ * 🔧 CONTRAINTES
+ * - Utiliser SunCalc avec le fuseau horaire local.
+ * - Afficher des dates lisibles (ex: ven. 12 juillet – 23:08).
+ *
+ * 🛠 DERNIÈRE MISE À JOUR
+ * - Ajout de la distinction Pleine lune croissante/décroissante.
+ * - Tri des événements futurs pour plus de précision.
  */
+
 export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const moon = SunCalc.getMoonIllumination(date);
@@ -46,10 +30,20 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
   const illum = (moon.fraction * 100).toFixed(1);
   const phase = moon.phase;
 
-  let label = "Nouvelle lune";
-  let emoji = "🌑";
+  let label = "";
+  let emoji = "";
 
-  if (phase < 0.03 || phase > 0.97) {
+  // 🌙 Phase avec distinction croissante/décroissante
+  if (illum > 98) {
+    if (phase < 0.48) {
+      label = "Pleine lune (croissante)";
+    } else if (phase > 0.52) {
+      label = "Pleine lune (décroissante)";
+    } else {
+      label = "Pleine lune";
+    }
+    emoji = "🌕";
+  } else if (phase < 0.03 || phase > 0.97) {
     label = "Nouvelle lune";
     emoji = "🌑";
   } else if (phase < 0.22) {
@@ -112,12 +106,10 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
 
   const status = pos.altitude > 0
     ? `${emoji} La lune est visible au-dessus de l’horizon.`
-    : `${emoji} La lune est sous l’horizon.`; // retiré le "actuellement"
+    : `${emoji} La lune est sous l’horizon.`;
 
   return `🌙 La lune est actuellement à ${illum}% (${label})
 ${status}
 ${emoji} Prochain lever : ${riseStr}
 ${emoji} Prochain coucher : ${setStr}`;
 }
-
-
