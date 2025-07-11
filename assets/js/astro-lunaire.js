@@ -75,10 +75,12 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
     emoji = "🌘";
   }
 
-  const options = {
+  const optionsDate = {
     weekday: 'short',
     day: '2-digit',
-    month: 'short',
+    month: 'long'
+  };
+  const optionsTime = {
     hour: '2-digit',
     minute: '2-digit'
   };
@@ -90,34 +92,32 @@ export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) 
 
   const events = [];
 
-  // Ajoute les 4 événements si présents
   if (timesToday.rise) events.push({ type: 'Lever', time: new Date(timesToday.rise) });
   if (timesToday.set) events.push({ type: 'Coucher', time: new Date(timesToday.set) });
   if (timesTomorrow.rise) events.push({ type: 'Lever', time: new Date(timesTomorrow.rise) });
   if (timesTomorrow.set) events.push({ type: 'Coucher', time: new Date(timesTomorrow.set) });
 
-  // Filtre les événements à venir
   const futureEvents = events.filter(e => e.time > now).sort((a, b) => a.time - b.time);
 
-  // Trouve les prochains lever et coucher
   const nextRise = futureEvents.find(e => e.type === 'Lever');
   const nextSet = futureEvents.find(e => e.type === 'Coucher');
 
   const riseStr = nextRise
-    ? `${nextRise.time.toLocaleString('fr-FR', options)}`
+    ? `${nextRise.time.toLocaleDateString('fr-FR', optionsDate)} – ${nextRise.time.toLocaleTimeString('fr-FR', optionsTime)}`
     : "—";
 
   const setStr = nextSet
-    ? `${nextSet.time.toLocaleString('fr-FR', options)}`
+    ? `${nextSet.time.toLocaleDateString('fr-FR', optionsDate)} – ${nextSet.time.toLocaleTimeString('fr-FR', optionsTime)}`
     : "—";
 
   const status = pos.altitude > 0
-    ? `${emoji} La lune est visible actuellement au-dessus de l’horizon.`
-    : `${emoji} La lune est actuellement sous l’horizon.`;
+    ? `${emoji} La lune est visible au-dessus de l’horizon.`
+    : `${emoji} La lune est sous l’horizon.`; // retiré le "actuellement"
 
   return `🌙 La lune est actuellement à ${illum}% (${label})
 ${status}
 ${emoji} Prochain lever : ${riseStr}
 ${emoji} Prochain coucher : ${setStr}`;
 }
+
 
