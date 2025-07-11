@@ -67,44 +67,42 @@ export function adaptLuneResponsive() {
   const width = window.innerWidth;
 
   if (width <= 568) {
-    // Mobile : petite taille fixe, pas de clic
+    // Mobile: taille fixe, pas de clic, pas de transition
     lune.classList.remove('super-lune');
-    lune.style.width = '180px';
-    lune.style.height = '180px';
-    lune.style.right = '15px';
-    lune.style.bottom = '15px';
-    lune.style.opacity = '0.7';
-    lune.style.transform = 'none';
-    lune.style.pointerEvents = 'none';
-    lune.style.cursor = 'default';
-
-  } else if (width <= 768) {
-    // Tablet : seulement deux tailles (normale et moyenne)
-    lune.style.pointerEvents = 'auto';
-    lune.style.cursor = 'pointer';
-    lune.style.opacity = '0.85';
-
-    // Si super-lune était active, on revient à la taille normale
-    if (lune.classList.contains('super-lune')) {
-      lune.classList.remove('super-lune');
+    lune.style.cssText = `
+      width: 180px !important;
+      height: 180px !important;
+      right: 15px !important;
+      bottom: 15px !important;
+      opacity: 0.7 !important;
+      transform: none !important;
+      pointer-events: none !important;
+      cursor: default !important;
+      transition: none !important;
+    `;
+    // Désactive complètement le SVG aussi
+    const svg = lune.querySelector('svg');
+    if (svg) {
+      svg.style.pointerEvents = 'none !important';
     }
 
-    // On laisse le CSS gérer la taille normale
-    lune.style.width = '';
-    lune.style.height = '';
-    lune.style.right = '';
-    lune.style.bottom = '';
-    lune.style.transform = '';
+  } else if (width <= 768) {
+    // Tablet: seulement deux tailles (normale/moyenne)
+    lune.classList.remove('super-lune');
+    lune.style.cssText = `
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      opacity: 0.85 !important;
+      width: 250px !important;
+      height: 250px !important;
+      right: 20px !important;
+      bottom: 20px !important;
+      transform: none !important;
+    `;
 
   } else {
-    // Desktop : comportement normal avec toutes les tailles
-    lune.style.width = '';
-    lune.style.height = '';
-    lune.style.right = '';
-    lune.style.bottom = '';
-    lune.style.opacity = '';
-    lune.style.transform = '';
-    lune.style.pointerEvents = '';
-    lune.style.cursor = '';
+    // Desktop: reset complet pour laisser le CSS faire son travail
+    lune.style.cssText = '';
+    lune.removeAttribute('style');
   }
 }
