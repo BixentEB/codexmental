@@ -1,8 +1,8 @@
 // Import Astronomia depuis CDN ESM
-import { moonillum } from "https://cdn.jsdelivr.net/npm/astronomia/+esm";
+import { moon } from "https://cdn.jsdelivr.net/npm/astronomia/+esm";
 
 export function updateNewMoonWidget() {
-  console.log("✅ newmoon.js lancé avec Astronomia Meeus (API correcte).");
+  console.log("✅ newmoon.js lancé avec Astronomia Meeus (API corrigée).");
 
   if (!document.body.classList.contains("theme-lunaire")) {
     return;
@@ -67,10 +67,10 @@ export function updateNewMoonWidget() {
 
   function updatePhase() {
     const date = new Date();
-    const illum = moonillum.illuminated(date); // ✅ la bonne fonction
-    const fraction = illum.fraction;           // proportion éclairée
-    const phaseAngle = illum.angle;            // angle en radians
+    const fraction = moon.illum(date); // proportion éclairée
+    const phaseAngle = moon.phase(date); // angle en radians
 
+    // Projection circulaire
     const d = Math.cos(phaseAngle);
     const cx = 50 + 50 * d;
 
