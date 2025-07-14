@@ -26,75 +26,53 @@ import SunCalc from 'https://esm.sh/suncalc';
 export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
   const moon = SunCalc.getMoonIllumination(date);
-  const pos = SunCalc.getMoonPosition(now, lat, lng);
   
-  // Correction précise de l'illumination (+4.1% pour votre cas)
+  // Correction d'illumination précise
   const illum = (Math.min(1, moon.fraction * 1.041) * 100;
   const phase = moon.phase;
 
+  // Détermination de la phase lunaire (seuils ajustés)
   let label = "";
-  let emoji = "";
+  if (phase < 0.03 || phase > 0.97) label = "Nouvelle lune";
+  else if (phase < 0.22) label = "Premier croissant";
+  else if (phase < 0.28) label = "Premier quartier";
+  else if (phase < 0.47) label = "Gibbeuse croissante";
+  else if (phase < 0.53) label = "Pleine lune";
+  else if (phase < 0.72) label = "Gibbeuse décroissante";
+  else if (phase < 0.78) label = "Dernier quartier";
+  else label = "Dernier croissant";
 
-  // 🌙 Phases lunaires précises (seuils ajustés)
-  if (illum > 98) {
-    label = phase < 0.5 ? "Pleine lune croissante" : "Pleine lune décroissante";
-    emoji = "🌕";
-  } else if (phase < 0.03 || phase > 0.97) {
-    label = "Nouvelle lune";
-    emoji = "🌑";
-  } else if (phase < 0.22) {
-    label = "Premier croissant";
-    emoji = "🌒";
-  } else if (phase < 0.28) {
-    label = "Premier quartier";
-    emoji = "🌓";
-  } else if (phase < 0.47) {
-    label = "Gibbeuse croissante";
-    emoji = "🌔";
-  } else if (phase < 0.53) {
-    label = "Pleine lune";
-    emoji = "🌕";
-  } else if (phase < 0.72) {
-    label = "Gibbeuse décroissante";
-    emoji = "🌖";
-  } else if (phase < 0.78) {
-    label = "Dernier quartier";
-    emoji = "🌗";
+  // Formatage date/heure
+  const formatTime = (date) => date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  const formatDate = (date) => date.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });
+
+  // Calcul des événements lunaires
+  const todayTimes = SunCalc.getMoonTimes(now, lat, lng);
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowTimes = SunCalc.getMoonTimes(tomorrow, lat, lng);
+
+  // Gestion des lever/coucher
+  let nextRise, nextSet;
+
+  if (todayTimes.rise && todayTimes.rise > now) {
+    // Lever aujourd'hui pas encore passé
+    nextRise = `${formatDate(todayTimes.rise)} – ${formatTime(todayTimes.rise)}`;
+    nextSet = todayTimes.set ? `${formatDate(todayTimes.set)} – ${formatTime(todayTimes.set)}` : "—";
   } else {
-    label = "Dernier croissant";
-    emoji = "🌘";
+    // Lever aujourd'hui déjà passé → on prend demain
+    nextRise = tomorrowTimes.rise ? `${formatDate(tomorrowTimes.rise)} – ${formatTime(tomorrowTimes.rise)}` : "—";
+    nextSet = todayTimes.set ? `${formatDate(todayTimes.set)} – ${formatTime(todayTimes.set)}` : "—";
   }
 
-  // Formatage des dates/heures
-  const options = { 
-    weekday: 'short', 
-    day: '2-digit', 
-    month: 'long',
-    hour: '2-digit', 
-    minute: '2-digit',
-    timeZone: 'Europe/Paris' // Ajustez selon votre fuseau
-  };
-
-  // Calcul robuste des horaires
-  const getNextEvent = (eventType) => {
-    for (let d = 0; d < 3; d++) {
-      const day = new Date(now);
-      day.setDate(day.getDate() + d);
-      const times = SunCalc.getMoonTimes(day, lat, lng);
-      const eventTime = times[eventType];
-      if (eventTime && eventTime > now) {
-        return eventTime.toLocaleString('fr-FR', options);
-      }
-    }
-    return "—";
-  };
-
+  // Statut de visibilité
+  const pos = SunCalc.getMoonPosition(now, lat, lng);
   const status = pos.altitude > 0 
-    ? `${emoji} Visible au-dessus de l’horizon` 
-    : `${emoji} Sous l’horizon`;
+    ? "🌝 Visible au-dessus de l'horizon" 
+    : "🌚 Sous l'horizon";
 
   return `🌙 Phase: ${label} (${illum.toFixed(1)}%)
 ${status}
-⏱ Prochain lever: ${getNextEvent('rise')}
-⏱ Prochain coucher: ${getNextEvent('set')}`;
+↑ Prochain lever: ${nextRise}
+↓ Prochain coucher: ${nextSet}`;
 }
