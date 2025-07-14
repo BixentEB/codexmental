@@ -1,5 +1,8 @@
-export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js lancé avec inversion croissante/décroissante.");
+// Import Astronomia depuis CDN ESM
+import { moonillum } from "https://cdn.jsdelivr.net/npm/astronomia/+esm";
+
+export function updateNewMoonWidget() {
+  console.log("✅ newmoon.js lancé avec Astronomia Meeus.");
 
   if (!document.body.classList.contains("theme-lunaire")) {
     return;
@@ -37,7 +40,6 @@ export function updateNewMoonWidget(SunCalc) {
 
   document.body.appendChild(container);
 
-  // Size cycle on click
   const sizes = [
     { w: "150px", h: "150px", class: "" },
     { w: "250px", h: "250px", class: "" },
@@ -64,21 +66,22 @@ export function updateNewMoonWidget(SunCalc) {
   });
 
   function updatePhase() {
-    const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
-    const ombre = document.getElementById('ombre');
-    if (!ombre) return;
+    const date = new Date();
+    const illum = moonillum.phase(date);
 
-    let d;
-    if (phase <0.5) {
-      d = +(2 * fraction -1);
-    } else {
-      d = -(2 * fraction -1);
-    }
+    const fraction = illum.fraction; // proportion éclairée
+    const phaseAngle = illum.angle;  // angle en radians
+
+    // Par convention astronomique, croissant = angle positif
+    let d = Math.cos(phaseAngle);
     const cx = 50 + 50 * d;
 
-    ombre.setAttribute('cx', cx);
+    const ombre = document.getElementById('ombre');
+    if (ombre) {
+      ombre.setAttribute('cx', cx);
+    }
 
-    console.log(`🌙 Phase: ${phase.toFixed(4)} | Illumination: ${(fraction * 100).toFixed(2)}% | d=${d.toFixed(4)} | cx=${cx.toFixed(2)}`);
+    console.log(`🌙 Astronomia: fraction ${(fraction*100).toFixed(2)}% | angle ${(phaseAngle*180/Math.PI).toFixed(2)}° | d=${d.toFixed(4)} | cx=${cx.toFixed(2)}`);
   }
 
   updatePhase();
