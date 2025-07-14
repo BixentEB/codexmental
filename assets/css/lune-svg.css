@@ -1,27 +1,77 @@
-/* Remplacez votre CSS actuel par : */
-#svg-lune-widget {
+/* 🌙 WIDGET LUNAIRE - VERSION FINALE (Par Noob-Friendly Dev) 🌙 */
+body.theme-lunaire #svg-lune-widget {
   position: fixed;
   right: 20px;
   bottom: 20px;
   width: 250px;
   height: 250px;
-  z-index: 1000;
+  z-index: 10;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 12px rgba(138, 180, 248, 0.4));
+  transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-#svg-lune-widget.super-lune {
+/* Mode Super-Lune (desktop) */
+body.theme-lunaire #svg-lune-widget.super-lune {
   width: 500px;
   height: 500px;
   bottom: -120px;
   right: -200px;
+  opacity: 0.95;
+  z-index: 1000;
 }
 
-#svg-lune-widget circle {
-  transition: cx 0.5s ease-out;
+/* Style du SVG */
+body.theme-lunaire #svg-lune-widget svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: transparent;
 }
 
-/* Conservez vos media queries existants */
+/* Lune fantôme (arrière-plan) */
+body.theme-lunaire #svg-lune-widget svg image:first-child {
+  filter: brightness(0.35) opacity(0.12) contrast(0.8);
+}
+
+/* Croissant visible */
+body.theme-lunaire #svg-lune-widget svg image:last-child {
+  filter: brightness(1.15) contrast(1.25) drop-shadow(0 0 4px rgba(200, 220, 255, 0.6));
+  transition: filter 0.3s ease;
+}
+
+/* Effets au survol */
+body.theme-lunaire #svg-lune-widget:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 20px rgba(138, 180, 248, 0.6));
+  transform: scale(1.05);
+}
+
+body.theme-lunaire #svg-lune-widget:hover svg image:last-child {
+  filter: brightness(1.3) contrast(1.4) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+/* Empêche le scroll horizontal */
+body {
+  overflow-x: hidden;
+}
+
+/* Ajustements pour la super-lune */
+body.theme-lunaire #svg-lune-widget.super-lune {
+  overflow: visible;
+  pointer-events: none;
+}
+
+body.theme-lunaire #svg-lune-widget.super-lune svg {
+  pointer-events: auto;
+}
+
+/* Transition de l'ombre (pour le JS) */
+body.theme-lunaire #svg-lune-widget svg circle#ombre {
+  transition: cx 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
 /* ===== Version Mobile Optimisée (remplace les deux @media existants) ===== */
 @media (max-width: 568px), (pointer: coarse) {
   body.theme-lunaire #svg-lune-widget,
