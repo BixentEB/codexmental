@@ -30,10 +30,8 @@ body.theme-lunaire #svg-lune-widget svg {
   background: transparent;
 }
 
-/* Lune fantôme (arrière-plan) */
-body.theme-lunaire #svg-lune-widget svg image:first-child {
-  filter: brightness(0.35) opacity(0.12) contrast(0.8);
-}
+/* Lune fantôme (arrière-plan) - section supprimée pour vérifier si cela supprimait la lune fantôme */
+
 
 /* Croissant visible */
 body.theme-lunaire #svg-lune-widget svg image:last-child {
