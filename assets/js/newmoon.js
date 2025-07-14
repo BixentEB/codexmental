@@ -1,5 +1,5 @@
 export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js launched with SunCalc and updated logic.");
+  console.log("✅ newmoon.js lancé avec la version géométrique réaliste (cosinus).");
 
   if (!document.body.classList.contains("theme-lunaire")) {
     return;
@@ -65,27 +65,17 @@ export function updateNewMoonWidget(SunCalc) {
 
   // Update moon phase using SunCalc
   function updatePhase() {
-    const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
+    const { phase, fraction } = SunCalc.getMoonIllumination(new Date());
     const ombre = document.getElementById('ombre');
     if (!ombre) return;
 
-    const illumination = fraction * 100;
-    const isWaxing = phase < 0.5;
-
-    let cx;
-
-    if (illumination <= 0.1) {
-      cx = 50;
-    } else if (illumination >= 99) {
-      cx = isWaxing ? -50 : 150;
-    } else {
-      cx = isWaxing
-        ? 50 - (50 * illumination / 100)
-        : 50 + (50 * illumination / 100);
-    }
+    // Calcul géométrique réaliste
+    const angle = phase * Math.PI * 2;
+    const cx = 50 + (50 * Math.cos(angle));
 
     ombre.setAttribute('cx', cx);
-    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% | Phase: ${phase.toFixed(3)} | ${isWaxing ? "Croissante" : "Décroissante"} (cx=${cx})`);
+
+    console.log(`🌙 Phase: ${phase.toFixed(4)} | Illumination: ${(fraction * 100).toFixed(2)}% | cx=${cx.toFixed(2)}`);
   }
 
   updatePhase();
