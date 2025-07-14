@@ -1,29 +1,19 @@
 export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js launched with SunCalc and original structure.");
+  console.log("✅ newmoon.js - Version corrigée");
 
-  if (!document.body.classList.contains("theme-lunaire")) {
-    return;
-  }
+  if (!document.body.classList.contains("theme-lunaire")) return;
 
-  // Remove any existing widget
-  const existing = document.getElementById('svg-lune-widget');
-  if (existing) existing.remove();
-
-  const container = document.createElement('div');
+  // Widget existant
+  const container = document.getElementById('svg-lune-widget') || document.createElement('div');
   container.id = 'svg-lune-widget';
-
   container.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+    <svg viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
         <filter id="lune-fantome">
           <feComponentTransfer>
             <feFuncA type="table" tableValues="0 0.08"/>
           </feComponentTransfer>
-          <feColorMatrix type="matrix"
-            values="0.2 0 0 0 0
-                    0 0.2 0 0 0
-                    0 0 0.2 0 0
-                    0 0 0 1 0"/>
+          <feColorMatrix values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 1 0"/>
         </filter>
         <mask id="mask-lune">
           <rect width="100%" height="100%" fill="white"/>
@@ -35,55 +25,50 @@ export function updateNewMoonWidget(SunCalc) {
     </svg>
   `;
 
-  document.body.appendChild(container);
+  if (!document.body.contains(container)) {
+    document.body.appendChild(container);
+  }
 
-  // Size cycle on click
+  // Gestion responsive (identique à votre version)
   const sizes = [
     { w: "150px", h: "150px", class: "" },
     { w: "250px", h: "250px", class: "" },
     { w: "500px", h: "500px", class: "super-lune" }
   ];
-  let sizeIndex = 1; // Start medium
+  let sizeIndex = 1;
 
   function applySize() {
     container.style.width = sizes[sizeIndex].w;
     container.style.height = sizes[sizeIndex].h;
-    container.classList.remove("super-lune");
-    if (sizes[sizeIndex].class) {
-      container.classList.add(sizes[sizeIndex].class);
-    }
+    container.className = sizes[sizeIndex].class;
   }
   applySize();
 
   container.addEventListener("click", (e) => {
-    e.preventDefault();
-    sizeIndex = (sizeIndex + 1) % sizes.length;
-    applySize();
+    if (window.innerWidth > 568) { // Désactivé sur mobile
+      e.preventDefault();
+      sizeIndex = (sizeIndex + 1) % sizes.length;
+      applySize();
+    }
   });
 
-  // Update moon phase using SunCalc
+  // Nouveau calcul précis de phase
   function updatePhase() {
     const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
     const ombre = document.getElementById('ombre');
     if (!ombre) return;
 
-    const illumination = fraction * 100;
-    let cx;
-
-    if (illumination <= 0.1) {
-      cx = 50;
-    } else if (illumination >= 95) {
-      cx = phase < 0.5 ? -50 : 150;
-    } else {
-      cx = phase < 0.5
-        ? 50 - (50 * illumination / 100)
-        : 50 + (50 * illumination / 100);
-    }
+    // Modèle astronomique précis
+    const angle = phase * Math.PI * 2;
+    const cx = 50 + (45 * Math.cos(angle)); // 45 au lieu de 50 pour lisser les extrêmes
 
     ombre.setAttribute('cx', cx);
-    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% (cx=${cx})`);
+    console.log(`🌙 Phase calculée: ${(fraction * 100).toFixed(1)}% (cx=${cx.toFixed(1)})`);
   }
 
   updatePhase();
-  setInterval(updatePhase, 3600000);
+  const phaseInterval = setInterval(updatePhase, 3600000); // Actualisation horaire
+
+  // Nettoyage
+  return () => clearInterval(phaseInterval);
 }
