@@ -42,11 +42,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (currentTheme === "theme-lunaire") {
-    import('/assets/js/newmoon.js')
-      .then(moonModule => {
-        moonModule.updateNewMoonWidget();
-      })
-      .catch(err => console.error("❌ Failed to load newmoon.js:", err));
+    loadMoonWidget();
   }
 
   // Init observer qui gère affichage dynamique et animation
@@ -60,6 +56,12 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 
 // === 🌐 Fonction de changement de thème
 window.setTheme = (theme) => {
+  // Nettoyage avant changement
+  if (window.cleanupMoonWidget) {
+    window.cleanupMoonWidget();
+    window.cleanupMoonWidget = null;
+  }
+
   localStorage.setItem('codexTheme', theme);
   document.body.className = theme;
   setTheme(theme);
@@ -69,10 +71,27 @@ window.setTheme = (theme) => {
   }
 
   if (theme === "theme-lunaire") {
-    import('/assets/js/newmoon.js')
-      .then(moonModule => {
-        moonModule.updateNewMoonWidget();
-      })
-      .catch(err => console.error("❌ Failed to load newmoon.js:", err));
+    loadMoonWidget();
   }
 };
+
+// === 🌙 Fonction dédiée au chargement du widget lunaire
+function loadMoonWidget() {
+  import('/assets/js/newmoon.js')
+    .then(module => {
+      window.cleanupMoonWidget = module.updateNewMoonWidget();
+      console.log("✅ Widget lunaire chargé");
+    })
+    .catch(err => {
+      console.error("❌ Erreur de chargement du module lunaire:", err);
+      // Fallback visuel si échec
+      const fallback = document.createElement('div');
+      fallback.textContent = '🌙';
+      fallback.style.position = 'fixed';
+      fallback.style.right = '20px';
+      fallback.style.bottom = '20px';
+      fallback.style.fontSize = '2rem';
+      document.body.appendChild(fallback);
+      window.cleanupMoonWidget = () => fallback.remove();
+    });
+}
