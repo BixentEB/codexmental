@@ -22,3 +22,41 @@
 }
 
 /* Conservez vos media queries existants */
+/* ===== Version Mobile Optimisée (remplace les deux @media existants) ===== */
+@media (max-width: 568px), (pointer: coarse) {
+  body.theme-lunaire #svg-lune-widget,
+  body.theme-lunaire #svg-lune-widget.super-lune,
+  body.theme-lunaire #svg-lune-widget:hover {
+    /* Dimensions et position */
+    width: 180px !important;
+    height: 180px !important;
+    right: 15px !important;
+    bottom: 15px !important;
+    
+    /* Apparence */
+    opacity: 0.7 !important;
+    transform: none !important;
+    filter: drop-shadow(0 0 8px rgba(138, 180, 248, 0.3)) !important;
+    
+    /* Interactions */
+    pointer-events: none !important;
+    touch-action: none !important;
+    cursor: default !important;
+    
+    /* Animation */
+    transition: none !important;
+    z-index: 5 !important;
+  }
+  
+  /* Désactivation totale du SVG et enfants */
+  body.theme-lunaire #svg-lune-widget svg,
+  body.theme-lunaire #svg-lune-widget svg * {
+    pointer-events: none !important;
+    touch-action: none !important;
+  }
+  
+  /* Correction spécifique pour l'ombre si nécessaire */
+  body.theme-lunaire #svg-lune-widget svg circle#ombre {
+    transition: none !important;
+  }
+}
