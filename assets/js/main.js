@@ -20,6 +20,7 @@ import { setupScrollButton } from '/assets/js/scroll.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 import { initEtoileFilante } from '/assets/js/etoile-filante.js';
 import { initThemeObserver } from '/assets/js/theme-observer.js';
+import { updateNewMoonWidget } from '/assets/js/newmoon.js'; // 🌙 Import Astronomia directement
 
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
@@ -42,14 +43,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (currentTheme === "theme-lunaire") {
-    Promise.all([
-      import('https://esm.sh/suncalc'),
-      import('/assets/js/newmoon.js')
-    ])
-      .then(([SunCalcModule, moonModule]) => {
-        moonModule.updateNewMoonWidget(SunCalcModule.default);
-      })
-      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+    updateNewMoonWidget(); // 🌙 Simple appel direct sans SunCalc
   }
 
   // Init observer qui gère affichage dynamique et animation
@@ -72,13 +66,6 @@ window.setTheme = (theme) => {
   }
 
   if (theme === "theme-lunaire") {
-    Promise.all([
-      import('https://esm.sh/suncalc'),
-      import('/assets/js/newmoon.js')
-    ])
-      .then(([SunCalcModule, moonModule]) => {
-        moonModule.updateNewMoonWidget(SunCalcModule.default);
-      })
-      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+    updateNewMoonWidget(); // 🌙 Simple appel direct sans SunCalc
   }
 };
