@@ -20,7 +20,6 @@ import { setupScrollButton } from '/assets/js/scroll.js';
 import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 import { initEtoileFilante } from '/assets/js/etoile-filante.js';
 import { initThemeObserver } from '/assets/js/theme-observer.js';
-import { updateNewMoonWidget } from '/assets/js/newmoon.js'; // 🌙 Import Astronomia directement
 
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
@@ -43,7 +42,11 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (currentTheme === "theme-lunaire") {
-    updateNewMoonWidget(); // 🌙 Simple appel direct sans SunCalc
+    import('/assets/js/newmoon.js')
+      .then(moonModule => {
+        moonModule.updateNewMoonWidget();
+      })
+      .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 
   // Init observer qui gère affichage dynamique et animation
@@ -66,6 +69,10 @@ window.setTheme = (theme) => {
   }
 
   if (theme === "theme-lunaire") {
-    updateNewMoonWidget(); // 🌙 Simple appel direct sans SunCalc
+    import('/assets/js/newmoon.js')
+      .then(moonModule => {
+        moonModule.updateNewMoonWidget();
+      })
+      .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
