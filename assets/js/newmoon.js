@@ -1,5 +1,5 @@
 export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js lancé avec la version géométrique réaliste (cosinus).");
+  console.log("✅ newmoon.js lancé avec la projection géométrique précise (illumination).");
 
   if (!document.body.classList.contains("theme-lunaire")) {
     return;
@@ -43,7 +43,7 @@ export function updateNewMoonWidget(SunCalc) {
     { w: "250px", h: "250px", class: "" },
     { w: "500px", h: "500px", class: "super-lune" }
   ];
-  let sizeIndex = 1; // Start medium
+  let sizeIndex = 1;
 
   function applySize() {
     container.style.width = sizes[sizeIndex].w;
@@ -56,26 +56,26 @@ export function updateNewMoonWidget(SunCalc) {
   applySize();
 
   container.addEventListener("click", (e) => {
-    if (window.innerWidth > 568) { // Désactivé sur mobile
+    if (window.innerWidth > 568) {
       e.preventDefault();
       sizeIndex = (sizeIndex + 1) % sizes.length;
       applySize();
     }
   });
 
-  // Update moon phase using SunCalc
+  // Update moon phase with precise projection
   function updatePhase() {
-    const { phase, fraction } = SunCalc.getMoonIllumination(new Date());
+    const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
     const ombre = document.getElementById('ombre');
     if (!ombre) return;
 
-    // Calcul géométrique réaliste
-    const angle = phase * Math.PI * 2;
-    const cx = 50 + (50 * Math.cos(angle));
+    // d = 2 * illumination - 1
+    const d = 2 * fraction - 1;
+    const cx = 50 + 50 * d;
 
     ombre.setAttribute('cx', cx);
 
-    console.log(`🌙 Phase: ${phase.toFixed(4)} | Illumination: ${(fraction * 100).toFixed(2)}% | cx=${cx.toFixed(2)}`);
+    console.log(`🌙 Phase: ${phase.toFixed(4)} | Illumination: ${(fraction * 100).toFixed(2)}% | d=${d.toFixed(4)} | cx=${cx.toFixed(2)}`);
   }
 
   updatePhase();
