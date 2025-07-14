@@ -1,5 +1,5 @@
 export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js lancé avec la projection géométrique précise (illumination).");
+  console.log("✅ newmoon.js lancé avec inversion croissante/décroissante.");
 
   if (!document.body.classList.contains("theme-lunaire")) {
     return;
@@ -63,14 +63,17 @@ export function updateNewMoonWidget(SunCalc) {
     }
   });
 
-  // Update moon phase with precise projection
   function updatePhase() {
     const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
     const ombre = document.getElementById('ombre');
     if (!ombre) return;
 
-    // d = 2 * illumination - 1
-    const d = 2 * fraction - 1;
+    let d;
+    if (phase <0.5) {
+      d = +(2 * fraction -1);
+    } else {
+      d = -(2 * fraction -1);
+    }
     const cx = 50 + 50 * d;
 
     ombre.setAttribute('cx', cx);
