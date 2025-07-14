@@ -23,78 +23,94 @@ import SunCalc from 'https://esm.sh/suncalc';
  * - Tri des événements futurs pour plus de précision.
  */
 
-export function getFullMoonInfo() {
-  // 1. Configuration précise pour Lyon
-  const LYON_COORDS = { lat: 45.7640, lng: 4.8357 };
+export function getFullMoonInfo(date = new Date(), lat = 48.8566, lng = 2.3522) {
   const now = new Date();
-  const today = new Date(now);
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
+  const moon = SunCalc.getMoonIllumination(date);
+  const pos = SunCalc.getMoonPosition(now, lat, lng);
+  const illum = (moon.fraction * 100).toFixed(1);
+  const phase = moon.phase;
+
+  let label = "";
+  let emoji = "";
+
+  // 🌙 Phase avec distinction croissante/décroissante
+  if (illum > 98) {
+    if (phase < 0.48) {
+      label = "Pleine lune, croissante";
+    } else if (phase > 0.52) {
+      label = "Pleine lune, décroissante";
+    } else {
+      label = "Pleine lune";
+    }
+    emoji = "🌕";
+  } else if (phase < 0.03 || phase > 0.97) {
+    label = "Nouvelle lune";
+    emoji = "🌑";
+  } else if (phase < 0.22) {
+    label = "Premier croissant";
+    emoji = "🌒";
+  } else if (phase < 0.28) {
+    label = "Premier quartier";
+    emoji = "🌓";
+  } else if (phase < 0.47) {
+    label = "Gibbeuse croissante";
+    emoji = "🌔";
+  } else if (phase < 0.53) {
+    label = "Pleine lune";
+    emoji = "🌕";
+  } else if (phase < 0.72) {
+    label = "Gibbeuse décroissante";
+    emoji = "🌖";
+  } else if (phase < 0.78) {
+    label = "Dernier quartier";
+    emoji = "🌗";
+  } else {
+    label = "Dernier croissant";
+    emoji = "🌘";
+  }
+
+  const optionsDate = {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'long'
+  };
+  const optionsTime = {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Paris'
+  };
+
+  const timesToday = SunCalc.getMoonTimes(date, lat, lng);
+  const tomorrow = new Date(date);
   tomorrow.setDate(tomorrow.getDate() + 1);
+  const timesTomorrow = SunCalc.getMoonTimes(tomorrow, lat, lng);
 
-  // 2. Récupération des données lunaires
-  const { fraction, phase } = SunCalc.getMoonIllumination(now);
-  const todayTimes = SunCalc.getMoonTimes(today, LYON_COORDS.lat, LYON_COORDS.lng);
-  const tomorrowTimes = SunCalc.getMoonTimes(tomorrow, LYON_COORDS.lat, LYON_COORDS.lng);
-  const moonPos = SunCalc.getMoonPosition(now, LYON_COORDS.lat, LYON_COORDS.lng);
+  const events = [];
 
-  // 3. Formatage des dates/heures
-  const formatTime = (date) => date?.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) || "--:--";
-  const formatDate = (date) => date?.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }) || "--";
+  if (timesToday.rise) events.push({ type: 'Lever', time: new Date(timesToday.rise) });
+  if (timesToday.set) events.push({ type: 'Coucher', time: new Date(timesToday.set) });
+  if (timesTomorrow.rise) events.push({ type: 'Lever', time: new Date(timesTomorrow.rise) });
+  if (timesTomorrow.set) events.push({ type: 'Coucher', time: new Date(timesTomorrow.set) });
 
-  // 4. Gestion précise des horaires (votre format demandé)
-  let nextRise, nextSet;
+  const futureEvents = events.filter(e => e.time > now).sort((a, b) => a.time - b.time);
 
-  // Lever suivant
-  if (todayTimes.rise && todayTimes.rise > now) {
-    nextRise = `Aujourd'hui à ${formatTime(todayTimes.rise)}`;
-  } else if (tomorrowTimes.rise) {
-    nextRise = `${formatDate(tomorrowTimes.rise)} à ${formatTime(tomorrowTimes.rise)}`;
-  } else {
-    nextRise = "Pas de lever visible";
-  }
+  const nextRise = futureEvents.find(e => e.type === 'Lever');
+  const nextSet = futureEvents.find(e => e.type === 'Coucher');
 
-  // Coucher suivant
-  if (todayTimes.set && todayTimes.set > now) {
-    nextSet = `Aujourd'hui à ${formatTime(todayTimes.set)}`;
-  } else if (todayTimes.set) {
-    nextSet = `${formatDate(todayTimes.set)} à ${formatTime(todayTimes.set)}`;
-  } else {
-    nextSet = "Pas de coucher visible";
-  }
+  const riseStr = nextRise
+    ? `${nextRise.time.toLocaleDateString('fr-FR', optionsDate)} – ${nextRise.time.toLocaleTimeString('fr-FR', optionsTime)}`
+    : "—";
 
-  // 5. Détection ultra-précise de la phase (corrigée pour Lyon)
-  const PHASE_THRESHOLDS = [
-    { max: 0.03, name: "Nouvelle Lune" },
-    { max: 0.22, name: "Premier Croissant" },
-    { max: 0.28, name: "Premier Quartier" },
-    { max: 0.47, name: "Gibbeuse Croissante" },
-    { max: 0.53, name: "Pleine Lune" },
-    { max: 0.72, name: "Gibbeuse Décroissante" },
-    { max: 0.78, name: "Dernier Quartier" },
-    { max: 1, name: "Dernier Croissant" }
-  ];
+  const setStr = nextSet
+    ? `${nextSet.time.toLocaleDateString('fr-FR', optionsDate)} – ${nextSet.time.toLocaleTimeString('fr-FR', optionsTime)}`
+    : "—";
 
-  const currentPhase = PHASE_THRESHOLDS.find(p => phase < p.max) || PHASE_THRESHOLDS[0];
-  const exactIllumination = (fraction * 100).toFixed(1);
+  const status = pos.altitude > 0
+    ? `${emoji} La lune est visible au-dessus de l’horizon.`
+    : `${emoji} La lune est sous l’horizon.`;
 
-  // 6. Vérification cohérence des données
-  if (nextSet.includes("11:16")) { // Correction spécifique pour le bug connu
-    const altTime = new Date(todayTimes.set);
-    altTime.setHours(altTime.getHours() + 12);
-    nextSet = `${formatDate(altTime)} à ${formatTime(altTime)}`;
-  }
-
-  // 7. Retour au format original exact
-  return `
-${currentPhase.name} (${exactIllumination}%)
-
-${moonPos.altitude > 0 ? "Visible" : "Sous l'horizon"}
-
-Prochain lever: ${nextRise}
-Prochain coucher: ${nextSet}
-  `.trim();
-}
-↓ Coucher: ${formatEvent(nextSet)}
-  `.trim();
+  return `🌙 La lune est actuellement à ${illum}% (${label})
+${status}
+${emoji} Prochain lever : ${riseStr}
+${emoji} Prochain coucher : ${setStr}`;
 }
