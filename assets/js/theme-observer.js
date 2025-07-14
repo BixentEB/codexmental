@@ -33,24 +33,25 @@ function handleThemeChange(currentTheme) {
   }
 
   if (currentTheme === "lunaire") {
-    console.log("🌙 Thème lunaire : chargement modules...");
-    Promise.all([
-      import("https://esm.sh/suncalc"),
-      import("/assets/js/newmoon.js"),
-      import("/assets/js/astro-lunaire.js")
-    ])
-      .then(([SunCalcModule, moonModule, lunarModule]) => {
-        moonModule.updateNewMoonWidget(SunCalcModule.default);
-        if (typeof lunarModule.getFullMoonInfo === "function") {
-          setCurrentAlertText(lunarModule.getFullMoonInfo());
-        } else {
-          setCurrentAlertText("🌙 Aucune donnée lunaire disponible.");
-        }
-        lancerIntroAstro(currentTheme);
-      })
-      .catch(err => console.error("❌ Échec chargement modules lunaires:", err));
-    return;
-  }
+  console.log("🌙 Thème lunaire : chargement modules...");
+  Promise.all([
+    import("https://esm.sh/suncalc"),
+    import("/assets/js/newmoon.js"),
+    import("/assets/js/astro-lunaire.js")
+  ])
+    .then(([_, moonModule, lunarModule]) => {
+      moonModule.updateNewMoonWidget();
+      if (typeof lunarModule.getFullMoonInfo === "function") {
+        setCurrentAlertText(lunarModule.getFullMoonInfo());
+      } else {
+        setCurrentAlertText("🌙 Aucune donnée lunaire disponible.");
+      }
+      lancerIntroAstro(currentTheme);
+    })
+    .catch(err => console.error("❌ Échec chargement modules lunaires:", err));
+  return;
+}
+
 
   if (currentTheme === "solaire") {
   console.log("☀️ Thème solaire : chargement des données SunCalc...");
