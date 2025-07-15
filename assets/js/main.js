@@ -43,6 +43,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   if (currentTheme === "theme-lunaire") {
     import('/assets/js/newmoon.js')
+      .then(module => module.updateNewMoonWidget())
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 
@@ -67,6 +68,7 @@ window.setTheme = (theme) => {
 
   if (theme === "theme-lunaire") {
     import('/assets/js/newmoon.js')
+      .then(module => module.updateNewMoonWidget())
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
