@@ -5,58 +5,91 @@ const LAT = 45.75;
 const LNG = 4.85;
 
 export function updateNewMoonWidget() {
+  // Nettoyage éventuel
   const existing = document.getElementById('svg-lune-widget');
   if (existing) existing.remove();
 
+  // Création du widget
   const container = document.createElement('div');
   container.id = 'svg-lune-widget';
-  container.style.width = '250px';
-  container.style.height = '250px';
-  container.style.position = 'fixed';
-  container.style.right = '30px';
-  container.style.bottom = '30px';
-  container.style.zIndex = 1000;
+  container.classList.add('lune-svg-container'); // Utilise ton CSS
 
+  // Cycle de tailles
+  const sizes = [
+    { w: "150px", h: "150px", class: "" },
+    { w: "250px", h: "250px", class: "" },
+    { w: "500px", h: "500px", class: "super-lune" }
+  ];
+  let sizeIndex = 1; // Medium par défaut
+
+  function applySize() {
+    container.style.width = sizes[sizeIndex].w;
+    container.style.height = sizes[sizeIndex].h;
+    container.classList.remove("super-lune");
+    if (sizes[sizeIndex].class) {
+      container.classList.add(sizes[sizeIndex].class);
+    }
+  }
+
+  // SVG lune avec effet "fantôme"
   function renderMoon() {
     const now = new Date();
     const moon = SunCalc.getMoonIllumination(now);
     const phase = moon.phase; // 0 = new, 0.5 = full, 1 = new
     const fraction = moon.fraction; // [0, 1]
-
-    // Si phase < 0.5 --> croissante, ombre à droite
-    // Si phase > 0.5 --> décroissante, ombre à gauche
     const r = 100;
+
+    // Sens de la phase
     let cx;
     if (phase <= 0.5) {
-      // Lune croissante : ombre à droite
+      // Croissante : ombre à droite
       cx = 100 + (r * (1 - fraction));
     } else {
-      // Lune décroissante : ombre à gauche
+      // Décroissante : ombre à gauche
       cx = 100 - (r * (1 - fraction));
     }
 
+    // SVG avec deux images lune : une "fantôme" (ombre douce) + une masquée
     container.innerHTML = `
-      <svg viewBox="0 0 200 200" width="100%" height="100%">
+      <svg id="svg-lune" viewBox="0 0 200 200" width="100%" height="100%">
         <defs>
-          <clipPath id="moon-clip">
-            <circle cx="100" cy="100" r="100"/>
-          </clipPath>
+          <filter id="lune-fantome">
+            <feComponentTransfer>
+              <feFuncA type="table" tableValues="0 0.08"/>
+            </feComponentTransfer>
+            <feColorMatrix type="matrix"
+              values="0.2 0 0 0 0
+                      0 0.2 0 0 0
+                      0 0 0.2 0 0
+                      0 0 0 1 0"/>
+          </filter>
+          <mask id="mask-lune">
+            <rect width="200" height="200" fill="white"/>
+            <ellipse id="ombre" cx="${cx}" cy="100" rx="${r}" ry="${r}" fill="black"/>
+          </mask>
         </defs>
-        <!-- Disque lunaire -->
-        <image href="/img/lune/lune-pleine.png" x="0" y="0" width="200" height="200" clip-path="url(#moon-clip)" style="filter:brightness(1.1)"/>
-        <!-- Ombre lunaire, ellipse sur le bon côté -->
-        <ellipse 
-          cx="${cx}" cy="100"
-          rx="${r}" ry="${r}" 
-          fill="black"
-          opacity="0.85"
-          clip-path="url(#moon-clip)"
-        />
+        <!-- Lune fantôme, effet doux -->
+        <image href="/img/lune/lune-pleine.png" width="200" height="200" filter="url(#lune-fantome)" clip-path="url(#moon-clip)"/>
+        <!-- Lune réelle, masquée selon la phase -->
+        <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#mask-lune)"/>
       </svg>
     `;
   }
 
+  // Premier affichage
+  applySize();
   renderMoon();
+
+  // Mise à jour auto chaque heure
   setInterval(renderMoon, 60 * 60 * 1000);
+
+  // Changement de taille au clic
+  container.addEventListener("click", (e) => {
+    e.preventDefault();
+    sizeIndex = (sizeIndex + 1) % sizes.length;
+    applySize();
+  });
+
+  // Ajout au DOM
   document.body.appendChild(container);
 }
