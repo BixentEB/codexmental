@@ -1,84 +1,35 @@
-export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js launched with SunCalc and original structure.");
+// newmoon.js
+import { moonphase } from './lib/astronomia/src/moonphase.js';
 
-  if (!document.body.classList.contains("theme-lunaire")) {
-    return;
+/**
+ * Met à jour la lune SVG avec Astronomia
+ */
+export function updateNewMoonWidget() {
+  const now = new Date();
+  
+  // Calcule l'âge de la lune en jours (0 = nouvelle lune, ~14,7 = pleine lune)
+  const phaseDays = moonphase.phase(now);
+
+  // Convertit l'âge en illumination approximative
+  // Formule simplifiée : illum = 0.5 * (1 - cos(2π * phase / 29.5306))
+  const phaseFraction = phaseDays / 29.5306;
+  const illum = 0.5 * (1 - Math.cos(2 * Math.PI * phaseFraction));
+
+  // Trouve le masque
+  const ombre = document.getElementById('ombre');
+  if (!ombre) return;
+
+  // Croissante/décroissante selon la phase
+  let cx;
+  if (phaseDays <= 14.7653) {
+    // Croissante
+    cx = 50 - (1 - illum) * 50;
+  } else {
+    // Décroissante
+    cx = 50 + (1 - illum) * 50;
   }
 
-  // Remove any existing widget
-  const existing = document.getElementById('svg-lune-widget');
-  if (existing) existing.remove();
+  ombre.setAttribute('cx', cx);
 
-  const container = document.createElement('div');
-  container.id = 'svg-lune-widget';
-
-  container.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <filter id="lune-fantome">
-          <feComponentTransfer>
-            <feFuncA type="table" tableValues="0 0.08"/>
-          </feComponentTransfer>
-          <feColorMatrix type="matrix"
-            values="0.2 0 0 0 0
-                    0 0.2 0 0 0
-                    0 0 0.2 0 0
-                    0 0 0 1 0"/>
-        </filter>
-        <mask id="mask-lune">
-          <rect width="100%" height="100%" fill="white"/>
-          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
-        </mask>
-      </defs>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="url(#lune-fantome)"/>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
-    </svg>
-  `;
-
-  document.body.appendChild(container);
-
-  // Size cycle on click
-  const sizes = [
-    { w: "150px", h: "150px", class: "" },
-    { w: "250px", h: "250px", class: "" },
-    { w: "500px", h: "500px", class: "super-lune" }
-  ];
-  let sizeIndex = 1; // Start medium
-
-  function applySize() {
-    container.style.width = sizes[sizeIndex].w;
-    container.style.height = sizes[sizeIndex].h;
-    container.classList.remove("super-lune");
-    if (sizes[sizeIndex].class) {
-      container.classList.add(sizes[sizeIndex].class);
-    }
-  }
-  applySize();
-
-  container.addEventListener("click", (e) => {
-    e.preventDefault();
-    sizeIndex = (sizeIndex + 1) % sizes.length;
-    applySize();
-  });
-
-  // Update moon phase using SunCalc
-  function updatePhase() {
-    const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
-    const ombre = document.getElementById('ombre');
-    if (!ombre) return;
-
-    const illumination = fraction * 100;
-
-    // Calcul réaliste du déplacement de l'ombre
-    const offset = (1 - fraction) * 50;
-    const cx = phase < 0.5
-      ? 50 - offset // croissante
-      : 50 + offset; // décroissante
-
-    ombre.setAttribute('cx', cx);
-    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% (phase=${phase.toFixed(3)}, cx=${cx.toFixed(1)})`);
-  }
-
-  updatePhase();
-  setInterval(updatePhase, 3600000);
+  console.log(`🌙 Astronomia: Illumination=${(illum*100).toFixed(1)}% / Phase Days=${phaseDays.toFixed(2)} / cx=${cx.toFixed(1)}`);
 }
