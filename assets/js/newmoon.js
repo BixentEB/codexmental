@@ -14,30 +14,62 @@ function loadSunCalc(callback) {
 }
 
 /**
- * Met à jour la lune SVG
+ * Met à jour la lune SVG avec la vraie forme des phases
  */
 function updateMoon() {
   const now = new Date();
   const { fraction, phase } = SunCalc.getMoonIllumination(now);
-  const ombre = document.getElementById("ombre");
-  if (!ombre) return;
+  const shadowPath = document.getElementById("shadow-path");
+  if (!shadowPath) return;
 
-  // Logique corrigée pour les phases lunaires (hémisphère nord) :
-  // - Nouvelle lune (fraction=0) : ombre au centre (cx=50) = tout sombre
-  // - Premier quartier (fraction=0.5, phase=0.25) : ombre à droite (cx=75) = moitié gauche éclairée
-  // - Pleine lune (fraction=1) : ombre hors du cercle (cx=100) = tout éclairé  
-  // - Dernier quartier (fraction=0.5, phase=0.75) : ombre à gauche (cx=25) = moitié droite éclairée
+  // Conversion phase SunCalc vers angle plus intuitif
+  // phase 0 = nouvelle lune, 0.25 = premier quartier, 0.5 = pleine lune, 0.75 = dernier quartier
+  const angle = phase * 2 * Math.PI;
   
-  let cx;
-  if (phase < 0.5) {
-    // Phase croissante (0 à 0.5) : ombre va de centre vers droite
-    cx = 50 + (fraction * 50);
+  // Calcul de la position de la terminaison (ligne jour/nuit)
+  let pathData;
+  
+  if (fraction < 0.01) {
+    // Nouvelle lune - tout sombre
+    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
+  } else if (fraction > 0.99) {
+    // Pleine lune - tout éclairé
+    pathData = "M 0,0 L 0,0"; // Chemin vide
   } else {
-    // Phase décroissante (0.5 à 1) : ombre va de droite vers gauche
-    cx = 100 - (fraction * 50);
+    // Phases intermédiaires - créer la terminaison elliptique
+    const centerX = 50;
+    const centerY = 50;
+    const radius = 50;
+    
+    // Calculer l'ellipse de la terminaison
+    // Pour les phases croissantes (0 à 0.5), la partie éclairée grandit à droite
+    // Pour les phases décroissantes (0.5 à 1), la partie éclairée diminue à gauche
+    
+    let ellipseWidth;
+    let isWaxing = phase < 0.5;
+    
+    if (isWaxing) {
+      // Phase croissante : ellipse de plus en plus large
+      ellipseWidth = radius * (2 * fraction - 1);
+    } else {
+      // Phase décroissante : ellipse de plus en plus étroite
+      ellipseWidth = radius * (2 * fraction - 1);
+    }
+    
+    if (ellipseWidth > 0) {
+      // Partie éclairée à droite
+      pathData = `M ${centerX},${centerY - radius}
+                  A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
+                  A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+    } else {
+      // Partie éclairée à gauche
+      pathData = `M ${centerX},${centerY - radius}
+                  A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
+                  A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+    }
   }
   
-  ombre.setAttribute("cx", cx);
+  shadowPath.setAttribute("d", pathData);
   
   // Debug
   let phaseName = "";
@@ -50,7 +82,7 @@ function updateMoon() {
   else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
   
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} cx=${cx.toFixed(1)}`);
+  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
 }
 
 /**
@@ -65,17 +97,26 @@ export function updateNewMoonWidget() {
   const container = document.createElement("div");
   container.id = "svg-lune-widget";
   
-  // SVG avec un simple cercle pour l'ombre
+  // SVG avec masque basé sur path pour les vraies formes de phases
   container.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
-        <mask id="mask-lune">
+        <clipPath id="moon-clip">
+          <circle cx="50" cy="50" r="50"/>
+        </clipPath>
+        <mask id="moon-mask">
           <rect width="100%" height="100%" fill="white"/>
-          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
+          <path id="shadow-path" fill="black"/>
         </mask>
       </defs>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="brightness(0.4) opacity(0.15)"/>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
+      
+      <!-- Lune de base (sombre) -->
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
+             filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
+      
+      <!-- Lune éclairée (masquée par les ombres) -->
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
+             mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
     </svg>
   `;
   
