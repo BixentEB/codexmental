@@ -34,8 +34,8 @@ function handleThemeChange(currentTheme) {
 
   if (currentTheme === "lunaire") {
     console.log("🌙 Thème lunaire : chargement modules...");
-    import('/assets/js/moon-widget.js')
-      .catch(err => console.error("❌ Échec chargement moon-widget.js:", err));
+    import('/assets/js/newmoon.js')
+      .catch(err => console.error("❌ Échec chargement newmoon.js:", err));
     return;
   }
 
