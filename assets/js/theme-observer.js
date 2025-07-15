@@ -26,7 +26,7 @@ function handleThemeChange(currentTheme) {
   console.log(`🔄 Activation du thème : ${currentTheme}`);
 
   // Nettoyer le widget lunaire
-  const moon = document.getElementById("moon-widget");
+  const moon = document.getElementById("svg-lune-widget");
   if (moon) {
     console.log("🧹 Suppression du widget lunaire.");
     moon.remove();
