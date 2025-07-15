@@ -16,25 +16,27 @@ export function updateNewMoonWidget(SunCalc) {
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
         <filter id="lune-fantome">
-          <feGaussianBlur stdDeviation="0.5"/>
+          <feGaussianBlur stdDeviation="0.8"/>
           <feComponentTransfer>
-            <feFuncA type="table" tableValues="0 0.12"/>
+            <feFuncA type="table" tableValues="0 0.18"/>
           </feComponentTransfer>
           <feColorMatrix type="matrix"
-            values="0.35 0.35 0.55 0 0
-                    0.35 0.35 0.55 0 0
-                    0.45 0.45 0.65 0 0
+            values="0.4 0.4 0.7 0 0
+                    0.4 0.4 0.7 0 0
+                    0.5 0.5 0.8 0 0
                     0 0 0 1 0"/>
         </filter>
         <mask id="mask-lune">
           <rect width="100%" height="100%" fill="white"/>
-          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
+          <circle id="ombre" cx="50" cy="50" r="48" fill="black"/>
         </mask>
       </defs>
-      <!-- Lune fantôme (arrière-plan) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="url(#lune-fantome)"/>
+      <!-- Lune fantôme (arrière-plan) - Plus visible -->
+      <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" 
+             filter="url(#lune-fantome)" opacity="0.6"/>
       <!-- Lune visible selon phase -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
+      <image href="/img/lune/lune-pleine.png" x="0" y="0" width="100" height="100" 
+             mask="url(#mask-lune)" opacity="1"/>
     </svg>
   `;
 
@@ -149,23 +151,25 @@ export function updateNewMoonWidget(SunCalc) {
     
     let cx;
     
-    // Logique corrigée pour l'orientation
+    // Logique définitive basée sur l'observation astronomique
     if (illuminationPercent <= 2) {
       // Nouvelle lune - complètement masquée
       cx = 50;
     } else if (illuminationPercent >= 98) {
-      // Pleine lune - pas de masque
-      cx = isWaxing ? -50 : 150;
+      // Pleine lune - ombre sortie du cadre
+      cx = -50;
     } else {
       // Calcul de la position de l'ombre selon la phase
-      const shadowPosition = (1 - fraction) * 100; // Position inversée
+      const shadowDistance = (1 - fraction) * 50; // Distance de l'ombre du centre
       
       if (isWaxing) {
-        // Lune croissante : ombre part de la droite vers la gauche
-        cx = 50 + (shadowPosition / 2);
+        // Lune croissante : la partie droite s'éclaire progressivement
+        // L'ombre part de la droite (cx=100) vers la gauche (cx=50)
+        cx = 50 + shadowDistance;
       } else {
-        // Lune décroissante : ombre part de la gauche vers la droite
-        cx = 50 - (shadowPosition / 2);
+        // Lune décroissante : la partie gauche s'éteint progressivement
+        // L'ombre part de la gauche (cx=0) vers la droite (cx=50)
+        cx = 50 - shadowDistance;
       }
       
       // Limitation des valeurs extrêmes
@@ -174,8 +178,8 @@ export function updateNewMoonWidget(SunCalc) {
     
     ombre.setAttribute('cx', cx);
     
-    // Log pour debug
-    console.log(`🌙 cx=${cx.toFixed(1)} | Phase=${phase.toFixed(3)} | Fraction=${fraction.toFixed(3)}`);
+    // Log pour debug avec détails
+    console.log(`🌙 cx=${cx.toFixed(1)} | Phase=${phase.toFixed(3)} | Fraction=${fraction.toFixed(3)} | ShadowDistance=${((1-fraction)*50).toFixed(1)}`);
   }
 
   // Mise à jour initiale
