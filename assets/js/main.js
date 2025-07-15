@@ -1,5 +1,5 @@
 // ========================================================
-// main.js – Point d'entrée central de Codex Mental 
+// main.js – Point d'entrée central de Codex Mental
 // ========================================================
 
 // === 📦 Modules à effets de bord ===
@@ -42,14 +42,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (currentTheme === "theme-lunaire") {
-    Promise.all([
-      import('https://esm.sh/suncalc'),
-      import('/assets/js/newmoon.js')
-    ])
-      .then(([SunCalcModule, moonModule]) => {
-        moonModule.updateNewMoonWidget(SunCalcModule.default);
-      })
-      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+    import('/assets/js/moon-widget.js')
+      .catch(err => console.error("❌ Failed to load moon-widget.js:", err));
   }
 
   // Init observer qui gère affichage dynamique et animation
@@ -72,13 +66,7 @@ window.setTheme = (theme) => {
   }
 
   if (theme === "theme-lunaire") {
-    Promise.all([
-      import('https://esm.sh/suncalc'),
-      import('/assets/js/newmoon.js')
-    ])
-      .then(([SunCalcModule, moonModule]) => {
-        moonModule.updateNewMoonWidget(SunCalcModule.default);
-      })
-      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+    import('/assets/js/moon-widget.js')
+      .catch(err => console.error("❌ Failed to load moon-widget.js:", err));
   }
 };
