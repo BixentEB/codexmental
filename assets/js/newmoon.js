@@ -1,89 +1,66 @@
-export function updateNewMoonWidget(SunCalc) {
-  console.log("✅ newmoon.js launched with SunCalc and original structure.");
+import SunCalc from 'https://esm.sh/suncalc';
 
-  if (!document.body.classList.contains("theme-lunaire")) {
-    return;
-  }
+export function updateNewMoonWidget() {
+  // Lyon, France
+  const lat = 45.75;
+  const lng = 4.85;
+  const date = new Date();
 
-  // Remove any existing widget
-  const existing = document.getElementById('svg-lune-widget');
-  if (existing) existing.remove();
+  // Calcule la phase et l'illumination
+  const moon = SunCalc.getMoonIllumination(date);
+  const phase = moon.phase; // 0 = nouvelle, 0.5 = pleine, 1 = nouvelle
+  const fraction = moon.fraction; // % illuminé
 
+  // Création du widget
   const container = document.createElement('div');
   container.id = 'svg-lune-widget';
 
-  container.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <filter id="lune-fantome">
-          <feComponentTransfer>
-            <feFuncA type="table" tableValues="0 0.08"/>
-          </feComponentTransfer>
-          <feColorMatrix type="matrix"
-            values="0.2 0 0 0 0
-                    0 0.2 0 0 0
-                    0 0 0.2 0 0
-                    0 0 0 1 0"/>
-        </filter>
-        <mask id="mask-lune">
-          <rect width="100%" height="100%" fill="white"/>
-          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
-        </mask>
-      </defs>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="url(#lune-fantome)"/>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
-    </svg>
-  `;
+  // Taille responsive
+  container.style.width = '250px';
+  container.style.height = '250px';
+  container.style.position = 'fixed';
+  container.style.right = '30px';
+  container.style.bottom = '30px';
+  container.style.zIndex = 1000;
 
+  // Dessin SVG
+  container.innerHTML = getMoonSVG(phase, fraction);
+
+  // Ajout au DOM
   document.body.appendChild(container);
+}
 
-  // Size cycle on click
-  const sizes = [
-    { w: "150px", h: "150px", class: "" },
-    { w: "250px", h: "250px", class: "" },
-    { w: "500px", h: "500px", class: "super-lune" }
-  ];
-  let sizeIndex = 1; // Start medium
+// Fonction qui retourne le SVG lunaire pro
+function getMoonSVG(phase, fraction) {
+  // Calcul pro de la séparation ombre/lumière
+  // Algorithme inspiré des sites pros (projection ellipse sphère)
+  // phase: 0 = new, 0.5 = full, 1 = new
+  // fraction: [0,1] illuminé
 
-  function applySize() {
-    container.style.width = sizes[sizeIndex].w;
-    container.style.height = sizes[sizeIndex].h;
-    container.classList.remove("super-lune");
-    if (sizes[sizeIndex].class) {
-      container.classList.add(sizes[sizeIndex].class);
-    }
-  }
-  applySize();
+  // Angle de phase
+  const phi = phase * 2 * Math.PI;
+  // Calcul du centre de l'ombre
+  const r = 100; // rayon SVG
+  const sep = Math.cos(phi) * r;
 
-  container.addEventListener("click", (e) => {
-    e.preventDefault();
-    sizeIndex = (sizeIndex + 1) % sizes.length;
-    applySize();
-  });
-
-  // Update moon phase using SunCalc
-  function updatePhase() {
-    const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
-    const ombre = document.getElementById('ombre');
-    if (!ombre) return;
-
-    const illumination = fraction * 100;
-    let cx;
-
-    if (illumination <= 0.1) {
-      cx = 50;
-    } else if (illumination >= 95) {
-      cx = phase < 0.5 ? -50 : 150;
-    } else {
-      cx = phase < 0.5
-        ? 50 - (50 * illumination / 100)
-        : 50 + (50 * illumination / 100);
-    }
-
-    ombre.setAttribute('cx', cx);
-    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% (cx=${cx})`);
-  }
-
-  updatePhase();
-  setInterval(updatePhase, 3600000);
+  // SVG : lune pleine + masque ellipse d'ombre
+  return `
+  <svg viewBox="0 0 200 200" width="100%" height="100%">
+    <defs>
+      <clipPath id="moon-clip">
+        <circle cx="100" cy="100" r="100"/>
+      </clipPath>
+    </defs>
+    <!-- Disque lunaire -->
+    <image href="/img/lune/lune-pleine.png" x="0" y="0" width="200" height="200" clip-path="url(#moon-clip)" style="filter:brightness(1.1)"/>
+    <!-- Ombre lunaire -->
+    <ellipse 
+      cx="${100 + sep}" cy="100"
+      rx="${r}" ry="${r}" 
+      fill="black" 
+      opacity="0.85"
+      clip-path="url(#moon-clip)"
+    />
+  </svg>
+  `;
 }
