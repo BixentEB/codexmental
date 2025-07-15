@@ -24,19 +24,24 @@ function updateMoon() {
   const ombre = document.getElementById("ombre");
   if (!ombre) return;
 
-  // Croissante/décroissante
+  // Calcul offset progressif
+  const offset = (1 - fraction) * 50;
+
+  // Logique corrigée :
+  // 0–0.5 = croissante (ombre à gauche)
+  // 0.5–1 = décroissante (ombre à droite)
   let cx;
   if (phase < 0.5) {
-    // Croissante
-    cx = 50 - (1 - fraction) * 50;
+    // Croissante => ombre à gauche
+    cx = 50 - offset;
   } else {
-    // Décroissante
-    cx = 50 + (1 - fraction) * 50;
+    // Décroissante => ombre à droite
+    cx = 50 + offset;
   }
 
   ombre.setAttribute("cx", cx);
 
-  console.log(`🌙 Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} cx=${cx}`);
+  console.log(`🌙 Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} cx=${cx.toFixed(1)}`);
 }
 
 /**
