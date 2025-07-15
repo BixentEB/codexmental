@@ -39,60 +39,52 @@ export function updateNewMoonWidget() {
   function renderMoon() {
     const now = new Date();
     const moon = SunCalc.getMoonIllumination(now);
-    const phase = moon.phase;
     const fraction = moon.fraction;
+    const phase = moon.phase;
     const angle = moon.angle;
     const r = 100;
 
-    // Détermination précise de l'orientation
-    const isWaxing = phase <= 0.5;
-    const illuminationDirection = Math.cos(angle);
-    const cx = 100 + (isWaxing ? 1 : -1) * r * (1 - fraction) * illuminationDirection;
+    // Calcul dynamique de l'ombre
+    const isWaning = phase > 0.5;
+    const illuminationDirection = Math.cos(angle) > 0 ? 1 : -1;
+    const shadowWidth = r * 2 * (1 - fraction);
+    const shadowPosition = 100 + (isWaning ? 1 : -1) * (r - shadowWidth/2) * illuminationDirection;
 
     container.innerHTML = `
-      <svg id="svg-lune" viewBox="0 0 200 200" width="100%" height="100%">
+      <svg viewBox="0 0 200 200" width="100%" height="100%">
         <defs>
-          <!-- Filtre fantôme amélioré -->
-          <filter id="lune-fantome" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="1.5" />
+          <!-- Filtre fantôme -->
+          <filter id="lune-fantome">
             <feComponentTransfer>
               <feFuncA type="table" tableValues="0 0.08"/>
             </feComponentTransfer>
-            <feColorMatrix type="matrix"
-              values="0.4 0 0 0 0
-                      0 0.4 0 0 0
-                      0 0 0.4 0 0
-                      0 0 0 1 0"/>
+            <feColorMatrix values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0"/>
           </filter>
-          
-          <!-- Masque avec bord légèrement adouci -->
-          <mask id="mask-lune">
+
+          <!-- Masque dynamique -->
+          <mask id="mask-phase">
             <rect width="200" height="200" fill="white"/>
-            <ellipse id="ombre" cx="${cx}" cy="100" rx="${r}" ry="${r}" fill="black">
-              <animate attributeName="cx" values="${cx};${cx}" dur="1h" repeatCount="indefinite"/>
-            </ellipse>
-            <feGaussianBlur stdDeviation="0.8" result="blur"/>
+            <ellipse cx="${shadowPosition}" cy="100" rx="${shadowWidth/2}" ry="${r}" fill="black"/>
           </mask>
         </defs>
-        
-        <!-- Lune fantôme en fond -->
+
+        <!-- Lune fantôme -->
         <image href="/img/lune/lune-pleine.png" width="200" height="200" filter="url(#lune-fantome)"/>
-        
-        <!-- Croissant lunaire précis -->
-        <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#mask-lune)"
-               filter="brightness(1.1) contrast(1.2) drop-shadow(0 0 2px rgba(255,255,255,0.4))"/>
+
+        <!-- Partie illuminée -->
+        <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#mask-phase)" 
+               filter="brightness(1.2) contrast(1.3)"/>
       </svg>
     `;
   }
 
   applySize();
   renderMoon();
-  setInterval(renderMoon, 60 * 60 * 1000);
+  setInterval(renderMoon, 3600000); // Mise à jour horaire
 
   if (clickable) {
     container.style.cursor = "pointer";
-    container.addEventListener("click", (e) => {
-      e.preventDefault();
+    container.addEventListener("click", () => {
       sizeIndex = (sizeIndex + 1) % sizes.length;
       applySize();
     });
