@@ -1,4 +1,3 @@
-/* 🌙 Widget Lunaire - Version Pro */
 #svg-lune-widget {
   position: fixed;
   right: 20px;
@@ -7,9 +6,11 @@
   opacity: 0.92;
   filter: drop-shadow(0 0 12px rgba(138, 180, 248, 0.45));
   transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+  border-radius: 50%;
+  overflow: hidden;
+  aspect-ratio: 1/1;
 }
 
-/* Super Lune */
 #svg-lune-widget.super-lune {
   width: 500px !important;
   height: 500px !important;
@@ -17,31 +18,18 @@
   right: -200px;
   opacity: 0.98;
   z-index: 1000;
-  filter: drop-shadow(0 0 25px rgba(138, 180, 248, 0.6));
 }
 
-/* SVG */
 #svg-lune-widget svg {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  overflow: visible;
+  display: block;
 }
 
-/* Effets de lumière */
-#svg-lune-widget svg image[href="/img/lune/lune-pleine.png"][mask] {
-  filter: brightness(1.15) contrast(1.3) drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
-  transition: filter 0.4s ease;
+#svg-lune-widget circle[mask] {
+  filter: brightness(1.15) contrast(1.2) drop-shadow(0 0 3px rgba(255,255,255,0.5));
 }
 
-/* Interactions */
-#svg-lune-widget:hover {
-  opacity: 1;
-  transform: scale(1.04);
-  filter: drop-shadow(0 0 18px rgba(138, 180, 248, 0.65));
-}
-
-/* Mobile */
 @media (max-width: 568px), (pointer: coarse) {
   #svg-lune-widget {
     width: 180px !important;
@@ -49,12 +37,5 @@
     right: 10px !important;
     bottom: 10px !important;
     opacity: 0.85 !important;
-    filter: drop-shadow(0 0 8px rgba(138, 180, 248, 0.3)) !important;
   }
-}
-
-/* Correction du masque concave */
-#svg-lune-widget path {
-  shape-rendering: geometricPrecision;
-  vector-effect: non-scaling-stroke;
 }
