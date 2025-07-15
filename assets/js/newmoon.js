@@ -1,12 +1,8 @@
 // ========================================================
-// Moon Widget – Meeus + SunCalc + SVG
+// newmoon.js – Widget lunaire SVG autonome
 // ========================================================
 
-// SunCalc import (ESM)
 import SunCalc from "https://esm.sh/suncalc";
-
-// Fallback: Lyon
-const DEFAULT_COORDS = { lat: 45.75, lng: 4.85 };
 
 // Meeus-like phase calculation
 function calculateMoonPhase(date) {
@@ -70,8 +66,13 @@ function createMoonSVG(illumination, orientationAngle) {
 
 // Main function
 async function initMoonWidget() {
-  const container = document.getElementById("moon-widget");
-  if (!container) return;
+  // Crée automatiquement le conteneur s'il n'existe pas
+  let container = document.getElementById("moon-widget");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "moon-widget";
+    document.body.appendChild(container);
+  }
 
   function render(coords) {
     const now = new Date();
@@ -79,11 +80,10 @@ async function initMoonWidget() {
     const pos = SunCalc.getMoonPosition(now, coords.lat, coords.lng);
     const orientation = (pos.parallacticAngle || 0) * (180 / Math.PI);
 
-    container.innerHTML = ""; // Clear previous
+    container.innerHTML = "";
     const svg = createMoonSVG(phaseData.illuminationPercent / 100, orientation);
     container.appendChild(svg);
 
-    // Text info
     const info = document.createElement("div");
     info.className = "moon-info";
     info.innerHTML = `Illumination : ${phaseData.illuminationPercent}%`;
@@ -91,22 +91,22 @@ async function initMoonWidget() {
   }
 
   function getCoordsAndRender() {
+    const fallback = { lat: 45.75, lng: 4.85 };
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         pos => {
           render({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         },
         () => {
-          render(DEFAULT_COORDS);
+          render(fallback);
         }
       );
     } else {
-      render(DEFAULT_COORDS);
+      render(fallback);
     }
   }
 
   getCoordsAndRender();
-  // Refresh every hour
   setInterval(getCoordsAndRender, 60 * 60 * 1000);
 }
 
