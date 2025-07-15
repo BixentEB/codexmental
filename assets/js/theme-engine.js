@@ -61,7 +61,7 @@ export async function setTheme(theme) {
 
 // Modification tailles lune sur différents écrans (Responsive Lune)
 export function adaptLuneResponsive() {
-  const lune = document.getElementById("svg-lune-widget");
+  const lune = document.querySelector('body.theme-lunaire #svg-lune-widget');
   if (!lune) return;
 
   const width = window.innerWidth;
@@ -69,7 +69,10 @@ export function adaptLuneResponsive() {
 
   // ===== MOBILE (petit écran OU appareil tactile) =====
   if (width <= 568 || isTouchDevice) {
+    // Reset complet de l'état
     lune.classList.remove('super-lune');
+    
+    // Application des styles forcés
     lune.style.cssText = `
       width: 180px !important;
       height: 180px !important;
@@ -81,10 +84,13 @@ export function adaptLuneResponsive() {
       cursor: default !important;
       transition: none !important;
     `;
+
+    // Désactivation totale des interactions
     lune.onclick = null;
     lune.ontouchstart = null;
     lune.ontouchend = null;
-
+    
+    // Blocage des events sur le SVG et ses enfants
     const svg = lune.querySelector('svg');
     if (svg) {
       svg.style.cssText = `
@@ -92,10 +98,13 @@ export function adaptLuneResponsive() {
         touch-action: none !important;
       `;
     }
-  }
+
+  } 
   // ===== TABLETTE (568px - 768px) =====
   else if (width <= 768) {
+    // On force la taille moyenne (pas de super-lune)
     lune.classList.remove('super-lune');
+    
     lune.style.cssText = `
       width: 250px !important;
       height: 250px !important;
@@ -106,9 +115,11 @@ export function adaptLuneResponsive() {
       cursor: pointer !important;
       transform: none !important;
     `;
-  }
+
+  } 
   // ===== DESKTOP (>768px) =====
   else {
+    // Reset complet pour laisser le CSS gérer
     lune.style.cssText = '';
     lune.removeAttribute('style');
   }
