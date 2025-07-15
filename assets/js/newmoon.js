@@ -4,7 +4,6 @@ import SunCalc from 'https://esm.sh/suncalc';
 const LAT = 45.75;
 const LNG = 4.85;
 
-// Détection device pour le cycle des tailles
 function getSizeConfig() {
   const isMobile = window.matchMedia("(max-width: 568px), (pointer: coarse)").matches;
   const isTablet = window.matchMedia("(max-width: 900px) and (pointer: fine)").matches;
@@ -43,7 +42,7 @@ export function updateNewMoonWidget() {
     const fraction = moon.fraction; // [0, 1]
     const r = 100;
 
-    // Ombre du bon côté
+    // Sens de la phase
     let cx;
     if (phase <= 0.5) {
       // Croissante : ombre à droite
@@ -53,18 +52,30 @@ export function updateNewMoonWidget() {
       cx = 100 - (r * (1 - fraction));
     }
 
-    // SVG effet fantôme + croissant
+    // SVG: lune fantôme (filtrée) + lune masquée (croissant)
     container.innerHTML = `
       <svg id="svg-lune" viewBox="0 0 200 200" width="100%" height="100%">
         <defs>
+          <!-- Filtre fantôme -->
+          <filter id="lune-fantome">
+            <feComponentTransfer>
+              <feFuncA type="table" tableValues="0 0.1"/>
+            </feComponentTransfer>
+            <feColorMatrix type="matrix"
+              values="0.3 0 0 0 0
+                      0 0.3 0 0 0
+                      0 0 0.3 0 0
+                      0 0 0 1 0"/>
+          </filter>
+          <!-- Masque croissant -->
           <mask id="mask-lune">
             <rect width="200" height="200" fill="white"/>
             <ellipse id="ombre" cx="${cx}" cy="100" rx="${r}" ry="${r}" fill="black"/>
           </mask>
         </defs>
-        <!-- Lune fantôme -->
-        <image href="/img/lune/lune-pleine.png" width="200" height="200"/>
-        <!-- Croissant réel -->
+        <!-- Lune fantôme en fond -->
+        <image href="/img/lune/lune-pleine.png" width="200" height="200" filter="url(#lune-fantome)"/>
+        <!-- Croissant lunaire (masqué) -->
         <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#mask-lune)"/>
       </svg>
     `;
