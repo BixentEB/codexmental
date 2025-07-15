@@ -1,7 +1,3 @@
-// ========================================================
-// newmoon.js – Version cohérente Codex Mental
-// ========================================================
-
 export function updateNewMoonWidget(SunCalc) {
   console.log("✅ newmoon.js launched with SunCalc and original structure.");
 
