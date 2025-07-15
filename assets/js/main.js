@@ -42,8 +42,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (currentTheme === "theme-lunaire") {
-    import('/assets/js/moon-widget.js')
-      .catch(err => console.error("❌ Failed to load moon-widget.js:", err));
+    import('/assets/js/newmoon.js')
+      .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 
   // Init observer qui gère affichage dynamique et animation
@@ -66,7 +66,7 @@ window.setTheme = (theme) => {
   }
 
   if (theme === "theme-lunaire") {
-    import('/assets/js/moon-widget.js')
-      .catch(err => console.error("❌ Failed to load moon-widget.js:", err));
+    import('/assets/js/newmoon.js')
+      .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
