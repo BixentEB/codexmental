@@ -23,13 +23,17 @@ export function updateNewMoonWidget() {
     const phase = moon.phase; // 0 = new, 0.5 = full, 1 = new
     const fraction = moon.fraction; // [0, 1]
 
-    // Calcul du "décalage" de l'ombre, inspiré des sites pros
-    // Sens de la phase : croissante (<0.5) = ombre à droite, décroissante (>0.5) = ombre à gauche
+    // Si phase < 0.5 --> croissante, ombre à droite
+    // Si phase > 0.5 --> décroissante, ombre à gauche
     const r = 100;
-    // Calcul du centre de l'ombre (ellipse)
-    const k = (fraction - 0.5) * 2; // [-1, 1], -1 = nouvelle, 0 = pleine, 1 = nouvelle
-    // Décroissante : k < 0, ombre à gauche
-    const cx = 100 - (k * r);
+    let cx;
+    if (phase <= 0.5) {
+      // Lune croissante : ombre à droite
+      cx = 100 + (r * (1 - fraction));
+    } else {
+      // Lune décroissante : ombre à gauche
+      cx = 100 - (r * (1 - fraction));
+    }
 
     container.innerHTML = `
       <svg viewBox="0 0 200 200" width="100%" height="100%">
