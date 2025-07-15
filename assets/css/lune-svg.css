@@ -1,4 +1,4 @@
-/* 🌙 WIDGET LUNAIRE - VERSION FINALE (Par Noob-Friendly Dev) 🌙 */
+/* 🌙 WIDGET LUNAIRE - VERSION OPTIMISÉE (Lyon Time Zone) 🌙 */
 body.theme-lunaire #svg-lune-widget {
   position: fixed;
   right: 20px;
@@ -10,9 +10,11 @@ body.theme-lunaire #svg-lune-widget {
   filter: drop-shadow(0 0 12px rgba(138, 180, 248, 0.4));
   transition: all 0.5s cubic-bezier(0.33, 1, 0.68, 1);
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* Mode Super-Lune (desktop) */
+/* Mode Super-Lune (desktop uniquement) */
 body.theme-lunaire #svg-lune-widget.super-lune {
   width: 500px;
   height: 500px;
@@ -20,6 +22,7 @@ body.theme-lunaire #svg-lune-widget.super-lune {
   right: -200px;
   opacity: 0.95;
   z-index: 1000;
+  transform-origin: bottom right;
 }
 
 /* Style du SVG */
@@ -28,28 +31,37 @@ body.theme-lunaire #svg-lune-widget svg {
   height: 100%;
   border-radius: 50%;
   background: transparent;
+  overflow: visible;
 }
 
-/* Lune fantôme (arrière-plan) */
+/* Lune fantôme (arrière-plan) - Effet plus doux */
 body.theme-lunaire #svg-lune-widget svg image:first-child {
-  filter: brightness(0.35) opacity(0.12) contrast(0.8);
+  filter: brightness(0.25) opacity(0.15) contrast(0.7) blur(0.5px);
+  transform: scale(1.02); /* Légèrement plus grande pour effet halo */
 }
 
-/* Croissant visible */
+/* Croissant visible - Rendu plus net */
 body.theme-lunaire #svg-lune-widget svg image:last-child {
-  filter: brightness(1.15) contrast(1.25) drop-shadow(0 0 4px rgba(200, 220, 255, 0.6));
+  filter: brightness(1.2) contrast(1.3) saturate(1.1) drop-shadow(0 0 4px rgba(220, 235, 255, 0.7));
   transition: filter 0.3s ease;
 }
 
-/* Effets au survol */
-body.theme-lunaire #svg-lune-widget:hover {
-  opacity: 1;
-  filter: drop-shadow(0 0 20px rgba(138, 180, 248, 0.6));
-  transform: scale(1.05);
+/* Masque avec transition fluide */
+body.theme-lunaire #svg-lune-widget svg circle#ombre {
+  transition: cx 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-body.theme-lunaire #svg-lune-widget:hover svg image:last-child {
-  filter: brightness(1.3) contrast(1.4) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+/* Effets au survol - Desktop uniquement */
+@media (hover: hover) and (pointer: fine) {
+  body.theme-lunaire #svg-lune-widget:hover {
+    opacity: 1;
+    filter: drop-shadow(0 0 20px rgba(138, 180, 248, 0.8));
+    transform: scale(1.05);
+  }
+
+  body.theme-lunaire #svg-lune-widget:hover svg image:last-child {
+    filter: brightness(1.4) contrast(1.5) saturate(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+  }
 }
 
 /* Empêche le scroll horizontal */
@@ -67,46 +79,104 @@ body.theme-lunaire #svg-lune-widget.super-lune svg {
   pointer-events: auto;
 }
 
-/* Transition de l'ombre (pour le JS) */
-body.theme-lunaire #svg-lune-widget svg circle#ombre {
-  transition: cx 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablette - 2 tailles possibles */
+@media (min-width: 569px) and (max-width: 1024px) {
+  body.theme-lunaire #svg-lune-widget {
+    width: 200px;
+    height: 200px;
+    right: 18px;
+    bottom: 18px;
+  }
+  
+  /* Désactiver super-lune sur tablette */
+  body.theme-lunaire #svg-lune-widget.super-lune {
+    width: 200px !important;
+    height: 200px !important;
+    bottom: 18px !important;
+    right: 18px !important;
+    opacity: 0.85 !important;
+    transform: none !important;
+  }
 }
 
-/* ===== Version Mobile Optimisée (remplace les deux @media existants) ===== */
-@media (max-width: 568px), (pointer: coarse) {
+/* Mobile - Une seule taille, pas d'interaction */
+@media (max-width: 568px), (pointer: coarse) and (max-width: 768px) {
   body.theme-lunaire #svg-lune-widget,
   body.theme-lunaire #svg-lune-widget.super-lune,
   body.theme-lunaire #svg-lune-widget:hover {
-    /* Dimensions et position */
+    /* Dimensions et position fixes */
     width: 180px !important;
     height: 180px !important;
     right: 15px !important;
     bottom: 15px !important;
     
-    /* Apparence */
+    /* Apparence simplifiée */
     opacity: 0.7 !important;
     transform: none !important;
     filter: drop-shadow(0 0 8px rgba(138, 180, 248, 0.3)) !important;
     
-    /* Interactions */
+    /* Interactions désactivées */
     pointer-events: none !important;
     touch-action: none !important;
     cursor: default !important;
     
-    /* Animation */
+    /* Animation désactivée */
     transition: none !important;
     z-index: 5 !important;
   }
   
-  /* Désactivation totale du SVG et enfants */
+  /* Désactivation totale des interactions SVG */
   body.theme-lunaire #svg-lune-widget svg,
   body.theme-lunaire #svg-lune-widget svg * {
     pointer-events: none !important;
     touch-action: none !important;
   }
   
-  /* Correction spécifique pour l'ombre si nécessaire */
+  /* Pas d'animation de l'ombre sur mobile */
   body.theme-lunaire #svg-lune-widget svg circle#ombre {
     transition: none !important;
+  }
+  
+  /* Effet fantôme réduit sur mobile */
+  body.theme-lunaire #svg-lune-widget svg image:first-child {
+    filter: brightness(0.2) opacity(0.1) contrast(0.6) !important;
+  }
+}
+
+/* ===== PERFORMANCE & OPTIMISATIONS ===== */
+
+/* Optimisation des performances */
+body.theme-lunaire #svg-lune-widget {
+  will-change: transform, opacity, filter;
+  contain: layout style paint;
+  transform-style: flat;
+}
+
+/* Réduction des calculs sur les petits écrans */
+@media (max-width: 568px) {
+  body.theme-lunaire #svg-lune-widget {
+    will-change: auto;
+    contain: layout;
+  }
+}
+
+/* Support pour les écrans haute densité */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body.theme-lunaire #svg-lune-widget svg image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Mode sombre amélioré */
+@media (prefers-color-scheme: dark) {
+  body.theme-lunaire #svg-lune-widget {
+    filter: drop-shadow(0 0 12px rgba(138, 180, 248, 0.5));
+  }
+  
+  body.theme-lunaire #svg-lune-widget svg image:last-child {
+    filter: brightness(1.3) contrast(1.4) saturate(1.2) drop-shadow(0 0 4px rgba(240, 248, 255, 0.8));
   }
 }
