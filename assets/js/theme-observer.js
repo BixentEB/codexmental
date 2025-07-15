@@ -26,7 +26,7 @@ function handleThemeChange(currentTheme) {
   console.log(`🔄 Activation du thème : ${currentTheme}`);
 
   // Nettoyer le widget lunaire
-  const moon = document.getElementById("svg-lune-widget");
+  const moon = document.getElementById("moon-widget");
   if (moon) {
     console.log("🧹 Suppression du widget lunaire.");
     moon.remove();
@@ -34,46 +34,32 @@ function handleThemeChange(currentTheme) {
 
   if (currentTheme === "lunaire") {
     console.log("🌙 Thème lunaire : chargement modules...");
-    Promise.all([
-      import("https://esm.sh/suncalc"),
-      import("/assets/js/newmoon.js"),
-      import("/assets/js/astro-lunaire.js")
-    ])
-      .then(([SunCalcModule, moonModule, lunarModule]) => {
-        moonModule.updateNewMoonWidget(SunCalcModule.default);
-        if (typeof lunarModule.getFullMoonInfo === "function") {
-          setCurrentAlertText(lunarModule.getFullMoonInfo());
-        } else {
-          setCurrentAlertText("🌙 Aucune donnée lunaire disponible.");
-        }
-        lancerIntroAstro(currentTheme);
-      })
-      .catch(err => console.error("❌ Échec chargement modules lunaires:", err));
+    import('/assets/js/moon-widget.js')
+      .catch(err => console.error("❌ Échec chargement moon-widget.js:", err));
     return;
   }
 
   if (currentTheme === "solaire") {
-  console.log("☀️ Thème solaire : chargement des données SunCalc...");
-  Promise.all([
-    import("https://esm.sh/suncalc"),
-    import("/assets/js/astro-solaire.js")
-  ])
-    .then(([SunCalcModule, solarModule]) => {
-      if (typeof solarModule.getSunInfo === "function") {
-        setCurrentAlertText(solarModule.getSunInfo());
-      } else {
-        setCurrentAlertText("☀️ Aucune donnée solaire disponible.");
-      }
-      lancerIntroAstro(currentTheme);
-    })
-    .catch(err => {
-      console.error("❌ Erreur modules solaires:", err);
-      setCurrentAlertText("☀️ Impossible de charger les données solaires.");
-      lancerIntroAstro(currentTheme);
-    });
-  return;
-}
-
+    console.log("☀️ Thème solaire : chargement des données SunCalc...");
+    Promise.all([
+      import("https://esm.sh/suncalc"),
+      import("/assets/js/astro-solaire.js")
+    ])
+      .then(([SunCalcModule, solarModule]) => {
+        if (typeof solarModule.getSunInfo === "function") {
+          setCurrentAlertText(solarModule.getSunInfo());
+        } else {
+          setCurrentAlertText("☀️ Aucune donnée solaire disponible.");
+        }
+        lancerIntroAstro(currentTheme);
+      })
+      .catch(err => {
+        console.error("❌ Erreur modules solaires:", err);
+        setCurrentAlertText("☀️ Impossible de charger les données solaires.");
+        lancerIntroAstro(currentTheme);
+      });
+    return;
+  }
 
   if (currentTheme === "stellaire" || currentTheme === "galactique") {
     if (!dataLoaded) {
