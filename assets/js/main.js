@@ -28,75 +28,57 @@ import { initThemeObserver } from '/assets/js/theme-observer.js';
   setTheme(savedTheme);
 })();
 
-// === 🌙 Chargeur du widget lunaire
-async function loadMoonWidget() {
-  try {
-    // Chargement dynamique des dépendances
-    const SunCalc = await import('https://esm.sh/suncalc');
-    const { updateNewMoonWidget } = await import('/assets/js/newmoon.js');
-    
-    // Nettoyage avant initialisation
-    const existingWidget = document.getElementById('svg-lune-widget');
-    if (existingWidget) existingWidget.remove();
-    
-    // Initialisation du widget
-    updateNewMoonWidget(SunCalc.default);
-    
-    // Correction du rendu (force le redraw)
-    requestAnimationFrame(() => {
-      const widget = document.getElementById('svg-lune-widget');
-      if (widget) {
-        widget.style.display = 'none';
-        requestAnimationFrame(() => widget.style.display = 'block');
-      }
-    });
-  } catch (err) {
-    console.error("Erreur de chargement du widget lunaire:", err);
-    // Fallback visuel minimaliste
-    const fallback = document.createElement('div');
-    fallback.id = 'moon-fallback';
-    fallback.innerHTML = '🌙';
-    document.body.appendChild(fallback);
-  }
-}
-
 // === DOM Ready
 window.addEventListener("DOMContentLoaded", () => {
   const currentTheme = document.body.className;
 
-  // Injection des partials
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
-  
-  // Initialisation des composants
   activerBadgeAstro();
   setupScrollButton();
-  initThemeObserver();
 
-  // Effets spécifiques au thème
   if (currentTheme === "theme-stellaire") {
     initEtoileFilante();
-  } else if (currentTheme === "theme-lunaire") {
-    loadMoonWidget();
   }
 
-  // Debug bouton burger
-  document.getElementById("menu-toggle")?.addEventListener("click", () => {
-    console.log("Menu burger cliqué");
-  });
+  if (currentTheme === "theme-lunaire") {
+    Promise.all([
+      import('https://esm.sh/suncalc'),
+      import('/assets/js/newmoon.js')
+    ])
+      .then(([SunCalcModule, moonModule]) => {
+        moonModule.updateNewMoonWidget(SunCalcModule.default);
+      })
+      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
+  }
+
+  // Init observer qui gère affichage dynamique et animation
+  initThemeObserver();
+});
+
+// === 🍔 Log bouton burger
+document.getElementById("menu-toggle")?.addEventListener("click", () => {
+  console.log("Burger clicked");
 });
 
 // === 🌐 Fonction de changement de thème
 window.setTheme = (theme) => {
-  // Sauvegarde et application du thème
   localStorage.setItem('codexTheme', theme);
   document.body.className = theme;
   setTheme(theme);
 
-  // Effets spécifiques
   if (theme === "theme-stellaire") {
     initEtoileFilante();
-  } else if (theme === "theme-lunaire") {
-    loadMoonWidget();
+  }
+
+  if (theme === "theme-lunaire") {
+    Promise.all([
+      import('https://esm.sh/suncalc'),
+      import('/assets/js/newmoon.js')
+    ])
+      .then(([SunCalcModule, moonModule]) => {
+        moonModule.updateNewMoonWidget(SunCalcModule.default);
+      })
+      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
   }
 };
