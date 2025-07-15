@@ -41,16 +41,17 @@ window.addEventListener("DOMContentLoaded", () => {
     initEtoileFilante();
   }
 
-  if (currentTheme === "theme-lunaire") {
-    Promise.all([
-      import('https://esm.sh/suncalc'),
+// Dans le DOMContentLoaded ou setTheme
+if (currentTheme === "theme-lunaire") {
+  import('https://esm.sh/suncalc')
+    .then(SunCalc => {
       import('/assets/js/newmoon.js')
-    ])
-      .then(([SunCalcModule, moonModule]) => {
-        moonModule.updateNewMoonWidget(SunCalcModule.default);
-      })
-      .catch(err => console.error("❌ Failed to load newmoon.js or SunCalc:", err));
-  }
+        .then(module => {
+          module.updateNewMoonWidget(SunCalc.default);
+        });
+    })
+    .catch(err => console.error("Erreur de chargement:", err));
+}
 
   // Init observer qui gère affichage dynamique et animation
   initThemeObserver();
