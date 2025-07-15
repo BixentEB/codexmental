@@ -24,19 +24,15 @@ function updateMoon() {
   const ombre = document.getElementById("ombre");
   if (!ombre) return;
 
-  // Calcul offset progressif
   const offset = (1 - fraction) * 50;
 
-  // Logique corrigée :
-  // 0–0.5 = croissante (ombre à gauche)
-  // 0.5–1 = décroissante (ombre à droite)
   let cx;
   if (phase < 0.5) {
-    // Croissante => ombre à gauche
-    cx = 50 - offset;
-  } else {
-    // Décroissante => ombre à droite
+    // Croissante => ombre à droite
     cx = 50 + offset;
+  } else {
+    // Décroissante => ombre à gauche
+    cx = 50 - offset;
   }
 
   ombre.setAttribute("cx", cx);
