@@ -2,103 +2,92 @@
 // newmoon.js – Version cohérente Codex Mental
 // ========================================================
 
-import SunCalc from "https://esm.sh/suncalc";
+export function updateNewMoonWidget(SunCalc) {
+  console.log("✅ newmoon.js launched with SunCalc and original structure.");
 
-// Calcul Meeus-like de la phase
-function calculateMoonPhase(date) {
-  const synodicMonth = 29.53058867;
-  const knownNewMoon = new Date("2000-01-06T18:14:00Z");
-  const daysSince = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
-  const phase = (daysSince % synodicMonth) / synodicMonth;
-  const illumination = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
-  return {
-    phaseFraction: phase,
-    illuminationPercent: +(illumination * 100).toFixed(1)
-  };
-}
-
-// Création du SVG
-function createMoonSVG(illumination, orientationAngle) {
-  const svgNS = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", "0 0 200 200");
-  svg.style.width = "100%";
-  svg.style.height = "100%";
-
-  // Image de lune fantôme
-  const ghost = document.createElementNS(svgNS, "image");
-  ghost.setAttribute("href", "/img/lune/lune-pleine.png");
-  ghost.setAttribute("x", "0");
-  ghost.setAttribute("y", "0");
-  ghost.setAttribute("width", "200");
-  ghost.setAttribute("height", "200");
-  svg.appendChild(ghost);
-
-  // ClipPath
-  const defs = document.createElementNS(svgNS, "defs");
-  const clip = document.createElementNS(svgNS, "clipPath");
-  clip.setAttribute("id", "clipMoon");
-  const phaseEllipse = document.createElementNS(svgNS, "ellipse");
-  phaseEllipse.setAttribute("cx", 100 + (illumination - 0.5) * 100);
-  phaseEllipse.setAttribute("cy", "100");
-  phaseEllipse.setAttribute("rx", "100");
-  phaseEllipse.setAttribute("ry", "100");
-  clip.appendChild(phaseEllipse);
-  defs.appendChild(clip);
-  svg.appendChild(defs);
-
-  // Image éclairée
-  const lit = document.createElementNS(svgNS, "image");
-  lit.setAttribute("href", "/img/lune/lune-pleine.png");
-  lit.setAttribute("x", "0");
-  lit.setAttribute("y", "0");
-  lit.setAttribute("width", "200");
-  lit.setAttribute("height", "200");
-  lit.setAttribute("clip-path", "url(#clipMoon)");
-  lit.setAttribute("transform", `rotate(${orientationAngle},100,100)`);
-  svg.appendChild(lit);
-
-  return svg;
-}
-
-// Initialisation
-async function initMoonWidget() {
-  // Recherche ou création du conteneur
-  let container = document.getElementById("svg-lune-widget");
-  if (!container) {
-    container = document.createElement("div");
-    container.id = "svg-lune-widget";
-    document.body.appendChild(container);
+  if (!document.body.classList.contains("theme-lunaire")) {
+    return;
   }
 
-  function render(coords) {
-    const now = new Date();
-    const phaseData = calculateMoonPhase(now);
-    const pos = SunCalc.getMoonPosition(now, coords.lat, coords.lng);
-    const orientation = (pos.parallacticAngle || 0) * (180 / Math.PI);
+  // Remove any existing widget
+  const existing = document.getElementById('svg-lune-widget');
+  if (existing) existing.remove();
 
-    container.innerHTML = "";
-    const svg = createMoonSVG(phaseData.illuminationPercent / 100, orientation);
-    container.appendChild(svg);
+  const container = document.createElement('div');
+  container.id = 'svg-lune-widget';
 
-    // Pour le debug
-    console.log("🌙 Widget lunaire mis à jour", phaseData);
-  }
+  container.innerHTML = `
+    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+      <defs>
+        <filter id="lune-fantome">
+          <feComponentTransfer>
+            <feFuncA type="table" tableValues="0 0.08"/>
+          </feComponentTransfer>
+          <feColorMatrix type="matrix"
+            values="0.2 0 0 0 0
+                    0 0.2 0 0 0
+                    0 0 0.2 0 0
+                    0 0 0 1 0"/>
+        </filter>
+        <mask id="mask-lune">
+          <rect width="100%" height="100%" fill="white"/>
+          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
+        </mask>
+      </defs>
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="url(#lune-fantome)"/>
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#mask-lune)"/>
+    </svg>
+  `;
 
-  function getCoordsAndRender() {
-    const fallback = { lat: 45.75, lng: 4.85 };
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        pos => render({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => render(fallback)
-      );
-    } else {
-      render(fallback);
+  document.body.appendChild(container);
+
+  // Size cycle on click
+  const sizes = [
+    { w: "150px", h: "150px", class: "" },
+    { w: "250px", h: "250px", class: "" },
+    { w: "500px", h: "500px", class: "super-lune" }
+  ];
+  let sizeIndex = 1; // Start medium
+
+  function applySize() {
+    container.style.width = sizes[sizeIndex].w;
+    container.style.height = sizes[sizeIndex].h;
+    container.classList.remove("super-lune");
+    if (sizes[sizeIndex].class) {
+      container.classList.add(sizes[sizeIndex].class);
     }
   }
+  applySize();
 
-  getCoordsAndRender();
-  setInterval(getCoordsAndRender, 60 * 60 * 1000);
+  container.addEventListener("click", (e) => {
+    e.preventDefault();
+    sizeIndex = (sizeIndex + 1) % sizes.length;
+    applySize();
+  });
+
+  // Update moon phase using SunCalc
+  function updatePhase() {
+    const { fraction, phase } = SunCalc.getMoonIllumination(new Date());
+    const ombre = document.getElementById('ombre');
+    if (!ombre) return;
+
+    const illumination = fraction * 100;
+    let cx;
+
+    if (illumination <= 0.1) {
+      cx = 50;
+    } else if (illumination >= 95) {
+      cx = phase < 0.5 ? -50 : 150;
+    } else {
+      cx = phase < 0.5
+        ? 50 - (50 * illumination / 100)
+        : 50 + (50 * illumination / 100);
+    }
+
+    ombre.setAttribute('cx', cx);
+    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% (cx=${cx})`);
+  }
+
+  updatePhase();
+  setInterval(updatePhase, 3600000);
 }
-
-document.addEventListener("DOMContentLoaded", initMoonWidget);
