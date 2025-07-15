@@ -68,20 +68,13 @@ export function updateNewMoonWidget(SunCalc) {
     if (!ombre) return;
 
     const illumination = fraction * 100;
-    let cx;
 
-    if (illumination <= 0.1) {
-      cx = 50;
-    } else if (illumination >= 95) {
-      cx = phase < 0.5 ? -50 : 150;
-    } else {
-      cx = phase < 0.5
-        ? 50 - (50 * illumination / 100)
-        : 50 + (50 * illumination / 100);
-    }
+    // Nouveau calcul fluide
+    const angle = phase * 2 * Math.PI;
+    const cx = 50 + 50 * Math.cos(angle);
 
     ombre.setAttribute('cx', cx);
-    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% (cx=${cx})`);
+    console.log(`🌙 Illumination: ${illumination.toFixed(1)}% (phase=${phase.toFixed(3)}, cx=${cx.toFixed(1)})`);
   }
 
   updatePhase();
