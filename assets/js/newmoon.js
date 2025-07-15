@@ -14,7 +14,7 @@ function loadSunCalc(callback) {
 }
 
 /**
- * Met à jour la lune SVG avec une ellipse pour un rendu plus réaliste
+ * Met à jour la lune SVG
  */
 function updateMoon() {
   const now = new Date();
@@ -22,38 +22,28 @@ function updateMoon() {
   const ombre = document.getElementById("ombre");
   if (!ombre) return;
 
-  // Calculer la position de l'ellipse du terminateur
-  let rx, cx;
+  // Logique simple et correcte pour toutes les phases :
+  // - Le cercle d'ombre se déplace de droite (cx=100) vers gauche (cx=0)
+  // - fraction = 0 (nouvelle lune) : ombre au centre (cx=50) = tout sombre
+  // - fraction = 1 (pleine lune) : ombre complètement à gauche (cx=0) = tout éclairé
+  // - fraction = 0.5 : ombre à cx=25 = moitié éclairée
   
-  if (phase < 0.5) {
-    // Lune croissante : terminateur se déplace de droite vers gauche
-    // fraction 0 -> 0.5 : ellipse très étroite à droite -> cercle complet
-    rx = 50 * (2 * fraction); // largeur de l'ellipse
-    cx = 50 + (50 - rx); // position X du centre
-  } else {
-    // Lune décroissante : terminateur se déplace de gauche vers droite  
-    // fraction 0.5 -> 0 : cercle complet -> ellipse très étroite à droite
-    rx = 50 * (2 * fraction); // largeur de l'ellipse
-    cx = 50 - (50 - rx); // position X du centre
-  }
+  const cx = 50 - (fraction * 50);
   
-  // Transformer le cercle en ellipse
   ombre.setAttribute("cx", cx);
-  ombre.setAttribute("rx", rx);
-  ombre.setAttribute("ry", 50);
   
-  // Debug amélioré
+  // Debug
   let phaseName = "";
-  if (phase < 0.125) phaseName = "Nouvelle lune";
-  else if (phase < 0.25) phaseName = "Croissant croissant";
-  else if (phase < 0.375) phaseName = "Premier quartier";
-  else if (phase < 0.5) phaseName = "Gibbeuse croissante";
-  else if (phase < 0.625) phaseName = "Pleine lune";
-  else if (phase < 0.75) phaseName = "Gibbeuse décroissante";
-  else if (phase < 0.875) phaseName = "Dernier quartier";
-  else phaseName = "Croissant décroissant";
+  if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
+  else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
+  else if (phase < 0.375) phaseName = "🌓 Premier quartier";
+  else if (phase < 0.5) phaseName = "🌔 Gibbeuse croissante";
+  else if (phase < 0.625) phaseName = "🌕 Pleine lune";
+  else if (phase < 0.75) phaseName = "🌖 Gibbeuse décroissante";
+  else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
+  else phaseName = "🌘 Croissant décroissant";
   
-  console.log(`🌙 ${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} cx=${cx.toFixed(1)} rx=${rx.toFixed(1)}`);
+  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} cx=${cx.toFixed(1)}`);
 }
 
 /**
@@ -68,13 +58,13 @@ export function updateNewMoonWidget() {
   const container = document.createElement("div");
   container.id = "svg-lune-widget";
   
-  // SVG avec ellipse au lieu d'un cercle
+  // SVG avec un simple cercle pour l'ombre
   container.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
         <mask id="mask-lune">
           <rect width="100%" height="100%" fill="white"/>
-          <ellipse id="ombre" cx="50" cy="50" rx="50" ry="50" fill="black"/>
+          <circle id="ombre" cx="50" cy="50" r="50" fill="black"/>
         </mask>
       </defs>
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="brightness(0.4) opacity(0.15)"/>
