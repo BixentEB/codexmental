@@ -7,20 +7,21 @@ function getSizeConfig() {
   const isMobile = window.matchMedia("(max-width: 568px), (pointer: coarse)").matches;
   const isTablet = window.matchMedia("(max-width: 900px) and (pointer: fine)").matches;
   
-  if (isMobile) return { sizes: [{ w: "180px", h: "180px", class: "" }], clickable: false };
-  if (isTablet) return { sizes: [{ w: "250px", h: "250px", class: "" }, { w: "350px", h: "350px", class: "" }], clickable: true };
-  
-  return { 
-    sizes: [
-      { w: "250px", h: "250px", class: "" },
-      { w: "350px", h: "350px", class: "" },
-      { w: "500px", h: "500px", class: "super-lune" }
-    ], 
-    clickable: true 
+  return {
+    sizes: isMobile 
+      ? [{ w: "180px", h: "180px", class: "" }] 
+      : isTablet
+      ? [{ w: "250px", h: "250px", class: "" }, { w: "350px", h: "350px", class: "" }]
+      : [
+          { w: "250px", h: "250px", class: "" },
+          { w: "350px", h: "350px", class: "" },
+          { w: "500px", h: "500px", class: "super-lune" }
+        ],
+    clickable: !isMobile
   };
 }
 
-export function updateNewMoonWidget() {
+export function updateNewMoonWidget(SunCalc = window.SunCalc) {
   const existing = document.getElementById('svg-lune-widget');
   if (existing) existing.remove();
 
@@ -37,60 +38,44 @@ export function updateNewMoonWidget() {
   }
 
   function renderMoon() {
-    const now = new Date();
-    const moon = SunCalc.getMoonIllumination(now);
-    const fraction = moon.fraction;
-    const phase = moon.phase;
-    const angle = moon.angle;
-    const r = 100;
-
-    // 1. Calcul de la forme concave
-    const isWaning = phase > 0.5;
-    const visibleWidth = 200 * fraction;
-    const shadowWidth = 200 * (1 - fraction);
-    const startX = isWaning ? 200 : 0;
-
-    // 2. Path SVG pour le croissant obscur (forme concave)
-    const maskPath = `
-      M ${startX},100
-      A ${r},${r} 0 1,${isWaning ? 1 : 0} ${startX},99.9
-      L ${startX + (isWaning ? -visibleWidth : visibleWidth)},100
-      A ${shadowWidth/2},${r} 0 1,${isWaning ? 0 : 1} ${startX},100
-      Z
-    `;
+    const moon = SunCalc.getMoonIllumination(new Date());
+    const isWaning = moon.phase > 0.5;
+    const illuminationWidth = 200 * moon.fraction;
+    const shadowWidth = 200 * (1 - moon.fraction);
 
     container.innerHTML = `
-      <svg viewBox="0 0 200 200" width="100%" height="100%">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <!-- Filtre fantôme -->
           <filter id="ghost-filter">
-            <feGaussianBlur stdDeviation="1.5"/>
-            <feColorMatrix values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.12 0"/>
+            <feGaussianBlur stdDeviation="2"/>
+            <feComponentTransfer>
+              <feFuncA type="table" tableValues="0 0.1"/>
+            </feComponentTransfer>
           </filter>
-
-          <!-- Masque concave -->
           <mask id="moon-mask">
             <rect width="200" height="200" fill="white"/>
-            <path d="${maskPath}" fill="black" transform="rotate(${-angle * (180/Math.PI)} 100 100)"/>
+            <path d="
+              M ${isWaning ? 200 : 0},100
+              A 100,100 0 1,${isWaning ? 1 : 0} ${isWaning ? 200 : 0},99.9
+              L ${isWaning ? 200 - illuminationWidth : illuminationWidth},100
+              A ${shadowWidth/2},100 0 1,${isWaning ? 0 : 1} ${isWaning ? 200 : 0},100
+              Z"
+              fill="black"
+              transform="rotate(${-moon.angle * (180/Math.PI)} 100 100)"
+            />
           </mask>
         </defs>
-
-        <!-- Lune fantôme -->
-        <image href="/img/lune/lune-pleine.png" width="200" height="200" filter="url(#ghost-filter)"/>
-
-        <!-- Lune illuminée -->
-        <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#moon-mask)"
-               filter="brightness(1.15) contrast(1.3) drop-shadow(0 0 3px rgba(255,255,255,0.5))"/>
+        <circle cx="100" cy="100" r="100" filter="url(#ghost-filter)" fill="white"/>
+        <circle cx="100" cy="100" r="100" mask="url(#moon-mask)" fill="white" filter="brightness(1.15)"/>
       </svg>
     `;
   }
 
   applySize();
   renderMoon();
-  setInterval(renderMoon, 3600000); // Mise à jour horaire
+  setInterval(renderMoon, 3600000);
 
   if (clickable) {
-    container.style.cursor = "pointer";
     container.addEventListener("click", () => {
       sizeIndex = (sizeIndex + 1) % sizes.length;
       applySize();
@@ -99,3 +84,6 @@ export function updateNewMoonWidget() {
 
   document.body.appendChild(container);
 }
+
+// Fallback global
+window.MoonWidget = { update: updateNewMoonWidget };
