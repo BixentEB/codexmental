@@ -62,7 +62,7 @@ export async function setTheme(theme) {
 // Modification tailles lune sur différents écrans (Responsive Lune)
 export function adaptLuneResponsive() {
   // ✅ Ici on change l'ID pour correspondre au nouveau widget
-  const lune = document.getElementById("moon-widget");
+  const lune = document.getElementById("svg-lune-widget");
   if (!lune) return;
 
   const width = window.innerWidth;
