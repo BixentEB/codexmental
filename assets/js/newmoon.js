@@ -22,13 +22,20 @@ function updateMoon() {
   const ombre = document.getElementById("ombre");
   if (!ombre) return;
 
-  // Logique simple et correcte pour toutes les phases :
-  // - Le cercle d'ombre se déplace de droite (cx=100) vers gauche (cx=0)
-  // - fraction = 0 (nouvelle lune) : ombre au centre (cx=50) = tout sombre
-  // - fraction = 1 (pleine lune) : ombre complètement à gauche (cx=0) = tout éclairé
-  // - fraction = 0.5 : ombre à cx=25 = moitié éclairée
+  // Logique corrigée pour les phases lunaires (hémisphère nord) :
+  // - Nouvelle lune (fraction=0) : ombre au centre (cx=50) = tout sombre
+  // - Premier quartier (fraction=0.5, phase=0.25) : ombre à droite (cx=75) = moitié gauche éclairée
+  // - Pleine lune (fraction=1) : ombre hors du cercle (cx=100) = tout éclairé  
+  // - Dernier quartier (fraction=0.5, phase=0.75) : ombre à gauche (cx=25) = moitié droite éclairée
   
-  const cx = 50 - (fraction * 50);
+  let cx;
+  if (phase < 0.5) {
+    // Phase croissante (0 à 0.5) : ombre va de centre vers droite
+    cx = 50 + (fraction * 50);
+  } else {
+    // Phase décroissante (0.5 à 1) : ombre va de droite vers gauche
+    cx = 100 - (fraction * 50);
+  }
   
   ombre.setAttribute("cx", cx);
   
