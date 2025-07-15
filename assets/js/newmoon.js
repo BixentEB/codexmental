@@ -44,36 +44,43 @@ export function updateNewMoonWidget() {
     const angle = moon.angle;
     const r = 100;
 
-    // Calcul dynamique de l'ombre
+    // 1. Calcul de la forme concave
     const isWaning = phase > 0.5;
-    const illuminationDirection = Math.cos(angle) > 0 ? 1 : -1;
-    const shadowWidth = r * 2 * (1 - fraction);
-    const shadowPosition = 100 + (isWaning ? 1 : -1) * (r - shadowWidth/2) * illuminationDirection;
+    const visibleWidth = 200 * fraction;
+    const shadowWidth = 200 * (1 - fraction);
+    const startX = isWaning ? 200 : 0;
+
+    // 2. Path SVG pour le croissant obscur (forme concave)
+    const maskPath = `
+      M ${startX},100
+      A ${r},${r} 0 1,${isWaning ? 1 : 0} ${startX},99.9
+      L ${startX + (isWaning ? -visibleWidth : visibleWidth)},100
+      A ${shadowWidth/2},${r} 0 1,${isWaning ? 0 : 1} ${startX},100
+      Z
+    `;
 
     container.innerHTML = `
       <svg viewBox="0 0 200 200" width="100%" height="100%">
         <defs>
           <!-- Filtre fantôme -->
-          <filter id="lune-fantome">
-            <feComponentTransfer>
-              <feFuncA type="table" tableValues="0 0.08"/>
-            </feComponentTransfer>
-            <feColorMatrix values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 1 0"/>
+          <filter id="ghost-filter">
+            <feGaussianBlur stdDeviation="1.5"/>
+            <feColorMatrix values="0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.4 0 0 0 0 0 0.12 0"/>
           </filter>
 
-          <!-- Masque dynamique -->
-          <mask id="mask-phase">
+          <!-- Masque concave -->
+          <mask id="moon-mask">
             <rect width="200" height="200" fill="white"/>
-            <ellipse cx="${shadowPosition}" cy="100" rx="${shadowWidth/2}" ry="${r}" fill="black"/>
+            <path d="${maskPath}" fill="black" transform="rotate(${-angle * (180/Math.PI)} 100 100)"/>
           </mask>
         </defs>
 
         <!-- Lune fantôme -->
-        <image href="/img/lune/lune-pleine.png" width="200" height="200" filter="url(#lune-fantome)"/>
+        <image href="/img/lune/lune-pleine.png" width="200" height="200" filter="url(#ghost-filter)"/>
 
-        <!-- Partie illuminée -->
-        <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#mask-phase)" 
-               filter="brightness(1.2) contrast(1.3)"/>
+        <!-- Lune illuminée -->
+        <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#moon-mask)"
+               filter="brightness(1.15) contrast(1.3) drop-shadow(0 0 3px rgba(255,255,255,0.5))"/>
       </svg>
     `;
   }
