@@ -4,34 +4,38 @@ import SunCalc from 'https://esm.sh/suncalc';
 const LAT = 45.75;
 const LNG = 4.85;
 
-export function updateNewMoonWidget() {
-  // Nettoyage éventuel
-  const existing = document.getElementById('svg-lune-widget');
-  if (existing) existing.remove();
-
-  // Création du widget
-  const container = document.createElement('div');
-  container.id = 'svg-lune-widget';
-  container.classList.add('lune-svg-container'); // Utilise ton CSS
-
-  // Cycle de tailles
-  const sizes = [
+// Détection device pour le cycle des tailles
+function getSizeConfig() {
+  const isMobile = window.matchMedia("(max-width: 568px), (pointer: coarse)").matches;
+  const isTablet = window.matchMedia("(max-width: 900px) and (pointer: fine)").matches;
+  if (isMobile) return { sizes: [ { w: "180px", h: "180px", class: "" } ], clickable: false };
+  if (isTablet) return { sizes: [ { w: "150px", h: "150px", class: "" }, { w: "250px", h: "250px", class: "" } ], clickable: true };
+  // Desktop/PC
+  return { sizes: [
     { w: "150px", h: "150px", class: "" },
     { w: "250px", h: "250px", class: "" },
     { w: "500px", h: "500px", class: "super-lune" }
-  ];
-  let sizeIndex = 1; // Medium par défaut
+  ], clickable: true };
+}
+
+export function updateNewMoonWidget() {
+  const existing = document.getElementById('svg-lune-widget');
+  if (existing) existing.remove();
+
+  const { sizes, clickable } = getSizeConfig();
+  let sizeIndex = 1; // Normale par défaut sauf sur mobile
+
+  const container = document.createElement('div');
+  container.id = 'svg-lune-widget';
 
   function applySize() {
     container.style.width = sizes[sizeIndex].w;
     container.style.height = sizes[sizeIndex].h;
     container.classList.remove("super-lune");
-    if (sizes[sizeIndex].class) {
-      container.classList.add(sizes[sizeIndex].class);
-    }
+    if (sizes[sizeIndex].class) container.classList.add(sizes[sizeIndex].class);
+    else container.classList.remove("super-lune");
   }
 
-  // SVG lune avec effet "fantôme"
   function renderMoon() {
     const now = new Date();
     const moon = SunCalc.getMoonIllumination(now);
@@ -39,7 +43,7 @@ export function updateNewMoonWidget() {
     const fraction = moon.fraction; // [0, 1]
     const r = 100;
 
-    // Sens de la phase
+    // Ombre du bon côté
     let cx;
     if (phase <= 0.5) {
       // Croissante : ombre à droite
@@ -49,28 +53,18 @@ export function updateNewMoonWidget() {
       cx = 100 - (r * (1 - fraction));
     }
 
-    // SVG avec deux images lune : une "fantôme" (ombre douce) + une masquée
+    // SVG effet fantôme + croissant
     container.innerHTML = `
       <svg id="svg-lune" viewBox="0 0 200 200" width="100%" height="100%">
         <defs>
-          <filter id="lune-fantome">
-            <feComponentTransfer>
-              <feFuncA type="table" tableValues="0 0.08"/>
-            </feComponentTransfer>
-            <feColorMatrix type="matrix"
-              values="0.2 0 0 0 0
-                      0 0.2 0 0 0
-                      0 0 0.2 0 0
-                      0 0 0 1 0"/>
-          </filter>
           <mask id="mask-lune">
             <rect width="200" height="200" fill="white"/>
             <ellipse id="ombre" cx="${cx}" cy="100" rx="${r}" ry="${r}" fill="black"/>
           </mask>
         </defs>
-        <!-- Lune fantôme, effet doux -->
-        <image href="/img/lune/lune-pleine.png" width="200" height="200" filter="url(#lune-fantome)" clip-path="url(#moon-clip)"/>
-        <!-- Lune réelle, masquée selon la phase -->
+        <!-- Lune fantôme -->
+        <image href="/img/lune/lune-pleine.png" width="200" height="200"/>
+        <!-- Croissant réel -->
         <image href="/img/lune/lune-pleine.png" width="200" height="200" mask="url(#mask-lune)"/>
       </svg>
     `;
@@ -80,16 +74,20 @@ export function updateNewMoonWidget() {
   applySize();
   renderMoon();
 
-  // Mise à jour auto chaque heure
+  // Mise à jour phase chaque heure
   setInterval(renderMoon, 60 * 60 * 1000);
 
-  // Changement de taille au clic
-  container.addEventListener("click", (e) => {
-    e.preventDefault();
-    sizeIndex = (sizeIndex + 1) % sizes.length;
-    applySize();
-  });
+  // Clic pour changer la taille (si autorisé)
+  if (clickable) {
+    container.style.cursor = "pointer";
+    container.addEventListener("click", (e) => {
+      e.preventDefault();
+      sizeIndex = (sizeIndex + 1) % sizes.length;
+      applySize();
+    });
+  } else {
+    container.style.cursor = "default";
+  }
 
-  // Ajout au DOM
   document.body.appendChild(container);
 }
