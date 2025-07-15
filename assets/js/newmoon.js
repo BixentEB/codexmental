@@ -1,10 +1,9 @@
 // ========================================================
-// newmoon.js – Widget lunaire SVG autonome
+// newmoon.js – Widget lunaire SVG compatible Codex Mental
 // ========================================================
 
 import SunCalc from "https://esm.sh/suncalc";
 
-// Meeus-like phase calculation
 function calculateMoonPhase(date) {
   const synodicMonth = 29.53058867;
   const knownNewMoon = new Date("2000-01-06T18:14:00Z");
@@ -19,24 +18,19 @@ function calculateMoonPhase(date) {
   };
 }
 
-// Create the SVG
 function createMoonSVG(illumination, orientationAngle) {
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("viewBox", "0 0 200 200");
-  svg.classList.add("moon-svg");
 
-  // Full moon (ghost)
   const ghost = document.createElementNS(svgNS, "image");
   ghost.setAttribute("href", "/img/lune/lune-pleine.png");
   ghost.setAttribute("x", 0);
   ghost.setAttribute("y", 0);
   ghost.setAttribute("width", 200);
   ghost.setAttribute("height", 200);
-  ghost.setAttribute("opacity", "0.2");
   svg.appendChild(ghost);
 
-  // ClipPath for the illuminated crescent
   const defs = document.createElementNS(svgNS, "defs");
   const clip = document.createElementNS(svgNS, "clipPath");
   clip.setAttribute("id", "clipMoon");
@@ -50,7 +44,6 @@ function createMoonSVG(illumination, orientationAngle) {
   defs.appendChild(clip);
   svg.appendChild(defs);
 
-  // Illuminated part
   const lit = document.createElementNS(svgNS, "image");
   lit.setAttribute("href", "/img/lune/lune-pleine.png");
   lit.setAttribute("x", 0);
@@ -64,13 +57,11 @@ function createMoonSVG(illumination, orientationAngle) {
   return svg;
 }
 
-// Main function
 async function initMoonWidget() {
-  // Crée automatiquement le conteneur s'il n'existe pas
-  let container = document.getElementById("moon-widget");
+  let container = document.getElementById("svg-lune-widget");
   if (!container) {
     container = document.createElement("div");
-    container.id = "moon-widget";
+    container.id = "svg-lune-widget";
     document.body.appendChild(container);
   }
 
@@ -83,23 +74,14 @@ async function initMoonWidget() {
     container.innerHTML = "";
     const svg = createMoonSVG(phaseData.illuminationPercent / 100, orientation);
     container.appendChild(svg);
-
-    const info = document.createElement("div");
-    info.className = "moon-info";
-    info.innerHTML = `Illumination : ${phaseData.illuminationPercent}%`;
-    container.appendChild(info);
   }
 
   function getCoordsAndRender() {
     const fallback = { lat: 45.75, lng: 4.85 };
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        pos => {
-          render({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        },
-        () => {
-          render(fallback);
-        }
+        pos => render({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => render(fallback)
       );
     } else {
       render(fallback);
