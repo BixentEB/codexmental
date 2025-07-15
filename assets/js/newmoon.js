@@ -35,6 +35,9 @@ function updateMoon() {
     cx = 50 - offset;
   }
 
+  // Inversion de l'axe X pour corriger le côté
+  cx = 100 - cx;
+
   ombre.setAttribute("cx", cx);
 
   console.log(`🌙 Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} cx=${cx.toFixed(1)}`);
