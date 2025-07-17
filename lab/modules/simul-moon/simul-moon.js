@@ -20,6 +20,7 @@
       </svg>
       <input type="range" id="simul-slider" min="0" max="1" step="0.01" value="0.5">
       <div id="simul-label">Phase : ...</div>
+      <button id="simul-reset" style="margin-top:0.5rem">↺ Phase actuelle</button>
     </div>
   `;
 
@@ -28,6 +29,7 @@
   const slider = document.getElementById("simul-slider");
   const shadowPath = document.getElementById("simul-shadow-path");
   const label = document.getElementById("simul-label");
+  const resetBtn = document.getElementById("simul-reset");
 
   function getPhaseName(p) {
     if (p < 0.03 || p > 0.97) return "🌑 Nouvelle Lune";
@@ -41,27 +43,30 @@
     return "🌑 Nouvelle Lune";
   }
 
-  function updatePhasePath(phase, fraction) {
+  function updatePhasePath(phase) {
     if (!shadowPath) return;
+
+    const centerX = 50, centerY = 50, radius = 50;
+    const angle = phase * 2 * Math.PI;
+    const isWaxing = phase < 0.5;
+    const fraction = 0.5 - Math.cos(angle) / 2; // illumination
+
+    let ellipseWidth = radius * (2 * fraction - 1);
     let pathData;
 
     if (fraction < 0.01) {
-      pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // nouvelle lune
+      pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
     } else if (fraction > 0.99) {
-      pathData = "M 0,0 L 0,0"; // pleine lune → pas d’ombre visible
+      pathData = "M 0,0 L 0,0";
     } else {
-      const centerX = 50, centerY = 50, radius = 50;
-      const isWaxing = phase < 0.5;
-      let ellipseWidth = radius * (2 * fraction - 1);
-
-      if (ellipseWidth > 0) {
-        pathData = `M ${centerX},${centerY - radius}
-                    A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
-                    A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
-      } else {
+      if (isWaxing) {
         pathData = `M ${centerX},${centerY - radius}
                     A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
                     A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+      } else {
+        pathData = `M ${centerX},${centerY - radius}
+                    A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
+                    A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
       }
     }
 
@@ -70,8 +75,7 @@
 
   function updateFromSlider() {
     const value = parseFloat(slider.value);
-    const fraction = value < 0.5 ? value * 2 : (1 - value) * 2;
-    updatePhasePath(value, fraction);
+    updatePhasePath(value);
     label.textContent = `Phase : ${getPhaseName(value)}`;
   }
 
@@ -85,14 +89,17 @@
     }
   }
 
-  // Lancer phase réelle au départ
-  loadSunCalc(() => {
+  function resetToCurrentPhase() {
     const now = new Date();
-    const { fraction, phase } = SunCalc.getMoonIllumination(now);
+    const { phase } = SunCalc.getMoonIllumination(now);
     slider.value = phase.toFixed(2);
-    updatePhasePath(phase, fraction);
+    updatePhasePath(phase);
     label.textContent = `Phase : ${getPhaseName(phase)}`;
-  });
+  }
 
-  slider.addEventListener("input", updateFromSlider);
+  loadSunCalc(() => {
+    resetToCurrentPhase();
+    slider.addEventListener("input", updateFromSlider);
+    resetBtn.addEventListener("click", resetToCurrentPhase);
+  });
 })();
