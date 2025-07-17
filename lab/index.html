@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🔬 Laboratoire – Codex Mental</title>
+
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
+
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
+
+  <!-- 🎨 Styles globaux -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+  
+  <!-- ⚙️ Script principal -->
+  <script type="module" src="/assets/js/main.js"></script>
+</head>
+<body class="theme-stellaire lab">
+  <!-- 🌌 Canvas de fond -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu injecté dynamiquement -->
+  <header id="menu-placeholder"></header>
+
+  <!-- 🔬 Contenu principal -->
+  <main class="container" style="padding-bottom: 3rem;">
+    <h1 class="text-center">🔬 Tableau de bord – Laboratoire Codex</h1>
+
+    <div class="dashboard">
+      <div class="widget">
+        <h2>🌙 Simulateur lunaire</h2>
+        <svg viewBox="0 0 100 100">
+          <defs>
+            <mask id="mask-lune">
+              <rect width="100" height="100" fill="white" />
+              <circle id="ombre" cx="50" cy="50" r="50" fill="black" />
+            </mask>
+          </defs>
+          <image href="/img/lune/lune-pleine.png" width="100" height="100" filter="brightness(0.4) opacity(0.15)" />
+          <image href="/img/lune/lune-pleine.png" width="100" height="100" mask="url(#mask-lune)" />
+        </svg>
+        <input id="slider" type="range" min="0" max="1" step="0.01" value="0.668" />
+        <div class="info">
+          <div id="illumination">💡 Illumination : ?%</div>
+          <div id="phase">🌗 Phase : inconnue</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 🦶 Footer injecté dynamiquement -->
+  <div id="footer-placeholder"></div>
+
+  <style>
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .widget {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(128, 202, 255, 0.15);
+      backdrop-filter: blur(6px);
+    }
+    .widget h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: var(--theme-accent, #8fd3ff);
+    }
+    .widget svg {
+      width: 100%;
+      height: auto;
+      margin-top: 1rem;
+    }
+    .info {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    input[type="range"] {
+      width: 100%;
+      margin-top: 1rem;
+    }
+  </style>
+
+  <script>
+    const slider = document.getElementById("slider");
+    const ombre = document.getElementById("ombre");
+    const infoIllum = document.getElementById("illumination");
+    const infoPhase = document.getElementById("phase");
+
+    function updateMoonMask(phase) {
+      const waxing = phase < 0.5;
+      const fraction = 1 - Math.cos(phase * 2 * Math.PI) / 2;
+      const cx = waxing ? 50 - fraction * 50 : 50 + fraction * 50;
+      ombre.setAttribute("cx", cx);
+      return { cx, fraction, waxing };
+    }
+
+    function getPhaseName(phase) {
+      if (phase === 0) return "🌑 Nouvelle lune";
+      if (phase < 0.25) return "🌒 Croissant";
+      if (phase === 0.25) return "🌓 Premier quartier";
+      if (phase < 0.5) return "🌔 Gibbeuse croissante";
+      if (phase === 0.5) return "🌕 Pleine lune";
+      if (phase < 0.75) return "🌖 Gibbeuse décroissante";
+      if (phase === 0.75) return "🌗 Dernier quartier";
+      if (phase < 1) return "🌘 Dernier croissant";
+      return "🌑 Nouvelle lune";
+    }
+
+    function update() {
+      const phase = parseFloat(slider.value);
+      const { cx, fraction } = updateMoonMask(phase);
+      const illumPercent = (fraction * 100).toFixed(1);
+      infoIllum.textContent = `💡 Illumination : ${illumPercent}%`;
+      infoPhase.textContent = `🌓 Phase : ${getPhaseName(phase)} (valeur ${phase.toFixed(3)})`;
+    }
+
+    slider.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>
