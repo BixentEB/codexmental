@@ -51,25 +51,36 @@
   function updatePhasePath(phase) {
     if (!shadowPath) return;
 
-    const centerX = 50, centerY = 50, radius = 50;
-    const illuminated = Math.abs(0.5 - phase) * 2;
-    const direction = phase < 0.5 ? -1 : 1;
-    const offset = centerX + direction * illuminated * radius;
+    const cx = 50, cy = 50, r = 50;
+    const illum = Math.abs(0.5 - phase) * 2; // de 0 (pleine lune) à 1 (nouvelle)
 
-    // Nouvelle Lune ou Pleine Lune
-    if (illuminated < 0.01) {
-      shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z");
+    // Cas limites
+    if (illum < 0.01) {
+      shadowPath.setAttribute("d", "M 0,0 L 0,0"); // pleine lune
       return;
-    } else if (illuminated > 0.99) {
-      shadowPath.setAttribute("d", "M 0,0 L 0,0");
+    }
+    if (illum > 0.99) {
+      shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z"); // nouvelle lune
       return;
     }
 
-    const pathData = `M ${offset},${centerY - radius}
-                     A ${radius},${radius} 0 0,1 ${offset},${centerY + radius}
-                     A ${radius},${radius} 0 0,0 ${offset},${centerY - radius} Z`;
+    const isWaxing = phase < 0.5;
+    const ellipseW = Math.max(2, r * (2 * (1 - illum)));
 
-    shadowPath.setAttribute("d", pathData);
+    let path = "";
+    if (isWaxing) {
+      // ombre à gauche
+      path = `M ${cx},${cy - r}
+              A ${r},${r} 0 0,1 ${cx},${cy + r}
+              A ${ellipseW},${r} 0 0,0 ${cx},${cy - r} Z`;
+    } else {
+      // ombre à droite
+      path = `M ${cx},${cy - r}
+              A ${ellipseW},${r} 0 0,1 ${cx},${cy + r}
+              A ${r},${r} 0 0,0 ${cx},${cy - r} Z`;
+    }
+
+    shadowPath.setAttribute("d", path);
   }
 
   function updateFromSlider() {
