@@ -1,0 +1,15 @@
+.widget-lune svg {
+  width: 100%;
+  height: auto;
+  margin-top: 1rem;
+}
+
+.widget-lune input[type="range"] {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.widget-lune .info {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
