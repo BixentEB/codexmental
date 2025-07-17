@@ -42,7 +42,8 @@
 
   function updateShadow(phase) {
     const cx = 50, cy = 50, r = 50;
-    const illum = Math.abs(0.5 - phase) * 2; // de 0 (pleine) à 1 (nouvelle)
+    const illum = (1 - Math.cos(phase * 2 * Math.PI)) / 2; // sinusoïde réaliste
+ // de 0 (pleine) à 1 (nouvelle)
 
     if (illum > 0.98) {
       shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z"); // nouvelle lune
