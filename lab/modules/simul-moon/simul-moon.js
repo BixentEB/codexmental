@@ -2,9 +2,13 @@
 // ==================================================================================
 
 (() => {
+  const wrapper = document.createElement("div");
+  wrapper.className = "simul-widget";
+
   const container = document.createElement("div");
   container.id = "simul-moon";
   container.innerHTML = `
+    <h3 class="simul-title">🌙 Simulateur lunaire</h3>
     <div class="moon-wrapper">
       <svg id="simul-svg" viewBox="0 0 100 100" class="moon-phase">
         <defs>
@@ -24,7 +28,8 @@
     </div>
   `;
 
-  document.getElementById("simul-moon-container")?.appendChild(container);
+  wrapper.appendChild(container);
+  document.getElementById("simul-moon-container")?.appendChild(wrapper);
 
   const slider = document.getElementById("simul-slider");
   const shadowPath = document.getElementById("simul-shadow-path");
@@ -47,28 +52,22 @@
     if (!shadowPath) return;
 
     const centerX = 50, centerY = 50, radius = 50;
-    const angle = phase * 2 * Math.PI;
-    const isWaxing = phase < 0.5;
-    const fraction = 0.5 - Math.cos(angle) / 2; // illumination
+    const illuminated = Math.abs(0.5 - phase) * 2;
+    const direction = phase < 0.5 ? -1 : 1;
+    const offset = centerX + direction * illuminated * radius;
 
-    let ellipseWidth = radius * (2 * fraction - 1);
-    let pathData;
-
-    if (fraction < 0.01) {
-      pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
-    } else if (fraction > 0.99) {
-      pathData = "M 0,0 L 0,0";
-    } else {
-      if (isWaxing) {
-        pathData = `M ${centerX},${centerY - radius}
-                    A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
-                    A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
-      } else {
-        pathData = `M ${centerX},${centerY - radius}
-                    A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
-                    A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
-      }
+    // Nouvelle Lune ou Pleine Lune
+    if (illuminated < 0.01) {
+      shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z");
+      return;
+    } else if (illuminated > 0.99) {
+      shadowPath.setAttribute("d", "M 0,0 L 0,0");
+      return;
     }
+
+    const pathData = `M ${offset},${centerY - radius}
+                     A ${radius},${radius} 0 0,1 ${offset},${centerY + radius}
+                     A ${radius},${radius} 0 0,0 ${offset},${centerY - radius} Z`;
 
     shadowPath.setAttribute("d", pathData);
   }
