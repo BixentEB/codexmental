@@ -65,6 +65,7 @@
         
         .slider-container {
             margin-bottom: 15px;
+            position: relative;
         }
         
         input[type="range"] {
@@ -83,6 +84,19 @@
             background: #4a6fa5;
             border-radius: 50%;
             cursor: pointer;
+        }
+        
+        .slider-marks {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .slider-mark {
+            width: 1px;
+            height: 10px;
+            background-color: #999;
         }
         
         button {
@@ -131,7 +145,17 @@
         
         <div class="controls">
             <div class="slider-container">
-                <input type="range" id="phaseSlider" min="0" max="29" value="0" step="1">
+                <input type="range" id="phaseSlider" min="0" max="7" value="0" step="1">
+                <div class="slider-marks">
+                    <div class="slider-mark"></div>
+                    <div class="slider-mark"></div>
+                    <div class="slider-mark"></div>
+                    <div class="slider-mark"></div>
+                    <div class="slider-mark"></div>
+                    <div class="slider-mark"></div>
+                    <div class="slider-mark"></div>
+                    <div class="slider-mark"></div>
+                </div>
             </div>
             <button id="currentPhaseBtn">Phase Actuelle</button>
         </div>
@@ -145,96 +169,82 @@
             const moonDate = document.getElementById('moonDate');
             const phaseName = document.getElementById('phaseName');
             
-            // Noms des phases lunaires
-            const phaseNames = [
-                "Nouvelle Lune", 
-                "Premier Croissant",
-                "Premier Quartier",
-                "Lune Gibbeuse Croissante",
-                "Pleine Lune",
-                "Lune Gibbeuse Décroissante",
-                "Dernier Quartier",
-                "Dernier Croissant"
+            // Noms des phases lunaires et leurs positions dans le cycle (0-1)
+            const phases = [
+                { name: "Nouvelle Lune", position: 0, shadowPos: -100 },
+                { name: "Premier Croissant", position: 0.25, shadowPos: -50 },
+                { name: "Premier Quartier", position: 0.5, shadowPos: 0 },
+                { name: "Lune Gibbeuse Croissante", position: 0.75, shadowPos: 50 },
+                { name: "Pleine Lune", position: 1, shadowPos: 100 },
+                { name: "Lune Gibbeuse Décroissante", position: 0.75, shadowPos: 50 },
+                { name: "Dernier Quartier", position: 0.5, shadowPos: 0 },
+                { name: "Dernier Croissant", position: 0.25, shadowPos: -50 }
             ];
             
-            // Calculer la phase actuelle de la lune
+            // Durée d'un cycle lunaire en jours
+            const lunarCycle = 29.530588853;
+            
+            // Calculer la phase actuelle de la lune (0-1)
             function getCurrentMoonPhase() {
-                // Cycle lunaire moyen de 29.53 jours
-                const lunarCycle = 29.530588853;
-                // Date de référence pour une nouvelle lune connue (peut être ajustée)
+                // Date de référence pour une nouvelle lune connue
                 const knownNewMoon = new Date('2000-01-06T06:14:00Z');
                 const now = new Date();
                 
                 // Différence en jours depuis la nouvelle lune connue
                 const diffInDays = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
-                // Phase actuelle (0 à ~29.53)
-                let phase = (diffInDays % lunarCycle + lunarCycle) % lunarCycle;
+                // Phase actuelle (0-1)
+                let phase = ((diffInDays % lunarCycle + lunarCycle) % lunarCycle) / lunarCycle;
                 
                 return phase;
             }
             
-            // Mettre à jour l'affichage de la lune en fonction de la phase (0-29.53)
-            function updateMoonPhase(phase) {
-                // Normaliser la phase entre 0 et 1
-                const normalizedPhase = phase / 29.530588853;
+            // Trouver la phase la plus proche pour le slider
+            function findClosestPhase(phase) {
+                let closestIndex = 0;
+                let smallestDiff = Infinity;
                 
-                // Déterminer la position de l'ombre
-                let shadowPosition;
-                if (normalizedPhase <= 0.5) {
-                    // Première moitié du cycle (nouvelle lune à pleine lune)
-                    shadowPosition = -100 + (normalizedPhase * 2 * 100);
-                } else {
-                    // Deuxième moitié du cycle (pleine lune à nouvelle lune)
-                    shadowPosition = 100 - ((normalizedPhase - 0.5) * 2 * 100);
-                }
+                phases.forEach((p, index) => {
+                    const diff = Math.abs(p.position - phase);
+                    if (diff < smallestDiff) {
+                        smallestDiff = diff;
+                        closestIndex = index;
+                    }
+                });
                 
-                // Appliquer la transformation
-                moonShadow.style.transform = `translateX(${shadowPosition}%)`;
-                
-                // Mettre à jour le nom de la phase
-                updatePhaseName(normalizedPhase);
-                
-                // Calculer et afficher la date simulée
-                updateSimulatedDate(phase);
+                return closestIndex;
             }
             
-            // Mettre à jour le nom de la phase en fonction de la phase normalisée (0-1)
-            function updatePhaseName(normalizedPhase) {
-                let name;
+            // Mettre à jour l'affichage en fonction de l'index de phase (0-7)
+            function updateMoonPhase(phaseIndex) {
+                const phase = phases[phaseIndex];
                 
-                if (normalizedPhase < 0.03 || normalizedPhase > 0.97) {
-                    name = phaseNames[0]; // Nouvelle Lune
-                } else if (normalizedPhase < 0.22) {
-                    name = phaseNames[1]; // Premier Croissant
-                } else if (normalizedPhase < 0.28) {
-                    name = phaseNames[2]; // Premier Quartier
-                } else if (normalizedPhase < 0.47) {
-                    name = phaseNames[3]; // Lune Gibbeuse Croissante
-                } else if (normalizedPhase < 0.53) {
-                    name = phaseNames[4]; // Pleine Lune
-                } else if (normalizedPhase < 0.72) {
-                    name = phaseNames[5]; // Lune Gibbeuse Décroissante
-                } else if (normalizedPhase < 0.78) {
-                    name = phaseNames[6]; // Dernier Quartier
-                } else {
-                    name = phaseNames[7]; // Dernier Croissant
-                }
+                // Appliquer la transformation de l'ombre
+                moonShadow.style.transform = `translateX(${phase.shadowPos}%)`;
                 
-                phaseName.textContent = name;
+                // Mettre à jour le nom de la phase
+                phaseName.textContent = phase.name;
+                
+                // Calculer et afficher la date simulée
+                updateSimulatedDate(phaseIndex);
             }
             
             // Mettre à jour la date simulée
-            function updateSimulatedDate(phase) {
+            function updateSimulatedDate(phaseIndex) {
                 const now = new Date();
-                const lunarCycle = 29.530588853;
                 const currentPhase = getCurrentMoonPhase();
+                const targetPhase = phases[phaseIndex].position;
                 
-                // Calculer la différence en jours entre la phase actuelle et la phase sélectionnée
-                let dayDifference = phase - currentPhase;
+                // Calculer la différence de jours
+                let dayDifference;
+                if (targetPhase >= currentPhase) {
+                    dayDifference = (targetPhase - currentPhase) * lunarCycle;
+                } else {
+                    dayDifference = (1 - currentPhase + targetPhase) * lunarCycle;
+                }
                 
                 // Créer une nouvelle date avec le décalage
                 const simulatedDate = new Date(now);
-                simulatedDate.setDate(now.getDate() + dayDifference);
+                simulatedDate.setDate(now.getDate() + Math.round(dayDifference));
                 
                 // Formater la date
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -244,13 +254,14 @@
             // Initialiser avec la phase actuelle
             function setToCurrentPhase() {
                 const currentPhase = getCurrentMoonPhase();
-                phaseSlider.value = currentPhase;
-                updateMoonPhase(currentPhase);
+                const closestPhaseIndex = findClosestPhase(currentPhase);
+                phaseSlider.value = closestPhaseIndex;
+                updateMoonPhase(closestPhaseIndex);
             }
             
             // Écouteurs d'événements
             phaseSlider.addEventListener('input', function() {
-                updateMoonPhase(parseFloat(this.value));
+                updateMoonPhase(parseInt(this.value));
             });
             
             currentPhaseBtn.addEventListener('click', setToCurrentPhase);
