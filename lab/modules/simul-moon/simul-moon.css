@@ -36,6 +36,20 @@
   cursor: pointer;
 }
 
+.simul-widget {
+  display: inline-block;
+  text-align: center;
+  margin: 2rem auto;
+}
+
+.simul-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  color: #ccc;
+  margin-bottom: 0.5rem;
+}
+
+
 @media (max-width: 600px) {
   #simul-moon {
     max-width: 90%;
