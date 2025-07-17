@@ -1,6 +1,6 @@
 /* modules.css – Feuille de styles centralisée pour les widgets du Lab Codex */
 
-@import url("/lab/modules/widget-lune/widget-lune.css");
+@import url("/lab/modules/simul-moon/simul-moon.css");
 
 /* Autres modules à importer ici */
 /* @import url("/lab/modules/widget-solaire/widget-solaire.css"); */
