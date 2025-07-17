@@ -13,11 +13,15 @@
 
   <!-- 🎨 Styles globaux -->
   <link rel="stylesheet" href="/assets/css/main.css">
-  <link rel="stylesheet" href="/assets/css/modules/widget-lune.css">
 
-  <!-- ⚙️ Script principal -->
+  <!-- 🎨 Styles modules du labo -->
+  <link rel="stylesheet" href="/lab/modules/modules.css">
+
+  <!-- ⚙️ Script principal site -->
   <script type="module" src="/assets/js/main.js"></script>
-  <script type="module" src="/assets/js/modules/widget-lune.js"></script>
+
+  <!-- ⚙️ Script central des modules du labo -->
+  <script type="module" src="/lab/modules/modules.js"></script>
 </head>
 <body class="theme-stellaire lab">
   <!-- 🌌 Canvas de fond -->
@@ -31,7 +35,7 @@
     <h1 class="text-center">🔬 Tableau de bord – Laboratoire Codex</h1>
 
     <div class="dashboard">
-      <div class="widget widget-lune">
+      <div class="widget" data-widget="lune">
         <h2>🌙 Simulateur lunaire</h2>
         <div id="widget-lune-container"></div>
       </div>
