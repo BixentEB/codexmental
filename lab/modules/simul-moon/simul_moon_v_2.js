@@ -1,5 +1,5 @@
-// simul-moon-v2.js – Version SVG dynamique réaliste
-// ==============================================
+// simul-moon-v2.js – Version SVG dynamique réaliste améliorée
+// ===============================================================
 
 (() => {
   const wrapper = document.createElement("div");
@@ -41,31 +41,35 @@
   }
 
   function updateShadow(phase) {
-    if (!shadowPath) return;
     const cx = 50, cy = 50, r = 50;
     const illum = Math.abs(0.5 - phase) * 2; // de 0 (pleine) à 1 (nouvelle)
-    const side = phase < 0.5 ? "left" : "right";
 
-    if (illum < 0.01) {
-      shadowPath.setAttribute("d", ""); // pleine lune : pas d'ombre
+    if (illum > 0.98) {
+      shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z"); // nouvelle lune
       return;
     }
-    if (illum > 0.99) {
-      shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z"); // toute sombre
+    if (illum < 0.02) {
+      shadowPath.setAttribute("d", ""); // pleine lune
       return;
     }
 
-    const w = 50 * (1 - illum); // largeur creusée
+    const isWaxing = phase < 0.5;
+    const width = r * (1 - illum);
 
-    const path = side === "left"
-      ? `M ${cx},${cy - r}
-         A ${r},${r} 0 0,1 ${cx},${cy + r}
-         A ${w},${r} 0 0,0 ${cx},${cy - r} Z`
-      : `M ${cx},${cy - r}
-         A ${w},${r} 0 0,1 ${cx},${cy + r}
-         A ${r},${r} 0 0,0 ${cx},${cy - r} Z`;
+    let d;
+    if (isWaxing) {
+      // Ombre à gauche, lumière à droite
+      d = `M ${cx},${cy - r}
+           A ${r},${r} 0 0,1 ${cx},${cy + r}
+           A ${width},${r} 0 0,0 ${cx},${cy - r} Z`;
+    } else {
+      // Ombre à droite, lumière à gauche
+      d = `M ${cx},${cy - r}
+           A ${width},${r} 0 0,1 ${cx},${cy + r}
+           A ${r},${r} 0 0,0 ${cx},${cy - r} Z`;
+    }
 
-    shadowPath.setAttribute("d", path);
+    shadowPath.setAttribute("d", d);
   }
 
   function updateUI(val) {
