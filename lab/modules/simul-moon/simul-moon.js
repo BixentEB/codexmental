@@ -17,6 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
         <circle cx="50" cy="50" r="50" fill="white" mask="url(#moon-mask)" />
       </svg>
       <input type="range" id="phase-slider" min="0" max="1" step="0.01" value="0.5">
+      <div id="phase-label">Phase : Premier Quartier</div>
     </div>
   `;
 
@@ -24,13 +25,26 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const shadow = document.getElementById("shadow");
   const slider = document.getElementById("phase-slider");
+  const label = document.getElementById("phase-label");
 
   function updatePhase(phase) {
-    // phase va de 0 (nouvelle lune) à 1 (nouvelle lune suivante)
     const illuminated = Math.abs(0.5 - phase) * 2;
     const direction = phase < 0.5 ? -1 : 1;
     const offset = 50 + direction * illuminated * 50;
     shadow.setAttribute("cx", offset);
+    label.textContent = `Phase : ${getPhaseName(phase)}`;
+  }
+
+  function getPhaseName(p) {
+    if (p < 0.03 || p > 0.97) return "Nouvelle Lune";
+    if (p < 0.22) return "Premier Croissant";
+    if (p < 0.28) return "Premier Quartier";
+    if (p < 0.47) return "Gibbeuse Croissante";
+    if (p <= 0.53) return "Pleine Lune";
+    if (p < 0.72) return "Gibbeuse Décroissante";
+    if (p < 0.78) return "Dernier Quartier";
+    if (p <= 0.97) return "Dernier Croissant";
+    return "Nouvelle Lune";
   }
 
   // Initialisation
