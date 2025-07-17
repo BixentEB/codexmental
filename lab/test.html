@@ -16,7 +16,7 @@
             padding: 20px;
         }
         
-        .moon-widget {
+        .simul-widget {
             background-color: white;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -26,64 +26,80 @@
             text-align: center;
         }
         
-        h1 {
+        .simul-title {
             color: #333;
             font-size: 1.5em;
             margin-top: 0;
+            margin-bottom: 20px;
         }
         
-        .moon-container {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-            position: relative;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, #f5f5f5 0%, #ddd 100%);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        .moon-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
         
         .moon-phase {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            overflow: hidden;
-        }
-        
-        .moon-shadow {
-            position: absolute;
             background-color: #333;
-            border-radius: 50%;
-            transform: translateX(0);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        #simul-svg {
             width: 100%;
             height: 100%;
         }
         
-        .controls {
-            margin: 25px 0;
-        }
-        
-        .slider-container {
-            margin-bottom: 15px;
-            position: relative;
-        }
-        
-        input[type="range"] {
+        #simul-slider {
             width: 100%;
             height: 8px;
             -webkit-appearance: none;
             background: #ddd;
             border-radius: 5px;
             outline: none;
+            margin: 15px 0;
         }
         
-        input[type="range"]::-webkit-slider-thumb {
+        #simul-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 20px;
             height: 20px;
             background: #4a6fa5;
             border-radius: 50%;
             cursor: pointer;
+        }
+        
+        #simul-label {
+            font-size: 1.2em;
+            color: #4a6fa5;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+        
+        #simul-reset {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        
+        #simul-reset:hover {
+            background-color: #3a5a80;
+        }
+        
+        .moon-date {
+            font-size: 1.1em;
+            color: #555;
+            margin-top: 10px;
+            font-weight: bold;
         }
         
         .slider-marks {
@@ -98,148 +114,124 @@
             height: 10px;
             background-color: #999;
         }
-        
-        button {
-            background-color: #4a6fa5;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #3a5a80;
-        }
-        
-        .moon-date {
-            font-size: 1.1em;
-            color: #555;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        
-        .phase-name {
-            font-size: 1.2em;
-            color: #4a6fa5;
-            margin: 10px 0;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
-    <div class="moon-widget">
-        <h1>Simulateur de Phases Lunaires</h1>
-        
-        <div class="phase-name" id="phaseName">Nouvelle Lune</div>
-        
-        <div class="moon-container">
-            <div class="moon-phase">
-                <div class="moon-shadow" id="moonShadow"></div>
-            </div>
-        </div>
-        
-        <div class="moon-date" id="moonDate"></div>
-        
-        <div class="controls">
-            <div class="slider-container">
-                <input type="range" id="phaseSlider" min="0" max="7" value="0" step="1">
-                <div class="slider-marks">
-                    <div class="slider-mark"></div>
-                    <div class="slider-mark"></div>
-                    <div class="slider-mark"></div>
-                    <div class="slider-mark"></div>
-                    <div class="slider-mark"></div>
-                    <div class="slider-mark"></div>
-                    <div class="slider-mark"></div>
-                    <div class="slider-mark"></div>
-                </div>
-            </div>
-            <button id="currentPhaseBtn">Phase Actuelle</button>
-        </div>
-    </div>
+    <div id="simul-moon-container"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const moonShadow = document.getElementById('moonShadow');
-            const phaseSlider = document.getElementById('phaseSlider');
-            const currentPhaseBtn = document.getElementById('currentPhaseBtn');
-            const moonDate = document.getElementById('moonDate');
-            const phaseName = document.getElementById('phaseName');
-            
-            // Noms des phases lunaires et leurs positions dans le cycle (0-1)
-            const phases = [
-                { name: "Nouvelle Lune", position: 0, shadowPos: -100 },
-                { name: "Premier Croissant", position: 0.25, shadowPos: -50 },
-                { name: "Premier Quartier", position: 0.5, shadowPos: 0 },
-                { name: "Lune Gibbeuse Croissante", position: 0.75, shadowPos: 50 },
-                { name: "Pleine Lune", position: 1, shadowPos: 100 },
-                { name: "Lune Gibbeuse Décroissante", position: 0.75, shadowPos: 50 },
-                { name: "Dernier Quartier", position: 0.5, shadowPos: 0 },
-                { name: "Dernier Croissant", position: 0.25, shadowPos: -50 }
-            ];
-            
-            // Durée d'un cycle lunaire en jours
-            const lunarCycle = 29.530588853;
-            
-            // Calculer la phase actuelle de la lune (0-1)
-            function getCurrentMoonPhase() {
-                // Date de référence pour une nouvelle lune connue
-                const knownNewMoon = new Date('2000-01-06T06:14:00Z');
-                const now = new Date();
-                
-                // Différence en jours depuis la nouvelle lune connue
-                const diffInDays = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
-                // Phase actuelle (0-1)
-                let phase = ((diffInDays % lunarCycle + lunarCycle) % lunarCycle) / lunarCycle;
-                
-                return phase;
+        // simul-moon.js – Simulateur lunaire avancé avec phase réelle + simulation manuelle
+        // Version améliorée avec meilleure représentation des phases et dates
+        (() => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "simul-widget";
+
+            const container = document.createElement("div");
+            container.id = "simul-moon";
+            container.innerHTML = `
+                <h3 class="simul-title">🌙 Simulateur Lunaire</h3>
+                <div class="moon-wrapper">
+                    <svg id="simul-svg" viewBox="0 0 100 100" class="moon-phase">
+                        <defs>
+                            <clipPath id="simul-clip">
+                                <circle cx="50" cy="50" r="50" />
+                            </clipPath>
+                            <mask id="simul-mask">
+                                <rect width="100" height="100" fill="white" />
+                                <path id="simul-shadow-path" fill="black" />
+                            </mask>
+                        </defs>
+                        <circle cx="50" cy="50" r="50" fill="#fff" mask="url(#simul-mask)" clip-path="url(#simul-clip)" />
+                    </svg>
+                    <div class="moon-date" id="simul-date"></div>
+                    <input type="range" id="simul-slider" min="0" max="1" step="0.01" value="0.5">
+                    <div class="slider-marks">
+                        <div class="slider-mark"></div>
+                        <div class="slider-mark"></div>
+                        <div class="slider-mark"></div>
+                        <div class="slider-mark"></div>
+                        <div class="slider-mark"></div>
+                        <div class="slider-mark"></div>
+                        <div class="slider-mark"></div>
+                        <div class="slider-mark"></div>
+                    </div>
+                    <div id="simul-label">Phase : ...</div>
+                    <button id="simul-reset">↺ Phase actuelle</button>
+                </div>
+            `;
+
+            wrapper.appendChild(container);
+            document.getElementById("simul-moon-container")?.appendChild(wrapper);
+
+            const slider = document.getElementById("simul-slider");
+            const shadowPath = document.getElementById("simul-shadow-path");
+            const label = document.getElementById("simul-label");
+            const resetBtn = document.getElementById("simul-reset");
+            const dateLabel = document.getElementById("simul-date");
+
+            // Noms des phases lunaires avec meilleures transitions
+            function getPhaseName(p) {
+                if (p < 0.03 || p > 0.97) return "🌑 Nouvelle Lune";
+                if (p < 0.22) return "🌒 Premier Croissant";
+                if (p < 0.28) return "🌓 Premier Quartier";
+                if (p < 0.47) return "🌔 Lune Gibbeuse Croissante";
+                if (p <= 0.53) return "🌕 Pleine Lune";
+                if (p < 0.72) return "🌖 Lune Gibbeuse Décroissante";
+                if (p < 0.78) return "🌗 Dernier Quartier";
+                if (p <= 0.97) return "🌘 Dernier Croissant";
+                return "🌑 Nouvelle Lune";
             }
-            
-            // Trouver la phase la plus proche pour le slider
-            function findClosestPhase(phase) {
-                let closestIndex = 0;
-                let smallestDiff = Infinity;
-                
-                phases.forEach((p, index) => {
-                    const diff = Math.abs(p.position - phase);
-                    if (diff < smallestDiff) {
-                        smallestDiff = diff;
-                        closestIndex = index;
-                    }
-                });
-                
-                return closestIndex;
-            }
-            
-            // Mettre à jour l'affichage en fonction de l'index de phase (0-7)
-            function updateMoonPhase(phaseIndex) {
-                const phase = phases[phaseIndex];
-                
-                // Appliquer la transformation de l'ombre
-                moonShadow.style.transform = `translateX(${phase.shadowPos}%)`;
-                
-                // Mettre à jour le nom de la phase
-                phaseName.textContent = phase.name;
-                
-                // Calculer et afficher la date simulée
-                updateSimulatedDate(phaseIndex);
-            }
-            
-            // Mettre à jour la date simulée
-            function updateSimulatedDate(phaseIndex) {
-                const now = new Date();
-                const currentPhase = getCurrentMoonPhase();
-                const targetPhase = phases[phaseIndex].position;
-                
-                // Calculer la différence de jours
-                let dayDifference;
-                if (targetPhase >= currentPhase) {
-                    dayDifference = (targetPhase - currentPhase) * lunarCycle;
+
+            // Meilleure représentation visuelle des phases
+            function updatePhasePath(phase) {
+                if (!shadowPath) return;
+
+                const cx = 50, cy = 50, r = 50;
+                const isWaxing = phase < 0.5;
+                const illum = Math.abs(0.5 - phase) * 2; // 0 (pleine) à 1 (nouvelle)
+
+                // Cas limites
+                if (illum < 0.01) {
+                    shadowPath.setAttribute("d", "M 0,0 L 0,0"); // pleine lune
+                    return;
+                }
+                if (illum > 0.99) {
+                    shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z"); // nouvelle lune
+                    return;
+                }
+
+                // Calcul plus précis de la forme de l'ombre
+                const ellipseW = r * (2 * (1 - illum));
+                const controlOffset = r * 0.55 * (1 - illum);
+
+                let path;
+                if (isWaxing) {
+                    // Ombre à gauche (phase croissante)
+                    path = `M ${cx},${cy - r}
+                            A ${r},${r} 0 0,1 ${cx},${cy + r}
+                            A ${ellipseW},${r} 0 0,0 ${cx},${cy - r} Z`;
                 } else {
-                    dayDifference = (1 - currentPhase + targetPhase) * lunarCycle;
+                    // Ombre à droite (phase décroissante)
+                    path = `M ${cx},${cy - r}
+                            A ${ellipseW},${r} 0 0,1 ${cx},${cy + r}
+                            A ${r},${r} 0 0,0 ${cx},${cy - r} Z`;
+                }
+
+                shadowPath.setAttribute("d", path);
+            }
+
+            // Mise à jour de la date simulée
+            function updateSimulatedDate(phase) {
+                const now = new Date();
+                const lunarCycle = 29.530588853;
+                const currentPhase = SunCalc.getMoonIllumination(now).phase;
+                
+                // Calculer la différence en jours
+                let dayDifference;
+                if (phase >= currentPhase) {
+                    dayDifference = (phase - currentPhase) * lunarCycle;
+                } else {
+                    dayDifference = (1 - currentPhase + phase) * lunarCycle;
                 }
                 
                 // Créer une nouvelle date avec le décalage
@@ -248,27 +240,41 @@
                 
                 // Formater la date
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                moonDate.textContent = simulatedDate.toLocaleDateString('fr-FR', options);
+                dateLabel.textContent = simulatedDate.toLocaleDateString('fr-FR', options);
             }
-            
-            // Initialiser avec la phase actuelle
-            function setToCurrentPhase() {
-                const currentPhase = getCurrentMoonPhase();
-                const closestPhaseIndex = findClosestPhase(currentPhase);
-                phaseSlider.value = closestPhaseIndex;
-                updateMoonPhase(closestPhaseIndex);
+
+            function updateFromSlider() {
+                const value = parseFloat(slider.value);
+                updatePhasePath(value);
+                label.textContent = `Phase : ${getPhaseName(value)}`;
+                updateSimulatedDate(value);
             }
-            
-            // Écouteurs d'événements
-            phaseSlider.addEventListener('input', function() {
-                updateMoonPhase(parseInt(this.value));
+
+            function loadSunCalc(callback) {
+                if (window.SunCalc) callback();
+                else {
+                    const script = document.createElement("script");
+                    script.src = "https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js";
+                    script.onload = callback;
+                    document.head.appendChild(script);
+                }
+            }
+
+            function resetToCurrentPhase() {
+                const now = new Date();
+                const { phase } = SunCalc.getMoonIllumination(now);
+                slider.value = phase.toFixed(2);
+                updatePhasePath(phase);
+                label.textContent = `Phase : ${getPhaseName(phase)}`;
+                updateSimulatedDate(phase);
+            }
+
+            loadSunCalc(() => {
+                resetToCurrentPhase();
+                slider.addEventListener("input", updateFromSlider);
+                resetBtn.addEventListener("click", resetToCurrentPhase);
             });
-            
-            currentPhaseBtn.addEventListener('click', setToCurrentPhase);
-            
-            // Initialisation
-            setToCurrentPhase();
-        });
+        })();
     </script>
 </body>
 </html>
