@@ -22,7 +22,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             padding: 25px;
             width: 100%;
-            max-width: 320px;
+            max-width: 300px;
             text-align: center;
         }
         
@@ -38,21 +38,29 @@
             height: 200px;
             margin: 0 auto 20px;
             position: relative;
+            background: #222;
+            border-radius: 50%;
             overflow: hidden;
         }
         
-        #moon-svg {
+        .moon-phase {
+            position: absolute;
             width: 100%;
             height: 100%;
-            display: block;
+            border-radius: 50%;
+            background: white;
+            clip-path: inset(0 50% 0 0);
+            transform: rotate(0deg);
         }
         
-        .moon-bg {
-            fill: #222;
-        }
-        
-        .moon-phase {
-            fill: #fff;
+        .moon-shadow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #222;
+            clip-path: inset(0 0 0 50%);
+            transform: rotate(0deg);
         }
         
         .controls {
@@ -61,14 +69,12 @@
         
         #phase-slider {
             width: 100%;
-            height: 8px;
+            margin-bottom: 15px;
             -webkit-appearance: none;
-            background: linear-gradient(to right, 
-                #000 0%, #333 12.5%, #666 25%, #999 37.5%, 
-                #ccc 50%, #999 62.5%, #666 75%, #333 87.5%, #000 100%);
+            height: 8px;
+            background: #ddd;
             border-radius: 4px;
             outline: none;
-            margin-bottom: 15px;
         }
         
         #phase-slider::-webkit-slider-thumb {
@@ -78,8 +84,6 @@
             background: #4a6fa5;
             border-radius: 50%;
             cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
         
         .phase-info {
@@ -106,11 +110,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            transition: background-color 0.2s;
-        }
-        
-        #reset-btn:hover {
-            background-color: #3a5a80;
         }
     </style>
 </head>
@@ -119,16 +118,8 @@
         <h1>🌝 Simulateur Lunaire</h1>
         
         <div class="moon-container">
-            <svg id="moon-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-                <circle class="moon-bg" cx="50" cy="50" r="50"/>
-                <defs>
-                    <mask id="moon-mask">
-                        <rect width="100" height="100" fill="white"/>
-                        <path id="moon-shadow" fill="black" d="M50,0a50,50 0 1,1 0,100a50,50 0 1,1 0,-100"/>
-                    </mask>
-                </defs>
-                <circle class="moon-phase" cx="50" cy="50" r="50" mask="url(#moon-mask)"/>
-            </svg>
+            <div class="moon-phase" id="moon-light"></div>
+            <div class="moon-shadow" id="moon-dark"></div>
         </div>
         
         <div class="phase-info">
@@ -137,7 +128,7 @@
         </div>
         
         <div class="controls">
-            <input type="range" id="phase-slider" min="0" max="29.5" step="0.1" value="0">
+            <input type="range" id="phase-slider" min="0" max="7" step="1" value="0">
             <button id="reset-btn">Phase actuelle</button>
         </div>
     </div>
@@ -145,114 +136,60 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const slider = document.getElementById('phase-slider');
-            const shadowPath = document.getElementById('moon-shadow');
+            const moonLight = document.getElementById('moon-light');
+            const moonDark = document.getElementById('moon-dark');
             const phaseName = document.getElementById('phase-name');
             const phaseDate = document.getElementById('phase-date');
             const resetBtn = document.getElementById('reset-btn');
             
-            // Points clés du cycle lunaire (jours)
-            const MOON_PHASES = {
-                NEW: { name: "🌑 Nouvelle Lune", day: 0 },
-                WAXING_CRESCENT: { name: "🌒 Premier Croissant", day: 3.7 },
-                FIRST_QUARTER: { name: "🌓 Premier Quartier", day: 7.4 },
-                WAXING_GIBBOUS: { name: "🌔 Lune Gibbeuse", day: 11.1 },
-                FULL: { name: "🌕 Pleine Lune", day: 14.7 },
-                WANING_GIBBOUS: { name: "🌖 Gibbeuse Décroiss.", day: 18.4 },
-                LAST_QUARTER: { name: "🌗 Dernier Quartier", day: 22.1 },
-                WANING_CRESCENT: { name: "🌘 Dernier Croissant", day: 25.8 }
-            };
+            const PHASES = [
+                { name: "🌑 Nouvelle Lune", light: 0, dark: 360 },
+                { name: "🌒 Premier Croissant", light: 45, dark: 315 },
+                { name: "🌓 Premier Quartier", light: 90, dark: 270 },
+                { name: "🌔 Lune Gibbeuse", light: 135, dark: 225 },
+                { name: "🌕 Pleine Lune", light: 180, dark: 180 },
+                { name: "🌖 Gibbeuse Décroiss.", light: 225, dark: 135 },
+                { name: "🌗 Dernier Quartier", light: 270, dark: 90 },
+                { name: "🌘 Dernier Croissant", light: 315, dark: 45 }
+            ];
             
-            // Mettre à jour l'affichage
-            function updateMoon(day) {
-                day = day % 29.5;
-                const phase = day / 29.5; // 0-1
-                const isWaxing = phase < 0.5;
-                const illumination = Math.abs(0.5 - phase) * 2;
+            function updateMoon(phaseIndex) {
+                const phase = PHASES[phaseIndex];
                 
-                // Mise à jour du nom de phase
-                updatePhaseName(day);
-                
-                // Mise à jour de la forme
-                updateShadowShape(illumination, isWaxing);
-                
-                // Mise à jour de la date
-                updatePhaseDate(day);
+                moonLight.style.transform = `rotate(${phase.light}deg)`;
+                moonDark.style.transform = `rotate(${phase.dark}deg)`;
+                phaseName.textContent = phase.name;
+                updatePhaseDate(phaseIndex);
             }
             
-            function updateShadowShape(illumination, isWaxing) {
-                const r = 50;
-                const ellipseWidth = r * 2 * (1 - illumination);
-                
-                let path;
-                if (illumination > 0.98) {
-                    path = `M0,0h100v100h-100z`; // Nouvelle lune
-                } else if (illumination < 0.02) {
-                    path = `M50,0a50,50 0 1,1 0,100a50,50 0 1,1 0,-100`; // Pleine lune
-                } else if (isWaxing) {
-                    path = `M50,0a50,50 0 1,1 0,100a${ellipseWidth},50 0 1,0 0,-100`;
-                } else {
-                    path = `M50,0a${ellipseWidth},50 0 1,1 0,100a50,50 0 1,0 0,-100`;
-                }
-                
-                shadowPath.setAttribute('d', path);
-            }
-            
-            function updatePhaseName(day) {
-                day = day % 29.5;
-                
-                if (day < 1 || day > 28.5) {
-                    phaseName.textContent = MOON_PHASES.NEW.name;
-                } else if (day < MOON_PHASES.WAXING_CRESCENT.day) {
-                    phaseName.textContent = MOON_PHASES.WAXING_CRESCENT.name;
-                } else if (day < MOON_PHASES.FIRST_QUARTER.day) {
-                    phaseName.textContent = MOON_PHASES.FIRST_QUARTER.name;
-                } else if (day < MOON_PHASES.WAXING_GIBBOUS.day) {
-                    phaseName.textContent = MOON_PHASES.WAXING_GIBBOUS.name;
-                } else if (day < MOON_PHASES.FULL.day) {
-                    phaseName.textContent = MOON_PHASES.FULL.name;
-                } else if (day < MOON_PHASES.WANING_GIBBOUS.day) {
-                    phaseName.textContent = MOON_PHASES.WANING_GIBBOUS.name;
-                } else if (day < MOON_PHASES.LAST_QUARTER.day) {
-                    phaseName.textContent = MOON_PHASES.LAST_QUARTER.name;
-                } else if (day < MOON_PHASES.WANING_CRESCENT.day) {
-                    phaseName.textContent = MOON_PHASES.WANING_CRESCENT.name;
-                } else {
-                    phaseName.textContent = MOON_PHASES.NEW.name;
-                }
-            }
-            
-            function updatePhaseDate(day) {
+            function updatePhaseDate(phaseIndex) {
                 const now = new Date();
-                const lunarCycle = 29.5;
-                const currentDay = getCurrentMoonDay();
+                const currentPhase = getCurrentPhaseIndex();
+                let dayDiff = phaseIndex - currentPhase;
                 
-                let dayDiff = day - currentDay;
-                if (dayDiff < 0) dayDiff += lunarCycle;
+                if (dayDiff < 0) dayDiff += 8;
                 
                 const targetDate = new Date(now);
-                targetDate.setDate(now.getDate() + Math.round(dayDiff));
+                targetDate.setDate(now.getDate() + dayDiff * 3.7); // ~29.5/8 jours par phase
                 
                 const options = { weekday: 'long', day: 'numeric', month: 'long' };
                 phaseDate.textContent = targetDate.toLocaleDateString('fr-FR', options);
             }
             
-            function getCurrentMoonDay() {
-                // Référence: nouvelle lune du 6 janvier 2000
-                const knownNewMoon = new Date('2000-01-06T06:14:00Z');
-                const now = new Date();
-                const diffDays = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
-                return diffDays % 29.5;
+            function getCurrentPhaseIndex() {
+                // Simplification: phase actuelle basée sur le jour du mois
+                const day = new Date().getDate();
+                return Math.floor((day % 29.5) / 3.7) % 8;
             }
             
             function resetToCurrentPhase() {
-                const currentDay = getCurrentMoonDay();
-                slider.value = currentDay.toFixed(1);
-                updateMoon(currentDay);
+                const currentPhase = getCurrentPhaseIndex();
+                slider.value = currentPhase;
+                updateMoon(currentPhase);
             }
             
-            // Événements
             slider.addEventListener('input', function() {
-                updateMoon(parseFloat(this.value));
+                updateMoon(parseInt(this.value));
             });
             
             resetBtn.addEventListener('click', resetToCurrentPhase);
