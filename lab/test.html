@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulateur de Phases Lunaires</title>
+    <title>Simulateur Lunaire</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,70 +11,67 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 20px;
         }
         
-        .simul-widget {
+        .moon-simulator {
             background-color: white;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             padding: 25px;
             width: 100%;
-            max-width: 400px;
+            max-width: 320px;
             text-align: center;
         }
         
-        .simul-title {
+        h1 {
             color: #333;
-            font-size: 1.5em;
+            font-size: 1.4em;
             margin-top: 0;
             margin-bottom: 20px;
         }
         
-        .moon-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+        .moon-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #moon-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .moon-bg {
+            fill: #222;
         }
         
         .moon-phase {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background-color: #222;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            fill: #fff;
         }
         
-        #simul-svg {
-            width: 100%;
-            height: 100%;
+        .controls {
+            margin: 25px 0;
         }
         
-        #simul-slider {
+        #phase-slider {
             width: 100%;
             height: 8px;
             -webkit-appearance: none;
             background: linear-gradient(to right, 
-                #000 0%, 
-                #000 3%, 
-                #333 22%, 
-                #666 28%, 
-                #999 47%, 
-                #ccc 53%, 
-                #999 72%, 
-                #666 78%, 
-                #333 97%, 
-                #000 100%);
-            border-radius: 5px;
+                #000 0%, #333 12.5%, #666 25%, #999 37.5%, 
+                #ccc 50%, #999 62.5%, #666 75%, #333 87.5%, #000 100%);
+            border-radius: 4px;
             outline: none;
-            margin: 15px 0;
+            margin-bottom: 15px;
         }
         
-        #simul-slider::-webkit-slider-thumb {
+        #phase-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 20px;
             height: 20px;
@@ -82,31 +79,26 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid white;
-            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
         
-        .slider-marks {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 5px;
+        .phase-info {
+            margin: 15px 0;
         }
         
-        .slider-mark {
-            width: 2px;
-            height: 10px;
-            background-color: #666;
-        }
-        
-        #simul-label {
+        #phase-name {
             font-size: 1.2em;
             color: #4a6fa5;
             font-weight: bold;
-            min-height: 1.5em;
-            margin: 10px 0;
+            margin-bottom: 5px;
         }
         
-        #simul-reset {
+        #phase-date {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        #reset-btn {
             background-color: #4a6fa5;
             color: white;
             border: none;
@@ -114,169 +106,160 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s;
         }
         
-        #simul-reset:hover {
+        #reset-btn:hover {
             background-color: #3a5a80;
-        }
-        
-        .moon-date {
-            font-size: 1.1em;
-            color: #555;
-            margin-top: 10px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div id="simul-moon-container"></div>
+    <div class="moon-simulator">
+        <h1>🌝 Simulateur Lunaire</h1>
+        
+        <div class="moon-container">
+            <svg id="moon-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                <circle class="moon-bg" cx="50" cy="50" r="50"/>
+                <defs>
+                    <mask id="moon-mask">
+                        <rect width="100" height="100" fill="white"/>
+                        <path id="moon-shadow" fill="black" d="M50,0a50,50 0 1,1 0,100a50,50 0 1,1 0,-100"/>
+                    </mask>
+                </defs>
+                <circle class="moon-phase" cx="50" cy="50" r="50" mask="url(#moon-mask)"/>
+            </svg>
+        </div>
+        
+        <div class="phase-info">
+            <div id="phase-name">Nouvelle Lune</div>
+            <div id="phase-date"></div>
+        </div>
+        
+        <div class="controls">
+            <input type="range" id="phase-slider" min="0" max="29.5" step="0.1" value="0">
+            <button id="reset-btn">Phase actuelle</button>
+        </div>
+    </div>
 
     <script>
-        (() => {
-            const wrapper = document.createElement("div");
-            wrapper.className = "simul-widget";
-
-            const container = document.createElement("div");
-            container.id = "simul-moon";
-            container.innerHTML = `
-                <h3 class="simul-title">🌙 Simulateur Lunaire</h3>
-                <div class="moon-wrapper">
-                    <svg id="simul-svg" viewBox="0 0 100 100" class="moon-phase">
-                        <defs>
-                            <clipPath id="simul-clip">
-                                <circle cx="50" cy="50" r="50" />
-                            </clipPath>
-                            <mask id="simul-mask">
-                                <rect width="100" height="100" fill="white" />
-                                <path id="simul-shadow-path" fill="black" />
-                            </mask>
-                        </defs>
-                        <circle cx="50" cy="50" r="50" fill="#fff" mask="url(#simul-mask)" clip-path="url(#simul-clip)" />
-                    </svg>
-                    <div class="moon-date" id="simul-date"></div>
-                    <input type="range" id="simul-slider" min="0" max="29.53" step="0.1" value="0">
-                    <div class="slider-marks">
-                        ${Array(8).fill().map((_,i) => `<div class="slider-mark"></div>`).join('')}
-                    </div>
-                    <div id="simul-label">Phase : ...</div>
-                    <button id="simul-reset">↺ Phase actuelle</button>
-                </div>
-            `;
-
-            wrapper.appendChild(container);
-            document.getElementById("simul-moon-container").appendChild(wrapper);
-
-            const slider = document.getElementById("simul-slider");
-            const shadowPath = document.getElementById("simul-shadow-path");
-            const label = document.getElementById("simul-label");
-            const resetBtn = document.getElementById("simul-reset");
-            const dateLabel = document.getElementById("simul-date");
-
-            // Points clés du cycle lunaire (jours depuis nouvelle lune)
-            const PHASE_POINTS = {
-                NEW: 0,
-                WAXING_CRESCENT: 3.7,
-                FIRST_QUARTER: 7.4,
-                WAXING_GIBBOUS: 11.1,
-                FULL: 14.77,
-                WANING_GIBBOUS: 18.44,
-                LAST_QUARTER: 22.17,
-                WANING_CRESCENT: 25.84
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.getElementById('phase-slider');
+            const shadowPath = document.getElementById('moon-shadow');
+            const phaseName = document.getElementById('phase-name');
+            const phaseDate = document.getElementById('phase-date');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            // Points clés du cycle lunaire (jours)
+            const MOON_PHASES = {
+                NEW: { name: "🌑 Nouvelle Lune", day: 0 },
+                WAXING_CRESCENT: { name: "🌒 Premier Croissant", day: 3.7 },
+                FIRST_QUARTER: { name: "🌓 Premier Quartier", day: 7.4 },
+                WAXING_GIBBOUS: { name: "🌔 Lune Gibbeuse", day: 11.1 },
+                FULL: { name: "🌕 Pleine Lune", day: 14.7 },
+                WANING_GIBBOUS: { name: "🌖 Gibbeuse Décroiss.", day: 18.4 },
+                LAST_QUARTER: { name: "🌗 Dernier Quartier", day: 22.1 },
+                WANING_CRESCENT: { name: "🌘 Dernier Croissant", day: 25.8 }
             };
-
-            function getPhaseName(day) {
-                day = day % 29.53;
-                
-                if (day < 1 || day > 28.5) return "🌑 Nouvelle Lune";
-                if (day < PHASE_POINTS.WAXING_CRESCENT) return "🌒 Croissant naissant";
-                if (day < PHASE_POINTS.FIRST_QUARTER) return "🌓 Premier Quartier";
-                if (day < PHASE_POINTS.WAXING_GIBBOUS) return "🌔 Gibbeuse croissante";
-                if (day < PHASE_POINTS.FULL) return "🌕 Pleine Lune";
-                if (day < PHASE_POINTS.WANING_GIBBOUS) return "🌖 Gibbeuse décroissante";
-                if (day < PHASE_POINTS.LAST_QUARTER) return "🌗 Dernier Quartier";
-                if (day < PHASE_POINTS.WANING_CRESCENT) return "🌘 Croissant final";
-                return "🌑 Nouvelle Lune";
-            }
-
-            function updatePhaseVisual(day) {
-                day = day % 29.53;
-                const phase = day / 29.53; // Normalisé 0-1
+            
+            // Mettre à jour l'affichage
+            function updateMoon(day) {
+                day = day % 29.5;
+                const phase = day / 29.5; // 0-1
                 const isWaxing = phase < 0.5;
                 const illumination = Math.abs(0.5 - phase) * 2;
                 
-                const cx = 50, cy = 50, r = 50;
+                // Mise à jour du nom de phase
+                updatePhaseName(day);
                 
-                // Nouvelle Lune
-                if (illumination > 0.98) {
-                    shadowPath.setAttribute("d", "M0,0h100v100h-100z");
-                    return;
-                }
+                // Mise à jour de la forme
+                updateShadowShape(illumination, isWaxing);
                 
-                // Pleine Lune
-                if (illumination < 0.02) {
-                    shadowPath.setAttribute("d", "M0,0");
-                    return;
-                }
-                
+                // Mise à jour de la date
+                updatePhaseDate(day);
+            }
+            
+            function updateShadowShape(illumination, isWaxing) {
+                const r = 50;
                 const ellipseWidth = r * 2 * (1 - illumination);
-                const controlOffset = r * 0.55 * (1 - illumination);
                 
                 let path;
-                if (isWaxing) {
-                    path = `M ${cx},${cy - r}
-                            A ${r},${r} 0 0,1 ${cx},${cy + r}
-                            A ${ellipseWidth},${r} 0 0,0 ${cx},${cy - r} Z`;
+                if (illumination > 0.98) {
+                    path = `M0,0h100v100h-100z`; // Nouvelle lune
+                } else if (illumination < 0.02) {
+                    path = `M50,0a50,50 0 1,1 0,100a50,50 0 1,1 0,-100`; // Pleine lune
+                } else if (isWaxing) {
+                    path = `M50,0a50,50 0 1,1 0,100a${ellipseWidth},50 0 1,0 0,-100`;
                 } else {
-                    path = `M ${cx},${cy - r}
-                            A ${ellipseWidth},${r} 0 0,1 ${cx},${cy + r}
-                            A ${r},${r} 0 0,0 ${cx},${cy - r} Z`;
+                    path = `M50,0a${ellipseWidth},50 0 1,1 0,100a50,50 0 1,0 0,-100`;
                 }
                 
-                shadowPath.setAttribute("d", path);
+                shadowPath.setAttribute('d', path);
             }
-
-            function updateSimulatedDate(day) {
+            
+            function updatePhaseName(day) {
+                day = day % 29.5;
+                
+                if (day < 1 || day > 28.5) {
+                    phaseName.textContent = MOON_PHASES.NEW.name;
+                } else if (day < MOON_PHASES.WAXING_CRESCENT.day) {
+                    phaseName.textContent = MOON_PHASES.WAXING_CRESCENT.name;
+                } else if (day < MOON_PHASES.FIRST_QUARTER.day) {
+                    phaseName.textContent = MOON_PHASES.FIRST_QUARTER.name;
+                } else if (day < MOON_PHASES.WAXING_GIBBOUS.day) {
+                    phaseName.textContent = MOON_PHASES.WAXING_GIBBOUS.name;
+                } else if (day < MOON_PHASES.FULL.day) {
+                    phaseName.textContent = MOON_PHASES.FULL.name;
+                } else if (day < MOON_PHASES.WANING_GIBBOUS.day) {
+                    phaseName.textContent = MOON_PHASES.WANING_GIBBOUS.name;
+                } else if (day < MOON_PHASES.LAST_QUARTER.day) {
+                    phaseName.textContent = MOON_PHASES.LAST_QUARTER.name;
+                } else if (day < MOON_PHASES.WANING_CRESCENT.day) {
+                    phaseName.textContent = MOON_PHASES.WANING_CRESCENT.name;
+                } else {
+                    phaseName.textContent = MOON_PHASES.NEW.name;
+                }
+            }
+            
+            function updatePhaseDate(day) {
                 const now = new Date();
-                const lunarCycle = 29.53;
+                const lunarCycle = 29.5;
                 const currentDay = getCurrentMoonDay();
                 
-                let dayDifference = day - currentDay;
-                if (dayDifference < 0) dayDifference += lunarCycle;
+                let dayDiff = day - currentDay;
+                if (dayDiff < 0) dayDiff += lunarCycle;
                 
-                const simulatedDate = new Date(now);
-                simulatedDate.setDate(now.getDate() + Math.round(dayDifference));
+                const targetDate = new Date(now);
+                targetDate.setDate(now.getDate() + Math.round(dayDiff));
                 
-                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                dateLabel.textContent = simulatedDate.toLocaleDateString('fr-FR', options);
+                const options = { weekday: 'long', day: 'numeric', month: 'long' };
+                phaseDate.textContent = targetDate.toLocaleDateString('fr-FR', options);
             }
-
+            
             function getCurrentMoonDay() {
-                // Date de référence: nouvelle lune connue
-                const knownNewMoon = new Date('2023-11-13T09:27:00Z');
+                // Référence: nouvelle lune du 6 janvier 2000
+                const knownNewMoon = new Date('2000-01-06T06:14:00Z');
                 const now = new Date();
-                const diffInDays = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
-                return diffInDays % 29.53;
+                const diffDays = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
+                return diffDays % 29.5;
             }
-
-            function updateFromSlider() {
-                const day = parseFloat(slider.value);
-                updatePhaseVisual(day);
-                label.textContent = `Phase : ${getPhaseName(day)}`;
-                updateSimulatedDate(day);
-            }
-
+            
             function resetToCurrentPhase() {
                 const currentDay = getCurrentMoonDay();
                 slider.value = currentDay.toFixed(1);
-                updateFromSlider();
+                updateMoon(currentDay);
             }
-
+            
+            // Événements
+            slider.addEventListener('input', function() {
+                updateMoon(parseFloat(this.value));
+            });
+            
+            resetBtn.addEventListener('click', resetToCurrentPhase);
+            
             // Initialisation
             resetToCurrentPhase();
-            slider.addEventListener("input", updateFromSlider);
-            resetBtn.addEventListener("click", resetToCurrentPhase);
-        })();
+        });
     </script>
 </body>
 </html>
