@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
 
-  document.body.appendChild(container);
+document.getElementById("simul-moon-container")?.appendChild(container);
 
   const shadow = document.getElementById("shadow");
   const slider = document.getElementById("phase-slider");
