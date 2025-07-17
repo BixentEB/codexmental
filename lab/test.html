@@ -44,7 +44,7 @@
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background-color: #333;
+            background-color: #222;
             position: relative;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
         }
@@ -58,7 +58,17 @@
             width: 100%;
             height: 8px;
             -webkit-appearance: none;
-            background: #ddd;
+            background: linear-gradient(to right, 
+                #000 0%, 
+                #000 3%, 
+                #333 22%, 
+                #666 28%, 
+                #999 47%, 
+                #ccc 53%, 
+                #999 72%, 
+                #666 78%, 
+                #333 97%, 
+                #000 100%);
             border-radius: 5px;
             outline: none;
             margin: 15px 0;
@@ -71,6 +81,21 @@
             background: #4a6fa5;
             border-radius: 50%;
             cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+        
+        .slider-marks {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .slider-mark {
+            width: 2px;
+            height: 10px;
+            background-color: #666;
         }
         
         #simul-label {
@@ -78,6 +103,7 @@
             color: #4a6fa5;
             font-weight: bold;
             min-height: 1.5em;
+            margin: 10px 0;
         }
         
         #simul-reset {
@@ -101,27 +127,12 @@
             margin-top: 10px;
             font-weight: bold;
         }
-        
-        .slider-marks {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 5px;
-        }
-        
-        .slider-mark {
-            width: 1px;
-            height: 10px;
-            background-color: #999;
-        }
     </style>
 </head>
 <body>
     <div id="simul-moon-container"></div>
 
     <script>
-        // simul-moon.js – Simulateur lunaire avancé avec phase réelle + simulation manuelle
-        // Version améliorée avec meilleure représentation des phases et dates
         (() => {
             const wrapper = document.createElement("div");
             wrapper.className = "simul-widget";
@@ -144,16 +155,9 @@
                         <circle cx="50" cy="50" r="50" fill="#fff" mask="url(#simul-mask)" clip-path="url(#simul-clip)" />
                     </svg>
                     <div class="moon-date" id="simul-date"></div>
-                    <input type="range" id="simul-slider" min="0" max="1" step="0.01" value="0.5">
+                    <input type="range" id="simul-slider" min="0" max="29.53" step="0.1" value="0">
                     <div class="slider-marks">
-                        <div class="slider-mark"></div>
-                        <div class="slider-mark"></div>
-                        <div class="slider-mark"></div>
-                        <div class="slider-mark"></div>
-                        <div class="slider-mark"></div>
-                        <div class="slider-mark"></div>
-                        <div class="slider-mark"></div>
-                        <div class="slider-mark"></div>
+                        ${Array(8).fill().map((_,i) => `<div class="slider-mark"></div>`).join('')}
                     </div>
                     <div id="simul-label">Phase : ...</div>
                     <button id="simul-reset">↺ Phase actuelle</button>
@@ -161,7 +165,7 @@
             `;
 
             wrapper.appendChild(container);
-            document.getElementById("simul-moon-container")?.appendChild(wrapper);
+            document.getElementById("simul-moon-container").appendChild(wrapper);
 
             const slider = document.getElementById("simul-slider");
             const shadowPath = document.getElementById("simul-shadow-path");
@@ -169,111 +173,109 @@
             const resetBtn = document.getElementById("simul-reset");
             const dateLabel = document.getElementById("simul-date");
 
-            // Noms des phases lunaires avec meilleures transitions
-            function getPhaseName(p) {
-                if (p < 0.03 || p > 0.97) return "🌑 Nouvelle Lune";
-                if (p < 0.22) return "🌒 Premier Croissant";
-                if (p < 0.28) return "🌓 Premier Quartier";
-                if (p < 0.47) return "🌔 Lune Gibbeuse Croissante";
-                if (p <= 0.53) return "🌕 Pleine Lune";
-                if (p < 0.72) return "🌖 Lune Gibbeuse Décroissante";
-                if (p < 0.78) return "🌗 Dernier Quartier";
-                if (p <= 0.97) return "🌘 Dernier Croissant";
+            // Points clés du cycle lunaire (jours depuis nouvelle lune)
+            const PHASE_POINTS = {
+                NEW: 0,
+                WAXING_CRESCENT: 3.7,
+                FIRST_QUARTER: 7.4,
+                WAXING_GIBBOUS: 11.1,
+                FULL: 14.77,
+                WANING_GIBBOUS: 18.44,
+                LAST_QUARTER: 22.17,
+                WANING_CRESCENT: 25.84
+            };
+
+            function getPhaseName(day) {
+                day = day % 29.53;
+                
+                if (day < 1 || day > 28.5) return "🌑 Nouvelle Lune";
+                if (day < PHASE_POINTS.WAXING_CRESCENT) return "🌒 Croissant naissant";
+                if (day < PHASE_POINTS.FIRST_QUARTER) return "🌓 Premier Quartier";
+                if (day < PHASE_POINTS.WAXING_GIBBOUS) return "🌔 Gibbeuse croissante";
+                if (day < PHASE_POINTS.FULL) return "🌕 Pleine Lune";
+                if (day < PHASE_POINTS.WANING_GIBBOUS) return "🌖 Gibbeuse décroissante";
+                if (day < PHASE_POINTS.LAST_QUARTER) return "🌗 Dernier Quartier";
+                if (day < PHASE_POINTS.WANING_CRESCENT) return "🌘 Croissant final";
                 return "🌑 Nouvelle Lune";
             }
 
-            // Meilleure représentation visuelle des phases
-            function updatePhasePath(phase) {
-                if (!shadowPath) return;
-
-                const cx = 50, cy = 50, r = 50;
+            function updatePhaseVisual(day) {
+                day = day % 29.53;
+                const phase = day / 29.53; // Normalisé 0-1
                 const isWaxing = phase < 0.5;
-                const illum = Math.abs(0.5 - phase) * 2; // 0 (pleine) à 1 (nouvelle)
-
-                // Cas limites
-                if (illum < 0.01) {
-                    shadowPath.setAttribute("d", "M 0,0 L 0,0"); // pleine lune
+                const illumination = Math.abs(0.5 - phase) * 2;
+                
+                const cx = 50, cy = 50, r = 50;
+                
+                // Nouvelle Lune
+                if (illumination > 0.98) {
+                    shadowPath.setAttribute("d", "M0,0h100v100h-100z");
                     return;
                 }
-                if (illum > 0.99) {
-                    shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z"); // nouvelle lune
+                
+                // Pleine Lune
+                if (illumination < 0.02) {
+                    shadowPath.setAttribute("d", "M0,0");
                     return;
                 }
-
-                // Calcul plus précis de la forme de l'ombre
-                const ellipseW = r * (2 * (1 - illum));
-                const controlOffset = r * 0.55 * (1 - illum);
-
+                
+                const ellipseWidth = r * 2 * (1 - illumination);
+                const controlOffset = r * 0.55 * (1 - illumination);
+                
                 let path;
                 if (isWaxing) {
-                    // Ombre à gauche (phase croissante)
                     path = `M ${cx},${cy - r}
                             A ${r},${r} 0 0,1 ${cx},${cy + r}
-                            A ${ellipseW},${r} 0 0,0 ${cx},${cy - r} Z`;
+                            A ${ellipseWidth},${r} 0 0,0 ${cx},${cy - r} Z`;
                 } else {
-                    // Ombre à droite (phase décroissante)
                     path = `M ${cx},${cy - r}
-                            A ${ellipseW},${r} 0 0,1 ${cx},${cy + r}
+                            A ${ellipseWidth},${r} 0 0,1 ${cx},${cy + r}
                             A ${r},${r} 0 0,0 ${cx},${cy - r} Z`;
                 }
-
+                
                 shadowPath.setAttribute("d", path);
             }
 
-            // Mise à jour de la date simulée
-            function updateSimulatedDate(phase) {
+            function updateSimulatedDate(day) {
                 const now = new Date();
-                const lunarCycle = 29.530588853;
-                const currentPhase = SunCalc.getMoonIllumination(now).phase;
+                const lunarCycle = 29.53;
+                const currentDay = getCurrentMoonDay();
                 
-                // Calculer la différence en jours
-                let dayDifference;
-                if (phase >= currentPhase) {
-                    dayDifference = (phase - currentPhase) * lunarCycle;
-                } else {
-                    dayDifference = (1 - currentPhase + phase) * lunarCycle;
-                }
+                let dayDifference = day - currentDay;
+                if (dayDifference < 0) dayDifference += lunarCycle;
                 
-                // Créer une nouvelle date avec le décalage
                 const simulatedDate = new Date(now);
                 simulatedDate.setDate(now.getDate() + Math.round(dayDifference));
                 
-                // Formater la date
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 dateLabel.textContent = simulatedDate.toLocaleDateString('fr-FR', options);
             }
 
-            function updateFromSlider() {
-                const value = parseFloat(slider.value);
-                updatePhasePath(value);
-                label.textContent = `Phase : ${getPhaseName(value)}`;
-                updateSimulatedDate(value);
+            function getCurrentMoonDay() {
+                // Date de référence: nouvelle lune connue
+                const knownNewMoon = new Date('2023-11-13T09:27:00Z');
+                const now = new Date();
+                const diffInDays = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
+                return diffInDays % 29.53;
             }
 
-            function loadSunCalc(callback) {
-                if (window.SunCalc) callback();
-                else {
-                    const script = document.createElement("script");
-                    script.src = "https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js";
-                    script.onload = callback;
-                    document.head.appendChild(script);
-                }
+            function updateFromSlider() {
+                const day = parseFloat(slider.value);
+                updatePhaseVisual(day);
+                label.textContent = `Phase : ${getPhaseName(day)}`;
+                updateSimulatedDate(day);
             }
 
             function resetToCurrentPhase() {
-                const now = new Date();
-                const { phase } = SunCalc.getMoonIllumination(now);
-                slider.value = phase.toFixed(2);
-                updatePhasePath(phase);
-                label.textContent = `Phase : ${getPhaseName(phase)}`;
-                updateSimulatedDate(phase);
+                const currentDay = getCurrentMoonDay();
+                slider.value = currentDay.toFixed(1);
+                updateFromSlider();
             }
 
-            loadSunCalc(() => {
-                resetToCurrentPhase();
-                slider.addEventListener("input", updateFromSlider);
-                resetBtn.addEventListener("click", resetToCurrentPhase);
-            });
+            // Initialisation
+            resetToCurrentPhase();
+            slider.addEventListener("input", updateFromSlider);
+            resetBtn.addEventListener("click", resetToCurrentPhase);
         })();
     </script>
 </body>
