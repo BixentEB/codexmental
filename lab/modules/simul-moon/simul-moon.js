@@ -24,8 +24,8 @@ export function launchSimulMoon() {
           <circle cx="50" cy="50" r="50"/>
         </clipPath>
         <mask id="simul-mask">
-          <rect width="100%" height="100%" fill="black"/>
-          <path id="simul-shadow" fill="white"/>
+          <rect width="100%" height="100%" fill="white"/>
+          <path id="simul-shadow" fill="black"/>
         </mask>
       </defs>
 
