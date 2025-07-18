@@ -1,6 +1,3 @@
-/**
- * Simulateur lunaire avec masque orbital tournant + fond assombri
- */
 export function launchSimulMoon() {
   const old = document.getElementById("simul-moon");
   if (old) old.remove();
@@ -17,25 +14,24 @@ export function launchSimulMoon() {
   container.style.fontFamily = "sans-serif";
 
   container.innerHTML = `
-    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire<br>(orbital)</div>
+    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire (reset)</div>
     <svg id="simul-svg" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
-        <clipPath id="simul-clip">
-          <circle cx="50" cy="50" r="50"/>
+        <clipPath id="moon-clip">
+          <circle cx="50" cy="50" r="50" />
         </clipPath>
-        <mask id="simul-mask">
-          <rect width="100%" height="100%" fill="white"/>
-          <path id="simul-shadow" fill="black"/>
+        <mask id="light-mask">
+          <rect width="100%" height="100%" fill="black" />
+          <path id="shadow-path" fill="white" />
         </mask>
       </defs>
 
-      <!-- Lune sombre de fond -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             filter="brightness(0.2) opacity(0.2)" clip-path="url(#simul-clip)"/>
+      <!-- Lune visible (fixe) -->
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" clip-path="url(#moon-clip)" />
 
-      <!-- Lune éclairée masquée par l’ombre tournante -->
+      <!-- Zone éclairée -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             mask="url(#simul-mask)" clip-path="url(#simul-clip)"/>
+             mask="url(#light-mask)" clip-path="url(#moon-clip)" />
     </svg>
 
     <input type="range" min="0" max="1" step="0.001" value="0" id="moon-slider" style="width:100%; margin-top:1em">
@@ -49,7 +45,7 @@ export function launchSimulMoon() {
     return;
   }
 
-  const shadowPath = container.querySelector("#simul-shadow");
+  const shadowPath = container.querySelector("#shadow-path");
   const slider = container.querySelector("#moon-slider");
   const label = container.querySelector("#moon-phase-label");
 
@@ -61,10 +57,9 @@ export function launchSimulMoon() {
     };
   }
 
-  function describeTerminator(cx, cy, r, angleDeg) {
+  function describeArc(cx, cy, r, angleDeg) {
     const start = polarToCartesian(cx, cy, r, angleDeg);
     const end = polarToCartesian(cx, cy, r, angleDeg + 180);
-
     return `
       M ${start.x},${start.y}
       A ${r},${r} 0 0,1 ${end.x},${end.y}
@@ -75,7 +70,7 @@ export function launchSimulMoon() {
 
   function updatePhase(phase) {
     const angle = (phase * 360) % 360;
-    const pathData = describeTerminator(50, 50, 50, angle);
+    const pathData = describeArc(50, 50, 50, angle);
     shadowPath.setAttribute("d", pathData.trim());
 
     let emoji = "🌑";
