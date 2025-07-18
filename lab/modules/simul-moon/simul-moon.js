@@ -61,6 +61,7 @@ export function launchSimulMoon() {
     const radius = 50;
 
     let pathData;
+
     if (fraction < 0.01) {
       pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // 🌑
     } else if (fraction > 0.99) {
@@ -68,17 +69,23 @@ export function launchSimulMoon() {
     } else {
       const rx = radius;
       const ry = radius;
-      const fx = radius * Math.abs(2 * fraction - 1);
+      const fx = radius * (2 * fraction - 1); // entre 0 et 50
 
-      const sweep = phase < 0.5 ? 1 : 0;
-      const largeArc = 0;
-
-      pathData = `
+      const sweepRight = `
         M ${centerX},${centerY - ry}
-        A ${fx},${ry} 0 ${largeArc},${sweep} ${centerX},${centerY + ry}
-        A ${rx},${ry} 0 ${largeArc},${1 - sweep} ${centerX},${centerY - ry}
+        A ${fx},${ry} 0 0,1 ${centerX},${centerY + ry}
+        A ${rx},${ry} 0 0,0 ${centerX},${centerY - ry}
         Z
       `;
+
+      const sweepLeft = `
+        M ${centerX},${centerY - ry}
+        A ${rx},${ry} 0 0,1 ${centerX},${centerY + ry}
+        A ${fx},${ry} 0 0,0 ${centerX},${centerY - ry}
+        Z
+      `;
+
+      pathData = (phase < 0.5 ? sweepRight : sweepLeft);
     }
 
     shadowPath.setAttribute("d", pathData.trim());
