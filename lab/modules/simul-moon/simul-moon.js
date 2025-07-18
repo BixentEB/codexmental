@@ -1,9 +1,13 @@
-export function launchSimulMoon() {
+/**
+ * Simulateur lunaire en Canvas 2D – indépendant et réaliste
+ */
+export function launchSimulMoonCanvas() {
   const old = document.getElementById("simul-moon");
   if (old) old.remove();
 
   const container = document.createElement("div");
   container.id = "simul-moon";
+  container.className = "widget-simul-moon";
   container.style.margin = "1em auto";
   container.style.maxWidth = "220px";
   container.style.textAlign = "center";
@@ -14,26 +18,8 @@ export function launchSimulMoon() {
   container.style.fontFamily = "sans-serif";
 
   container.innerHTML = `
-    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire (reset)</div>
-    <svg id="simul-svg" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <clipPath id="moon-clip">
-          <circle cx="50" cy="50" r="50" />
-        </clipPath>
-        <mask id="light-mask">
-          <rect width="100%" height="100%" fill="black" />
-          <path id="shadow-path" fill="white" />
-        </mask>
-      </defs>
-
-      <!-- Lune visible (fixe) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" clip-path="url(#moon-clip)" />
-
-      <!-- Zone éclairée -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             mask="url(#light-mask)" clip-path="url(#moon-clip)" />
-    </svg>
-
+    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire (canvas)</div>
+    <canvas id="simul-canvas" width="200" height="200" style="width:100%; border-radius:50%;"></canvas>
     <input type="range" min="0" max="1" step="0.001" value="0" id="moon-slider" style="width:100%; margin-top:1em">
     <div id="moon-phase-label" style="margin-top:0.3em; font-size: 0.8em;"></div>
   `;
@@ -45,34 +31,42 @@ export function launchSimulMoon() {
     return;
   }
 
-  const shadowPath = container.querySelector("#shadow-path");
+  const canvas = container.querySelector("#simul-canvas");
+  const ctx = canvas.getContext("2d");
   const slider = container.querySelector("#moon-slider");
   const label = container.querySelector("#moon-phase-label");
 
-  function polarToCartesian(cx, cy, r, angleDeg) {
-    const rad = (angleDeg - 90) * Math.PI / 180;
-    return {
-      x: cx + r * Math.cos(rad),
-      y: cy + r * Math.sin(rad)
-    };
-  }
+  const img = new Image();
+  img.src = "/img/lune/lune-pleine-simul.png";
 
-  function describeArc(cx, cy, r, angleDeg) {
-    const start = polarToCartesian(cx, cy, r, angleDeg);
-    const end = polarToCartesian(cx, cy, r, angleDeg + 180);
-    return `
-      M ${start.x},${start.y}
-      A ${r},${r} 0 0,1 ${end.x},${end.y}
-      A ${r},${r} 0 0,1 ${start.x},${start.y}
-      Z
-    `;
-  }
+  function drawMoon(phase) {
+    const width = canvas.width;
+    const height = canvas.height;
+    const cx = width / 2;
+    const cy = height / 2;
+    const r = width / 2;
 
-  function updatePhase(phase) {
-    const angle = (phase * 360) % 360;
-    const pathData = describeArc(50, 50, 50, angle);
-    shadowPath.setAttribute("d", pathData.trim());
+    ctx.clearRect(0, 0, width, height);
+    ctx.save();
 
+    // Dessine la lune pleine
+    ctx.drawImage(img, 0, 0, width, height);
+
+    // Calcule l'ombre
+    const illumination = 1 - Math.abs(phase - 0.5) * 2;
+    const angle = phase * 2 * Math.PI;
+
+    // Ombre circulaire réaliste
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    const curve = Math.cos(angle);
+    ctx.ellipse(cx, cy, r * curve, r, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "black";
+    ctx.fill();
+
+    ctx.restore();
+
+    // Phase label
     let emoji = "🌑";
     if (phase < 0.125) emoji = "🌑 Nouvelle lune";
     else if (phase < 0.25) emoji = "🌒 Croissant croissant";
@@ -87,8 +81,10 @@ export function launchSimulMoon() {
   }
 
   slider.addEventListener("input", () => {
-    updatePhase(parseFloat(slider.value));
+    drawMoon(parseFloat(slider.value));
   });
 
-  updatePhase(parseFloat(slider.value));
+  img.onload = () => {
+    drawMoon(parseFloat(slider.value));
+  };
 }
