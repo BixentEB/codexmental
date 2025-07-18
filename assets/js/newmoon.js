@@ -42,31 +42,23 @@ function updateMoon() {
     const radius = 50;
     
     // Calculer l'ellipse de la terminaison
-    // Pour les phases croissantes (0 à 0.5), la partie éclairée grandit à droite
-    // Pour les phases décroissantes (0.5 à 1), la partie éclairée diminue à gauche
-    
+    const isWaxing = phase < 0.5;
     let ellipseWidth;
-    let isWaxing = phase < 0.5;
     
     if (isWaxing) {
-      // Phase croissante : ellipse de plus en plus large
-      ellipseWidth = radius * (2 * fraction - 1);
+      // Phase croissante : ombre à gauche (partie éclairée à droite)
+      ellipseWidth = radius * (1 - 2 * fraction);
     } else {
-      // Phase décroissante : ellipse de plus en plus étroite
+      // Phase décroissante : ombre à droite (partie éclairée à gauche)
       ellipseWidth = radius * (2 * fraction - 1);
     }
     
-    if (ellipseWidth > 0) {
-      // Partie éclairée à droite
-      pathData = `M ${centerX},${centerY - radius}
-                  A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
-                  A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
-    } else {
-      // Partie éclairée à gauche
-      pathData = `M ${centerX},${centerY - radius}
-                  A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
-                  A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
-    }
+    const absWidth = Math.abs(ellipseWidth);
+    const sweepFlag = ellipseWidth > 0 ? 1 : 0;
+
+    pathData = `M ${centerX},${centerY - radius}
+                A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
+                A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
   }
   
   shadowPath.setAttribute("d", pathData);
