@@ -182,27 +182,50 @@
                 const centerY = 50;
                 const radius = 50;
                 
+                // Calculer la largeur de l'ellipse selon la phase
+                // Phase 0 -> 0.5 : croissante (de gauche invisible à droite plein)
+                // Phase 0.5 -> 1 : décroissante (de droite plein à gauche invisible)
+                
                 let ellipseWidth;
                 let isWaxing = phase < 0.5;
                 
                 if (isWaxing) {
-                    // Phase croissante : ellipse de plus en plus large
+                    // Phase croissante : de nouvelle lune à pleine lune
+                    // fraction va de 0 à 1, on veut que l'ellipse aille de très négative à 0
                     ellipseWidth = radius * (2 * fraction - 1);
                 } else {
-                    // Phase décroissante : ellipse de plus en plus étroite
-                    ellipseWidth = radius * (2 * fraction - 1);
+                    // Phase décroissante : de pleine lune à nouvelle lune
+                    // fraction va de 1 à 0, on veut que l'ellipse aille de 0 à très positive
+                    ellipseWidth = radius * (1 - 2 * fraction);
                 }
                 
-                if (ellipseWidth > 0) {
-                    // Partie éclairée à droite
-                    pathData = `M ${centerX},${centerY - radius}
-                                A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
-                                A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+                // Créer le chemin de l'ombre
+                if (isWaxing) {
+                    if (ellipseWidth < 0) {
+                        // Croissant croissant : ombre couvre la partie droite
+                        pathData = `M ${centerX},${centerY - radius}
+                                    A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY + radius}
+                                    L 100,${centerY + radius}
+                                    L 100,${centerY - radius} Z`;
+                    } else {
+                        // Gibbeuse croissante : ombre couvre juste un croissant à droite
+                        pathData = `M ${centerX},${centerY - radius}
+                                    A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
+                                    A ${ellipseWidth},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+                    }
                 } else {
-                    // Partie éclairée à gauche
-                    pathData = `M ${centerX},${centerY - radius}
-                                A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
-                                A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+                    if (ellipseWidth > 0) {
+                        // Gibbeuse décroissante : ombre couvre un croissant à gauche
+                        pathData = `M ${centerX},${centerY - radius}
+                                    A ${ellipseWidth},${radius} 0 0,1 ${centerX},${centerY + radius}
+                                    A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+                    } else {
+                        // Croissant décroissant : ombre couvre la partie gauche
+                        pathData = `M 0,${centerY - radius}
+                                    L 0,${centerY + radius}
+                                    L ${centerX},${centerY + radius}
+                                    A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY - radius} Z`;
+                    }
                 }
             }
             
