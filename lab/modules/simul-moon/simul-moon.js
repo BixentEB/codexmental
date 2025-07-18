@@ -24,10 +24,10 @@ export function launchSimulMoonCanvas() {
     <div id="moon-phase-label" style="margin-top:0.3em; font-size: 0.8em;"></div>
   `;
 
-  const target = document.getElementById("simul-moon-container");
+  const target = document.getElementById("simul-moon-canvas-container");
   if (target) target.appendChild(container);
   else {
-    console.warn("❌ simulateur : conteneur #simul-moon-container non trouvé");
+    console.warn("❌ simulateur : conteneur #simul-moon-canvas-container non trouvé");
     return;
   }
 
