@@ -1,5 +1,5 @@
 /**
- * Simulateur lunaire avec ombre tournante (réaliste et continue)
+ * Simulateur lunaire avec ombre tournante (orbital, clair)
  */
 export function launchSimulMoon() {
   const old = document.getElementById("simul-moon");
@@ -17,7 +17,7 @@ export function launchSimulMoon() {
   container.style.fontFamily = "sans-serif";
 
   container.innerHTML = `
-    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire (orbital)</div>
+    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire<br>(orbital)</div>
     <svg id="simul-svg" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
         <clipPath id="simul-clip">
@@ -29,8 +29,11 @@ export function launchSimulMoon() {
         </mask>
       </defs>
 
+      <!-- Lune sombre par défaut (plus besoin de filtre ici) -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             filter="brightness(0.4) opacity(0.15)" clip-path="url(#simul-clip)"/>
+             clip-path="url(#simul-clip)"/>
+
+      <!-- Zone éclairée découpée dynamiquement par masque -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
              mask="url(#simul-mask)" clip-path="url(#simul-clip)"/>
     </svg>
@@ -71,7 +74,7 @@ export function launchSimulMoon() {
   }
 
   function updatePhase(phase) {
-    const angle = (phase * 360) % 360; // Angle entre 0° et 360°
+    const angle = (phase * 360) % 360;
     const pathData = describeTerminator(50, 50, 50, angle);
     shadowPath.setAttribute("d", pathData.trim());
 
