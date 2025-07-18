@@ -1,11 +1,9 @@
 // modules.js – Chargement centralisé des widgets du Lab Codex
 
 // Chargement manuel des modules à activer
-import { launchSimulMoon } from "/lab/modules/simul-moon/simul-moon.js";
-
-// Ne lancer le simulateur que sur /lab/index.html
+import { launchSimulMoonCanvas } from "/lab/modules/simul-moon/simul-moon-canvas.js";
 if (window.location.pathname.endsWith("/lab/index.html")) {
-  launchSimulMoon();
+  launchSimulMoonCanvas();
 }
 
 console.log("✅ Modules du lab chargés");
