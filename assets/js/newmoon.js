@@ -22,99 +22,85 @@ function updateMoon() {
   const shadowPath = document.getElementById("shadow-path");
   if (!shadowPath) return;
 
-  // Conversion phase SunCalc vers angle plus intuitif
-  // phase 0 = nouvelle lune, 0.25 = premier quartier, 0.5 = pleine lune, 0.75 = dernier quartier
-  const angle = phase * 2 * Math.PI;
-  
-  // Calcul de la position de la terminaison (ligne jour/nuit)
+  const centerX = 50;
+  const centerY = 50;
+  const radius = 50;
   let pathData;
-  
+
   if (fraction < 0.01) {
-    // Nouvelle lune - tout sombre
+    // Nouvelle lune
     pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
   } else if (fraction > 0.99) {
-    // Pleine lune - tout éclairé
-    pathData = "M 0,0 L 0,0"; // Chemin vide
+    // Pleine lune
+    pathData = "M 0,0 L 0,0";
   } else {
-    // Phases intermédiaires - créer la terminaison elliptique
-    const centerX = 50;
-    const centerY = 50;
-    const radius = 50;
-    
-    // Calculer l'ellipse de la terminaison
     const isWaxing = phase < 0.5;
-    let ellipseWidth;
+    const ellipseWidth = isWaxing 
+      ? radius * (1 - 2 * fraction) 
+      : radius * (2 * fraction - 1);
     
-    if (isWaxing) {
-      // Phase croissante : ombre à gauche (partie éclairée à droite)
-      ellipseWidth = radius * (1 - 2 * fraction);
-    } else {
-      // Phase décroissante : ombre à droite (partie éclairée à gauche)
-      ellipseWidth = radius * (2 * fraction - 1);
-    }
-    
-    const absWidth = Math.abs(ellipseWidth);
+    const absWidth = Math.max(5, Math.abs(ellipseWidth));
     const sweepFlag = ellipseWidth > 0 ? 1 : 0;
 
     pathData = `M ${centerX},${centerY - radius}
                 A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
                 A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
   }
-  
+
   shadowPath.setAttribute("d", pathData);
-  
-  // Debug
-  let phaseName = "";
-  if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
-  else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
-  else if (phase < 0.375) phaseName = "🌓 Premier quartier";
-  else if (phase < 0.5) phaseName = "🌔 Gibbeuse croissante";
-  else if (phase < 0.625) phaseName = "🌕 Pleine lune";
-  else if (phase < 0.75) phaseName = "🌖 Gibbeuse décroissante";
-  else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
-  else phaseName = "🌘 Croissant décroissant";
-  
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+  shadowPath.setAttribute("stroke", "rgba(255,255,255,0.2)");
+  shadowPath.setAttribute("stroke-width", "0.5");
 }
 
 /**
- * Crée le widget lune et l'injecte dans la page
+ * Crée le widget lune avec halo et texture
  */
 export function updateNewMoonWidget() {
-  // Supprimer l'existant si besoin
   const old = document.getElementById("svg-lune-widget");
   if (old) old.remove();
   
-  // Conteneur
   const container = document.createElement("div");
   container.id = "svg-lune-widget";
   
-  // SVG avec masque basé sur path pour les vraies formes de phases
   container.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
+        <!-- Texture lunaire + halo -->
+        <filter id="moonTexture">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3"/>
+          <feColorMatrix type="saturate" values="0"/>
+          <feComposite in="SourceGraphic" operator="over" opacity="0.08"/>
+        </filter>
+        
+        <filter id="moonGlow">
+          <feGaussianBlur stdDeviation="1.5" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+
         <clipPath id="moon-clip">
           <circle cx="50" cy="50" r="50"/>
         </clipPath>
+        
         <mask id="moon-mask">
           <rect width="100%" height="100%" fill="white"/>
-          <path id="shadow-path" fill="black"/>
+          <path id="shadow-path" fill="black" filter="url(#moonGlow)"/>
         </mask>
       </defs>
       
-      <!-- Lune de base (sombre) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
+      <!-- Fond texturé -->
+      <circle cx="50" cy="50" r="50" fill="#333" filter="url(#moonTexture)" opacity="0.25"/>
       
-      <!-- Lune éclairée (masquée par les ombres) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
+      <!-- Partie éclairée avec halo -->
+      <g mask="url(#moon-mask)" clip-path="url(#moon-clip)">
+        <circle cx="50" cy="50" r="50" fill="#fff" filter="url(#moonGlow)"/>
+        <circle cx="50" cy="50" r="50" fill="#fff" opacity="0.9"/>
+      </g>
     </svg>
   `;
   
   document.body.appendChild(container);
-  
-  // Taille par défaut
+
+  // Gestion des tailles (votre code existant)
   const sizes = [
     { w: "150px", h: "150px", class: "" },
     { w: "250px", h: "250px", class: "" },
@@ -136,7 +122,7 @@ export function updateNewMoonWidget() {
     applySize();
   });
   
-  // Charger SunCalc et lancer les updates
+  // Charger SunCalc
   loadSunCalc(() => {
     updateMoon();
     setInterval(updateMoon, 3600000);
