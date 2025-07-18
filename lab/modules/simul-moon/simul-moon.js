@@ -1,5 +1,5 @@
 /**
- * Simulateur lunaire avec ombre tournante (orbital, clair)
+ * Simulateur lunaire avec masque orbital tournant + fond assombri
  */
 export function launchSimulMoon() {
   const old = document.getElementById("simul-moon");
@@ -24,16 +24,16 @@ export function launchSimulMoon() {
           <circle cx="50" cy="50" r="50"/>
         </clipPath>
         <mask id="simul-mask">
-          <rect width="100%" height="100%" fill="white"/>
-          <path id="simul-shadow" fill="black"/>
+          <rect width="100%" height="100%" fill="black"/>
+          <path id="simul-shadow" fill="white"/>
         </mask>
       </defs>
 
-      <!-- Lune sombre par défaut (plus besoin de filtre ici) -->
+      <!-- Lune sombre de fond -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             clip-path="url(#simul-clip)"/>
+             filter="brightness(0.2) opacity(0.2)" clip-path="url(#simul-clip)"/>
 
-      <!-- Zone éclairée découpée dynamiquement par masque -->
+      <!-- Lune éclairée masquée par l’ombre tournante -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
              mask="url(#simul-mask)" clip-path="url(#simul-clip)"/>
     </svg>
