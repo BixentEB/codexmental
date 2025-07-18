@@ -1,5 +1,5 @@
 /**
- * Simulateur lunaire en Canvas 2D – indépendant et réaliste
+ * Simulateur lunaire en Canvas 2D –- indépendant et réaliste
  */
 export function launchSimulMoonCanvas() {
   const old = document.getElementById("simul-moon");
