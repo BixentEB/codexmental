@@ -1,12 +1,10 @@
 /**
- * Injecte un simulateur lunaire avec slider de phase (0 = 🌑, 0.5 = 🌕, 1 = 🌑)
+ * Simulateur lunaire avec ombre tournante (réaliste et continue)
  */
 export function launchSimulMoon() {
-  // Supprimer l'existant
   const old = document.getElementById("simul-moon");
   if (old) old.remove();
 
-  // Conteneur principal
   const container = document.createElement("div");
   container.id = "simul-moon";
   container.style.margin = "1em auto";
@@ -19,7 +17,7 @@ export function launchSimulMoon() {
   container.style.fontFamily = "sans-serif";
 
   container.innerHTML = `
-    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire</div>
+    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire (orbital)</div>
     <svg id="simul-svg" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
         <clipPath id="simul-clip">
@@ -41,11 +39,9 @@ export function launchSimulMoon() {
     <div id="moon-phase-label" style="margin-top:0.3em; font-size: 0.8em;"></div>
   `;
 
-  // Injection dans le conteneur HTML existant
   const target = document.getElementById("simul-moon-container");
-  if (target) {
-    target.appendChild(container);
-  } else {
+  if (target) target.appendChild(container);
+  else {
     console.warn("❌ simulateur : conteneur #simul-moon-container non trouvé");
     return;
   }
@@ -54,40 +50,29 @@ export function launchSimulMoon() {
   const slider = container.querySelector("#moon-slider");
   const label = container.querySelector("#moon-phase-label");
 
+  function polarToCartesian(cx, cy, r, angleDeg) {
+    const rad = (angleDeg - 90) * Math.PI / 180;
+    return {
+      x: cx + r * Math.cos(rad),
+      y: cy + r * Math.sin(rad)
+    };
+  }
+
+  function describeTerminator(cx, cy, r, angleDeg) {
+    const start = polarToCartesian(cx, cy, r, angleDeg);
+    const end = polarToCartesian(cx, cy, r, angleDeg + 180);
+
+    return `
+      M ${start.x},${start.y}
+      A ${r},${r} 0 0,1 ${end.x},${end.y}
+      A ${r},${r} 0 0,1 ${start.x},${start.y}
+      Z
+    `;
+  }
+
   function updatePhase(phase) {
-    const fraction = 1 - Math.abs(phase - 0.5) * 2; // 0 → 0, 0.5 → 1, 1 → 0
-    const centerX = 50;
-    const centerY = 50;
-    const radius = 50;
-
-    let pathData;
-
-    if (fraction < 0.01) {
-      pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // 🌑
-    } else if (fraction > 0.99) {
-      pathData = "M 0,0 L 0,0"; // 🌕
-    } else {
-      const rx = radius;
-      const ry = radius;
-      const fx = radius * (2 * fraction - 1); // entre 0 et 50
-
-      const sweepRight = `
-        M ${centerX},${centerY - ry}
-        A ${fx},${ry} 0 0,1 ${centerX},${centerY + ry}
-        A ${rx},${ry} 0 0,0 ${centerX},${centerY - ry}
-        Z
-      `;
-
-      const sweepLeft = `
-        M ${centerX},${centerY - ry}
-        A ${rx},${ry} 0 0,1 ${centerX},${centerY + ry}
-        A ${fx},${ry} 0 0,0 ${centerX},${centerY - ry}
-        Z
-      `;
-
-      pathData = (phase < 0.5 ? sweepRight : sweepLeft);
-    }
-
+    const angle = (phase * 360) % 360; // Angle entre 0° et 360°
+    const pathData = describeTerminator(50, 50, 50, angle);
     shadowPath.setAttribute("d", pathData.trim());
 
     let emoji = "🌑";
@@ -104,10 +89,8 @@ export function launchSimulMoon() {
   }
 
   slider.addEventListener("input", () => {
-    const phase = parseFloat(slider.value);
-    updatePhase(phase);
+    updatePhase(parseFloat(slider.value));
   });
 
-  // Initialisation
   updatePhase(parseFloat(slider.value));
 }
