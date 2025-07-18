@@ -60,25 +60,28 @@ export function launchSimulMoon() {
     const centerY = 50;
     const radius = 50;
 
-    let ellipseWidth = radius * (2 * fraction - 1);
-    if (phase > 0.5) ellipseWidth *= -1;
-
     let pathData;
     if (fraction < 0.01) {
-      pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune
+      pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // 🌑
     } else if (fraction > 0.99) {
-      pathData = "M 0,0 L 0,0"; // Pleine lune (masque vide)
-    } else if (ellipseWidth > 0) {
-      pathData = `M ${centerX},${centerY - radius}
-                  A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
-                  A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+      pathData = "M 0,0 L 0,0"; // 🌕
     } else {
-      pathData = `M ${centerX},${centerY - radius}
-                  A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
-                  A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
+      const rx = radius;
+      const ry = radius;
+      const fx = radius * Math.abs(2 * fraction - 1);
+
+      const sweep = phase < 0.5 ? 1 : 0;
+      const largeArc = 0;
+
+      pathData = `
+        M ${centerX},${centerY - ry}
+        A ${fx},${ry} 0 ${largeArc},${sweep} ${centerX},${centerY + ry}
+        A ${rx},${ry} 0 ${largeArc},${1 - sweep} ${centerX},${centerY - ry}
+        Z
+      `;
     }
 
-    shadowPath.setAttribute("d", pathData);
+    shadowPath.setAttribute("d", pathData.trim());
 
     let emoji = "🌑";
     if (phase < 0.125) emoji = "🌑 Nouvelle lune";
