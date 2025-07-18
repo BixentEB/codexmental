@@ -1,4 +1,4 @@
-/* 🌙 WIDGET LUNAIRE - VERSION FINALE 🌙 */
+/* 🌙 WIDGET LUNAIRE - VERSION FINALE (AVEC CORRECTIONS CIBLÉES) 🌙 */
 body.theme-lunaire #svg-lune-widget {
   position: fixed;
   right: 20px;
@@ -25,6 +25,12 @@ body.theme-lunaire #svg-lune-widget svg {
   border-radius: 50%;
 }
 
+/* Correction clé : Lune fantôme visible */
+body.theme-lunaire #svg-lune-widget svg image:first-child {
+  filter: brightness(0.35) opacity(0.15) !important; /* Force la visibilité */
+  mix-blend-mode: screen; /* Améliore l'intégration avec le fond */
+}
+
 /* Super Lune */
 body.theme-lunaire #svg-lune-widget.super-lune {
   width: 500px;
@@ -47,5 +53,10 @@ body.theme-lunaire #svg-lune-widget:hover {
     height: 150px !important;
     filter: 
       drop-shadow(0 0 10px rgba(138, 180, 248, 0.4)) !important;
+  }
+  
+  /* Adaptation mobile pour la lune fantôme */
+  body.theme-lunaire #svg-lune-widget svg image:first-child {
+    filter: brightness(0.4) opacity(0.2) !important;
   }
 }
