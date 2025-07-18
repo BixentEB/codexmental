@@ -63,40 +63,35 @@ export function updateNewMoonWidget() {
   container.id = "svg-lune-widget";
   
   container.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <!-- Texture lunaire + halo -->
-        <filter id="moonTexture">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3"/>
-          <feColorMatrix type="saturate" values="0"/>
-          <feComposite in="SourceGraphic" operator="over" opacity="0.08"/>
-        </filter>
-        
-        <filter id="moonGlow">
-          <feGaussianBlur stdDeviation="1.5" result="blur"/>
-          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-        </filter>
+  <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <!-- Version light du filtre -->
+      <filter id="moonGlow">
+        <feGaussianBlur stdDeviation="0.8" result="blur"/> <!-- Réduit le flou -->
+        <feComposite in="SourceGraphic" in2="blur" operator="over" opacity="0.7"/>
+      </filter>
 
-        <clipPath id="moon-clip">
-          <circle cx="50" cy="50" r="50"/>
-        </clipPath>
-        
-        <mask id="moon-mask">
-          <rect width="100%" height="100%" fill="white"/>
-          <path id="shadow-path" fill="black" filter="url(#moonGlow)"/>
-        </mask>
-      </defs>
+      <clipPath id="moon-clip">
+        <circle cx="50" cy="50" r="50"/>
+      </clipPath>
       
-      <!-- Fond texturé -->
-      <circle cx="50" cy="50" r="50" fill="#333" filter="url(#moonTexture)" opacity="0.25"/>
-      
-      <!-- Partie éclairée avec halo -->
-      <g mask="url(#moon-mask)" clip-path="url(#moon-clip)">
-        <circle cx="50" cy="50" r="50" fill="#fff" filter="url(#moonGlow)"/>
-        <circle cx="50" cy="50" r="50" fill="#fff" opacity="0.9"/>
-      </g>
-    </svg>
-  `;
+      <mask id="moon-mask">
+        <rect width="100%" height="100%" fill="white"/>
+        <path id="shadow-path" fill="black"/>
+      </mask>
+    </defs>
+    
+    <!-- Lune fantôme (visible à nouveau) -->
+    <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
+           filter="brightness(0.3) opacity(0.2)" clip-path="url(#moon-clip)"/>
+    
+    <!-- Partie éclairée (subtile) -->
+    <g mask="url(#moon-mask)" clip-path="url(#moon-clip)">
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
+             filter="brightness(1.1) contrast(1.1)"/>
+    </g>
+  </svg>
+`;
   
   document.body.appendChild(container);
 
