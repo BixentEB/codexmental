@@ -65,15 +65,15 @@ export function updateNewMoonWidget() {
   container.innerHTML = `
   <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
     <defs>
-      <!-- Version light du filtre -->
-      <filter id="moonGlow">
-        <feGaussianBlur stdDeviation="0.8" result="blur"/> <!-- Réduit le flou -->
-        <feComposite in="SourceGraphic" in2="blur" operator="over" opacity="0.7"/>
-      </filter>
-
       <clipPath id="moon-clip">
         <circle cx="50" cy="50" r="50"/>
       </clipPath>
+      
+      <!-- Ajout d'un filtre de lumière pour l'arc -->
+      <filter id="moonEdgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="0.5" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
       
       <mask id="moon-mask">
         <rect width="100%" height="100%" fill="white"/>
@@ -81,14 +81,17 @@ export function updateNewMoonWidget() {
       </mask>
     </defs>
     
-    <!-- Lune fantôme (visible à nouveau) -->
+    <!-- Lune fantôme (inchangée) -->
     <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-           filter="brightness(0.3) opacity(0.2)" clip-path="url(#moon-clip)"/>
+           filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
     
-    <!-- Partie éclairée (subtile) -->
+    <!-- Lune éclairée avec bord lumineux -->
     <g mask="url(#moon-mask)" clip-path="url(#moon-clip)">
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             filter="brightness(1.1) contrast(1.1)"/>
+             filter="brightness(1.1)"/>
+      <!-- Arc éclairé (seule nouveauté) -->
+      <path id="shadow-path" fill="none" stroke="rgba(255,255,255,0.3)" 
+            stroke-width="0.8" filter="url(#moonEdgeGlow)"/>
     </g>
   </svg>
 `;
