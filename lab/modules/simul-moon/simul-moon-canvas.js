@@ -1,4 +1,4 @@
-// simul-moon-canvas.js – Simulateur lunaire canvas
+// simul-moon-canvas.js
 
 export function launchSimulMoonCanvas() {
   const old = document.getElementById("simul-moon");
@@ -39,33 +39,40 @@ export function launchSimulMoonCanvas() {
   img.src = "/img/lune/lune-pleine-simul.png";
 
   function drawMoon(phase) {
-    const width = canvas.width;
-    const height = canvas.height;
-    const cx = width / 2;
-    const cy = height / 2;
-    const r = width / 2;
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    const r = w / 2;
 
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, w, h);
     ctx.save();
+    ctx.drawImage(img, 0, 0, w, h);
 
-    // Dessine la lune pleine
-    ctx.drawImage(img, 0, 0, width, height);
-
-    // Calcule l'ombre
-    const illumination = 1 - Math.abs(phase - 0.5) * 2;
-    const angle = phase * 2 * Math.PI;
-    const curve = Math.cos(angle);
-
-    // Ombre circulaire réaliste
-    ctx.globalCompositeOperation = "destination-out";
+    ctx.globalCompositeOperation = "source-atop";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
     ctx.beginPath();
-    ctx.ellipse(cx, cy, r * curve, r, 0, 0, Math.PI * 2);
-    ctx.fillStyle = "black";
+
+    // Phase symétrique : 0 (new) → 1 (next new)
+    let angle = (phase * 2 * Math.PI);
+    let direction = phase <= 0.5 ? 1 : -1;
+    let offset = Math.abs(0.5 - phase);
+
+    // Crée une forme elliptique d'ombre légèrement décalée
+    ctx.ellipse(
+      cx + direction * offset * r * 1.6, // décalage horizontal
+      cy,
+      r,
+      r,
+      0,
+      0,
+      2 * Math.PI
+    );
     ctx.fill();
 
     ctx.restore();
 
-    // Phase label
+    // Étiquette
     let emoji = "🌑";
     if (phase < 0.125) emoji = "🌑 Nouvelle lune";
     else if (phase < 0.25) emoji = "🌒 Croissant croissant";
