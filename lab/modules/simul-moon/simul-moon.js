@@ -6,22 +6,20 @@ export function launchSimulMoon() {
   const old = document.getElementById("simul-moon");
   if (old) old.remove();
 
-  // Conteneur
+  // Conteneur principal
   const container = document.createElement("div");
   container.id = "simul-moon";
-  container.style.position = "fixed";
-  container.style.bottom = "20px";
-  container.style.right = "20px";
-  container.style.zIndex = "9999";
-  container.style.background = "rgba(0,0,0,0.8)";
+  container.style.margin = "1em auto";
+  container.style.maxWidth = "220px";
+  container.style.textAlign = "center";
+  container.style.background = "rgba(0,0,0,0.75)";
   container.style.padding = "1em";
   container.style.borderRadius = "1em";
   container.style.color = "#fff";
-  container.style.width = "200px";
   container.style.fontFamily = "sans-serif";
 
   container.innerHTML = `
-    <div style="text-align:center; margin-bottom: 0.5em;">🛰️ Simulateur lunaire</div>
+    <div style="margin-bottom: 0.5em;">🛰️ Simulateur lunaire</div>
     <svg id="simul-svg" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
         <clipPath id="simul-clip">
@@ -40,10 +38,17 @@ export function launchSimulMoon() {
     </svg>
 
     <input type="range" min="0" max="1" step="0.001" value="0" id="moon-slider" style="width:100%; margin-top:1em">
-    <div id="moon-phase-label" style="text-align:center; margin-top:0.3em; font-size: 0.8em;"></div>
+    <div id="moon-phase-label" style="margin-top:0.3em; font-size: 0.8em;"></div>
   `;
 
-  document.body.appendChild(container);
+  // Injection dans le conteneur HTML existant
+  const target = document.getElementById("simul-moon-container");
+  if (target) {
+    target.appendChild(container);
+  } else {
+    console.warn("❌ simulateur : conteneur #simul-moon-container non trouvé");
+    return;
+  }
 
   const shadowPath = container.querySelector("#simul-shadow");
   const slider = container.querySelector("#moon-slider");
@@ -62,7 +67,7 @@ export function launchSimulMoon() {
     if (fraction < 0.01) {
       pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune
     } else if (fraction > 0.99) {
-      pathData = "M 0,0 L 0,0"; // Pleine lune
+      pathData = "M 0,0 L 0,0"; // Pleine lune (masque vide)
     } else if (ellipseWidth > 0) {
       pathData = `M ${centerX},${centerY - radius}
                   A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
