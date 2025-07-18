@@ -1,115 +1,98 @@
-// simul-moon.js – Simulateur lunaire avancé avec phase réelle + simulation manuelle
-// ==================================================================================
+/**
+ * Injecte un simulateur lunaire avec slider de phase (0 = 🌑, 0.5 = 🌕, 1 = 🌑)
+ */
+export function launchSimulMoon() {
+  // Supprimer l'existant
+  const old = document.getElementById("simul-moon");
+  if (old) old.remove();
 
-(() => {
-  const wrapper = document.createElement("div");
-  wrapper.className = "simul-widget";
-
+  // Conteneur
   const container = document.createElement("div");
   container.id = "simul-moon";
+  container.style.position = "fixed";
+  container.style.bottom = "20px";
+  container.style.right = "20px";
+  container.style.zIndex = "9999";
+  container.style.background = "rgba(0,0,0,0.8)";
+  container.style.padding = "1em";
+  container.style.borderRadius = "1em";
+  container.style.color = "#fff";
+  container.style.width = "200px";
+  container.style.fontFamily = "sans-serif";
+
   container.innerHTML = `
-    <h3 class="simul-title">🌙 Simulateur lunaire</h3>
-    <div class="moon-wrapper">
-      <svg id="simul-svg" viewBox="0 0 100 100" class="moon-phase">
-        <defs>
-          <clipPath id="simul-clip">
-            <circle cx="50" cy="50" r="50" />
-          </clipPath>
-          <mask id="simul-mask">
-            <rect width="100" height="100" fill="white" />
-            <path id="simul-shadow-path" fill="black" />
-          </mask>
-        </defs>
-        <circle cx="50" cy="50" r="50" fill="#fff" mask="url(#simul-mask)" clip-path="url(#simul-clip)" />
-      </svg>
-      <input type="range" id="simul-slider" min="0" max="1" step="0.01" value="0.5">
-      <div id="simul-label">Phase : ...</div>
-      <button id="simul-reset" style="margin-top:0.5rem">↺ Phase actuelle</button>
-    </div>
+    <div style="text-align:center; margin-bottom: 0.5em;">🛰️ Simulateur lunaire</div>
+    <svg id="simul-svg" viewBox="0 0 100 100" width="100%" height="100%">
+      <defs>
+        <clipPath id="simul-clip">
+          <circle cx="50" cy="50" r="50"/>
+        </clipPath>
+        <mask id="simul-mask">
+          <rect width="100%" height="100%" fill="white"/>
+          <path id="simul-shadow" fill="black"/>
+        </mask>
+      </defs>
+
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
+             filter="brightness(0.4) opacity(0.15)" clip-path="url(#simul-clip)"/>
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
+             mask="url(#simul-mask)" clip-path="url(#simul-clip)"/>
+    </svg>
+
+    <input type="range" min="0" max="1" step="0.001" value="0" id="moon-slider" style="width:100%; margin-top:1em">
+    <div id="moon-phase-label" style="text-align:center; margin-top:0.3em; font-size: 0.8em;"></div>
   `;
 
-  wrapper.appendChild(container);
-  document.getElementById("simul-moon-container")?.appendChild(wrapper);
+  document.body.appendChild(container);
 
-  const slider = document.getElementById("simul-slider");
-  const shadowPath = document.getElementById("simul-shadow-path");
-  const label = document.getElementById("simul-label");
-  const resetBtn = document.getElementById("simul-reset");
+  const shadowPath = container.querySelector("#simul-shadow");
+  const slider = container.querySelector("#moon-slider");
+  const label = container.querySelector("#moon-phase-label");
 
-  function getPhaseName(p) {
-    if (p < 0.03 || p > 0.97) return "🌑 Nouvelle Lune";
-    if (p < 0.22) return "🌒 Premier Croissant";
-    if (p < 0.28) return "🌓 Premier Quartier";
-    if (p < 0.47) return "🌔 Gibbeuse Croissante";
-    if (p <= 0.53) return "🌕 Pleine Lune";
-    if (p < 0.72) return "🌖 Gibbeuse Décroissante";
-    if (p < 0.78) return "🌗 Dernier Quartier";
-    if (p <= 0.97) return "🌘 Dernier Croissant";
-    return "🌑 Nouvelle Lune";
-  }
+  function updatePhase(phase) {
+    const fraction = 1 - Math.abs(phase - 0.5) * 2; // 0 → 0, 0.5 → 1, 1 → 0
+    const centerX = 50;
+    const centerY = 50;
+    const radius = 50;
 
-  function updatePhasePath(phase) {
-    if (!shadowPath) return;
+    let ellipseWidth = radius * (2 * fraction - 1);
+    if (phase > 0.5) ellipseWidth *= -1;
 
-    const cx = 50, cy = 50, r = 50;
-    const illum = Math.abs(0.5 - phase) * 2; // de 0 (pleine lune) à 1 (nouvelle)
-
-    // Cas limites
-    if (illum < 0.01) {
-      shadowPath.setAttribute("d", "M 0,0 L 0,0"); // pleine lune
-      return;
-    }
-    if (illum > 0.99) {
-      shadowPath.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z"); // nouvelle lune
-      return;
-    }
-
-    const isWaxing = phase < 0.5;
-    const ellipseW = Math.max(2, r * (2 * (1 - illum)));
-
-    let path = "";
-    if (isWaxing) {
-      // ombre à gauche
-      path = `M ${cx},${cy - r}
-              A ${r},${r} 0 0,1 ${cx},${cy + r}
-              A ${ellipseW},${r} 0 0,0 ${cx},${cy - r} Z`;
+    let pathData;
+    if (fraction < 0.01) {
+      pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune
+    } else if (fraction > 0.99) {
+      pathData = "M 0,0 L 0,0"; // Pleine lune
+    } else if (ellipseWidth > 0) {
+      pathData = `M ${centerX},${centerY - radius}
+                  A ${Math.abs(ellipseWidth)},${radius} 0 0,1 ${centerX},${centerY + radius}
+                  A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
     } else {
-      // ombre à droite
-      path = `M ${cx},${cy - r}
-              A ${ellipseW},${r} 0 0,1 ${cx},${cy + r}
-              A ${r},${r} 0 0,0 ${cx},${cy - r} Z`;
+      pathData = `M ${centerX},${centerY - radius}
+                  A ${radius},${radius} 0 0,1 ${centerX},${centerY + radius}
+                  A ${Math.abs(ellipseWidth)},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
     }
 
-    shadowPath.setAttribute("d", path);
+    shadowPath.setAttribute("d", pathData);
+
+    let emoji = "🌑";
+    if (phase < 0.125) emoji = "🌑 Nouvelle lune";
+    else if (phase < 0.25) emoji = "🌒 Croissant croissant";
+    else if (phase < 0.375) emoji = "🌓 Premier quartier";
+    else if (phase < 0.5) emoji = "🌔 Gibbeuse croissante";
+    else if (phase < 0.625) emoji = "🌕 Pleine lune";
+    else if (phase < 0.75) emoji = "🌖 Gibbeuse décroissante";
+    else if (phase < 0.875) emoji = "🌗 Dernier quartier";
+    else emoji = "🌘 Croissant décroissant";
+
+    label.textContent = `${emoji} (phase: ${phase.toFixed(3)})`;
   }
 
-  function updateFromSlider() {
-    const value = parseFloat(slider.value);
-    updatePhasePath(value);
-    label.textContent = `Phase : ${getPhaseName(value)}`;
-  }
-
-  function loadSunCalc(callback) {
-    if (window.SunCalc) callback();
-    else {
-      const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js";
-      script.onload = callback;
-      document.head.appendChild(script);
-    }
-  }
-
-  function resetToCurrentPhase() {
-    const now = new Date();
-    const { phase } = SunCalc.getMoonIllumination(now);
-    slider.value = phase.toFixed(2);
-    updatePhasePath(phase);
-    label.textContent = `Phase : ${getPhaseName(phase)}`;
-  }
-
-  loadSunCalc(() => {
-    resetToCurrentPhase();
-    slider.addEventListener("input", updateFromSlider);
-    resetBtn.addEventListener("click", resetToCurrentPhase);
+  slider.addEventListener("input", () => {
+    const phase = parseFloat(slider.value);
+    updatePhase(phase);
   });
-})();
+
+  // Initialisation
+  updatePhase(parseFloat(slider.value));
+}
