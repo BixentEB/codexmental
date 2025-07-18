@@ -1,6 +1,5 @@
-/**
- * Simulateur lunaire en Canvas 2D –- indépendant et réaliste
- */
+// simul-moon-canvas.js – Simulateur lunaire canvas
+
 export function launchSimulMoonCanvas() {
   const old = document.getElementById("simul-moon");
   if (old) old.remove();
@@ -55,11 +54,11 @@ export function launchSimulMoonCanvas() {
     // Calcule l'ombre
     const illumination = 1 - Math.abs(phase - 0.5) * 2;
     const angle = phase * 2 * Math.PI;
+    const curve = Math.cos(angle);
 
     // Ombre circulaire réaliste
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    const curve = Math.cos(angle);
     ctx.ellipse(cx, cy, r * curve, r, 0, 0, Math.PI * 2);
     ctx.fillStyle = "black";
     ctx.fill();
