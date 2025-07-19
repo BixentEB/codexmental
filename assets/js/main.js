@@ -23,10 +23,13 @@ import { initThemeObserver } from '/assets/js/theme-observer.js';
 
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
+  if (location.pathname === '/lab/index.html') return; // 🧪 Cas spécial : dashboard impose son propre thème
+
   const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
   document.body.className = savedTheme;
   setTheme(savedTheme);
 })();
+
 
 // === DOM Ready
 window.addEventListener("DOMContentLoaded", () => {
