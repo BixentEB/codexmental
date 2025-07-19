@@ -29,7 +29,7 @@ main.dashboard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--widget-gap);
-  padding: 4rem 2rem 2rem 2rem; /* Ajout d’un margin-top visuel */
+  padding: 8rem 2rem 2rem 2rem; /* Augmenté pour éviter le chevauchement du menu */
   max-width: 1600px;
   margin: auto;
 }
@@ -48,7 +48,7 @@ main.dashboard {
   padding: var(--widget-padding);
   display: flex;
   flex-direction: column;
-  min-height: 150px;
+  min-height: 150px; /* Réduction à la taille souhaitée */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -61,7 +61,7 @@ main.dashboard {
 
 .widget h2 {
   margin: 0 auto 0.8rem auto;
-  font-size: 1.1rem;
+  font-size: 0.9rem; /* Réduction de la taille du titre */
   text-align: center;
   border-bottom: 1px solid var(--color-primary);
   padding-bottom: 0.3rem;
@@ -83,16 +83,16 @@ main.dashboard {
 #widget-soleil,
 #widget-alertes,
 #widget-phases {
-  min-height: 200px;
+  min-height: 150px;
 }
 
 /* Responsive tweaks */
 @media (max-width: 600px) {
   main.dashboard {
-    padding: 2rem 1rem 1rem 1rem;
+    padding: 6rem 1rem 1rem 1rem; /* aussi augmenté pour mobile */
   }
   .widget h2 {
-    font-size: 1rem;
+    font-size: 0.85rem; /* réduit également en mobile */
   }
 }
 
