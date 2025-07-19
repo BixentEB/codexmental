@@ -27,9 +27,13 @@ body.theme-stellaire {
 
 main.dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas:
+    "lune alertes infos projet"
+    "radar radar core core"
+    "radar radar extras extras";
   gap: var(--widget-gap);
-  padding: 8rem 2rem 2rem 2rem; /* Augmenté pour éviter le chevauchement du menu */
+  padding: 8rem 2rem 2rem 2rem;
   max-width: 1600px;
   margin: auto;
 }
@@ -49,7 +53,7 @@ main.dashboard {
   display: flex;
   flex-direction: column;
   min-height: 150px;
-  height: 150px; /* Force une hauteur uniforme */
+  height: 150px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
@@ -63,7 +67,7 @@ main.dashboard {
 
 .widget h2 {
   margin: 0 auto 0.8rem auto;
-  font-size: 0.75rem; /* encore plus réduit */
+  font-size: 0.75rem;
   text-align: center;
   border-bottom: 1px solid var(--color-primary);
   padding-bottom: 0.2rem;
@@ -71,7 +75,6 @@ main.dashboard {
   width: 90%;
 }
 
-/* Cadrans inactifs visuellement + décor radar */
 .widget[data-active="false"]::before {
   content: "";
   position: absolute;
@@ -92,17 +95,31 @@ main.dashboard {
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Exemples de widgets spécifiques (placeholders) */
-#widget-lune,
-#widget-projets,
-#widget-soleil,
-#widget-alertes,
-#widget-phases {
-  min-height: 150px;
-  height: 150px;
+/* Grille par zone */
+#widget-lune     { grid-area: lune; }
+#widget-alertes  { grid-area: alertes; }
+#widget-soleil   { grid-area: infos; }
+#widget-phases   { grid-area: infos; }
+#widget-projets  { grid-area: projet; }
+#widget-radar    { grid-area: radar; }
+#widget-core-radar { grid-area: core; min-height: 300px; height: 300px; }
+#widget-extras   { grid-area: extras; }
+
+/* Responsive fallback */
+@media (max-width: 900px) {
+  main.dashboard {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "lune"
+      "alertes"
+      "infos"
+      "projet"
+      "core"
+      "radar"
+      "extras";
+  }
 }
 
-/* Responsive tweaks */
 @media (max-width: 600px) {
   main.dashboard {
     padding: 6rem 1rem 1rem 1rem;
@@ -112,14 +129,12 @@ main.dashboard {
   }
 }
 
-/* Désactivation des thèmes dans le menu uniquement pour la page Lab */
 body.lab .theme-fab-container,
 body.lab #mobile-menu li strong,
 body.lab #mobile-menu li button[onclick*='setTheme'] {
   display: none !important;
 }
 
-/* Masquage du widget lune (flottant SVG) sur le dashboard */
 body.lab #svg-lune-widget {
   display: none !important;
 }
