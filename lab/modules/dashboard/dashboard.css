@@ -32,7 +32,7 @@ main.dashboard {
     "lune alertes infos phases projet"
     "radar core core core extras";
   gap: var(--widget-gap);
-  padding: 8rem 2rem 2rem 2rem;
+  padding: 8rem 2rem 4rem 2rem;
   max-width: 1600px;
   margin: auto;
 }
@@ -101,7 +101,11 @@ main.dashboard {
 #widget-phases   { grid-area: phases; }
 #widget-projets  { grid-area: projet; }
 #widget-radar    { grid-area: radar; }
-#widget-core-radar { grid-area: core; min-height: 300px; height: 300px; }
+#widget-core-radar {
+  grid-area: core;
+  min-height: 450px;
+  height: 450px;
+}
 #widget-extras   { grid-area: extras; }
 
 /* Responsive fallback */
