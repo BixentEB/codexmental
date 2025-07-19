@@ -27,11 +27,10 @@ body.theme-stellaire {
 
 main.dashboard {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-areas:
-    "lune alertes infos projet"
-    "radar radar core core"
-    "radar radar extras extras";
+    "lune alertes infos phases projet"
+    "radar core core core extras";
   gap: var(--widget-gap);
   padding: 8rem 2rem 2rem 2rem;
   max-width: 1600px;
@@ -99,7 +98,7 @@ main.dashboard {
 #widget-lune     { grid-area: lune; }
 #widget-alertes  { grid-area: alertes; }
 #widget-soleil   { grid-area: infos; }
-#widget-phases   { grid-area: infos; }
+#widget-phases   { grid-area: phases; }
 #widget-projets  { grid-area: projet; }
 #widget-radar    { grid-area: radar; }
 #widget-core-radar { grid-area: core; min-height: 300px; height: 300px; }
@@ -113,6 +112,7 @@ main.dashboard {
       "lune"
       "alertes"
       "infos"
+      "phases"
       "projet"
       "core"
       "radar"
