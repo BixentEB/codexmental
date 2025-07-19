@@ -48,7 +48,8 @@ main.dashboard {
   padding: var(--widget-padding);
   display: flex;
   flex-direction: column;
-  min-height: 150px; /* Réduction à la taille souhaitée */
+  min-height: 150px;
+  height: 150px; /* Force une hauteur uniforme */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -61,11 +62,11 @@ main.dashboard {
 
 .widget h2 {
   margin: 0 auto 0.8rem auto;
-  font-size: 0.9rem; /* Réduction de la taille du titre */
+  font-size: 0.75rem; /* encore plus réduit */
   text-align: center;
   border-bottom: 1px solid var(--color-primary);
-  padding-bottom: 0.3rem;
-  text-shadow: 0 0 6px var(--color-primary);
+  padding-bottom: 0.2rem;
+  text-shadow: 0 0 4px var(--color-primary);
   width: 90%;
 }
 
@@ -84,15 +85,16 @@ main.dashboard {
 #widget-alertes,
 #widget-phases {
   min-height: 150px;
+  height: 150px;
 }
 
 /* Responsive tweaks */
 @media (max-width: 600px) {
   main.dashboard {
-    padding: 6rem 1rem 1rem 1rem; /* aussi augmenté pour mobile */
+    padding: 6rem 1rem 1rem 1rem;
   }
   .widget h2 {
-    font-size: 0.85rem; /* réduit également en mobile */
+    font-size: 0.7rem;
   }
 }
 
