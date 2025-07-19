@@ -1,0 +1,79 @@
+/* ========================================================
+   Dashboard SF – Codex Mental (Vincent)
+   Fichier : /lab/modules/dashboard/dashboard.css
+   ======================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=JetBrains+Mono&display=swap');
+
+:root {
+  --color-bg: radial-gradient(circle at 50% 20%, #0d0d1a, #050510 80%);
+  --color-primary: #0ff4;
+  --color-text: #d0eaff;
+  --color-shadow: rgba(0, 255, 255, 0.15);
+  --color-frame: rgba(255, 255, 255, 0.05);
+  --widget-gap: 1.5rem;
+  --widget-padding: 1rem;
+  --widget-radius: 12px;
+  --widget-border: 1px solid var(--color-primary);
+}
+
+body.theme-stellaire {
+  font-family: 'Orbitron', 'JetBrains Mono', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+}
+
+main.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--widget-gap);
+  padding: 2rem;
+  max-width: 1600px;
+  margin: auto;
+}
+
+.widget {
+  position: relative;
+  background: var(--color-frame);
+  border: var(--widget-border);
+  border-radius: var(--widget-radius);
+  box-shadow:
+    inset 0 0 20px var(--color-shadow),
+    0 0 10px var(--color-shadow);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: var(--widget-padding);
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+}
+
+.widget h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--color-primary);
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 0 4px var(--color-primary);
+}
+
+/* Exemples de widgets spécifiques (placeholders) */
+#widget-lune,
+#widget-projets,
+#widget-soleil,
+#widget-alertes,
+#widget-phases {
+  min-height: 200px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  main.dashboard {
+    padding: 1rem;
+  }
+  .widget h2 {
+    font-size: 1rem;
+  }
+}
