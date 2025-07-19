@@ -48,8 +48,8 @@ main.dashboard {
   padding: var(--widget-padding);
   display: flex;
   flex-direction: column;
-  min-height: 200px;
-  height: 200px; /* Force une hauteur uniforme */
+  min-height: 150px;
+  height: 150px; /* Force une hauteur uniforme */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
