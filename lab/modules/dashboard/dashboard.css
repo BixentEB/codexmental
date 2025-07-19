@@ -84,3 +84,8 @@ body.lab #mobile-menu li strong,
 body.lab #mobile-menu li button[onclick*='setTheme'] {
   display: none !important;
 }
+
+body.lab #svg-lune-widget  {
+  display: none !important;
+}
+
