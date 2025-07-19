@@ -1,5 +1,11 @@
 // modules.js – Chargement centralisé des widgets du Lab Codex
 
+  //Chargement theme stellaire forcé
+if (location.pathname === '/lab/index.html') {
+    document.body.className = 'theme-stellaire lab';
+    localStorage.setItem('codex-theme', 'theme-stellaire');
+  }
+
 // Chargement manuel des modules à activer
 import { launchSimulMoonCanvas } from "/lab/modules/simul-moon/simul-moon-canvas.js";
 if (window.location.pathname.endsWith("/lab/index.html")) {
