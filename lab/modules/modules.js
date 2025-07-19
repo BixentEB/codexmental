@@ -14,6 +14,13 @@ if (window.location.pathname.endsWith("/lab/index.html")) {
 
 console.log("✅ Modules du lab chargés");
 
+// Module central - radar galactique
+if (window.location.pathname.endsWith("/lab/index.html")) {
+  launchSimulMoonCanvas();
+  import("/lab/modules/dashboard/radar-galactique.js");
+}
+
+
 
 // D'autres imports à activer au besoin :
 // import "/lab/modules/widget-solaire/widget-solaire.js";
