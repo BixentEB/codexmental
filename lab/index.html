@@ -31,18 +31,48 @@
   <header id="menu-placeholder"></header>
 
   <!-- 🔬 Contenu principal -->
-  <main class="container" style="padding-bottom: 3rem;">
-    <h1 class="text-center">🔬 Tableau de bord – Laboratoire Codex</h1>
-    <p>tableau de bord en construction si on arrive à retrouver le mode d'emploi... où va la vis X-589 ? 🤔</p>
+  <main class="dashboard">
 
-    <div class="dashboard">
-      <div class="widget" data-widget="lune">
-        <div id="widget-lune-container">
-  <div id="simul-moon-canvas-container"></div>
-</div>
-      </div>
+  <!-- 🌓 Simulateur Lunaire -->
+  <div class="widget" id="widget-lune" data-widget="lune" data-active="true">
+    <h2>🛰️ Simulateur lunaire (canvas)</h2>
+    <div id="widget-lune-container"></div>
+  </div>
+
+  <!-- 🔭 Alerte astronomique -->
+  <div class="widget" id="widget-alertes" data-widget="alertes" data-active="true">
+    <h2>🚨 Alerte astro</h2>
+    <div id="widget-alertes-container"></div>
+  </div>
+
+  <!-- 🌞 Informations solaires -->
+  <div class="widget" id="widget-soleil" data-widget="soleil" data-active="false">
+    <h2>🌞 Infos solaires</h2>
+    <div id="widget-soleil-container"></div>
+  </div>
+
+  <!-- 🪐 Phases futures -->
+  <div class="widget" id="widget-phases" data-widget="phases" data-active="false">
+    <h2>📆 Phases lunaires à venir</h2>
+    <div id="widget-phases-container"></div>
+  </div>
+
+  <!-- 🧪 Projet en cours -->
+  <div class="widget" id="widget-projets" data-widget="projet" data-active="true">
+    <h2>🧬 Projet en cours</h2>
+    <div id="widget-projets-container">
+      <a href="/atelier/projet-x.html">🛰️ Polaris – Station cryodynamique</a>
     </div>
-  </main>
+  </div>
+
+  <!-- 📡 Widget HUD vide -->
+  <div class="widget" id="widget-placeholder" data-widget="radar" data-active="false">
+    <h2>📡 Radar spatial (bientôt)</h2>
+    <div class="hud-mockup">[module inactif]</div>
+  </div>
+
+</main>
+
 
   <!-- 🡸 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
