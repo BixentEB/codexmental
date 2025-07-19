@@ -51,6 +51,7 @@ main.dashboard {
   min-height: 150px;
   height: 150px; /* Force une hauteur uniforme */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
 }
 
 .widget:hover {
@@ -70,12 +71,25 @@ main.dashboard {
   width: 90%;
 }
 
-/* Cadrans inactifs visuellement */
-.widget[data-active="false"] {
-  opacity: 0.25;
-  filter: grayscale(100%) contrast(70%);
-  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.05);
+/* Cadrans inactifs visuellement + décor radar */
+.widget[data-active="false"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  border: 1px dashed var(--color-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: spinRadar 4s linear infinite;
+  opacity: 0.08;
   pointer-events: none;
+}
+
+@keyframes spinRadar {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* Exemples de widgets spécifiques (placeholders) */
