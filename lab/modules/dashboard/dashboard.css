@@ -77,3 +77,10 @@ main.dashboard {
     font-size: 1rem;
   }
 }
+
+/* Désactivation des thèmes dans le menu uniquement pour la page Lab */
+body.lab .theme-fab-container,
+body.lab #mobile-menu li strong,
+body.lab #mobile-menu li button[onclick*='setTheme'] {
+  display: none !important;
+}
