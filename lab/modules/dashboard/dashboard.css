@@ -136,6 +136,32 @@ main.dashboard {
   max-height: 100%;
 }
 
+/* Bloc circulaire pour radar système solaire */
+.widget.radar-circular {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  padding: 1rem;
+  background: radial-gradient(circle at center, rgba(0, 255, 255, 0.05), transparent 70%);
+  border: 2px dashed var(--color-primary);
+  box-shadow:
+    0 0 20px rgba(0, 255, 255, 0.2),
+    inset 0 0 40px rgba(0, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  min-height: unset;
+}
+
+#widget-core-radar canvas {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+
 /* Responsive fallback */
 @media (max-width: 900px) {
   main.dashboard {
@@ -170,3 +196,4 @@ body.lab #mobile-menu li button[onclick*='setTheme'] {
 body.lab #svg-lune-widget {
   display: none !important;
 }
+
