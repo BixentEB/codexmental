@@ -29,7 +29,7 @@ main.dashboard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
-    "lune alertes infos phases"
+    "lune alertes alertes phases"
     "core core core core";
   gap: var(--widget-gap);
   padding: 6.5rem 2rem 4rem 2rem;
@@ -97,7 +97,7 @@ main.dashboard {
 /* Grille par zone */
 #widget-lune     { grid-area: lune; height: 100%; }
 #widget-alertes  { grid-area: alertes; }
-#widget-soleil   { grid-area: infos; }
+#widget-soleil   { grid-area: alertes; }
 #widget-phases   { grid-area: phases; }
 #widget-projets  { display: none; }
 #widget-radar    { display: none; }
@@ -126,7 +126,6 @@ main.dashboard {
     grid-template-areas:
       "lune"
       "alertes"
-      "infos"
       "phases"
       "core";
   }
