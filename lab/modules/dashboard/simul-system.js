@@ -1,8 +1,9 @@
 // simul-system.js – Système solaire animé (canvas)
 
 const canvas = document.getElementById('simul-system');
+
 if (!canvas) {
-  console.warn("⚠️ Aucun canvas #radar-galactique trouvé.");
+  console.warn("⚠️ Aucun canvas #simul-system trouvé.");
 } else {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
@@ -63,6 +64,7 @@ if (!canvas) {
     ctx.fill();
 
     ship.angle += 0.015;
+
     requestAnimationFrame(drawSystem);
   }
 
