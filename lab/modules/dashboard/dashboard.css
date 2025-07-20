@@ -10,7 +10,7 @@
   --color-primary: #0ff4;
   --color-text: #d0eaff;
   --color-shadow: rgba(0, 255, 255, 0.15);
-  --color-frame: rgba(255, 255, 255, 0.05);
+  --color-frame: rgba(255, 255, 255, 0.04);
   --widget-gap: 1.5rem;
   --widget-padding: 1rem;
   --widget-radius: 12px;
@@ -39,13 +39,13 @@ main.dashboard {
 
 .widget {
   position: relative;
-  background: var(--color-frame);
+  background: var(--color-frame) !important;
   border: var(--widget-border);
   border-radius: var(--widget-radius);
   box-shadow:
-    0 0 8px rgba(0, 255, 255, 0.05),
-    0 0 10px rgba(0, 255, 255, 0.03),
-    inset 0 0 4px rgba(0, 255, 255, 0.02);
+    0 0 6px rgba(0, 255, 255, 0.06),
+    0 0 8px rgba(0, 255, 255, 0.04),
+    inset 0 0 2px rgba(0, 255, 255, 0.01) !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: var(--widget-padding);
@@ -60,8 +60,8 @@ main.dashboard {
 .widget:hover {
   transform: scale(1.015);
   box-shadow:
-    0 0 25px rgba(0, 255, 255, 0.4),
-    inset 0 0 15px rgba(0, 255, 255, 0.2);
+    0 0 18px rgba(0, 255, 255, 0.3),
+    inset 0 0 12px rgba(0, 255, 255, 0.15);
 }
 
 .widget h2 {
@@ -70,7 +70,7 @@ main.dashboard {
   text-align: center;
   border-bottom: 1px solid var(--color-primary);
   padding-bottom: 0.2rem;
-  text-shadow: 0 0 4px var(--color-primary);
+  text-shadow: none !important;
   width: 90%;
 }
 
@@ -97,7 +97,7 @@ main.dashboard {
 /* Grille par zone */
 #widget-lune     { grid-area: lune; height: 100%; }
 #widget-alertes  { grid-area: alertes; }
-#widget-soleil   { grid-area: alertes; }
+#widget-soleil   { grid-area: alertes; background: var(--color-frame) !important; box-shadow: none !important; }
 #widget-phases   { grid-area: phases; }
 #widget-projets  { display: none; }
 #widget-radar    { display: none; }
@@ -118,11 +118,6 @@ main.dashboard {
   object-fit: contain;
 }
 #widget-extras   { display: none; }
-
-/* Supprimé pour éviter doublon halo */
-#widget-soleil {
-  /* box-shadow custom désactivé */
-}
 
 /* Responsive fallback */
 @media (max-width: 900px) {
