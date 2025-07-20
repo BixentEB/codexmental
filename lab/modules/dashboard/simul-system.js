@@ -1,4 +1,5 @@
-// simul-system.js – Système solaire animé (canvas)
+
+// simul-system.js – Système solaire animé (canvas réaliste compressé)
 
 const canvas = document.getElementById('simul-system');
 
@@ -13,10 +14,11 @@ if (!canvas) {
   const colors = {
     sun: '#ffaa00',
     planets: ['#aaa', '#f3a', '#0cf', '#c33', '#ffcc88', '#ccaa66', '#88f', '#44d'],
-    ship: '#f0f'
+    ship: '#f0f',
+    asteroid: '#888'
   };
 
-  // Calcul de l’angle initial en fonction de la date (référence J2000)
+  // Fonction pour l'angle initial depuis J2000
   function getAngleFromJ2000(days, period) {
     const fraction = (days % period) / period;
     return fraction * 2 * Math.PI;
@@ -27,17 +29,25 @@ if (!canvas) {
   const daysSince = (now - referenceDate) / (1000 * 60 * 60 * 24);
 
   const planets = [
-    { name: 'Mercure', r: 25, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97) },
-    { name: 'Vénus',   r: 40, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70) },
-    { name: 'Terre',   r: 60, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25) },
-    { name: 'Mars',    r: 80, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98) },
-    { name: 'Jupiter', r: 105, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59) },
-    { name: 'Saturne', r: 130, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22) },
-    { name: 'Uranus',  r: 155, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5) },
-    { name: 'Neptune', r: 180, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182) }
+    { name: 'Mercure', r: 203, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97) },
+    { name: 'Vénus',   r: 234, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70) },
+    { name: 'Terre',   r: 251, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25) },
+    { name: 'Mars',    r: 271, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98) },
+    { name: 'Jupiter', r: 333, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59) },
+    { name: 'Saturne', r: 363, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22) },
+    { name: 'Uranus',  r: 398, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5) },
+    { name: 'Neptune', r: 421, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182) }
   ];
 
-  const ship = { orbit: 60, angle: 0, size: 3 };
+  const ship = { orbit: 380, angle: 0, size: 3 };
+
+  // Génération de la ceinture d'astéroïdes
+  const asteroids = [];
+  for (let i = 0; i < 150; i++) {
+    const r = 280 + Math.random() * 30;
+    const angle = Math.random() * Math.PI * 2;
+    asteroids.push({ r, angle });
+  }
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
@@ -48,15 +58,22 @@ if (!canvas) {
     ctx.fillStyle = colors.sun;
     ctx.fill();
 
-    // Orbites et planètes
+    // Ceinture d'astéroïdes
+    asteroids.forEach(a => {
+      const x = CENTER.x + Math.cos(a.angle) * a.r;
+      const y = CENTER.y + Math.sin(a.angle) * a.r;
+      ctx.fillStyle = colors.asteroid;
+      ctx.fillRect(x, y, 1.5, 1.5);
+      a.angle += 0.0003;
+    });
+
+    // Planètes
     planets.forEach((p, i) => {
-      // Orbite
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
       ctx.stroke();
 
-      // Planète
       const x = CENTER.x + Math.cos(p.angle) * p.r;
       const y = CENTER.y + Math.sin(p.angle) * p.r;
       ctx.beginPath();
@@ -75,7 +92,7 @@ if (!canvas) {
     ctx.fillStyle = colors.ship;
     ctx.fill();
 
-    ship.angle += 0.015;
+    ship.angle += 0.0007;
 
     requestAnimationFrame(drawSystem);
   }
