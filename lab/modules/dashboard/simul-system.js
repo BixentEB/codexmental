@@ -84,7 +84,28 @@ if (!canvas) {
       p.angle += p.speed;
     });
 
-    // Vaisseau
+    
+    // Planètes naines
+    const dwarfPlanets = [
+      { name: 'Cérès', r: 302, size: 2, color: '#ccc', angle: getAngleFromJ2000(daysSince, 1680) },
+      { name: 'Pluton', r: 434, size: 2, color: '#f9f', angle: getAngleFromJ2000(daysSince, 90560) },
+      { name: 'Hauméa', r: 438, size: 2, color: '#aff', angle: getAngleFromJ2000(daysSince, 103774) },
+      { name: 'Makémaké', r: 441, size: 2, color: '#fbb', angle: getAngleFromJ2000(daysSince, 112897) },
+      { name: 'Éris', r: 461, size: 2, color: '#c6f', angle: getAngleFromJ2000(daysSince, 203830) }
+    ];
+
+    dwarfPlanets.forEach(dp => {
+      const x = CENTER.x + Math.cos(dp.angle) * dp.r;
+      const y = CENTER.y + Math.sin(dp.angle) * dp.r;
+      ctx.beginPath();
+      ctx.arc(x, y, dp.size, 0, Math.PI * 2);
+      ctx.fillStyle = dp.color;
+      ctx.fill();
+      dp.angle += 0.0003;
+    });
+
+  // Vaisseau
+  
     const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
     const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
     ctx.beginPath();
