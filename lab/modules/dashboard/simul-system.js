@@ -1,6 +1,6 @@
 // simul-system.js – Système solaire animé (canvas)
 
-const canvas = document.getElementById('radar-galactique');
+const canvas = document.getElementById('simul-system');
 if (!canvas) {
   console.warn("⚠️ Aucun canvas #radar-galactique trouvé.");
 } else {
