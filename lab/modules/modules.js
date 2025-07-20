@@ -9,7 +9,9 @@ if (location.pathname === '/lab/index.html') {
 // Chargement manuel des modules à activer
 if (window.location.pathname.endsWith("/lab/index.html")) {
   import("/lab/modules/dashboard/radar-galactique.js");
-  import("/lab/modules/simul-moon/simul-moon-canvas.js").then(mod => mod.launchSimulMoonCanvas());
+  import("/lab/modules/dashboard/simul-systeme.js"); // 👈 ajout ici
+  import("/lab/modules/simul-moon/simul-moon-canvas.js")
+    .then(mod => mod.launchSimulMoonCanvas());
 }
 
 console.log("✅ Modules du lab chargés");
