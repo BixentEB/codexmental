@@ -27,13 +27,13 @@ body.theme-stellaire {
 
 main.dashboard {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
-    "lune alertes infos phases projet"
-    "radar core core extras extras";
+    "lune alertes infos phases"
+    "lune core core core";
   gap: var(--widget-gap);
   padding: 6.5rem 2rem 4rem 2rem;
-  max-width: 1600px;
+  max-width: 1400px;
   margin: auto;
 }
 
@@ -95,16 +95,16 @@ main.dashboard {
 }
 
 /* Grille par zone */
-#widget-lune     { grid-area: lune; }
+#widget-lune     { grid-area: lune; height: 100%; }
 #widget-alertes  { grid-area: alertes; }
 #widget-soleil   { grid-area: infos; }
 #widget-phases   { grid-area: phases; }
-#widget-projets  { grid-area: projet; }
-#widget-radar    { grid-area: radar; }
+#widget-projets  { display: none; }
+#widget-radar    { display: none; }
 #widget-core-radar {
   grid-area: core;
-  min-height: 650px;
-  height: 650px;
+  min-height: 720px;
+  height: 720px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,27 +117,7 @@ main.dashboard {
   max-height: 100%;
   object-fit: contain;
 }
-#widget-extras   { grid-area: extras; }
-
-/* Radar mini décoratif */
-#widget-radar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 150px;
-  min-height: 150px;
-  background: transparent;
-  border: none;
-}
-
-#widget-radar h2 {
-  display: none;
-}
-
-#radar-mini {
-  max-width: 100%;
-  max-height: 100%;
-}
+#widget-extras   { display: none; }
 
 /* Responsive fallback */
 @media (max-width: 900px) {
@@ -148,10 +128,7 @@ main.dashboard {
       "alertes"
       "infos"
       "phases"
-      "projet"
-      "core"
-      "radar"
-      "extras";
+      "core";
   }
 }
 
