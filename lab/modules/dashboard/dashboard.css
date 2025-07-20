@@ -1,7 +1,7 @@
-/* ========================================================
-   Dashboard SF – Codex Mental (Vincent)
-   Fichier : /lab/modules/dashboard/dashboard.css
-   ======================================================== */
+/** ========================================================
+    Dashboard SF – Codex Mental (Vincent)
+    Fichier : /lab/modules/dashboard/dashboard.css
+======================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=JetBrains+Mono&display=swap');
 
@@ -32,7 +32,7 @@ main.dashboard {
     "lune alertes infos phases projet"
     "radar core core core extras";
   gap: var(--widget-gap);
-  padding: 6rem 2rem 4rem 2rem;
+  padding: 6.5rem 2rem 4rem 2rem;
   max-width: 1600px;
   margin: auto;
 }
@@ -103,8 +103,8 @@ main.dashboard {
 #widget-radar    { grid-area: radar; }
 #widget-core-radar {
   grid-area: core;
-  min-height: 450px;
-  height: 450px;
+  min-height: 550px;
+  height: 550px;
 }
 #widget-extras   { grid-area: extras; }
 
