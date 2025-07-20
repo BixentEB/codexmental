@@ -1,7 +1,9 @@
-// simul-systeme.js – Base du système solaire évolutif
+// simul-system.js – Système solaire animé (canvas)
 
 const canvas = document.getElementById('radar-galactique');
-if (canvas) {
+if (!canvas) {
+  console.warn("⚠️ Aucun canvas #radar-galactique trouvé.");
+} else {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
@@ -35,6 +37,7 @@ if (canvas) {
     ctx.fillStyle = colors.sun;
     ctx.fill();
 
+    // Orbites et planètes
     planets.forEach((p, i) => {
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
@@ -60,7 +63,6 @@ if (canvas) {
     ctx.fill();
 
     ship.angle += 0.015;
-
     requestAnimationFrame(drawSystem);
   }
 
