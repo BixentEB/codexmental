@@ -1,7 +1,19 @@
-
 // simul-systeme.js – Base du système solaire évolutif
-const canvas = document.getElementById('radar-galactique');
-if (!canvas) return;
+
+// Création et insertion du canvas si absent
+let canvas = document.getElementById('simul-systeme');
+if (!canvas) {
+  canvas = document.createElement('canvas');
+  canvas.id = 'simul-systeme';
+  canvas.width = 800;
+  canvas.height = 500;
+  const container = document.querySelector('#widget-core-radar');
+  if (container) container.appendChild(canvas);
+  else {
+    console.error("❌ Conteneur #widget-core-radar introuvable.");
+    return;
+  }
+}
 
 const ctx = canvas.getContext('2d');
 const W = canvas.width;
