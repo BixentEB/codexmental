@@ -30,7 +30,7 @@ main.dashboard {
   grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
     "lune alertes infos phases"
-    "lune core core core";
+    "core core core core";
   gap: var(--widget-gap);
   padding: 6.5rem 2rem 4rem 2rem;
   max-width: 1400px;
