@@ -119,12 +119,6 @@ main.dashboard {
 }
 #widget-extras   { display: none; }
 
-#widget-soleil {
-  box-shadow:
-    0 0 12px rgba(0, 255, 255, 0.08),
-    0 0 16px rgba(0, 255, 255, 0.05),
-    inset 0 0 6px rgba(0, 255, 255, 0.025);
-}
 
 /* Responsive fallback */
 @media (max-width: 900px) {
