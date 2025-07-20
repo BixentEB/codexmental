@@ -1,5 +1,5 @@
 
-// simul-systeme.js – Simulation simplifiée du système solaire (vue radar)
+// simul-systeme.js – Base du système solaire évolutif
 const canvas = document.getElementById('radar-galactique');
 if (!canvas) return;
 
@@ -8,40 +8,39 @@ const W = canvas.width;
 const H = canvas.height;
 const CENTER = { x: W / 2, y: H / 2 };
 
-let angle = 0;
+const colors = {
+  sun: '#ffaa00',
+  planets: ['#aaa', '#f3a', '#0cf', '#c33', '#ffcc88', '#ccaa66', '#88f', '#44d'],
+  ship: '#f0f'
+};
+
 const planets = [
-  { name: 'Mercure', r: 20, size: 2, speed: 0.04 },
-  { name: 'Vénus',   r: 35, size: 3, speed: 0.03 },
-  { name: 'Terre',   r: 50, size: 4, speed: 0.025 },
-  { name: 'Mars',    r: 70, size: 3, speed: 0.02 },
-  { name: 'Jupiter', r: 95, size: 6, speed: 0.015 },
-  { name: 'Saturne', r: 120, size: 5, speed: 0.012 },
-  { name: 'Uranus',  r: 145, size: 4, speed: 0.01 },
-  { name: 'Neptune', r: 170, size: 4, speed: 0.008 }
+  { name: 'Mercure', r: 25, size: 2, speed: 0.04 },
+  { name: 'Vénus',   r: 40, size: 3, speed: 0.03 },
+  { name: 'Terre',   r: 60, size: 4, speed: 0.025 },
+  { name: 'Mars',    r: 80, size: 3, speed: 0.02 },
+  { name: 'Jupiter', r: 105, size: 6, speed: 0.015 },
+  { name: 'Saturne', r: 130, size: 5, speed: 0.012 },
+  { name: 'Uranus',  r: 155, size: 4, speed: 0.01 },
+  { name: 'Neptune', r: 180, size: 4, speed: 0.008 }
 ];
 
-const userShip = {
-  orbit: 50,
-  angle: 0,
-  size: 2.5,
-  color: '#f0f'
-};
+const ship = { orbit: 60, angle: 0, size: 3 };
 
 function drawSystem() {
   ctx.clearRect(0, 0, W, H);
 
   // Soleil
   ctx.beginPath();
-  ctx.arc(CENTER.x, CENTER.y, 6, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffaa00';
+  ctx.arc(CENTER.x, CENTER.y, 7, 0, Math.PI * 2);
+  ctx.fillStyle = colors.sun;
   ctx.fill();
 
-  // Orbites + planètes
-  planets.forEach(p => {
+  planets.forEach((p, i) => {
     // orbite
     ctx.beginPath();
     ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(0,255,255,0.05)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
     ctx.stroke();
 
     // planète
@@ -49,21 +48,21 @@ function drawSystem() {
     const y = CENTER.y + Math.sin(p.angle || 0) * p.r;
     ctx.beginPath();
     ctx.arc(x, y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = '#0ff';
+    ctx.fillStyle = colors.planets[i % colors.planets.length];
     ctx.fill();
 
     p.angle = (p.angle || 0) + p.speed;
   });
 
-  // Position du vaisseau
-  const sx = CENTER.x + Math.cos(userShip.angle) * userShip.orbit;
-  const sy = CENTER.y + Math.sin(userShip.angle) * userShip.orbit;
+  // vaisseau
+  const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
+  const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
   ctx.beginPath();
-  ctx.arc(sx, sy, userShip.size, 0, Math.PI * 2);
-  ctx.fillStyle = userShip.color;
+  ctx.arc(sx, sy, ship.size, 0, Math.PI * 2);
+  ctx.fillStyle = colors.ship;
   ctx.fill();
 
-  userShip.angle += 0.018;
+  ship.angle += 0.015;
 
   requestAnimationFrame(drawSystem);
 }
