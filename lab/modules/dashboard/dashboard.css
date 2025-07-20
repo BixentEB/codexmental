@@ -57,8 +57,8 @@ main.dashboard {
 .widget:hover {
   transform: scale(1.015);
   box-shadow:
-    0 0 10px rgba(0, 255, 255, 0.2),
-    inset 0 0 6px rgba(0, 255, 255, 0.1);
+    0 0 6px rgba(0, 255, 255, 0.12),
+    inset 0 0 4px rgba(0, 255, 255, 0.06);
 }
 
 .widget h2 {
@@ -108,7 +108,13 @@ main.dashboard {
 /* Grille par zone */
 #widget-lune     { grid-area: lune; height: 100%; }
 #widget-alertes  { grid-area: alertes; }
-#widget-soleil   { grid-area: alertes; background: var(--color-frame) !important; box-shadow: none !important; }
+#widget-soleil   {
+  grid-area: alertes;
+  background: inherit !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
 #widget-phases   { grid-area: phases; }
 #widget-projets  { display: none; }
 #widget-radar    { display: none; }
