@@ -6,7 +6,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=JetBrains+Mono&display=swap');
 
 :root {
-  --color-bg: radial-gradient(circle at 50% 20%, #0d0d1a, #050510 80%);
+  --color-bg: linear-gradient(#0a0a14, #050510);
   --color-primary: #0ff4;
   --color-text: #d0eaff;
   --color-shadow: rgba(0, 255, 255, 0.15);
@@ -42,10 +42,7 @@ main.dashboard {
   background: var(--color-frame) !important;
   border: var(--widget-border);
   border-radius: var(--widget-radius);
-  box-shadow:
-    0 0 6px rgba(0, 255, 255, 0.06),
-    0 0 8px rgba(0, 255, 255, 0.04),
-    inset 0 0 2px rgba(0, 255, 255, 0.01) !important;
+  box-shadow: none !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: var(--widget-padding);
@@ -71,7 +68,14 @@ main.dashboard {
   border-bottom: 1px solid var(--color-primary);
   padding-bottom: 0.2rem;
   text-shadow: none !important;
+  filter: none !important;
+  background: none !important;
   width: 90%;
+}
+
+.widget h2::before,
+.widget h2::after {
+  display: none !important;
 }
 
 .widget[data-active="false"]::before {
@@ -108,9 +112,9 @@ main.dashboard {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
-  border: none;
-  box-shadow: none;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 #widget-core-radar canvas {
   max-width: 100%;
