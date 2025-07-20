@@ -27,14 +27,14 @@ if (!canvas) {
   const daysSince = (now - referenceDate) / (1000 * 60 * 60 * 24);
 
   const planets = [
-    { name: 'Mercure', r: 25, size: 2, speed: 0.04, angle: getAngleFromJ2000(daysSince, 87.97) },
-    { name: 'Vénus',   r: 40, size: 3, speed: 0.03, angle: getAngleFromJ2000(daysSince, 224.70) },
-    { name: 'Terre',   r: 60, size: 4, speed: 0.025, angle: getAngleFromJ2000(daysSince, 365.25) },
-    { name: 'Mars',    r: 80, size: 3, speed: 0.02, angle: getAngleFromJ2000(daysSince, 686.98) },
-    { name: 'Jupiter', r: 105, size: 6, speed: 0.015, angle: getAngleFromJ2000(daysSince, 4332.59) },
-    { name: 'Saturne', r: 130, size: 5, speed: 0.012, angle: getAngleFromJ2000(daysSince, 10759.22) },
-    { name: 'Uranus',  r: 155, size: 4, speed: 0.01, angle: getAngleFromJ2000(daysSince, 30688.5) },
-    { name: 'Neptune', r: 180, size: 4, speed: 0.008, angle: getAngleFromJ2000(daysSince, 60182) }
+    { name: 'Mercure', r: 25, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97) },
+    { name: 'Vénus',   r: 40, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70) },
+    { name: 'Terre',   r: 60, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25) },
+    { name: 'Mars',    r: 80, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98) },
+    { name: 'Jupiter', r: 105, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59) },
+    { name: 'Saturne', r: 130, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22) },
+    { name: 'Uranus',  r: 155, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5) },
+    { name: 'Neptune', r: 180, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182) }
   ];
 
   const ship = { orbit: 60, angle: 0, size: 3 };
