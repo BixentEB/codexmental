@@ -11,7 +11,7 @@ if (window.location.pathname.endsWith("/lab/index.html")) {
   import("/lab/modules/dashboard/radar-mini.js");
   import("/lab/modules/simul-moon/simul-moon-canvas.js")
     .then(mod => mod.launchSimulMoonCanvas());
-  import("/lab/modules/dashboard/simul-systeme.js"); // ✅ sans fonction appelée
+  import("/lab/modules/dashboard/simul-system.js"); // ✅ sans fonction appelée
 }
 
 console.log("✅ Modules du lab chargés");
