@@ -29,7 +29,7 @@ main.dashboard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
-    "bloc1 bloc2 bloc2 bloc3"
+    "bloc1 titre titre bloc3"
     "bloc4 core core bloc5";
   gap: var(--widget-gap);
   padding: 6.5rem 2rem 4rem 2rem;
@@ -128,12 +128,11 @@ main.dashboard {
 }
 
 /* Grille par zone */
-#widget-1      { grid-area: bloc1; }
-#widget-2      { grid-area: bloc2; min-height: 220px; height: 220px; }
-#widget-3      { grid-area: bloc3; }
-#widget-4      { grid-area: bloc4; }
-#widget-5      { grid-area: bloc5; }
-#widget-core-radar {
+#widget-1           { grid-area: bloc1; }
+#widget-3           { grid-area: bloc3; }
+#widget-4           { grid-area: bloc4; }
+#widget-5           { grid-area: bloc5; }
+#widget-core-radar  {
   grid-area: core;
   min-height: 720px;
   height: 720px;
@@ -150,14 +149,39 @@ main.dashboard {
   object-fit: contain;
 }
 
+/* Bloc titre principal (haut centre) */
+#widget-titre {
+  grid-area: titre;
+  min-height: 70px;
+  height: 70px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: none;
+  z-index: 2;
+  position: relative;
+}
+
+/* Bloc alertes juste sous le titre */
+#widget-alertes {
+  grid-area: titre;
+  margin-top: 75px;
+  min-height: 120px;
+  height: 120px;
+  z-index: 1;
+  position: relative;
+}
+
 /* Responsive fallback */
 @media (max-width: 900px) {
   main.dashboard {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "bloc1"
-      "bloc2"
+      "titre"
       "bloc3"
+      "bloc1"
       "bloc4"
       "bloc5"
       "core";
@@ -173,6 +197,7 @@ main.dashboard {
   }
 }
 
+/* Nettoyage labo */
 body.lab .theme-fab-container,
 body.lab #mobile-menu li strong,
 body.lab #mobile-menu li button[onclick*='setTheme'] {
