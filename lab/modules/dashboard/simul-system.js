@@ -1,5 +1,13 @@
 import { loadPlanet3D, cleanupViewer } from './viewer-planete-3d.js';
 
+const layerSelect = document.getElementById('layer-select');
+layerSelect?.addEventListener('change', (e) => {
+  const newLayer = e.target.value;
+  if (currentPlanet) {
+    loadPlanet3D(currentPlanet.name, newLayer);
+  }
+});
+
 const canvas = document.getElementById('simul-system');
 const infoBox = document.getElementById('planet-info-content');
 const closeBtn = document.getElementById('close-planet-viewer');
