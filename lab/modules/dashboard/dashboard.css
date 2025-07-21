@@ -29,8 +29,9 @@ main.dashboard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
-    "bloc1 titre titre bloc3"
-    "bloc4 core core bloc5";
+    "bloc1 titre  titre  bloc3"
+    "bloc1 alert  alert  bloc3"
+    "bloc4 core   core   bloc5";
   gap: var(--widget-gap);
   padding: 6.5rem 2rem 4rem 2rem;
   max-width: 1400px;
@@ -132,6 +133,7 @@ main.dashboard {
 #widget-3           { grid-area: bloc3; }
 #widget-4           { grid-area: bloc4; }
 #widget-5           { grid-area: bloc5; }
+
 #widget-core-radar  {
   grid-area: core;
   min-height: 720px;
@@ -149,7 +151,7 @@ main.dashboard {
   object-fit: contain;
 }
 
-/* Bloc titre principal (haut centre) */
+/* Bloc titre principal (ligne 1) */
 #widget-titre {
   grid-area: titre;
   min-height: 70px;
@@ -164,12 +166,12 @@ main.dashboard {
   position: relative;
 }
 
-/* Bloc alertes juste sous le titre */
+/* Bloc alertes (ligne 2) */
 #widget-alertes {
-  grid-area: titre;
-  margin-top: 75px;
+  grid-area: alert;
   min-height: 120px;
   height: 120px;
+  margin-top: 0;
   z-index: 1;
   position: relative;
 }
@@ -180,6 +182,7 @@ main.dashboard {
     grid-template-columns: 1fr;
     grid-template-areas:
       "titre"
+      "alert"
       "bloc3"
       "bloc1"
       "bloc4"
