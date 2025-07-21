@@ -33,68 +33,66 @@
   <!-- 🔬 Contenu principal -->
   
   <main class="dashboard">
-    <div id="dashboard-label">ORION TACTICAL INTERFACE</div>
 
-    
-    <!-- Ligne 1 -->
-    <div class="widget" id="widget-1" data-widget="1" data-active="true">
-      <h2>🛰️ Bloc 1</h2>
-    </div>
+  <!-- 🧭 Titres verticaux -->
+  <div id="dashboard-title-left">ORION INTERFACE</div>
+  <div id="dashboard-title-right">TACTICAL MODULE</div>
 
-    <div class="widget" id="widget-alertes">
-      <h2>Alertes</h2>
-      <!-- contenu d’alertes ici -->
-    </div>
+  <!-- 🛰 Ligne 1 : Alertes -->
+  <div id="alert-left" class="widget"><h2>📡 Alerte Gauche</h2></div>
+  <div id="alert-main" class="widget"><h2>🛰️ Données Stellaires</h2></div>
+  <div id="alert-right" class="widget"><h2>🧬 Alerte Droite</h2></div>
 
-    <div class="widget" id="widget-3" data-widget="3" data-active="true">
-      <h2>📆 Bloc 3</h2>
-    </div>
+  <!-- 📦 Colonnes radar -->
+  <div id="bloc-g1" class="widget"><h2>🔋 Bloc G1</h2></div>
+  <div id="bloc-g2" class="widget"><h2>🧪 Bloc G2</h2></div>
+  <div id="bloc-g3" class="widget"><h2>🔧 Bloc G3</h2></div>
 
-    <!-- Ligne 2 -->
-    <div class="widget" id="widget-4" data-widget="4" data-active="true">
-      <h2>📡 Bloc gauche</h2>
-    </div>
+  <div id="bloc-d1" class="widget"><h2>🧭 Bloc D1</h2></div>
+  <div id="bloc-d2" class="widget"><h2>🧬 Bloc D2</h2></div>
+  <div id="bloc-d3" class="widget"><h2>🧫 Bloc D3</h2></div>
 
-    <div class="widget radar-circular" id="widget-core-radar" data-widget="core-radar" data-active="true">
-      <canvas id="simul-system" width="600" height="600"></canvas>
-    </div>
-
-    <div class="widget" id="widget-5" data-widget="5" data-active="true">
-      <h2>🧬 Bloc droit</h2>
-    </div>
-
-<!-- 🔭 Visualiseur de planète -->
-<div class="widget" id="widget-planet-viewer">
-  <button id="close-planet-viewer" title="Fermer"></button>
-  <h2>🔭 Visualiseur</h2>
-
-  <canvas id="planet-canvas" width="240" height="240"></canvas>
-
-  <div class="planet-layer-selector">
-    <label for="layer-select">🪐 Couche :</label>
-    <select id="layer-select">
-      <option value="surface">Surface</option>
-      <option value="clouds">Nuages</option>
-      <option value="ir">Infrarouge</option>
-    </select>
-    <p id="layer-warning" class="hidden" style="color: #f88; font-size: 0.8em; margin-top: 0.5em;">
-      ⚠️ Données manquantes pour cette couche
-    </p>
+  <!-- ☀️ Radar central -->
+  <div id="widget-core-radar" class="widget">
+    <canvas id="simul-system" width="600" height="600"></canvas>
   </div>
-</div>
 
-<!-- 📋 Informations sur la planète -->
-<div class="widget" id="widget-planet-info">
-  <h2>📋 Informations</h2>
-  <div id="planet-info-content">
-    <p>Nom : —</p>
-    <p>Distance : —</p>
-    <p>Taille : —</p>
-    <p>Température : —</p>
+  <!-- 🧠 Infos dynamiques -->
+  <div id="widget-infos" class="widget">
+    <h2>📊 Données planétaires</h2>
+
+    <!-- 🔭 Visualiseur -->
+    <div id="widget-planet-viewer">
+      <button id="close-planet-viewer" title="Fermer"></button>
+      <h3>🔭 Visualiseur</h3>
+      <canvas id="planet-canvas" width="240" height="240"></canvas>
+      <div class="planet-layer-selector">
+        <label for="layer-select">🪐 Couche :</label>
+        <select id="layer-select">
+          <option value="surface">Surface</option>
+          <option value="clouds">Nuages</option>
+          <option value="ir">Infrarouge</option>
+        </select>
+        <p id="layer-warning" class="hidden" style="color: #f88; font-size: 0.8em; margin-top: 0.5em;">
+          ⚠️ Données manquantes pour cette couche
+        </p>
+      </div>
+    </div>
+
+    <!-- 📋 Informations -->
+    <div id="widget-planet-info">
+      <h3>📋 Informations</h3>
+      <div id="planet-info-content">
+        <p>Nom : —</p>
+        <p>Distance : —</p>
+        <p>Taille : —</p>
+        <p>Température : —</p>
+      </div>
+    </div>
+
   </div>
-</div>
+</main>
 
-  </main>
 
   <!-- 🡸 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
