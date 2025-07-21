@@ -32,30 +32,35 @@ if (!canvas) {
     return fraction * 2 * Math.PI;
   }
 
+  // Nouvelle échelle orbitale lisible
+  const baseOrbit = 120;
+  const step = 26;
+  const scaleOrbit = (index) => baseOrbit + Math.pow(index, 1.8) * step;
+
   const planets = [
-    { name: 'mercure', label: 'Mercure', r: 203, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
-    { name: 'venus',   label: 'Vénus',   r: 234, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1], data: { distance: "108.2 Mkm", temp: "464°C", radius: "6 052 km" } },
-    { name: 'terre',   label: 'Terre',   r: 251, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25), color: colors.planets[2], data: { distance: "149.6 Mkm", temp: "15°C", radius: "6 371 km" } },
-    { name: 'mars',    label: 'Mars',    r: 271, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98), color: colors.planets[3], data: { distance: "227.9 Mkm", temp: "-63°C", radius: "3 390 km" } },
-    { name: 'jupiter', label: 'Jupiter', r: 333, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59), color: colors.planets[4], data: { distance: "778.3 Mkm", temp: "-108°C", radius: "69 911 km" } },
-    { name: 'saturne', label: 'Saturne', r: 363, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5], data: { distance: "1 429 Mkm", temp: "-139°C", radius: "58 232 km" } },
-    { name: 'uranus',  label: 'Uranus',  r: 398, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6], data: { distance: "2 871 Mkm", temp: "-197°C", radius: "25 362 km" } },
-    { name: 'neptune', label: 'Neptune', r: 421, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7], data: { distance: "4 498 Mkm", temp: "-201°C", radius: "24 622 km" } }
+    { name: 'mercure', label: 'Mercure', r: scaleOrbit(0), size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
+    { name: 'venus',   label: 'Vénus',   r: scaleOrbit(1), size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1], data: { distance: "108.2 Mkm", temp: "464°C", radius: "6 052 km" } },
+    { name: 'terre',   label: 'Terre',   r: scaleOrbit(2), size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25), color: colors.planets[2], data: { distance: "149.6 Mkm", temp: "15°C", radius: "6 371 km" } },
+    { name: 'mars',    label: 'Mars',    r: scaleOrbit(3), size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98), color: colors.planets[3], data: { distance: "227.9 Mkm", temp: "-63°C", radius: "3 390 km" } },
+    { name: 'jupiter', label: 'Jupiter', r: scaleOrbit(4), size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59), color: colors.planets[4], data: { distance: "778.3 Mkm", temp: "-108°C", radius: "69 911 km" } },
+    { name: 'saturne', label: 'Saturne', r: scaleOrbit(5), size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5], data: { distance: "1 429 Mkm", temp: "-139°C", radius: "58 232 km" } },
+    { name: 'uranus',  label: 'Uranus',  r: scaleOrbit(6), size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6], data: { distance: "2 871 Mkm", temp: "-197°C", radius: "25 362 km" } },
+    { name: 'neptune', label: 'Neptune', r: scaleOrbit(7), size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7], data: { distance: "4 498 Mkm", temp: "-201°C", radius: "24 622 km" } }
   ];
 
   const dwarfPlanets = [
-    { name: 'ceres', r: 302, size: 2, color: '#ccc', angle: getAngleFromJ2000(daysSince, 1680), label: 'Cérès', data: { distance: "413 Mkm", temp: "-105°C", radius: "473 km" } },
-    { name: 'pluton', r: 434, size: 2, color: '#f9f', angle: getAngleFromJ2000(daysSince, 90560), label: 'Pluton', data: { distance: "5 900 Mkm", temp: "-229°C", radius: "1 188 km" } },
-    { name: 'haumea', r: 438, size: 2, color: '#aff', angle: getAngleFromJ2000(daysSince, 103774), label: 'Hauméa', data: { distance: "6 452 Mkm", temp: "-241°C", radius: "816 × 1 218 km" } },
-    { name: 'makemake', r: 441, size: 2, color: '#fbb', angle: getAngleFromJ2000(daysSince, 112897), label: 'Makémaké', data: { distance: "6 850 Mkm", temp: "-243°C", radius: "715 km" } },
-    { name: 'eris', r: 461, size: 2, color: '#c6f', angle: getAngleFromJ2000(daysSince, 203830), label: 'Éris', data: { distance: "10 120 Mkm", temp: "-231°C", radius: "1 163 km" } }
+    { name: 'ceres',    r: scaleOrbit(3.5), size: 2, color: '#ccc', angle: getAngleFromJ2000(daysSince, 1680), label: 'Cérès', data: { distance: "413 Mkm", temp: "-105°C", radius: "473 km" } },
+    { name: 'pluton',   r: scaleOrbit(8), size: 2, color: '#f9f', angle: getAngleFromJ2000(daysSince, 90560), label: 'Pluton', data: { distance: "5 900 Mkm", temp: "-229°C", radius: "1 188 km" } },
+    { name: 'haumea',   r: scaleOrbit(8.3), size: 2, color: '#aff', angle: getAngleFromJ2000(daysSince, 103774), label: 'Hauméa', data: { distance: "6 452 Mkm", temp: "-241°C", radius: "816 × 1 218 km" } },
+    { name: 'makemake', r: scaleOrbit(8.6), size: 2, color: '#fbb', angle: getAngleFromJ2000(daysSince, 112897), label: 'Makémaké', data: { distance: "6 850 Mkm", temp: "-243°C", radius: "715 km" } },
+    { name: 'eris',     r: scaleOrbit(9), size: 2, color: '#c6f', angle: getAngleFromJ2000(daysSince, 203830), label: 'Éris', data: { distance: "10 120 Mkm", temp: "-231°C", radius: "1 163 km" } }
   ];
 
-  const ship = { orbit: 380, angle: 0, size: 3 };
+  const ship = { orbit: scaleOrbit(6.7), angle: 0, size: 3 };
 
   const asteroids = [];
   for (let i = 0; i < 150; i++) {
-    const r = 280 + Math.random() * 30;
+    const r = scaleOrbit(3.3) + Math.random() * 20;
     const angle = Math.random() * Math.PI * 2;
     asteroids.push({ r, angle });
   }
@@ -72,36 +77,32 @@ if (!canvas) {
   }
 
   function handleClick(e) {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const clickX = (e.clientX - rect.left) * scaleX;
-  const clickY = (e.clientY - rect.top) * scaleY;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clickX = (e.clientX - rect.left) * scaleX;
+    const clickY = (e.clientY - rect.top) * scaleY;
 
-  const allBodies = planets.concat(dwarfPlanets);
-  let found = false;
+    const allBodies = planets.concat(dwarfPlanets);
+    let found = false;
 
-  for (const p of allBodies) {
-    const px = CENTER.x + Math.cos(p.angle) * p.r;
-    const py = CENTER.y + Math.sin(p.angle) * p.r;
-    const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+    for (const p of allBodies) {
+      const px = CENTER.x + Math.cos(p.angle) * p.r;
+      const py = CENTER.y + Math.sin(p.angle) * p.r;
+      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
 
-    // hitbox élargie à 6px minimum
-    if (dist <= Math.max(p.size, 6)) {
-      console.log("✅ Planète détectée :", p.name);
-      currentPlanet = p;
-      updatePlanetInfo(p);
-      loadPlanet3D(p.name);
-      found = true;
-      break;
+      if (dist <= Math.max(p.size, 6)) {
+        currentPlanet = p;
+        updatePlanetInfo(p);
+        loadPlanet3D(p.name);
+        console.log("✅ Planète détectée :", p.name);
+        found = true;
+        break;
+      }
     }
-  }
 
-  if (!found) {
-    console.log("❌ Aucun corps détecté");
+    if (!found) console.log("❌ Aucun corps détecté");
   }
-}
-
 
   canvas.addEventListener('click', handleClick);
 
@@ -115,13 +116,11 @@ if (!canvas) {
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
 
-    // Soleil
     ctx.beginPath();
     ctx.arc(CENTER.x, CENTER.y, 7, 0, Math.PI * 2);
     ctx.fillStyle = colors.sun;
     ctx.fill();
 
-    // Astéroïdes
     asteroids.forEach(a => {
       const x = CENTER.x + Math.cos(a.angle) * a.r;
       const y = CENTER.y + Math.sin(a.angle) * a.r;
@@ -130,7 +129,6 @@ if (!canvas) {
       a.angle += 0.0003;
     });
 
-    // Planètes
     planets.forEach(p => {
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
@@ -143,11 +141,9 @@ if (!canvas) {
       ctx.arc(x, y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
-
       p.angle += p.speed;
     });
 
-    // Planètes naines
     dwarfPlanets.forEach(p => {
       const x = CENTER.x + Math.cos(p.angle) * p.r;
       const y = CENTER.y + Math.sin(p.angle) * p.r;
@@ -158,7 +154,6 @@ if (!canvas) {
       p.angle += 0.0003;
     });
 
-    // Vaisseau
     const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
     const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
     ctx.beginPath();
