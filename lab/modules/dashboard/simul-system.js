@@ -32,10 +32,14 @@ if (!canvas) {
     return fraction * 2 * Math.PI;
   }
 
-  // Nouvelle échelle orbitale lisible
-  const baseOrbit = 120;
-  const step = 26;
-  const scaleOrbit = (index) => baseOrbit + Math.pow(index, 1.8) * step;
+  // Nouvelle échelle orbitale normalisée
+  const maxOrbitIndex = 9;
+  const maxRadius = H / 2 - 20;
+  const baseOrbit = 70;
+  const scaleOrbit = (index) => {
+    const ratio = Math.pow(index / maxOrbitIndex, 1.8);
+    return baseOrbit + ratio * (maxRadius - baseOrbit);
+  };
 
   const planets = [
     { name: 'mercure', label: 'Mercure', r: scaleOrbit(0), size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
