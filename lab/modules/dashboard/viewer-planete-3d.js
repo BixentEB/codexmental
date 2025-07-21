@@ -6,62 +6,57 @@ let scene, camera, renderer, sphere, clouds, animateId;
 const canvas = document.getElementById('planet-viewer-canvas');
 
 // Chargement dynamique d'une planète
-export function loadPlanet3D(name = 'terre') {
-  cleanupViewer();
+export function loadPlanet3D(name, layer = 'surface') {
+  currentPlanetName = name; // Pour rappel lors du changement de couche
 
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-  camera.position.z = 2.6;
+  cleanupViewer(); // Nettoyer l'ancien rendu
 
-  renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-  renderer.setSize(200, 200);
-  renderer.setPixelRatio(window.devicePixelRatio);
+  const canvas = document.getElementById('planet-canvas');
+  const warning = document.getElementById('layer-warning');
+  warning?.classList.add('hidden');
 
-  // Lumière
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  camera.position.z = 2.5;
+
   const light = new THREE.DirectionalLight(0xffffff, 1);
   light.position.set(5, 3, 5);
   scene.add(light);
-  scene.add(new THREE.AmbientLight(0x222222));
+
+  const geometry = new THREE.SphereGeometry(1, 64, 64);
+  const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
+
+  const sphere = new THREE.Mesh(geometry, material);
+  scene.add(sphere);
 
   const loader = new THREE.TextureLoader();
-  const base = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}`;
+  const texturePath = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}-${layer}.jpg`;
 
-  // Chargements parallèles avec promesses
-  Promise.all([
-    loadTex(loader, `${base}.jpg`, 'diffuse'),
-    loadTex(loader, `${base}-bump.jpg`, 'bump'),
-    loadTex(loader, `${base}-spec.jpg`, 'spec'),
-    loadTex(loader, `${base}-clouds.png`, 'clouds')
-  ]).then(([diffuse, bump, specular, cloudTex]) => {
-    // Matériau principal avec relief et reflets si dispos
-    const material = new THREE.MeshPhongMaterial({
-      map: diffuse,
-      bumpMap: bump || null,
-      bumpScale: bump ? 0.04 : 0,
-      specularMap: specular || null,
-      specular: specular ? new THREE.Color('#444') : new THREE.Color('#000')
-    });
-
-    const geometry = new THREE.SphereGeometry(1, 64, 64);
-    sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
-
-    // Nuages en sphère transparente au-dessus
-    if (cloudTex) {
-      const cloudMat = new THREE.MeshLambertMaterial({
-        map: cloudTex,
-        transparent: true,
-        opacity: 0.6,
-        depthWrite: false
-      });
-      const cloudGeo = new THREE.SphereGeometry(1.01, 64, 64);
-      clouds = new THREE.Mesh(cloudGeo, cloudMat);
-      scene.add(clouds);
+  loader.load(
+    texturePath,
+    (texture) => {
+      material.map = texture;
+      material.needsUpdate = true;
+    },
+    undefined,
+    () => {
+      console.warn(`⚠️ Donnée manquante pour ${name} (${layer})`);
+      warning?.classList.remove('hidden');
     }
+  );
 
-    animate();
-  });
+  function animate() {
+    requestAnimationFrame(animate);
+    sphere.rotation.y += 0.002;
+    renderer.render(scene, camera);
+  }
+
+  animate();
 }
+
 
 // Animation continue
 function animate() {
