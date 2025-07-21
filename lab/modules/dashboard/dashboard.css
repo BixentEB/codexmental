@@ -37,10 +37,11 @@ main.dashboard {
     "bloc-g3 radar radar radar bloc-d3"
     "infos infos infos infos infos";
   gap: var(--widget-gap);
-  max-width: 1600px;
+  max-width: 100vw;
   margin: auto;
   padding: 6rem 1rem 2rem;
   position: relative;
+  box-sizing: border-box;
 }
 
 .widget {
@@ -131,11 +132,19 @@ main.dashboard {
 #widget-infos {
   grid-area: infos;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 1rem;
-  min-height: 200px;
-  max-height: 200px;
+  height: 200px;
+  overflow: hidden;
+}
+
+#widget-planet-viewer,
+#widget-planet-info {
+  flex: 1 1 50%;
+  min-width: 300px;
+  max-height: 100%;
   overflow: auto;
 }
 
@@ -155,29 +164,29 @@ main.dashboard {
 
 #dashboard-title-left {
   position: absolute;
-  top: 0;
+  top: 4rem;
   left: 0.5rem;
-  height: 100%;
+  height: 60%;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.15rem;
+  font-size: 1rem;
+  letter-spacing: 0.2rem;
   color: var(--color-primary);
-  opacity: 0.5;
+  opacity: 0.6;
   pointer-events: none;
 }
 
 #dashboard-title-right {
   position: absolute;
-  bottom: 0;
+  bottom: 2rem;
   right: 0.5rem;
-  height: 80%;
+  height: 50%;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.1rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.15rem;
   color: var(--color-primary);
   opacity: 0.4;
   pointer-events: none;
