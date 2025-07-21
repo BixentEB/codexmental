@@ -10,11 +10,12 @@
   --color-primary: #0ff4;
   --color-text: #d0eaff;
   --color-shadow: rgba(0, 255, 255, 0.15);
-  --color-frame: rgba(255, 255, 255, 0.04);
-  --widget-gap: 1.5rem;
+  --color-frame: rgba(255, 255, 255, 0.02);
+  --color-border: rgba(0, 255, 255, 0.06);
+  --widget-gap: 1rem;
   --widget-padding: 1rem;
   --widget-radius: 12px;
-  --widget-border: 1px solid rgba(0, 255, 255, 0.15); /* ← bordure adoucie */
+  --widget-border: 1px solid var(--color-border);
 }
 
 body.theme-stellaire {
@@ -27,15 +28,19 @@ body.theme-stellaire {
 
 main.dashboard {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  grid-template-rows: auto repeat(3, 200px) auto;
   grid-template-areas:
-    "bloc1 titre  titre  bloc3"
-    "bloc1 alert  alert  bloc3"
-    "bloc4 core   core   bloc5";
+    "alert-left . alert-main . alert-right"
+    "bloc-g1 . radar . bloc-d1"
+    "bloc-g2 . radar . bloc-d2"
+    "bloc-g3 . radar . bloc-d3"
+    "infos infos infos infos infos";
   gap: var(--widget-gap);
-  padding: 6.5rem 2rem 4rem 2rem;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: auto;
+  padding: 6rem 1rem 2rem;
+  position: relative;
 }
 
 .widget {
@@ -44,58 +49,24 @@ main.dashboard {
   border: var(--widget-border);
   border-radius: var(--widget-radius);
   box-shadow: none !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   padding: var(--widget-padding);
   display: flex;
   flex-direction: column;
-  min-height: 300px;
-  height: 300px;
+  justify-content: space-between;
+  min-height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
-}
-
-.widget[data-title="main"] {
-  height: 70px;
-  min-height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.widget[data-title="main"] h2 {
-  font-size: 1rem;
-  text-align: left;
-  margin-left: 1rem;
-  border: none;
-  padding-bottom: 0;
-}
-
-.widget[data-title="ghost"] {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  pointer-events: none;
-}
-
-.widget:hover {
-  transform: scale(1.015);
-  box-shadow:
-    0 0 2px rgba(0, 255, 255, 0.06),
-    inset 0 0 1px rgba(0, 255, 255, 0.03);
 }
 
 .widget h2 {
   margin: 0 auto 0.8rem auto;
   font-size: 0.75rem;
   text-align: center;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2); /* ← ligne plus douce */
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   padding-bottom: 0.2rem;
-  text-shadow: none !important;
-  background: none !important;
-  box-shadow: none !important;
+  opacity: 0.6;
   width: 90%;
 }
 
@@ -128,16 +99,20 @@ main.dashboard {
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Grille par zone */
-#widget-1           { grid-area: bloc1; }
-#widget-3           { grid-area: bloc3; }
-#widget-4           { grid-area: bloc4; }
-#widget-5           { grid-area: bloc5; }
+#alert-left     { grid-area: alert-left; }
+#alert-main     { grid-area: alert-main; }
+#alert-right    { grid-area: alert-right; }
 
-#widget-core-radar  {
-  grid-area: core;
-  min-height: 720px;
-  height: 720px;
+#bloc-g1        { grid-area: bloc-g1; }
+#bloc-g2        { grid-area: bloc-g2; }
+#bloc-g3        { grid-area: bloc-g3; }
+
+#bloc-d1        { grid-area: bloc-d1; }
+#bloc-d2        { grid-area: bloc-d2; }
+#bloc-d3        { grid-area: bloc-d3; }
+
+#widget-radar   {
+  grid-area: radar;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,134 +120,61 @@ main.dashboard {
   border: none !important;
   box-shadow: none !important;
 }
-#widget-core-radar canvas {
+#widget-radar canvas {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-/* Bloc titre principal (ligne 1) */
-#widget-titre {
-  grid-area: titre;
-  min-height: 70px;
-  height: 70px;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  pointer-events: none;
-  z-index: 2;
-  position: relative;
+#widget-infos   {
+  grid-area: infos;
+  min-height: 240px;
 }
 
-/* ✅ Titre vertical SF */
-#widget-titre .titre-vertical {
+#dashboard-title-left {
+  position: absolute;
+  top: 0;
+  left: 0.5rem;
+  height: 100%;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+  font-family: 'Orbitron', sans-serif;
   font-size: 0.75rem;
-  letter-spacing: 0.1rem;
-  text-align: center;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  letter-spacing: 0.15rem;
   color: var(--color-primary);
-  opacity: 0.8;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
-/* Bloc alertes (ligne 2) */
-#widget-alertes {
-  grid-area: alert;
-  min-height: 120px;
-  height: 120px;
-  margin-top: 0;
-  z-index: 1;
-  position: relative;
-}
-
-/* Widget viewer planets radar */
-#widget-planet-viewer,
-#widget-planet-info {
-  min-height: 200px;
-  height: 200px;
-}
-
-#planet-viewer-canvas {
-  margin: auto;
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-}
-
-#planet-info-content {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
-  color: var(--color-text);
-  padding: 0.5rem;
-  line-height: 1.4;
-}
-
-/* Bouton de fermeture viewer planet */
-#close-planet-viewer {
+#dashboard-title-right {
   position: absolute;
-  top: 0.3rem;
+  bottom: 0;
   right: 0.5rem;
-  width: 18px;
-  height: 18px;
-  border: none;
-  background: var(--color-primary);
-  color: black;
-  font-size: 10px;
-  line-height: 0;
-  border-radius: 2px;
-  cursor: pointer;
-  opacity: 0.6;
-  z-index: 10;
-}
-#close-planet-viewer::before {
-  content: "✕";
-  font-weight: bold;
-}
-#widget-planet-viewer.hidden,
-#widget-planet-info.hidden {
-  display: none !important;
+  height: 80%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1rem;
+  color: var(--color-primary);
+  opacity: 0.4;
+  pointer-events: none;
 }
 
-/* Désactiver hover sur blocs */
-.widget:hover {
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* Responsive fallback */
 @media (max-width: 900px) {
   main.dashboard {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "titre"
-      "alert"
-      "bloc3"
-      "bloc1"
-      "bloc4"
-      "bloc5"
-      "core";
+    display: block;
+    padding: 4rem 1rem;
   }
-  #widget-titre .titre-vertical {
+  .widget {
+    margin-bottom: 1.5rem;
+  }
+  #dashboard-title-left,
+  #dashboard-title-right {
     display: none;
   }
 }
 
-@media (max-width: 600px) {
-  main.dashboard {
-    padding: 6rem 1rem 1rem 1rem;
-  }
-  .widget h2 {
-    font-size: 0.7rem;
-  }
-}
-
-/* Nettoyage labo */
 body.lab .theme-fab-container,
 body.lab #mobile-menu li strong,
 body.lab #mobile-menu li button[onclick*='setTheme'] {
