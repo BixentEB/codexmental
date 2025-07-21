@@ -24,7 +24,7 @@ export function loadPlanet3D(name = 'terre') {
   scene.add(new THREE.AmbientLight(0x222222));
 
   const loader = new THREE.TextureLoader();
-  const base = `/img/planets/${name.toLowerCase()}`;
+  const base = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}`;
 
   // Chargements parallèles avec promesses
   Promise.all([
