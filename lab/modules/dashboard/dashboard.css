@@ -29,8 +29,8 @@ main.dashboard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-areas:
-    "lune soleil soleil phases"
-    "core core core core";
+    "bloc1 bloc2 bloc2 bloc3"
+    "bloc4 core core bloc5";
   gap: var(--widget-gap);
   padding: 6.5rem 2rem 4rem 2rem;
   max-width: 1400px;
@@ -57,8 +57,8 @@ main.dashboard {
 .widget:hover {
   transform: scale(1.015);
   box-shadow:
-    0 0 4px rgba(0, 255, 255, 0.08),
-    inset 0 0 2px rgba(0, 255, 255, 0.05);
+    0 0 2px rgba(0, 255, 255, 0.06),
+    inset 0 0 1px rgba(0, 255, 255, 0.03);
 }
 
 .widget h2 {
@@ -106,18 +106,11 @@ main.dashboard {
 }
 
 /* Grille par zone */
-#widget-lune     { grid-area: lune; height: 100%; }
-#widget-alertes  { grid-area: alertes; }
-#widget-soleil   {
-  grid-area: soleil;
-  background: var(--color-frame) !important;
-  box-shadow: none !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-#widget-phases   { grid-area: phases; }
-#widget-projets  { display: none; }
-#widget-radar    { display: none; }
+#widget-1      { grid-area: bloc1; }
+#widget-2      { grid-area: bloc2; }
+#widget-3      { grid-area: bloc3; }
+#widget-4      { grid-area: bloc4; }
+#widget-5      { grid-area: bloc5; }
 #widget-core-radar {
   grid-area: core;
   min-height: 720px;
@@ -134,16 +127,17 @@ main.dashboard {
   max-height: 100%;
   object-fit: contain;
 }
-#widget-extras   { display: none; }
 
 /* Responsive fallback */
 @media (max-width: 900px) {
   main.dashboard {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "lune"
-      "alertes"
-      "phases"
+      "bloc1"
+      "bloc2"
+      "bloc3"
+      "bloc4"
+      "bloc5"
       "core";
   }
 }
