@@ -64,34 +64,36 @@
       <h2>🧬 Bloc droit</h2>
     </div>
 
-    <!-- Visualiseur de planète -->
-    <div class="widget" id="widget-planet-viewer">
+<!-- 🔭 Visualiseur de planète -->
+<div class="widget" id="widget-planet-viewer">
   <button id="close-planet-viewer" title="Fermer"></button>
   <h2>🔭 Visualiseur</h2>
-  <canvas id="planet-viewer-canvas" width="200" height="200"></canvas>
+
+  <canvas id="planet-canvas" width="240" height="240"></canvas>
+
+  <div class="planet-layer-selector">
+    <label for="layer-select">🪐 Couche :</label>
+    <select id="layer-select">
+      <option value="surface">Surface</option>
+      <option value="clouds">Nuages</option>
+      <option value="ir">Infrarouge</option>
+    </select>
+    <p id="layer-warning" class="hidden" style="color: #f88; font-size: 0.8em; margin-top: 0.5em;">
+      ⚠️ Données manquantes pour cette couche
+    </p>
+  </div>
 </div>
 
-    <!-- Informations sur la planète -->
-    <div class="widget" id="widget-planet-info">
-      <h2>📋 Informations</h2>
-      <div id="planet-info-content">
-        <p>Nom : —</p>
-        <p>Distance : —</p>
-        <p>Taille : —</p>
-        <p>Température : —</p>
-      </div>
-    </div>
-
-    <div class="planet-layer-selector">
-  <label for="layer-select">🪐 Couche :</label>
-  <select id="layer-select">
-    <option value="surface">Surface</option>
-    <option value="clouds">Nuages</option>
-    <option value="ir">Infrarouge</option>
-  </select>
-  <p id="layer-warning" class="hidden" style="color: #f88; font-size: 0.8em; margin-top: 0.5em;">⚠️ Données manquantes pour cette couche</p>
+<!-- 📋 Informations sur la planète -->
+<div class="widget" id="widget-planet-info">
+  <h2>📋 Informations</h2>
+  <div id="planet-info-content">
+    <p>Nom : —</p>
+    <p>Distance : —</p>
+    <p>Taille : —</p>
+    <p>Température : —</p>
+  </div>
 </div>
-
 
   </main>
 
