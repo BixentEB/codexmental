@@ -1,8 +1,12 @@
-// simul-system.js – Système solaire animé avec interaction clic
+// simul-system.js – Système solaire animé avec interactions
 
 const canvas = document.getElementById('simul-system');
 const viewerCanvas = document.getElementById('planet-viewer-canvas');
 const infoBox = document.getElementById('planet-info-content');
+const closeBtn = document.getElementById('close-planet-viewer');
+const viewerCtx = viewerCanvas?.getContext('2d');
+let currentPlanet = null;
+let viewerAngle = 0;
 
 if (!canvas) {
   console.warn("⚠️ Aucun canvas #simul-system trouvé.");
@@ -23,6 +27,11 @@ if (!canvas) {
   const now = new Date();
   const daysSince = (now - referenceDate) / (1000 * 60 * 60 * 24);
 
+  function getAngleFromJ2000(days, period) {
+    const fraction = (days % period) / period;
+    return fraction * 2 * Math.PI;
+  }
+
   const planets = [
     { name: 'Mercure', r: 203, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
     { name: 'Vénus',   r: 234, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1], data: { distance: "108.2 Mkm", temp: "464°C", radius: "6 052 km" } },
@@ -34,16 +43,27 @@ if (!canvas) {
     { name: 'Neptune', r: 421, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7], data: { distance: "4 498 Mkm", temp: "-201°C", radius: "24 622 km" } }
   ];
 
-  const CENTER_PLANET = { x: 100, y: 100 };
+  const dwarfPlanets = [
+    { name: 'Cérès', r: 302, size: 2, color: '#ccc', angle: getAngleFromJ2000(daysSince, 1680), data: { distance: "413 Mkm", temp: "-105°C", radius: "473 km" } },
+    { name: 'Pluton', r: 434, size: 2, color: '#f9f', angle: getAngleFromJ2000(daysSince, 90560), data: { distance: "5 900 Mkm", temp: "-229°C", radius: "1 188 km" } },
+    { name: 'Hauméa', r: 438, size: 2, color: '#aff', angle: getAngleFromJ2000(daysSince, 103774), data: { distance: "6 452 Mkm", temp: "-241°C", radius: "816 × 1 218 km" } },
+    { name: 'Makémaké', r: 441, size: 2, color: '#fbb', angle: getAngleFromJ2000(daysSince, 112897), data: { distance: "6 850 Mkm", temp: "-243°C", radius: "715 km" } },
+    { name: 'Éris', r: 461, size: 2, color: '#c6f', angle: getAngleFromJ2000(daysSince, 203830), data: { distance: "10 120 Mkm", temp: "-231°C", radius: "1 163 km" } }
+  ];
+
+  const ship = { orbit: 380, angle: 0, size: 3 };
+
+  const asteroids = [];
+  for (let i = 0; i < 150; i++) {
+    const r = 280 + Math.random() * 30;
+    const angle = Math.random() * Math.PI * 2;
+    asteroids.push({ r, angle });
+  }
 
   function drawPlanetInViewer(planet) {
-    if (!viewerCanvas) return;
-    const vctx = viewerCanvas.getContext('2d');
-    vctx.clearRect(0, 0, 200, 200);
-    vctx.beginPath();
-    vctx.arc(CENTER_PLANET.x, CENTER_PLANET.y, 40, 0, Math.PI * 2);
-    vctx.fillStyle = planet.color;
-    vctx.fill();
+    currentPlanet = planet;
+    document.getElementById('widget-planet-viewer')?.classList.remove('hidden');
+    document.getElementById('widget-planet-info')?.classList.remove('hidden');
   }
 
   function updatePlanetInfo(planet) {
@@ -61,7 +81,8 @@ if (!canvas) {
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
 
-    for (const p of planets) {
+    const allBodies = planets.concat(dwarfPlanets);
+    for (const p of allBodies) {
       const px = CENTER.x + Math.cos(p.angle) * p.r;
       const py = CENTER.y + Math.sin(p.angle) * p.r;
       const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
@@ -75,20 +96,33 @@ if (!canvas) {
 
   canvas.addEventListener('click', handleClick);
 
-  // Ceinture d'astéroïdes
-  const asteroids = [];
-  for (let i = 0; i < 150; i++) {
-    const r = 280 + Math.random() * 30;
-    const angle = Math.random() * Math.PI * 2;
-    asteroids.push({ r, angle });
+  closeBtn?.addEventListener('click', () => {
+    currentPlanet = null;
+    document.getElementById('widget-planet-viewer')?.classList.add('hidden');
+    document.getElementById('widget-planet-info')?.classList.add('hidden');
+  });
+
+  function animatePlanetViewer() {
+    if (!viewerCtx) return requestAnimationFrame(animatePlanetViewer);
+    viewerCtx.clearRect(0, 0, 200, 200);
+
+    if (currentPlanet) {
+      viewerCtx.save();
+      viewerCtx.translate(100, 100);
+      viewerCtx.rotate(viewerAngle);
+      viewerCtx.beginPath();
+      viewerCtx.arc(0, 0, 40, 0, Math.PI * 2);
+      viewerCtx.fillStyle = currentPlanet.color;
+      viewerCtx.fill();
+      viewerCtx.restore();
+
+      viewerAngle += 0.01;
+    }
+
+    requestAnimationFrame(animatePlanetViewer);
   }
 
-  const ship = { orbit: 380, angle: 0, size: 3 };
-
-  function getAngleFromJ2000(days, period) {
-    const fraction = (days % period) / period;
-    return fraction * 2 * Math.PI;
-  }
+  animatePlanetViewer();
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
@@ -123,6 +157,17 @@ if (!canvas) {
       ctx.fill();
 
       p.angle += p.speed;
+    });
+
+    // Planètes naines
+    dwarfPlanets.forEach(p => {
+      const x = CENTER.x + Math.cos(p.angle) * p.r;
+      const y = CENTER.y + Math.sin(p.angle) * p.r;
+      ctx.beginPath();
+      ctx.arc(x, y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      p.angle += 0.0003;
     });
 
     // Vaisseau
