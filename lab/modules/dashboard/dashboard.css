@@ -14,7 +14,7 @@
   --widget-gap: 1.5rem;
   --widget-padding: 1rem;
   --widget-radius: 12px;
-  --widget-border: 1px solid var(--color-primary);
+  --widget-border: 1px solid rgba(0, 255, 255, 0.15); /* ← bordure adoucie */
 }
 
 body.theme-stellaire {
@@ -58,6 +58,9 @@ main.dashboard {
 .widget[data-title="main"] {
   height: 70px;
   min-height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .widget[data-title="main"] h2 {
@@ -88,12 +91,9 @@ main.dashboard {
   margin: 0 auto 0.8rem auto;
   font-size: 0.75rem;
   text-align: center;
-  border-bottom: 1px solid var(--color-primary);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2); /* ← ligne plus douce */
   padding-bottom: 0.2rem;
   text-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
   background: none !important;
   box-shadow: none !important;
   width: 90%;
@@ -166,6 +166,21 @@ main.dashboard {
   position: relative;
 }
 
+/* ✅ Titre vertical SF */
+#widget-titre .titre-vertical {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.75rem;
+  letter-spacing: 0.1rem;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
 /* Bloc alertes (ligne 2) */
 #widget-alertes {
   grid-area: alert;
@@ -198,7 +213,7 @@ main.dashboard {
   line-height: 1.4;
 }
 
-/* Bouton de fermture viewer planet */
+/* Bouton de fermeture viewer planet */
 #close-planet-viewer {
   position: absolute;
   top: 0.3rem;
@@ -242,6 +257,9 @@ main.dashboard {
       "bloc4"
       "bloc5"
       "core";
+  }
+  #widget-titre .titre-vertical {
+    display: none;
   }
 }
 
