@@ -1,7 +1,8 @@
-
-// simul-system.js – Système solaire animé (canvas réaliste compressé)
+// simul-system.js – Système solaire animé avec interaction clic
 
 const canvas = document.getElementById('simul-system');
+const viewerCanvas = document.getElementById('planet-viewer-canvas');
+const infoBox = document.getElementById('planet-info-content');
 
 if (!canvas) {
   console.warn("⚠️ Aucun canvas #simul-system trouvé.");
@@ -18,35 +19,75 @@ if (!canvas) {
     asteroid: '#888'
   };
 
-  // Fonction pour l'angle initial depuis J2000
-  function getAngleFromJ2000(days, period) {
-    const fraction = (days % period) / period;
-    return fraction * 2 * Math.PI;
-  }
-
   const referenceDate = new Date(Date.UTC(2000, 0, 1, 12, 0, 0));
   const now = new Date();
   const daysSince = (now - referenceDate) / (1000 * 60 * 60 * 24);
 
   const planets = [
-    { name: 'Mercure', r: 203, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97) },
-    { name: 'Vénus',   r: 234, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70) },
-    { name: 'Terre',   r: 251, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25) },
-    { name: 'Mars',    r: 271, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98) },
-    { name: 'Jupiter', r: 333, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59) },
-    { name: 'Saturne', r: 363, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22) },
-    { name: 'Uranus',  r: 398, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5) },
-    { name: 'Neptune', r: 421, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182) }
+    { name: 'Mercure', r: 203, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
+    { name: 'Vénus',   r: 234, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1], data: { distance: "108.2 Mkm", temp: "464°C", radius: "6 052 km" } },
+    { name: 'Terre',   r: 251, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25), color: colors.planets[2], data: { distance: "149.6 Mkm", temp: "15°C", radius: "6 371 km" } },
+    { name: 'Mars',    r: 271, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98), color: colors.planets[3], data: { distance: "227.9 Mkm", temp: "-63°C", radius: "3 390 km" } },
+    { name: 'Jupiter', r: 333, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59), color: colors.planets[4], data: { distance: "778.3 Mkm", temp: "-108°C", radius: "69 911 km" } },
+    { name: 'Saturne', r: 363, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5], data: { distance: "1 429 Mkm", temp: "-139°C", radius: "58 232 km" } },
+    { name: 'Uranus',  r: 398, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6], data: { distance: "2 871 Mkm", temp: "-197°C", radius: "25 362 km" } },
+    { name: 'Neptune', r: 421, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7], data: { distance: "4 498 Mkm", temp: "-201°C", radius: "24 622 km" } }
   ];
 
-  const ship = { orbit: 380, angle: 0, size: 3 };
+  const CENTER_PLANET = { x: 100, y: 100 };
 
-  // Génération de la ceinture d'astéroïdes
+  function drawPlanetInViewer(planet) {
+    if (!viewerCanvas) return;
+    const vctx = viewerCanvas.getContext('2d');
+    vctx.clearRect(0, 0, 200, 200);
+    vctx.beginPath();
+    vctx.arc(CENTER_PLANET.x, CENTER_PLANET.y, 40, 0, Math.PI * 2);
+    vctx.fillStyle = planet.color;
+    vctx.fill();
+  }
+
+  function updatePlanetInfo(planet) {
+    if (!infoBox) return;
+    infoBox.innerHTML = `
+      <p>Nom : ${planet.name}</p>
+      <p>Distance : ${planet.data.distance}</p>
+      <p>Taille : ${planet.data.radius}</p>
+      <p>Température : ${planet.data.temp}</p>
+    `;
+  }
+
+  function handleClick(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+
+    for (const p of planets) {
+      const px = CENTER.x + Math.cos(p.angle) * p.r;
+      const py = CENTER.y + Math.sin(p.angle) * p.r;
+      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+      if (dist <= p.size + 3) {
+        drawPlanetInViewer(p);
+        updatePlanetInfo(p);
+        break;
+      }
+    }
+  }
+
+  canvas.addEventListener('click', handleClick);
+
+  // Ceinture d'astéroïdes
   const asteroids = [];
   for (let i = 0; i < 150; i++) {
     const r = 280 + Math.random() * 30;
     const angle = Math.random() * Math.PI * 2;
     asteroids.push({ r, angle });
+  }
+
+  const ship = { orbit: 380, angle: 0, size: 3 };
+
+  function getAngleFromJ2000(days, period) {
+    const fraction = (days % period) / period;
+    return fraction * 2 * Math.PI;
   }
 
   function drawSystem() {
@@ -58,7 +99,7 @@ if (!canvas) {
     ctx.fillStyle = colors.sun;
     ctx.fill();
 
-    // Ceinture d'astéroïdes
+    // Astéroïdes
     asteroids.forEach(a => {
       const x = CENTER.x + Math.cos(a.angle) * a.r;
       const y = CENTER.y + Math.sin(a.angle) * a.r;
@@ -68,7 +109,7 @@ if (!canvas) {
     });
 
     // Planètes
-    planets.forEach((p, i) => {
+    planets.forEach(p => {
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255,255,255,0.04)';
@@ -78,34 +119,13 @@ if (!canvas) {
       const y = CENTER.y + Math.sin(p.angle) * p.r;
       ctx.beginPath();
       ctx.arc(x, y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = colors.planets[i % colors.planets.length];
+      ctx.fillStyle = p.color;
       ctx.fill();
 
       p.angle += p.speed;
     });
 
-    
-    // Planètes naines
-    const dwarfPlanets = [
-      { name: 'Cérès', r: 302, size: 2, color: '#ccc', angle: getAngleFromJ2000(daysSince, 1680) },
-      { name: 'Pluton', r: 434, size: 2, color: '#f9f', angle: getAngleFromJ2000(daysSince, 90560) },
-      { name: 'Hauméa', r: 438, size: 2, color: '#aff', angle: getAngleFromJ2000(daysSince, 103774) },
-      { name: 'Makémaké', r: 441, size: 2, color: '#fbb', angle: getAngleFromJ2000(daysSince, 112897) },
-      { name: 'Éris', r: 461, size: 2, color: '#c6f', angle: getAngleFromJ2000(daysSince, 203830) }
-    ];
-
-    dwarfPlanets.forEach(dp => {
-      const x = CENTER.x + Math.cos(dp.angle) * dp.r;
-      const y = CENTER.y + Math.sin(dp.angle) * dp.r;
-      ctx.beginPath();
-      ctx.arc(x, y, dp.size, 0, Math.PI * 2);
-      ctx.fillStyle = dp.color;
-      ctx.fill();
-      dp.angle += 0.0003;
-    });
-
-  // Vaisseau
-  
+    // Vaisseau
     const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
     const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
     ctx.beginPath();
