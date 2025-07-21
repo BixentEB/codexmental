@@ -72,23 +72,36 @@ if (!canvas) {
   }
 
   function handleClick(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const clickX = (e.clientX - rect.left) * scaleX;
+  const clickY = (e.clientY - rect.top) * scaleY;
 
-    const allBodies = planets.concat(dwarfPlanets);
-    for (const p of allBodies) {
-      const px = CENTER.x + Math.cos(p.angle) * p.r;
-      const py = CENTER.y + Math.sin(p.angle) * p.r;
-      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
-      if (dist <= p.size + 3) {
-        currentPlanet = p;
-        updatePlanetInfo(p);
-        loadPlanet3D(p.name); // appelle le visualiseur 3D
-        break;
-      }
+  const allBodies = planets.concat(dwarfPlanets);
+  let found = false;
+
+  for (const p of allBodies) {
+    const px = CENTER.x + Math.cos(p.angle) * p.r;
+    const py = CENTER.y + Math.sin(p.angle) * p.r;
+    const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+
+    // hitbox élargie à 6px minimum
+    if (dist <= Math.max(p.size, 6)) {
+      console.log("✅ Planète détectée :", p.name);
+      currentPlanet = p;
+      updatePlanetInfo(p);
+      loadPlanet3D(p.name);
+      found = true;
+      break;
     }
   }
+
+  if (!found) {
+    console.log("❌ Aucun corps détecté");
+  }
+}
+
 
   canvas.addEventListener('click', handleClick);
 
