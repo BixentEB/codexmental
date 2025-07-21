@@ -224,6 +224,11 @@ main.dashboard {
   display: none !important;
 }
 
+/* Désactiver hover sur blocs */
+.widget:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
 
 /* Responsive fallback */
 @media (max-width: 900px) {
