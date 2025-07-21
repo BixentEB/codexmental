@@ -33,41 +33,55 @@
   <!-- 🔬 Contenu principal -->
   <main class="dashboard">
 
- <!-- Ligne 1 -->
-<div class="widget" id="widget-1" data-widget="1" data-active="true">
-  <h2>🛰️ Bloc 1</h2>
-</div>
+    <!-- Ligne 1 -->
+    <div class="widget" id="widget-1" data-widget="1" data-active="true">
+      <h2>🛰️ Bloc 1</h2>
+    </div>
 
-<div class="widget" id="widget-titre" data-title="main">
-  <h2>DASHBOARD STELLAIRE</h2>
-</div>
+    <div class="widget" id="widget-titre" data-title="main">
+      <h2>DASHBOARD STELLAIRE</h2>
+    </div>
 
-<div class="widget" id="widget-alertes">
-  <h2>Alertes</h2>
-  <!-- contenu d’alertes ici -->
-</div>
+    <div class="widget" id="widget-alertes">
+      <h2>Alertes</h2>
+      <!-- contenu d’alertes ici -->
+    </div>
 
-<div class="widget" id="widget-3" data-widget="3" data-active="true">
-  <h2>📆 Bloc 3</h2>
-</div>
+    <div class="widget" id="widget-3" data-widget="3" data-active="true">
+      <h2>📆 Bloc 3</h2>
+    </div>
 
-<!-- Ligne 2 -->
-<div class="widget" id="widget-4" data-widget="4" data-active="true">
-  <h2>📡 Bloc gauche</h2>
-</div>
+    <!-- Ligne 2 -->
+    <div class="widget" id="widget-4" data-widget="4" data-active="true">
+      <h2>📡 Bloc gauche</h2>
+    </div>
 
-<div class="widget radar-circular" id="widget-core-radar" data-widget="core-radar" data-active="true">
-  <canvas id="simul-system" width="600" height="600"></canvas>
-</div>
+    <div class="widget radar-circular" id="widget-core-radar" data-widget="core-radar" data-active="true">
+      <canvas id="simul-system" width="600" height="600"></canvas>
+    </div>
 
-<div class="widget" id="widget-5" data-widget="5" data-active="true">
-  <h2>🧬 Bloc droit</h2>
-</div>
+    <div class="widget" id="widget-5" data-widget="5" data-active="true">
+      <h2>🧬 Bloc droit</h2>
+    </div>
 
+    <!-- Visualiseur de planète -->
+    <div class="widget" id="widget-planet-viewer">
+      <h2>🔭 Visualiseur</h2>
+      <canvas id="planet-viewer-canvas" width="200" height="200"></canvas>
+    </div>
 
-</main>
+    <!-- Informations sur la planète -->
+    <div class="widget" id="widget-planet-info">
+      <h2>📋 Informations</h2>
+      <div id="planet-info-content">
+        <p>Nom : —</p>
+        <p>Distance : —</p>
+        <p>Taille : —</p>
+        <p>Température : —</p>
+      </div>
+    </div>
 
-
+  </main>
 
   <!-- 🡸 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
