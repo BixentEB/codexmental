@@ -3,23 +3,21 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 
 let scene, camera, renderer, sphere, clouds, animateId;
-const canvas = document.getElementById('planet-viewer-canvas');
+let currentPlanetName = null;
+
+const canvas = document.getElementById('planet-canvas');
+const warning = document.getElementById('layer-warning');
 
 // Chargement dynamique d'une planète
-export function loadPlanet3D(name, layer = 'surface') {
-  currentPlanetName = name; // Pour rappel lors du changement de couche
+export async function loadPlanet3D(name, layer = 'surface') {
+  currentPlanetName = name;
+  cleanupViewer();
 
-  cleanupViewer(); // Nettoyer l'ancien rendu
-
-  const canvas = document.getElementById('planet-canvas');
-  const warning = document.getElementById('layer-warning');
-  warning?.classList.add('hidden');
-
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
   camera.position.z = 2.5;
 
   const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -29,41 +27,38 @@ export function loadPlanet3D(name, layer = 'surface') {
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
 
-  const sphere = new THREE.Mesh(geometry, material);
+  sphere = new THREE.Mesh(geometry, material);
   scene.add(sphere);
 
   const loader = new THREE.TextureLoader();
-  const texturePath = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}-${layer}.jpg`;
+  warning?.classList.add('hidden');
 
-  loader.load(
-    texturePath,
-    (texture) => {
-      material.map = texture;
-      material.needsUpdate = true;
-    },
-    undefined,
-    () => {
-      console.warn(`⚠️ Donnée manquante pour ${name} (${layer})`);
-      warning?.classList.remove('hidden');
+  const base = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}`;
+  const tex = await loadTex(loader, `${base}-${layer}.jpg`, layer);
+  if (tex) {
+    material.map = tex;
+    material.needsUpdate = true;
+  } else {
+    warning?.classList.remove('hidden');
+  }
+
+  // Charge layer clouds s'il existe et qu'on est sur la Terre
+  if (name.toLowerCase() === 'terre' && layer === 'surface') {
+    const cloudTex = await loadTex(loader, `${base}-clouds.jpg`, 'nuages');
+    if (cloudTex) {
+      const cloudGeo = new THREE.SphereGeometry(1.01, 64, 64);
+      const cloudMat = new THREE.MeshPhongMaterial({
+        map: cloudTex,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0.9
+      });
+      clouds = new THREE.Mesh(cloudGeo, cloudMat);
+      scene.add(clouds);
     }
-  );
-
-  function animate() {
-    requestAnimationFrame(animate);
-    sphere.rotation.y += 0.002;
-    renderer.render(scene, camera);
   }
 
   animate();
-}
-
-
-// Animation continue
-function animate() {
-  animateId = requestAnimationFrame(animate);
-  if (sphere) sphere.rotation.y += 0.0025;
-  if (clouds) clouds.rotation.y += 0.0015;
-  renderer.render(scene, camera);
 }
 
 // Nettoyage du viewer (avant rechargement ou fermeture)
@@ -72,7 +67,6 @@ export function cleanupViewer() {
 
   if (renderer) {
     renderer.dispose();
-    // renderer.forceContextLoss(); ❌ supprime cette ligne !
     renderer.domElement = null;
   }
 
@@ -95,7 +89,6 @@ export function cleanupViewer() {
   }
 }
 
-
 // Chargement d'une texture avec fallback + log console
 function loadTex(loader, url, type) {
   return new Promise(resolve => {
@@ -109,4 +102,12 @@ function loadTex(loader, url, type) {
       }
     );
   });
+}
+
+// Animation continue
+function animate() {
+  animateId = requestAnimationFrame(animate);
+  if (sphere) sphere.rotation.y += 0.0025;
+  if (clouds) clouds.rotation.y += 0.0015;
+  renderer.render(scene, camera);
 }
