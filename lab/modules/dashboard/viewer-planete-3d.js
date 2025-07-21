@@ -74,11 +74,13 @@ function animate() {
 // Nettoyage du viewer (avant rechargement ou fermeture)
 export function cleanupViewer() {
   cancelAnimationFrame(animateId);
+
   if (renderer) {
     renderer.dispose();
-    renderer.forceContextLoss();
+    // renderer.forceContextLoss(); ❌ supprime cette ligne !
     renderer.domElement = null;
   }
+
   if (sphere) {
     scene.remove(sphere);
     sphere.geometry.dispose();
@@ -88,6 +90,7 @@ export function cleanupViewer() {
     sphere.material.dispose();
     sphere = null;
   }
+
   if (clouds) {
     scene.remove(clouds);
     clouds.geometry.dispose();
@@ -96,6 +99,7 @@ export function cleanupViewer() {
     clouds = null;
   }
 }
+
 
 // Chargement d'une texture avec fallback + log console
 function loadTex(loader, url, type) {
