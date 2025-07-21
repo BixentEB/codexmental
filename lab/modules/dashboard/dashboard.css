@@ -122,6 +122,10 @@ main.dashboard {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
 }
 
 #widget-infos {
@@ -130,7 +134,9 @@ main.dashboard {
   flex-direction: column;
   justify-content: flex-start;
   gap: 1rem;
-  min-height: 250px;
+  min-height: 200px;
+  max-height: 200px;
+  overflow: auto;
 }
 
 .infos-grid {
