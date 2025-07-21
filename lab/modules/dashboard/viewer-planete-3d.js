@@ -4,14 +4,23 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.m
 
 let scene, camera, renderer, sphere, clouds, animateId;
 let currentPlanetName = null;
+let currentLayer = 'surface';
 
-const canvas = document.getElementById('planet-canvas');
+const canvas = document.getElementById('planet-viewer-canvas');
 const warning = document.getElementById('layer-warning');
+const selector = document.getElementById('layer-select');
 
-// Chargement dynamique d'une planète
-export async function loadPlanet3D(name, layer = 'surface') {
+export function loadPlanet3D(name, layer = 'surface') {
   currentPlanetName = name;
+  currentLayer = layer;
+
   cleanupViewer();
+  warning?.classList.add('hidden');
+
+  if (!canvas) {
+    console.warn("⚠️ Canvas #planet-viewer-canvas introuvable");
+    return;
+  }
 
   renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -28,40 +37,35 @@ export async function loadPlanet3D(name, layer = 'surface') {
   const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
 
   sphere = new THREE.Mesh(geometry, material);
+  sphere.scale.set(0.85, 0.85, 0.85); // réduction pour éviter les débords
   scene.add(sphere);
 
   const loader = new THREE.TextureLoader();
-  warning?.classList.add('hidden');
+  const basePath = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}-${layer}.jpg`;
 
-  const base = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}`;
-  const tex = await loadTex(loader, `${base}-${layer}.jpg`, layer);
-  if (tex) {
-    material.map = tex;
-    material.needsUpdate = true;
-  } else {
-    warning?.classList.remove('hidden');
-  }
-
-  // Charge layer clouds s'il existe et qu'on est sur la Terre
-  if (name.toLowerCase() === 'terre' && layer === 'surface') {
-    const cloudTex = await loadTex(loader, `${base}-clouds.jpg`, 'nuages');
-    if (cloudTex) {
-      const cloudGeo = new THREE.SphereGeometry(1.01, 64, 64);
-      const cloudMat = new THREE.MeshPhongMaterial({
-        map: cloudTex,
-        transparent: true,
-        depthWrite: false,
-        opacity: 0.9
-      });
-      clouds = new THREE.Mesh(cloudGeo, cloudMat);
-      scene.add(clouds);
+  loader.load(
+    basePath,
+    texture => {
+      material.map = texture;
+      material.needsUpdate = true;
+    },
+    undefined,
+    () => {
+      console.warn(`❌ Donnée manquante : ${basePath}`);
+      warning?.classList.remove('hidden');
     }
-  }
+  );
 
-  animate();
+  animateId = requestAnimationFrame(animate);
 }
 
-// Nettoyage du viewer (avant rechargement ou fermeture)
+function animate() {
+  animateId = requestAnimationFrame(animate);
+  if (sphere) sphere.rotation.y += 0.002;
+  if (clouds) clouds.rotation.y += 0.001;
+  renderer?.render(scene, camera);
+}
+
 export function cleanupViewer() {
   cancelAnimationFrame(animateId);
 
@@ -71,43 +75,32 @@ export function cleanupViewer() {
   }
 
   if (sphere) {
-    scene.remove(sphere);
+    scene?.remove(sphere);
     sphere.geometry.dispose();
-    if (sphere.material.map) sphere.material.map.dispose();
-    if (sphere.material.bumpMap) sphere.material.bumpMap.dispose();
-    if (sphere.material.specularMap) sphere.material.specularMap.dispose();
+    sphere.material.map?.dispose();
     sphere.material.dispose();
     sphere = null;
   }
 
   if (clouds) {
-    scene.remove(clouds);
+    scene?.remove(clouds);
     clouds.geometry.dispose();
     clouds.material.map?.dispose();
     clouds.material.dispose();
     clouds = null;
   }
+
+  scene = null;
+  camera = null;
+  renderer = null;
 }
 
-// Chargement d'une texture avec fallback + log console
-function loadTex(loader, url, type) {
-  return new Promise(resolve => {
-    loader.load(
-      url,
-      tex => resolve(tex),
-      undefined,
-      () => {
-        console.warn(`❌ Texture ${type} manquante : ${url}`);
-        resolve(null);
-      }
-    );
+// Si on a un sélecteur pour changer de couche
+if (selector) {
+  selector.addEventListener('change', e => {
+    const newLayer = e.target.value;
+    if (currentPlanetName) {
+      loadPlanet3D(currentPlanetName, newLayer);
+    }
   });
-}
-
-// Animation continue
-function animate() {
-  animateId = requestAnimationFrame(animate);
-  if (sphere) sphere.rotation.y += 0.0025;
-  if (clouds) clouds.rotation.y += 0.0015;
-  renderer.render(scene, camera);
 }
