@@ -198,6 +198,32 @@ main.dashboard {
   line-height: 1.4;
 }
 
+/* Bouton de fermture viewer planet */
+#close-planet-viewer {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.5rem;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: var(--color-primary);
+  color: black;
+  font-size: 10px;
+  line-height: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  opacity: 0.6;
+  z-index: 10;
+}
+#close-planet-viewer::before {
+  content: "✕";
+  font-weight: bold;
+}
+#widget-planet-viewer.hidden,
+#widget-planet-info.hidden {
+  display: none !important;
+}
+
 
 /* Responsive fallback */
 @media (max-width: 900px) {
