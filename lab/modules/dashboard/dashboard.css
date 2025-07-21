@@ -48,8 +48,8 @@ main.dashboard {
   padding: var(--widget-padding);
   display: flex;
   flex-direction: column;
-  min-height: 220px;
-  height: 220px;
+  min-height: 300px;
+  height: 300px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
 }
@@ -129,7 +129,7 @@ main.dashboard {
 
 /* Grille par zone */
 #widget-1      { grid-area: bloc1; }
-#widget-2      { grid-area: bloc2; }
+#widget-2      { grid-area: bloc2; min-height: 220px; height: 220px; }
 #widget-3      { grid-area: bloc3; }
 #widget-4      { grid-area: bloc4; }
 #widget-5      { grid-area: bloc5; }
