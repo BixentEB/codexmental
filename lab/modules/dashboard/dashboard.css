@@ -117,7 +117,9 @@ main.dashboard {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 600px;
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+  max-height: 100%;
 }
 #widget-core-radar canvas {
   max-width: 100%;
