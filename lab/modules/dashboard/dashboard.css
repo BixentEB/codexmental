@@ -28,13 +28,13 @@ body.theme-stellaire {
 
 main.dashboard {
   display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
-  grid-template-rows: auto repeat(3, 200px) auto;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 70px 200px 200px 200px auto;
   grid-template-areas:
-    "alert-left . alert-main . alert-right"
-    "bloc-g1 . radar . bloc-d1"
-    "bloc-g2 . radar . bloc-d2"
-    "bloc-g3 . radar . bloc-d3"
+    "alert-left alert-center alert-center alert-center alert-right"
+    "bloc-g1 radar radar radar bloc-d1"
+    "bloc-g2 radar radar radar bloc-d2"
+    "bloc-g3 radar radar radar bloc-d3"
     "infos infos infos infos infos";
   gap: var(--widget-gap);
   max-width: 1600px;
@@ -99,9 +99,9 @@ main.dashboard {
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-#alert-left     { grid-area: alert-left; }
-#alert-main     { grid-area: alert-main; }
-#alert-right    { grid-area: alert-right; }
+#alert-left     { grid-area: alert-left; height: 70px; }
+#alert-center   { grid-area: alert-center; height: 70px; }
+#alert-right    { grid-area: alert-right; height: 70px; }
 
 #bloc-g1        { grid-area: bloc-g1; }
 #bloc-g2        { grid-area: bloc-g2; }
@@ -111,24 +111,40 @@ main.dashboard {
 #bloc-d2        { grid-area: bloc-d2; }
 #bloc-d3        { grid-area: bloc-d3; }
 
-#widget-radar   {
+#widget-core-radar {
   grid-area: radar;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
+  min-height: 600px;
 }
-#widget-radar canvas {
+#widget-core-radar canvas {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-#widget-infos   {
+#widget-infos {
   grid-area: infos;
-  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1rem;
+  min-height: 250px;
+}
+
+.infos-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.info-subwidget {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(0, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.5rem;
 }
 
 #dashboard-title-left {
