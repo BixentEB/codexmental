@@ -27,7 +27,7 @@ export function loadPlanet3D(name, layer = 'surface') {
 
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-  camera.position.z = 2.5;
+  camera.position.z = 3.5;
 
   const light = new THREE.DirectionalLight(0xffffff, 1);
   light.position.set(5, 3, 5);
