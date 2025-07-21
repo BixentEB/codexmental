@@ -1,129 +1,266 @@
-/* ========== ROOT GLOBAL THEME ========== */
+/** ========================================================
+    Dashboard SF – Codex Mental (Vincent)
+    Fichier : /lab/modules/dashboard/dashboard.css
+======================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=JetBrains+Mono&display=swap');
+
 :root {
-  --color-bg: #0a0c12;
-  --color-panel: rgba(20, 25, 35, 0.65);
-  --color-border: rgba(100, 255, 255, 0.06);
-  --color-accent: #cceeff;
-  --color-text: #ccc;
-  --color-soft-border: rgba(100, 200, 255, 0.1);
-  --color-label: rgba(150, 255, 255, 0.15);
-  --color-warning: #f88;
-  --font-main: 'Orbitron', sans-serif;
+  --color-bg: linear-gradient(#0a0a14, #050510);
+  --color-primary: #0ff4;
+  --color-text: #d0eaff;
+  --color-shadow: rgba(0, 255, 255, 0.15);
+  --color-frame: rgba(255, 255, 255, 0.04);
+  --widget-gap: 1.5rem;
+  --widget-padding: 1rem;
+  --widget-radius: 12px;
+  --widget-border: 1px solid var(--color-primary);
 }
 
-/* ========== BASE BODY ========== */
-body.lab {
-  background: radial-gradient(circle at center, #080b12 0%, #05060a 100%);
+body.theme-stellaire {
+  font-family: 'Orbitron', 'JetBrains Mono', sans-serif;
+  background: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-main);
-  font-size: 14px;
+  margin: 0;
+  padding: 0;
 }
 
-/* ========== BLOC WIDGET ========== */
+main.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas:
+    "bloc1 titre  titre  bloc3"
+    "bloc1 alert  alert  bloc3"
+    "bloc4 core   core   bloc5";
+  gap: var(--widget-gap);
+  padding: 6.5rem 2rem 4rem 2rem;
+  max-width: 1400px;
+  margin: auto;
+}
+
 .widget {
-  background: var(--color-panel);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 12px;
-  margin: 10px;
   position: relative;
-  box-shadow: inset 0 0 0 1px rgba(0, 255, 255, 0.03);
+  background: var(--color-frame) !important;
+  border: var(--widget-border);
+  border-radius: var(--widget-radius);
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: var(--widget-padding);
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  height: 300px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
 }
 
-/* ========== TITRE DE BLOC ========== */
-.widget h2 {
-  display: block;
-  margin: 0 0 10px 0;
-  padding-bottom: 4px;
-  font-size: 14px;
-  color: var(--color-accent);
-  font-weight: 600;
-  border-bottom: 1px solid var(--color-soft-border);
+.widget[data-title="main"] {
+  height: 70px;
+  min-height: 70px;
 }
 
-/* ========== TITRE VERTICAL SF STYLE ========== */
-#dashboard-label {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 0.15em;
-  color: var(--color-label);
-  text-transform: uppercase;
-  font-family: var(--font-main);
-  user-select: none;
+.widget[data-title="main"] h2 {
+  font-size: 1rem;
+  text-align: left;
+  margin-left: 1rem;
+  border: none;
+  padding-bottom: 0;
+}
+
+.widget[data-title="ghost"] {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   pointer-events: none;
 }
 
-/* ========== RADAR CANVAS ========== */
-#simul-system {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-width: 600px;
-  margin: 0 auto;
+.widget:hover {
+  transform: scale(1.015);
+  box-shadow:
+    0 0 2px rgba(0, 255, 255, 0.06),
+    inset 0 0 1px rgba(0, 255, 255, 0.03);
 }
 
-/* ========== VISUALISEUR PLANÈTE ========== */
+.widget h2 {
+  margin: 0 auto 0.8rem auto;
+  font-size: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--color-primary);
+  padding-bottom: 0.2rem;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  width: 90%;
+}
+
+.widget h2::before,
+.widget h2::after {
+  display: none !important;
+}
+
+.widget[data-active="false"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  border: 1px dashed var(--color-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: spinRadar 4s linear infinite;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+#widget-soleil[data-active="false"]::before {
+  display: none !important;
+}
+
+@keyframes spinRadar {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Grille par zone */
+#widget-1           { grid-area: bloc1; }
+#widget-3           { grid-area: bloc3; }
+#widget-4           { grid-area: bloc4; }
+#widget-5           { grid-area: bloc5; }
+
+#widget-core-radar  {
+  grid-area: core;
+  min-height: 720px;
+  height: 720px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+#widget-core-radar canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Bloc titre principal (ligne 1) */
+#widget-titre {
+  grid-area: titre;
+  min-height: 70px;
+  height: 70px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: none;
+  z-index: 2;
+  position: relative;
+}
+
+/* Bloc alertes (ligne 2) */
+#widget-alertes {
+  grid-area: alert;
+  min-height: 120px;
+  height: 120px;
+  margin-top: 0;
+  z-index: 1;
+  position: relative;
+}
+
+/* Widget viewer planets radar */
 #widget-planet-viewer,
 #widget-planet-info {
-  display: inline-block;
-  vertical-align: top;
-  width: 300px;
-  margin: 10px;
+  min-height: 200px;
+  height: 200px;
 }
 
 #planet-viewer-canvas {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  background: #111;
+  margin: auto;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
 }
 
-/* ========== BOUTON FERMER ========== */
+#planet-info-content {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--color-text);
+  padding: 0.5rem;
+  line-height: 1.4;
+}
+
+/* Bouton de fermture viewer planet */
 #close-planet-viewer {
   position: absolute;
-  top: 4px;
-  right: 6px;
-  background: none;
+  top: 0.3rem;
+  right: 0.5rem;
+  width: 18px;
+  height: 18px;
   border: none;
-  color: #888;
-  font-size: 1.1em;
+  background: var(--color-primary);
+  color: black;
+  font-size: 10px;
+  line-height: 0;
+  border-radius: 2px;
   cursor: pointer;
+  opacity: 0.6;
+  z-index: 10;
+}
+#close-planet-viewer::before {
+  content: "✕";
+  font-weight: bold;
+}
+#widget-planet-viewer.hidden,
+#widget-planet-info.hidden {
+  display: none !important;
 }
 
-#close-planet-viewer:hover {
-  color: #fff;
+/* Désactiver hover sur blocs */
+.widget:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
-/* ========== SELECTEUR COUCHE ========== */
-.planet-layer-selector {
-  margin-top: 5px;
-  font-size: 13px;
+/* Responsive fallback */
+@media (max-width: 900px) {
+  main.dashboard {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "titre"
+      "alert"
+      "bloc3"
+      "bloc1"
+      "bloc4"
+      "bloc5"
+      "core";
+  }
 }
 
-.planet-layer-selector select {
-  background: #111;
-  border: 1px solid #444;
-  color: #ccc;
-  font-family: var(--font-main);
-  font-size: 13px;
-  padding: 4px 8px;
-  border-radius: 4px;
+@media (max-width: 600px) {
+  main.dashboard {
+    padding: 6rem 1rem 1rem 1rem;
+  }
+  .widget h2 {
+    font-size: 0.7rem;
+  }
 }
 
-/* ========== INFOS PLANÈTE ========== */
-#planet-info-content p {
-  margin: 4px 0;
-  font-size: 13px;
+/* Nettoyage labo */
+body.lab .theme-fab-container,
+body.lab #mobile-menu li strong,
+body.lab #mobile-menu li button[onclick*='setTheme'] {
+  display: none !important;
 }
 
-/* ========== AVERTISSEMENT COUCHE MANQUANTE ========== */
-#layer-warning {
-  color: var(--color-warning);
-  font-size: 0.75em;
-  margin-top: 6px;
+body.lab #svg-lune-widget {
+  display: none !important;
 }
