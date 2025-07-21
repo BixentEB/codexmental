@@ -1,12 +1,12 @@
-// simul-system.js – Système solaire animé avec interactions
+import { loadPlanet3D, cleanupViewer } from './viewer-planete-3d.js';
 
 const canvas = document.getElementById('simul-system');
-const viewerCanvas = document.getElementById('planet-viewer-canvas');
 const infoBox = document.getElementById('planet-info-content');
 const closeBtn = document.getElementById('close-planet-viewer');
-const viewerCtx = viewerCanvas?.getContext('2d');
+const viewerWidget = document.getElementById('widget-planet-viewer');
+const infoWidget = document.getElementById('widget-planet-info');
+
 let currentPlanet = null;
-let viewerAngle = 0;
 
 if (!canvas) {
   console.warn("⚠️ Aucun canvas #simul-system trouvé.");
@@ -33,22 +33,22 @@ if (!canvas) {
   }
 
   const planets = [
-    { name: 'Mercure', r: 203, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
-    { name: 'Vénus',   r: 234, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1], data: { distance: "108.2 Mkm", temp: "464°C", radius: "6 052 km" } },
-    { name: 'Terre',   r: 251, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25), color: colors.planets[2], data: { distance: "149.6 Mkm", temp: "15°C", radius: "6 371 km" } },
-    { name: 'Mars',    r: 271, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98), color: colors.planets[3], data: { distance: "227.9 Mkm", temp: "-63°C", radius: "3 390 km" } },
-    { name: 'Jupiter', r: 333, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59), color: colors.planets[4], data: { distance: "778.3 Mkm", temp: "-108°C", radius: "69 911 km" } },
-    { name: 'Saturne', r: 363, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5], data: { distance: "1 429 Mkm", temp: "-139°C", radius: "58 232 km" } },
-    { name: 'Uranus',  r: 398, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6], data: { distance: "2 871 Mkm", temp: "-197°C", radius: "25 362 km" } },
-    { name: 'Neptune', r: 421, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7], data: { distance: "4 498 Mkm", temp: "-201°C", radius: "24 622 km" } }
+    { name: 'mercure', label: 'Mercure', r: 203, size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
+    { name: 'venus',   label: 'Vénus',   r: 234, size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1], data: { distance: "108.2 Mkm", temp: "464°C", radius: "6 052 km" } },
+    { name: 'terre',   label: 'Terre',   r: 251, size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25), color: colors.planets[2], data: { distance: "149.6 Mkm", temp: "15°C", radius: "6 371 km" } },
+    { name: 'mars',    label: 'Mars',    r: 271, size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98), color: colors.planets[3], data: { distance: "227.9 Mkm", temp: "-63°C", radius: "3 390 km" } },
+    { name: 'jupiter', label: 'Jupiter', r: 333, size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59), color: colors.planets[4], data: { distance: "778.3 Mkm", temp: "-108°C", radius: "69 911 km" } },
+    { name: 'saturne', label: 'Saturne', r: 363, size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5], data: { distance: "1 429 Mkm", temp: "-139°C", radius: "58 232 km" } },
+    { name: 'uranus',  label: 'Uranus',  r: 398, size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6], data: { distance: "2 871 Mkm", temp: "-197°C", radius: "25 362 km" } },
+    { name: 'neptune', label: 'Neptune', r: 421, size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7], data: { distance: "4 498 Mkm", temp: "-201°C", radius: "24 622 km" } }
   ];
 
   const dwarfPlanets = [
-    { name: 'Cérès', r: 302, size: 2, color: '#ccc', angle: getAngleFromJ2000(daysSince, 1680), data: { distance: "413 Mkm", temp: "-105°C", radius: "473 km" } },
-    { name: 'Pluton', r: 434, size: 2, color: '#f9f', angle: getAngleFromJ2000(daysSince, 90560), data: { distance: "5 900 Mkm", temp: "-229°C", radius: "1 188 km" } },
-    { name: 'Hauméa', r: 438, size: 2, color: '#aff', angle: getAngleFromJ2000(daysSince, 103774), data: { distance: "6 452 Mkm", temp: "-241°C", radius: "816 × 1 218 km" } },
-    { name: 'Makémaké', r: 441, size: 2, color: '#fbb', angle: getAngleFromJ2000(daysSince, 112897), data: { distance: "6 850 Mkm", temp: "-243°C", radius: "715 km" } },
-    { name: 'Éris', r: 461, size: 2, color: '#c6f', angle: getAngleFromJ2000(daysSince, 203830), data: { distance: "10 120 Mkm", temp: "-231°C", radius: "1 163 km" } }
+    { name: 'ceres', r: 302, size: 2, color: '#ccc', angle: getAngleFromJ2000(daysSince, 1680), label: 'Cérès', data: { distance: "413 Mkm", temp: "-105°C", radius: "473 km" } },
+    { name: 'pluton', r: 434, size: 2, color: '#f9f', angle: getAngleFromJ2000(daysSince, 90560), label: 'Pluton', data: { distance: "5 900 Mkm", temp: "-229°C", radius: "1 188 km" } },
+    { name: 'haumea', r: 438, size: 2, color: '#aff', angle: getAngleFromJ2000(daysSince, 103774), label: 'Hauméa', data: { distance: "6 452 Mkm", temp: "-241°C", radius: "816 × 1 218 km" } },
+    { name: 'makemake', r: 441, size: 2, color: '#fbb', angle: getAngleFromJ2000(daysSince, 112897), label: 'Makémaké', data: { distance: "6 850 Mkm", temp: "-243°C", radius: "715 km" } },
+    { name: 'eris', r: 461, size: 2, color: '#c6f', angle: getAngleFromJ2000(daysSince, 203830), label: 'Éris', data: { distance: "10 120 Mkm", temp: "-231°C", radius: "1 163 km" } }
   ];
 
   const ship = { orbit: 380, angle: 0, size: 3 };
@@ -60,20 +60,15 @@ if (!canvas) {
     asteroids.push({ r, angle });
   }
 
-  function drawPlanetInViewer(planet) {
-    currentPlanet = planet;
-    document.getElementById('widget-planet-viewer')?.classList.remove('hidden');
-    document.getElementById('widget-planet-info')?.classList.remove('hidden');
-  }
-
-  function updatePlanetInfo(planet) {
-    if (!infoBox) return;
+  function updatePlanetInfo(p) {
     infoBox.innerHTML = `
-      <p>Nom : ${planet.name}</p>
-      <p>Distance : ${planet.data.distance}</p>
-      <p>Taille : ${planet.data.radius}</p>
-      <p>Température : ${planet.data.temp}</p>
+      <p>Nom : ${p.label}</p>
+      <p>Distance : ${p.data.distance}</p>
+      <p>Taille : ${p.data.radius}</p>
+      <p>Température : ${p.data.temp}</p>
     `;
+    viewerWidget?.classList.remove('hidden');
+    infoWidget?.classList.remove('hidden');
   }
 
   function handleClick(e) {
@@ -87,8 +82,9 @@ if (!canvas) {
       const py = CENTER.y + Math.sin(p.angle) * p.r;
       const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
       if (dist <= p.size + 3) {
-        drawPlanetInViewer(p);
+        currentPlanet = p;
         updatePlanetInfo(p);
+        loadPlanet3D(p.name); // appelle le visualiseur 3D
         break;
       }
     }
@@ -98,31 +94,10 @@ if (!canvas) {
 
   closeBtn?.addEventListener('click', () => {
     currentPlanet = null;
-    document.getElementById('widget-planet-viewer')?.classList.add('hidden');
-    document.getElementById('widget-planet-info')?.classList.add('hidden');
+    viewerWidget?.classList.add('hidden');
+    infoWidget?.classList.add('hidden');
+    cleanupViewer();
   });
-
-  function animatePlanetViewer() {
-    if (!viewerCtx) return requestAnimationFrame(animatePlanetViewer);
-    viewerCtx.clearRect(0, 0, 200, 200);
-
-    if (currentPlanet) {
-      viewerCtx.save();
-      viewerCtx.translate(100, 100);
-      viewerCtx.rotate(viewerAngle);
-      viewerCtx.beginPath();
-      viewerCtx.arc(0, 0, 40, 0, Math.PI * 2);
-      viewerCtx.fillStyle = currentPlanet.color;
-      viewerCtx.fill();
-      viewerCtx.restore();
-
-      viewerAngle += 0.01;
-    }
-
-    requestAnimationFrame(animatePlanetViewer);
-  }
-
-  animatePlanetViewer();
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
