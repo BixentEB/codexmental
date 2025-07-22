@@ -207,8 +207,26 @@ main.dashboard {
   box-shadow: 0 0 3px rgba(0, 255, 255, 0.2);
 }
 
+.codex-select {
+  background-color: #071018;
+  color: cyan;
+  border: 1px solid cyan;
+  font-family: 'Orbitron', sans-serif;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.6rem;
+  appearance: none;
+}
+
+.codex-select option {
+  background-color: #071018;
+  color: cyan;
+  font-family: 'Orbitron', sans-serif;
+}
 
 
+
+/* TITRES VERTICAUX DE LA CONSOLE */
 #dashboard-title-left {
   position: absolute;
   top: 4rem;
