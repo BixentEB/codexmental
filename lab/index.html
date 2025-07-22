@@ -78,13 +78,18 @@
     </div>
 
     <!-- Bloc 2 : Informations -->
-    <div class="info-subwidget" id="info-data">
-      <h3>📋 Informations</h3>
-      <p>Nom : <span id="planet-name">—</span></p>
-      <p>Distance : <span id="planet-distance">—</span></p>
-      <p>Taille : <span id="planet-size">—</span></p>
-      <p>Température : <span id="planet-temp">—</span></p>
-    </div>
+    <div class="info-subwidget informations" id="info-data">
+  <h3>
+    📋 
+    <select data-section="informations">
+      <option value="basic" selected>Données principales</option>
+      <option value="composition">Composition</option>
+      <option value="climat">Climat</option>
+    </select>
+  </h3>
+  <div class="section-content"></div>
+</div>
+
 
     <!-- Bloc 3 : Lunes -->
     <div class="info-subwidget" id="info-moons">
