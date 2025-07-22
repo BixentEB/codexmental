@@ -1,4 +1,4 @@
-// ✅ simul-system.js corrigé pour dashboard stellaire (radar complet + données extraites)
+// ✅ simul-system.js enrichi : types, lunes, missions, bases, colonisation (réel uniquement)
 import { loadPlanet3D, cleanupViewer } from './viewer-planete-3d.js';
 
 const canvas = document.getElementById('simul-system');
@@ -37,23 +37,104 @@ if (!canvas) {
   };
 
   const planets = [
-    { name: 'mercure', label: 'Mercure', r: scaleOrbit(0), size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0], data: { name: 'Mercure', distance: "57.9 Mkm", temp: "167°C", radius: "2 440 km" } },
-    { name: 'venus', label: 'Vénus', r: scaleOrbit(1), size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1], data: { name: 'Vénus', distance: "108.2 Mkm", temp: "464°C", radius: "6 052 km" } },
-    { name: 'terre', label: 'Terre', r: scaleOrbit(2), size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25), color: colors.planets[2], data: { name: 'Terre', distance: "149.6 Mkm", temp: "15°C", radius: "6 371 km" } },
-    { name: 'mars', label: 'Mars', r: scaleOrbit(3), size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98), color: colors.planets[3], data: { name: 'Mars', distance: "227.9 Mkm", temp: "-63°C", radius: "3 390 km" } },
-    { name: 'jupiter', label: 'Jupiter', r: scaleOrbit(4), size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59), color: colors.planets[4], data: { name: 'Jupiter', distance: "778.3 Mkm", temp: "-108°C", radius: "69 911 km" } },
-    { name: 'saturne', label: 'Saturne', r: scaleOrbit(5), size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5], data: { name: 'Saturne', distance: "1 429 Mkm", temp: "-139°C", radius: "58 232 km" } },
-    { name: 'uranus', label: 'Uranus', r: scaleOrbit(6), size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6], data: { name: 'Uranus', distance: "2 871 Mkm", temp: "-197°C", radius: "25 362 km" } },
-    { name: 'neptune', label: 'Neptune', r: scaleOrbit(7), size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7], data: { name: 'Neptune', distance: "4 498 Mkm", temp: "-201°C", radius: "24 622 km" } }
+    {
+      name: 'mercure', label: 'Mercure', r: scaleOrbit(0), size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0],
+      data: {
+        name: 'Mercure', type: 'tellurique', distance: '57.9 Mkm', temp: '167°C', radius: '2 440 km',
+        moons: [], missions: ['Mariner 10', 'MESSENGER', 'BepiColombo'], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'venus', label: 'Vénus', r: scaleOrbit(1), size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1],
+      data: {
+        name: 'Vénus', type: 'tellurique', distance: '108.2 Mkm', temp: '464°C', radius: '6 052 km',
+        moons: [], missions: ['Venera', 'Magellan', 'Akatsuki'], colonized: 'Possible (orbite)', bases: []
+      }, bases: []
+      }
+    },
+    {
+      name: 'terre', label: 'Terre', r: scaleOrbit(2), size: 4, speed: 0.0025, angle: getAngleFromJ2000(daysSince, 365.25), color: colors.planets[2],
+      data: {
+        name: 'Terre', type: 'tellurique', distance: '149.6 Mkm', temp: '15°C', radius: '6 371 km',
+        moons: ['Lune'], missions: [], colonized: 'Oui', bases: ['ISS']
+      }, bases: ['ISS']
+      }
+    },
+    {
+      name: 'mars', label: 'Mars', r: scaleOrbit(3), size: 3, speed: 0.002, angle: getAngleFromJ2000(daysSince, 686.98), color: colors.planets[3],
+      data: {
+        name: 'Mars', type: 'tellurique', distance: '227.9 Mkm', temp: '-63°C', radius: '3 390 km',
+        moons: ['Phobos', 'Deimos'], missions: ['Viking', 'Curiosity', 'Perseverance', 'InSight', 'Zhurong'], colonized: 'Envisagée', bases: []
+      }
+    },
+    {
+      name: 'jupiter', label: 'Jupiter', r: scaleOrbit(4), size: 6, speed: 0.0015, angle: getAngleFromJ2000(daysSince, 4332.59), color: colors.planets[4],
+      data: {
+        name: 'Jupiter', type: 'gazeuse', distance: '778.3 Mkm', temp: '-108°C', radius: '69 911 km',
+        moons: ['Io', 'Europe', 'Ganymède', 'Callisto'], missions: ['Pioneer', 'Voyager', 'Galileo', 'Juno'], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'saturne', label: 'Saturne', r: scaleOrbit(5), size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5],
+      data: {
+        name: 'Saturne', type: 'gazeuse', distance: '1 429 Mkm', temp: '-139°C', radius: '58 232 km',
+        moons: ['Titan', 'Encelade', 'Rhéa', 'Mimas'], missions: ['Voyager', 'Cassini-Huygens'], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'uranus', label: 'Uranus', r: scaleOrbit(6), size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6],
+      data: {
+        name: 'Uranus', type: 'glaciaire', distance: '2 871 Mkm', temp: '-197°C', radius: '25 362 km',
+        moons: ['Titania', 'Oberon', 'Miranda', 'Ariel'], missions: ['Voyager 2'], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'neptune', label: 'Neptune', r: scaleOrbit(7), size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7],
+      data: {
+        name: 'Neptune', type: 'glaciaire', distance: '4 498 Mkm', temp: '-201°C', radius: '24 622 km',
+        moons: ['Triton', 'Néréide'], missions: ['Voyager 2'], colonized: 'Spéculative', bases: []
+      }
+    }
   ];
 
   const dwarfPlanets = [
-    { name: 'ceres', label: 'Cérès', r: scaleOrbit(3.5), size: 2, speed: 0.0005, angle: getAngleFromJ2000(daysSince, 1680), color: '#ccc', data: { name: 'Cérès', distance: "413 Mkm", temp: "-105°C", radius: "473 km" } },
-    { name: 'pluton', label: 'Pluton', r: scaleOrbit(8), size: 2, speed: 0.0003, angle: getAngleFromJ2000(daysSince, 90560), color: '#f9f', data: { name: 'Pluton', distance: "5 900 Mkm", temp: "-229°C", radius: "1 188 km" } },
-    { name: 'haumea', label: 'Hauméa', r: scaleOrbit(8.3), size: 2, speed: 0.00025, angle: getAngleFromJ2000(daysSince, 103774), color: '#aff', data: { name: 'Hauméa', distance: "6 452 Mkm", temp: "-241°C", radius: "816 × 1 218 km" } },
-    { name: 'makemake', label: 'Makémaké', r: scaleOrbit(8.6), size: 2, speed: 0.00022, angle: getAngleFromJ2000(daysSince, 112897), color: '#fbb', data: { name: 'Makémaké', distance: "6 850 Mkm", temp: "-243°C", radius: "715 km" } },
-    { name: 'eris', label: 'Éris', r: scaleOrbit(9), size: 2, speed: 0.0002, angle: getAngleFromJ2000(daysSince, 203830), color: '#c6f', data: { name: 'Éris', distance: "10 120 Mkm", temp: "-231°C", radius: "1 163 km" } }
+    {
+      name: 'ceres', label: 'Cérès', r: scaleOrbit(3.5), size: 2, speed: 0.0005, angle: getAngleFromJ2000(daysSince, 1680), color: '#ccc',
+      data: {
+        name: 'Cérès', type: 'naine', distance: '413 Mkm', temp: '-105°C', radius: '473 km',
+        moons: [], missions: ['Dawn'], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'pluton', label: 'Pluton', r: scaleOrbit(8), size: 2, speed: 0.0003, angle: getAngleFromJ2000(daysSince, 90560), color: '#f9f',
+      data: {
+        name: 'Pluton', type: 'naine', distance: '5 900 Mkm', temp: '-229°C', radius: '1 188 km',
+        moons: ['Charon', 'Hydra', 'Nix'], missions: ['New Horizons'], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'haumea', label: 'Hauméa', r: scaleOrbit(8.3), size: 2, speed: 0.00025, angle: getAngleFromJ2000(daysSince, 103774), color: '#aff',
+      data: {
+        name: 'Hauméa', type: 'naine', distance: '6 452 Mkm', temp: '-241°C', radius: '816 × 1 218 km',
+        moons: ['Hiʻiaka', 'Namaka'], missions: [], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'makemake', label: 'Makémaké', r: scaleOrbit(8.6), size: 2, speed: 0.00022, angle: getAngleFromJ2000(daysSince, 112897), color: '#fbb',
+      data: {
+        name: 'Makémaké', type: 'naine', distance: '6 850 Mkm', temp: '-243°C', radius: '715 km',
+        moons: ['MK2'], missions: [], colonized: 'Spéculative', bases: []
+      }
+    },
+    {
+      name: 'eris', label: 'Éris', r: scaleOrbit(9), size: 2, speed: 0.0002, angle: getAngleFromJ2000(daysSince, 203830), color: '#c6f',
+      data: {
+        name: 'Éris', type: 'naine', distance: '10 120 Mkm', temp: '-231°C', radius: '1 163 km',
+        moons: ['Dysnomia'], missions: [], colonized: 'Spéculative', bases: []
+      }
+    }
   ];
+
 
   const ship = { orbit: scaleOrbit(6.7), angle: 0, size: 3 };
 
