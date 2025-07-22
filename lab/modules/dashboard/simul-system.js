@@ -67,25 +67,27 @@ if (!canvas) {
   }
 
   function handleClick(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+  const rect = canvas.getBoundingClientRect();
+  const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-    const allBodies = planets.concat(dwarfPlanets);
-    for (const p of allBodies) {
-      const px = CENTER.x + Math.cos(p.angle) * p.r;
-      const py = CENTER.y + Math.sin(p.angle) * p.r;
-      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+  const HITBOX_PADDING = 12;
+  const allBodies = planets.concat(dwarfPlanets);
 
-      if (dist <= Math.max(p.size, 10)) {
-        currentPlanet = p;
-        const data = PLANET_DATA[p.name] || {};
-        loadPlanet3D(p.name, 'surface', data);
-        updatePlanetUI(data, p.name);
-        break;
-      }
+  for (const p of allBodies) {
+    const px = CENTER.x + Math.cos(p.angle) * p.r;
+    const py = CENTER.y + Math.sin(p.angle) * p.r;
+    const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+
+    if (dist <= p.size + HITBOX_PADDING) {
+      currentPlanet = p;
+      const data = PLANET_DATA[p.name] || {};
+      loadPlanet3D(p.name, 'surface', data);
+      updatePlanetUI(data, p.name);
+      break;
     }
   }
+}
 
   canvas.addEventListener('click', handleClick);
 
