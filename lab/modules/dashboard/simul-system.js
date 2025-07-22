@@ -1,4 +1,4 @@
-// ✅ simul-system.js — version fusionnée : radar complet + données enrichies
+// ✅ simul-system.js — version fusionnée : radar complet + données enrichies + correctifs clics + amélioration UI
 import { loadPlanet3D, cleanupViewer } from './viewer-planete-3d.js';
 
 const canvas = document.getElementById('simul-system');
@@ -64,6 +64,7 @@ if (!canvas) {
     asteroids.push({ r, angle });
   }
 
+  // Ajout d’un buffer de clic plus généreux pour tous objets
   function handleClick(e) {
     const rect = canvas.getBoundingClientRect();
     const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
@@ -75,7 +76,7 @@ if (!canvas) {
       const py = CENTER.y + Math.sin(p.angle) * p.r;
       const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
 
-      if (dist <= Math.max(p.size, 6)) {
+      if (dist <= Math.max(p.size, 10)) {
         currentPlanet = p;
         loadPlanet3D(p.name, 'surface', p.data);
         break;
@@ -88,11 +89,13 @@ if (!canvas) {
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
 
+    // Soleil
     ctx.beginPath();
     ctx.arc(CENTER.x, CENTER.y, 7, 0, Math.PI * 2);
     ctx.fillStyle = colors.sun;
     ctx.fill();
 
+    // Astéroïdes
     asteroids.forEach(a => {
       const x = CENTER.x + Math.cos(a.angle) * a.r;
       const y = CENTER.y + Math.sin(a.angle) * a.r;
@@ -101,6 +104,7 @@ if (!canvas) {
       a.angle += 0.0003;
     });
 
+    // Planètes
     planets.forEach(p => {
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
@@ -117,6 +121,7 @@ if (!canvas) {
       p.angle += p.speed;
     });
 
+    // Planètes naines
     dwarfPlanets.forEach(p => {
       const x = CENTER.x + Math.cos(p.angle) * p.r;
       const y = CENTER.y + Math.sin(p.angle) * p.r;
@@ -128,6 +133,7 @@ if (!canvas) {
       p.angle += 0.0003;
     });
 
+    // Vaisseau
     const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
     const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
     ctx.beginPath();
