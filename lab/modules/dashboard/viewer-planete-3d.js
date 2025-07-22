@@ -1,49 +1,64 @@
-// viewer-planete-3d.js – Visualiseur 3D avec UI connectée
+// viewer-planete-3d.js – Visualiseur 3D multi-source (planètes + lunes)
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 import { updatePlanetUI } from './planet-data.js';
 
-let scene, camera, renderer, sphere, clouds, ringMesh, animateId;
-let currentPlanetName = null;
-let currentLayer = 'surface';
+// === Store des viewers multiples ===
+const viewers = new Map(); // key = canvasId
 
-const canvas = document.getElementById('planet-canvas');
-const selector = document.getElementById('layer-select');
+export function loadPlanet3D(name, layer = 'surface', data = {}, canvasId = 'planet-main-viewer') {
+  loadObject3D({
+    id: canvasId,
+    name,
+    layer,
+    data,
+    isMoon: false
+  });
+  updatePlanetUI(data, name);
+}
 
-export function loadPlanet3D(name, layer = 'surface', data = {}) {
-  currentPlanetName = name;
-  currentLayer = layer;
+export function loadMoon3D(name, data = {}, canvasId = 'moon-viewer') {
+  loadObject3D({
+    id: canvasId,
+    name,
+    layer: 'surface',
+    data,
+    isMoon: true
+  });
+}
 
-  cleanupViewer();
-
+function loadObject3D({ id, name, layer, data, isMoon }) {
+  const canvas = document.getElementById(id);
   if (!canvas) {
-    console.warn("⚠️ Canvas #planet-canvas introuvable");
+    console.warn(`⚠️ Canvas #${id} introuvable`);
     return;
   }
 
-  renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  cleanupViewer(id);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.outputEncoding = THREE.sRGBEncoding;
 
-  scene = new THREE.Scene();
-
+  const scene = new THREE.Scene();
   const ambient = new THREE.AmbientLight(0xffffff, 0.35);
-  scene.add(ambient);
   const light = new THREE.DirectionalLight(0xffffff, 0.9);
   light.position.set(5, 3, 5);
+  scene.add(ambient);
   scene.add(light);
 
-  camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
   camera.position.z = 3.5;
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
-
-  sphere = new THREE.Mesh(geometry, material);
+  const sphere = new THREE.Mesh(geometry, material);
   sphere.scale.set(0.85, 0.85, 0.85);
   scene.add(sphere);
 
   const loader = new THREE.TextureLoader();
-  const basePath = `/lab/modules/dashboard/img/planets/${name.toLowerCase()}-${layer}.jpg`;
+  const basePath = isMoon
+    ? `/lab/modules/dashboard/img/moons/${data.image || `${name}.jpg`}`
+    : `/lab/modules/dashboard/img/planets/${name.toLowerCase()}-${layer}.jpg`;
 
   loader.load(
     basePath,
@@ -53,11 +68,18 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
       material.needsUpdate = true;
     },
     undefined,
-    () => console.warn(`❌ Texture manquante : ${basePath}`)
+    () => {
+      console.warn(`❌ Texture manquante : ${basePath}`);
+      const target = document.querySelector('#info-data .section-content');
+      if (target && !isMoon) {
+        target.innerHTML = `<p>Données de surface indisponibles. Expédition en cours...</p>`;
+      }
+    }
   );
 
-  // === 🌀 Anneaux si disponibles ===
-  if (data.rings?.texture) {
+  // Anneaux (planètes seulement)
+  let ringMesh = null;
+  if (!isMoon && data.rings?.texture) {
     const ringPath = `/lab/modules/dashboard/img/rings/${data.rings.texture}`;
     loader.load(
       ringPath,
@@ -80,61 +102,62 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
     );
   }
 
-  updatePlanetUI(data, name);
+  function animate() {
+    const state = viewers.get(id);
+    if (!state) return;
+    state.animId = requestAnimationFrame(animate);
+    sphere.rotation.y += 0.002;
+    if (ringMesh) ringMesh.rotation.z += 0.0005;
+    renderer.render(scene, camera);
+  }
 
-  animateId = requestAnimationFrame(animate);
+  viewers.set(id, {
+    renderer,
+    scene,
+    camera,
+    sphere,
+    ringMesh,
+    animId: requestAnimationFrame(animate)
+  });
 }
 
-function animate() {
-  animateId = requestAnimationFrame(animate);
-  if (sphere) sphere.rotation.y += 0.002;
-  if (clouds) clouds.rotation.y += 0.001;
-  if (ringMesh) ringMesh.rotation.z += 0.0005;
-  renderer?.render(scene, camera);
+export function cleanupViewer(id) {
+  const state = viewers.get(id);
+  if (!state) return;
+
+  cancelAnimationFrame(state.animId);
+
+  if (state.renderer) {
+    state.renderer.dispose();
+    // NE PAS supprimer .domElement pour éviter les conflits radar
+  }
+  if (state.sphere) {
+    state.scene.remove(state.sphere);
+    state.sphere.geometry.dispose();
+    state.sphere.material.map?.dispose();
+    state.sphere.material.dispose();
+  }
+  if (state.ringMesh) {
+    state.scene.remove(state.ringMesh);
+    state.ringMesh.geometry.dispose();
+    state.ringMesh.material.map?.dispose();
+    state.ringMesh.material.dispose();
+  }
+
+  viewers.delete(id);
 }
 
-export function cleanupViewer() {
-  cancelAnimationFrame(animateId);
-
-  if (renderer) {
-    renderer.dispose();
-    renderer.domElement = null;
-  }
-
-  if (sphere) {
-    scene?.remove(sphere);
-    sphere.geometry.dispose();
-    sphere.material.map?.dispose();
-    sphere.material.dispose();
-    sphere = null;
-  }
-
-  if (clouds) {
-    scene?.remove(clouds);
-    clouds.geometry.dispose();
-    clouds.material.map?.dispose();
-    clouds.material.dispose();
-    clouds = null;
-  }
-
-  if (ringMesh) {
-    scene?.remove(ringMesh);
-    ringMesh.geometry.dispose();
-    ringMesh.material.map?.dispose();
-    ringMesh.material.dispose();
-    ringMesh = null;
-  }
-
-  scene = null;
-  camera = null;
-  renderer = null;
-}
-
+// 🎛️ Hook couche si select présent
+const selector = document.getElementById('layer-select');
 if (selector) {
   selector.addEventListener('change', e => {
     const newLayer = e.target.value;
-    if (currentPlanetName) {
-      loadPlanet3D(currentPlanetName, newLayer);
+    const current = document.querySelector('#planet-main-viewer');
+    if (current?.dataset?.planet) {
+      loadPlanet3D(current.dataset.planet, newLayer);
     }
   });
 }
+
+// 🌍 Exposition globale pour la lune (depuis bouton UI)
+window.loadMoon3D = loadMoon3D;
