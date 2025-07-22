@@ -133,21 +133,15 @@ main.dashboard {
 
 #widget-infos {
   grid-area: infos;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
+  display: block;
   height: 200px;
   overflow: hidden;
+  padding: 0.5rem;
 }
 
 #widget-planet-viewer,
 #widget-planet-info {
-  flex: 1 1 50%;
-  min-width: 300px;
-  max-height: 100%;
-  overflow: auto;
+  height: 100%;
 }
 
 .infos-grid {
