@@ -229,6 +229,29 @@ main.dashboard {
   z-index: 2;
 }
 
+/* === 🌙 Bloc Lunes enrichi === */
+.moon-block {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.52rem;
+  line-height: 1.3;
+  color: var(--color-text);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 0 4px rgba(0, 255, 255, 0.05);
+}
+
+.moon-block img {
+  display: block;
+  margin: 0.3rem auto;
+  max-width: 70px;
+  border-radius: 6px;
+  opacity: 0.85;
+}
+
+
 @media (max-width: 900px) {
   main.dashboard {
     display: block;
