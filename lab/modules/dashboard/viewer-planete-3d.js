@@ -1,5 +1,4 @@
-// ✅ viewer-planete-3d.js corrigé pour dashboard stellaire
-
+// ✅ viewer-planete-3d.js avec gestion des couches et éclairage amélioré
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 
 let scene, camera, renderer, sphere, clouds, animateId;
@@ -7,6 +6,7 @@ let currentPlanetName = null;
 let currentLayer = 'surface';
 
 const canvas = document.getElementById('planet-canvas');
+const selector = document.getElementById('layer-select');
 
 export function loadPlanet3D(name, layer = 'surface', data = {}) {
   currentPlanetName = name;
@@ -21,14 +21,19 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
 
   renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.outputEncoding = THREE.sRGBEncoding;
 
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-  camera.position.z = 3.5;
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
+  // Lumières douces et équilibrées
+  const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+  scene.add(ambient);
+  const light = new THREE.DirectionalLight(0xffffff, 0.9);
   light.position.set(5, 3, 5);
   scene.add(light);
+
+  camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  camera.position.z = 3.5;
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
@@ -43,6 +48,7 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
   loader.load(
     basePath,
     texture => {
+      texture.encoding = THREE.sRGBEncoding;
       material.map = texture;
       material.needsUpdate = true;
     },
@@ -96,9 +102,17 @@ function injectPlanetData(data = {}) {
   document.getElementById('planet-distance').textContent = data.distance || '—';
   document.getElementById('planet-size').textContent = data.radius || '—';
   document.getElementById('planet-temp').textContent = data.temp || '—';
-
   document.getElementById('planet-moons').textContent = Array.isArray(data.moons) ? data.moons.join(', ') : '—';
   document.getElementById('planet-colonized').textContent = data.colonized || '—';
   document.getElementById('planet-bases').textContent = Array.isArray(data.bases) ? data.bases.join(', ') : '—';
   document.getElementById('planet-mission').textContent = Array.isArray(data.missions) ? data.missions.join(', ') : '—';
+}
+
+if (selector) {
+  selector.addEventListener('change', e => {
+    const newLayer = e.target.value;
+    if (currentPlanetName) {
+      loadPlanet3D(currentPlanetName, newLayer);
+    }
+  });
 }
