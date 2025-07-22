@@ -186,27 +186,6 @@ main.dashboard {
   opacity: 0.85;
 }
 
-/* 🎛️ Menus déroulants SF pour tous les <select> */
-.codex-select {
-  background: rgba(0, 0, 0, 0.65);
-  border: 1px solid var(--color-primary);
-  color: var(--color-primary);
-  font-family: 'Orbitron', 'JetBrains Mono', monospace;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.6rem;
-  appearance: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.codex-select:focus,
-.codex-select:hover {
-  background: rgba(0, 255, 255, 0.08);
-  outline: none;
-  box-shadow: 0 0 3px rgba(0, 255, 255, 0.2);
-}
-
 .codex-select {
   background-color: #071018;
   color: cyan;
@@ -216,13 +195,23 @@ main.dashboard {
   border-radius: 6px;
   font-size: 0.6rem;
   appearance: none;
+  cursor: pointer;
+}
+
+.codex-select:focus,
+.codex-select:hover {
+  background-color: #03141c;
+  box-shadow: 0 0 4px rgba(0, 255, 255, 0.2);
+  outline: none;
 }
 
 .codex-select option {
   background-color: #071018;
   color: cyan;
   font-family: 'Orbitron', sans-serif;
+  font-size: 0.6rem;
 }
+
 
 
 
