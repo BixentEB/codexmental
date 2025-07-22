@@ -117,7 +117,8 @@ export function cleanupViewer() {
 
   if (renderer) {
     renderer.dispose();
-    renderer.domElement = null;
+    // NE PAS SUPPRIMER le canvas
+    // renderer.domElement = null;
   }
 
   if (sphere) {
