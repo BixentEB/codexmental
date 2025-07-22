@@ -1,4 +1,4 @@
-// display-moons.js – Affichage enrichi des lunes, sans <ul>, format texte espacé
+// display-moons.js – Affichage enrichi des lunes, sans <ul>, format texte espacé - 
 import { MOON_DATA } from './moon-database.js';
 
 export function displayMoons(planetKey) {
