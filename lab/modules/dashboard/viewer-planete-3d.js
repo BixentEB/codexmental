@@ -35,8 +35,7 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
     color: 0x00ffff,
     transparent: true,
     opacity: 0.05,
-    side: THREE.BackSide,
-    depthWrite: false
+    side: THREE.BackSide
   });
   const halo = new THREE.Mesh(haloGeo, haloMat);
   scene.add(halo);
@@ -114,8 +113,12 @@ function animate() {
 }
 
 export function cleanupViewer() {
-  if (animateId) cancelAnimationFrame(animateId);
-  animateId = null;
+  cancelAnimationFrame(animateId);
+
+  if (renderer) {
+    renderer.dispose();
+    renderer.domElement = null;
+  }
 
   if (sphere) {
     scene?.remove(sphere);
@@ -141,10 +144,9 @@ export function cleanupViewer() {
     ringMesh = null;
   }
 
-  // On ne touche plus à renderer ou canvas pour ne pas casser d'autres modules
   scene = null;
   camera = null;
-  // renderer = null;
+  renderer = null;
 }
 
 if (selector) {
