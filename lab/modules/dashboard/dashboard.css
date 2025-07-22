@@ -210,7 +210,7 @@ main.dashboard {
 /* Titre centré */
 #widget-infos > h2 {
   margin-bottom: 0.5rem;
-  font-size: 0.75rem;
+  font-size: 0.55rem;
   text-align: center;
   opacity: 0.6;
   border-bottom: 1px solid rgba(0, 255, 255, 0.15);
@@ -230,7 +230,7 @@ main.dashboard {
   background: transparent;
   border-left: 1px solid rgba(0, 255, 255, 0.08);
   padding: 0.5rem;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   line-height: 1.2;
   display: flex;
   flex-direction: column;
@@ -243,13 +243,13 @@ main.dashboard {
 
 .widget-planet-info-sub h3 {
   margin: 0 0 0.5rem 0;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   opacity: 0.8;
 }
 
 .widget-planet-info-sub p {
   margin: 0.25rem 0;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
 }
 
 
