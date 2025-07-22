@@ -1,12 +1,10 @@
-// viewer-planete-3d.js – Visualiseur 3D avec UI connectée + halo + fallback data
+// viewer-planete-3d.js – Visualiseur 3D avec UI connectée
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 import { updatePlanetUI } from './planet-data.js';
-import { PLANET_DATABASE } from './planet-database.js';
 
 let scene, camera, renderer, sphere, clouds, ringMesh, animateId;
 let currentPlanetName = null;
 let currentLayer = 'surface';
-let fallbackData = null;
 
 const canvas = document.getElementById('planet-canvas');
 const selector = document.getElementById('layer-select');
@@ -14,7 +12,6 @@ const selector = document.getElementById('layer-select');
 export function loadPlanet3D(name, layer = 'surface', data = {}) {
   currentPlanetName = name;
   currentLayer = layer;
-  fallbackData = PLANET_DATABASE[name] || {};
 
   cleanupViewer();
 
@@ -29,20 +26,9 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
 
   scene = new THREE.Scene();
 
-  // Halo lumineux
-  const haloGeo = new THREE.SphereGeometry(1.15, 64, 64);
-  const haloMat = new THREE.MeshBasicMaterial({
-    color: 0x00ffff,
-    transparent: true,
-    opacity: 0.05,
-    side: THREE.BackSide
-  });
-  const halo = new THREE.Mesh(haloGeo, haloMat);
-  scene.add(halo);
-
   const ambient = new THREE.AmbientLight(0xffffff, 0.35);
   scene.add(ambient);
-  const light = new THREE.DirectionalLight(0xffffff, 1.1);
+  const light = new THREE.DirectionalLight(0xffffff, 0.9);
   light.position.set(5, 3, 5);
   scene.add(light);
 
@@ -94,12 +80,7 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
     );
   }
 
-  // Fusion data + fallback
-  const finalData = {
-    ...fallbackData,
-    ...data,
-  };
-  updatePlanetUI(finalData, name);
+  updatePlanetUI(data, name);
 
   animateId = requestAnimationFrame(animate);
 }
