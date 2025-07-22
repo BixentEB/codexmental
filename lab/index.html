@@ -65,11 +65,15 @@
       <h3>🔭 Visualiseur</h3>
       <canvas id="planet-canvas" width="100" height="100"></canvas>
       <!-- Sélecteur de couches -->
-      <select id="layer-select">
-  <option value="surface">Surface</option>
-  <option value="cloud">Nuages</option>
-  <option value="infrared">Infrarouge</option>
-</select>
+      <div style="margin-bottom: 0.5rem;">
+  <label for="layer-select">🛰️ Couche :</label>
+  <select id="layer-select">
+    <option value="surface" selected>Surface</option>
+    <option value="cloud">Nuages</option>
+    <option value="infrared">Infrarouge</option>
+  </select>
+</div>
+
 
     </div>
 
