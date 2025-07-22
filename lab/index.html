@@ -60,36 +60,39 @@
 <div id="widget-infos" class="widget">
   <h2>📊 Données planétaires</h2>
   <div class="infos-grid">
-
     <!-- Bloc 1 : Visualiseur -->
-    <div id="widget-planet-viewer" class="info-subwidget">
-      <button id="close-planet-viewer" title="Fermer"></button>
+    <div class="info-subwidget" id="info-visual">
       <h3>🔭 Visualiseur</h3>
-      <canvas id="planet-canvas" width="240" height="240"></canvas>
-      <div class="planet-layer-selector">
-        <label for="layer-select">🪐 Couche :</label>
-        <select id="layer-select">
-          <option value="surface">Surface</option>
-          <option value="clouds">Nuages</option>
-          <option value="ir">Infrarouge</option>
-        </select>
-        <p id="layer-warning" class="hidden" style="color: #f88; font-size: 0.8em; margin-top: 0.5em;">
-          ⚠️ Données manquantes pour cette couche
-        </p>
-      </div>
+      <canvas id="planet-canvas" width="100" height="100"></canvas>
     </div>
 
-    <!-- Bloc 2 à 5 : Infos -->
-    <div id="widget-planet-info" class="info-subwidget" style="grid-column: span 4;">
+    <!-- Bloc 2 : Informations -->
+    <div class="info-subwidget" id="info-data">
       <h3>📋 Informations</h3>
-      <div id="planet-info-content">
-        <p>Nom : —</p>
-        <p>Distance : —</p>
-        <p>Taille : —</p>
-        <p>Température : —</p>
-      </div>
+      <p>Nom : <span id="planet-name">—</span></p>
+      <p>Distance : <span id="planet-distance">—</span></p>
+      <p>Taille : <span id="planet-size">—</span></p>
+      <p>Température : <span id="planet-temp">—</span></p>
     </div>
 
+    <!-- Bloc 3 : Lunes -->
+    <div class="info-subwidget" id="info-moons">
+      <h3>🌙 Lunes</h3>
+      <p><span id="planet-moons">—</span></p>
+    </div>
+
+    <!-- Bloc 4 : Colonisation -->
+    <div class="info-subwidget" id="info-colony">
+      <h3>🏙️ Colonisation</h3>
+      <p>État : <span id="planet-colonized">—</span></p>
+      <p>Bases : <span id="planet-bases">—</span></p>
+    </div>
+
+    <!-- Bloc 5 : Missions -->
+    <div class="info-subwidget" id="info-missions">
+      <h3>🚀 Missions</h3>
+      <p>Active : <span id="planet-mission">—</span></p>
+    </div>
   </div>
 </div>
 
