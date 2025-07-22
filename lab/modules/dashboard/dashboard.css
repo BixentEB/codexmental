@@ -39,7 +39,7 @@ main.dashboard {
   gap: var(--widget-gap);
   max-width: 1400px;
   margin: auto;
-  padding: 6rem 1rem 2rem;
+  padding: 6rem 2rem 2rem;
   position: relative;
   box-sizing: border-box;
 }
@@ -118,11 +118,15 @@ main.dashboard {
   align-items: center;
   justify-content: center;
   aspect-ratio: 1 / 1;
+  width: 100%;
   max-width: 100%;
   max-height: 100%;
   border-radius: 50%;
   overflow: hidden;
+  margin: 0 auto;
+  padding: 1rem;
 }
+
 #widget-core-radar canvas {
   max-width: 100%;
   max-height: 100%;
@@ -154,10 +158,12 @@ main.dashboard {
 }
 
 .info-subwidget {
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(0, 255, 255, 0.05);
-  border-radius: 6px;
-  padding: 0.5rem;
+  background: transparent;
+  border-left: 1px solid rgba(0, 255, 255, 0.1);
+  border-right: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 0;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
 }
 
 #dashboard-title-left {
@@ -168,11 +174,12 @@ main.dashboard {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
-  letter-spacing: 0.2rem;
+  font-size: 1.2rem;
+  letter-spacing: 0.25rem;
   color: var(--color-primary);
-  opacity: 0.6;
+  opacity: 0.8;
   pointer-events: none;
+  z-index: 2;
 }
 
 #dashboard-title-right {
@@ -183,11 +190,12 @@ main.dashboard {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.15rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.2rem;
   color: var(--color-primary);
-  opacity: 0.4;
+  opacity: 0.6;
   pointer-events: none;
+  z-index: 2;
 }
 
 @media (max-width: 900px) {
