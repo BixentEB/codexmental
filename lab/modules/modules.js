@@ -9,21 +9,23 @@ if (location.pathname === '/lab/index.html') {
 // 📦 Chargement conditionnel si on est bien sur le dashboard du Lab
 if (window.location.pathname.endsWith("/lab/index.html")) {
   // === 📚 BASES DE DONNÉES ===
-  import("/lab/modules/dashboard/planet-database.js");     // 🧠 Données principales des planètes
-  import("/lab/modules/dashboard/moon-database.js");       // 🌙 Dictionnaire structuré des lunes
+  import("/lab/modules/dashboard/planet-database.js");        // 🧠 Données principales des planètes
+  import("/lab/modules/dashboard/moon-database.js");          // 🌙 Dictionnaire structuré des lunes
+  import("/lab/modules/dashboard/colonization-status.js");    // 🏙️ Statuts de colonisation centralisés
 
-  // === 🧠 GESTION UI / DONNÉES ===
-  import("/lab/modules/dashboard/planet-data.js");         // 🧩 Injection des données dans les 5 blocs
-  import("/lab/modules/dashboard/display-moons.js");       // 🌘 Affichage enrichi des lunes
+  // === 🧠 GESTION UI / AFFICHAGE ===
+  import("/lab/modules/dashboard/planet-data.js");            // 🧩 Injection dans les 5 blocs
+  import("/lab/modules/dashboard/planet-sections.js");        // 📋 Fonctions de rendu par section
+  import("/lab/modules/dashboard/section-switcher.js");       // 🔁 Menu dynamique dans chaque bloc
 
   // === 🔭 VISUALISATION ===
-  import("/lab/modules/dashboard/viewer-planete-3d.js");   // 🌍 Canvas 3D rotatif (WebGL)
-  import("/lab/modules/dashboard/simul-system.js");        // ☀️ Radar interactif du système solaire
-  import("/lab/modules/dashboard/radar-mini.js");          // 🛰️ Radar circulaire décoratif
+  import("/lab/modules/dashboard/viewer-planete-3d.js");      // 🌍 Canvas 3D rotatif (WebGL)
+  import("/lab/modules/dashboard/simul-system.js");           // ☀️ Radar interactif du système solaire
+  import("/lab/modules/dashboard/radar-mini.js");             // 🛰️ Radar circulaire décoratif
 
-  // === 🌙 MODULE LUNAIRE ===
+  // === 🌙 MODULE LUNAIRE SVG (widget lunaire fixe)
   import("/lab/modules/simul-moon/simul-moon-canvas.js")
-    .then(mod => mod.launchSimulMoonCanvas());             // 🌕 Simulation canvas de la Lune
+    .then(mod => mod.launchSimulMoonCanvas());                // 🌕 Simulation canvas de la Lune
 }
 
 console.log("✅ Modules du lab chargés");
