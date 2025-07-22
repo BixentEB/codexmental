@@ -186,6 +186,17 @@ main.dashboard {
   opacity: 0.85;
 }
 
+#layer-select {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid cyan;
+  color: cyan;
+  font-family: 'Orbitron', sans-serif;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+
+
 #dashboard-title-left {
   position: absolute;
   top: 4rem;
