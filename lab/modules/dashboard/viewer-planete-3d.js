@@ -2,7 +2,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 import { updatePlanetUI } from './planet-data.js';
 
-let scene, camera, renderer, sphere, clouds, animateId;
+let scene, camera, renderer, sphere, clouds, ringMesh, animateId;
 let currentPlanetName = null;
 let currentLayer = 'surface';
 
@@ -53,10 +53,34 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
       material.needsUpdate = true;
     },
     undefined,
-    () => console.warn(`❌ Donnée manquante : ${basePath}`)
+    () => console.warn(`❌ Texture manquante : ${basePath}`)
   );
 
-  updatePlanetUI(data, name); // ⚠️ on passe la clé planétaire ici
+  // === 🌀 Anneaux si disponibles ===
+  if (data.rings?.texture) {
+    const ringPath = `/lab/modules/dashboard/img/rings/${data.rings.texture}`;
+    loader.load(
+      ringPath,
+      ringTexture => {
+        const inner = data.rings.innerRadius || 1.1;
+        const outer = data.rings.outerRadius || 1.8;
+        const ringGeo = new THREE.RingGeometry(inner, outer, 64);
+        const ringMat = new THREE.MeshBasicMaterial({
+          map: ringTexture,
+          transparent: true,
+          side: THREE.DoubleSide,
+          depthWrite: false
+        });
+        ringMesh = new THREE.Mesh(ringGeo, ringMat);
+        ringMesh.rotation.x = -Math.PI / 2;
+        scene.add(ringMesh);
+      },
+      undefined,
+      () => console.warn(`❌ Texture anneau manquante : ${ringPath}`)
+    );
+  }
+
+  updatePlanetUI(data, name);
 
   animateId = requestAnimationFrame(animate);
 }
@@ -65,6 +89,7 @@ function animate() {
   animateId = requestAnimationFrame(animate);
   if (sphere) sphere.rotation.y += 0.002;
   if (clouds) clouds.rotation.y += 0.001;
+  if (ringMesh) ringMesh.rotation.z += 0.0005;
   renderer?.render(scene, camera);
 }
 
@@ -90,6 +115,14 @@ export function cleanupViewer() {
     clouds.material.map?.dispose();
     clouds.material.dispose();
     clouds = null;
+  }
+
+  if (ringMesh) {
+    scene?.remove(ringMesh);
+    ringMesh.geometry.dispose();
+    ringMesh.material.map?.dispose();
+    ringMesh.material.dispose();
+    ringMesh = null;
   }
 
   scene = null;
