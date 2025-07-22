@@ -1,21 +1,20 @@
 // moon-database.js – Dictionnaire des lunes du système solaire
-// Clé = nom court de la planète ; chaque valeur contient un tableau de lunes
-
 export const MOON_DATA = {
 
-    terre: [
+  terre: [
     {
       name: "Lune",
       diameter: "3 474.8 km",
-      orbit: "384 400 km","environ 27,32 jours",
-      composition: "Composée principalement d'oxygène, de silicium, de magnésium, de fer, de calcium et d'aluminium. Eléments mineurs: titane, uranium, thorium, potassium et hydrogène."
-      description: "Satellite naturel de la Terre. Née au tout début de la formation de notre planète après la collision avec Théia, il y a plus de 4 milliards d’années, elle exerce sur la Terre une influence déterminante et revêt naturellement la fonction de bouclier en nous protégeant des impacts de corps célèstes.",
-      status: "naturelle | née d'un morceau de Terre lors de la collision avec Théia",
+      orbit: "384 400 km",
+      period: "environ 27,32 jours",
+      composition: "Oxygène, silicium, magnésium, fer, calcium, aluminium. Éléments mineurs : titane, uranium, thorium, potassium, hydrogène.",
+      description: "Satellite naturel de la Terre. Née au tout début de la formation de notre planète après la collision avec Théia, il y a plus de 4 milliards d’années, elle exerce sur la Terre une influence déterminante et revêt naturellement la fonction de bouclier en nous protégeant des impacts de corps célestes.",
+      status: "naturelle",
+      reason: "Née d’un fragment de la Terre après une collision géante avec Théia.",
       image: "lune-surface.jpg"
     }
-  ]
-};
-  
+  ],
+
   mars: [
     {
       name: "Phobos",
@@ -36,6 +35,7 @@ export const MOON_DATA = {
       image: "deimos.jpg"
     }
   ],
+
   jupiter: [
     {
       name: "Io",
@@ -74,6 +74,7 @@ export const MOON_DATA = {
       image: "callisto.jpg"
     }
   ],
+
   saturne: [
     {
       name: "Titan",
@@ -94,15 +95,50 @@ export const MOON_DATA = {
       image: "encelade.jpg"
     }
   ],
+
   uranus: [
-    { name: "Titania", diameter: "1 578 km", orbit: "436 300 km", composition: "glace et roche", description: "", status: "naturelle", image: "titania.jpg" },
-    { name: "Oberon", diameter: "1 523 km", orbit: "583 500 km", composition: "glace et roche", description: "", status: "naturelle", image: "oberon.jpg" }
+    {
+      name: "Titania",
+      diameter: "1 578 km",
+      orbit: "436 300 km",
+      composition: "glace et roche",
+      description: "",
+      status: "naturelle",
+      image: "titania.jpg"
+    },
+    {
+      name: "Oberon",
+      diameter: "1 523 km",
+      orbit: "583 500 km",
+      composition: "glace et roche",
+      description: "",
+      status: "naturelle",
+      image: "oberon.jpg"
+    }
   ],
+
   neptune: [
-    { name: "Triton", diameter: "2 706 km", orbit: "354 800 km", composition: "glace azotée", description: "Possède une orbite rétrograde, capturée.", status: "naturelle", image: "triton.jpg" }
+    {
+      name: "Triton",
+      diameter: "2 706 km",
+      orbit: "354 800 km",
+      composition: "glace azotée",
+      description: "Possède une orbite rétrograde, capturée.",
+      status: "naturelle",
+      image: "triton.jpg"
+    }
   ],
+
   pluton: [
-    { name: "Charon", diameter: "1 212 km", orbit: "19 600 km", composition: "glacée", description: "Lune massive, système double avec Pluton.", status: "naturelle", image: "charon.jpg" }
+    {
+      name: "Charon",
+      diameter: "1 212 km",
+      orbit: "19 600 km",
+      composition: "glacée",
+      description: "Lune massive, système double avec Pluton.",
+      status: "naturelle",
+      image: "charon.jpg"
+    }
   ],
 
   // 🧱 Gabarit à copier
