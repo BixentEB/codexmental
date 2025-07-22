@@ -1,4 +1,4 @@
-// ✅ viewer-planete-3d.js – Visualiseur 3D avec UI connectée
+// viewer-planete-3d.js – Visualiseur 3D avec UI connectée
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 import { updatePlanetUI } from './planet-data.js';
 
@@ -26,7 +26,6 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
 
   scene = new THREE.Scene();
 
-  // Lumières
   const ambient = new THREE.AmbientLight(0xffffff, 0.35);
   scene.add(ambient);
   const light = new THREE.DirectionalLight(0xffffff, 0.9);
@@ -57,7 +56,7 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
     () => console.warn(`❌ Donnée manquante : ${basePath}`)
   );
 
-  updatePlanetUI(data); // ✅ nouvelle fonction unifiée
+  updatePlanetUI(data, name); // ⚠️ on passe la clé planétaire ici
 
   animateId = requestAnimationFrame(animate);
 }
