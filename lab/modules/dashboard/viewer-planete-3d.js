@@ -1,5 +1,6 @@
-// ✅ viewer-planete-3d.js avec gestion des couches et éclairage amélioré
+// ✅ viewer-planete-3d.js – Visualiseur 3D avec UI connectée
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
+import { updatePlanetUI } from './planet-data.js';
 
 let scene, camera, renderer, sphere, clouds, animateId;
 let currentPlanetName = null;
@@ -25,7 +26,7 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
 
   scene = new THREE.Scene();
 
-  // Lumières douces et équilibrées
+  // Lumières
   const ambient = new THREE.AmbientLight(0xffffff, 0.35);
   scene.add(ambient);
   const light = new THREE.DirectionalLight(0xffffff, 0.9);
@@ -56,7 +57,7 @@ export function loadPlanet3D(name, layer = 'surface', data = {}) {
     () => console.warn(`❌ Donnée manquante : ${basePath}`)
   );
 
-  injectPlanetData(data);
+  updatePlanetUI(data); // ✅ nouvelle fonction unifiée
 
   animateId = requestAnimationFrame(animate);
 }
@@ -95,17 +96,6 @@ export function cleanupViewer() {
   scene = null;
   camera = null;
   renderer = null;
-}
-
-function injectPlanetData(data = {}) {
-  document.getElementById('planet-name').textContent = data.name || '—';
-  document.getElementById('planet-distance').textContent = data.distance || '—';
-  document.getElementById('planet-size').textContent = data.radius || '—';
-  document.getElementById('planet-temp').textContent = data.temp || '—';
-  document.getElementById('planet-moons').textContent = Array.isArray(data.moons) ? data.moons.join(', ') : '—';
-  document.getElementById('planet-colonized').textContent = data.colonized || '—';
-  document.getElementById('planet-bases').textContent = Array.isArray(data.bases) ? data.bases.join(', ') : '—';
-  document.getElementById('planet-mission').textContent = Array.isArray(data.missions) ? data.missions.join(', ') : '—';
 }
 
 if (selector) {
