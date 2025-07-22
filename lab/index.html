@@ -57,38 +57,42 @@
     </div>
 
     <!-- Ligne 5 : Données dynamiques -->
-    <div id="widget-infos" class="widget">
+<div id="widget-infos" class="widget">
   <h2>📊 Données planétaires</h2>
+  <div class="infos-grid">
 
-  <!-- 🔭 Visualiseur -->
-  <div id="widget-planet-viewer">
-    <button id="close-planet-viewer" title="Fermer"></button>
-    <h3>🔭 Visualiseur</h3>
-    <canvas id="planet-canvas" width="240" height="240"></canvas>
-    <div class="planet-layer-selector">
-      <label for="layer-select">🪐 Couche :</label>
-      <select id="layer-select">
-        <option value="surface">Surface</option>
-        <option value="clouds">Nuages</option>
-        <option value="ir">Infrarouge</option>
-      </select>
-      <p id="layer-warning" class="hidden" style="color: #f88; font-size: 0.8em; margin-top: 0.5em;">
-        ⚠️ Données manquantes pour cette couche
-      </p>
+    <!-- Bloc 1 : Visualiseur -->
+    <div id="widget-planet-viewer" class="info-subwidget">
+      <button id="close-planet-viewer" title="Fermer"></button>
+      <h3>🔭 Visualiseur</h3>
+      <canvas id="planet-canvas" width="240" height="240"></canvas>
+      <div class="planet-layer-selector">
+        <label for="layer-select">🪐 Couche :</label>
+        <select id="layer-select">
+          <option value="surface">Surface</option>
+          <option value="clouds">Nuages</option>
+          <option value="ir">Infrarouge</option>
+        </select>
+        <p id="layer-warning" class="hidden" style="color: #f88; font-size: 0.8em; margin-top: 0.5em;">
+          ⚠️ Données manquantes pour cette couche
+        </p>
+      </div>
     </div>
-  </div>
 
-  <!-- 📋 Informations -->
-  <div id="widget-planet-info">
-    <h3>📋 Informations</h3>
-    <div id="planet-info-content">
-      <p>Nom : —</p>
-      <p>Distance : —</p>
-      <p>Taille : —</p>
-      <p>Température : —</p>
+    <!-- Bloc 2 à 5 : Infos -->
+    <div id="widget-planet-info" class="info-subwidget" style="grid-column: span 4;">
+      <h3>📋 Informations</h3>
+      <div id="planet-info-content">
+        <p>Nom : —</p>
+        <p>Distance : —</p>
+        <p>Taille : —</p>
+        <p>Température : —</p>
+      </div>
     </div>
+
   </div>
 </div>
+
 </main>
 
   <!-- 🡸 Footer injecté dynamiquement -->
