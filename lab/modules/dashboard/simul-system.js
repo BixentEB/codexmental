@@ -1,4 +1,4 @@
-// ✅ simul-system.js — version connectée au fichier planet-database
+// simul-system.js — radar planétaire avec données enrichies et UI dynamique
 import { loadPlanet3D } from './viewer-planete-3d.js';
 import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
@@ -80,8 +80,8 @@ if (!canvas) {
       if (dist <= Math.max(p.size, 10)) {
         currentPlanet = p;
         const data = PLANET_DATA[p.name] || {};
-        loadPlanet3D(p.name, 'surface');
-        updatePlanetUI(data);
+        loadPlanet3D(p.name, 'surface', data);
+        updatePlanetUI(data, p.name);
         break;
       }
     }
