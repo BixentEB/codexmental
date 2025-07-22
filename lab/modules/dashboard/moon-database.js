@@ -2,6 +2,20 @@
 // Clé = nom court de la planète ; chaque valeur contient un tableau de lunes
 
 export const MOON_DATA = {
+
+    terre: [
+    {
+      name: "Lune",
+      diameter: "3 474.8 km",
+      orbit: "384 400 km","environ 27,32 jours",
+      composition: "Composée principalement d'oxygène, de silicium, de magnésium, de fer, de calcium et d'aluminium. Eléments mineurs: titane, uranium, thorium, potassium et hydrogène."
+      description: "Satellite naturel de la Terre. Née au tout début de la formation de notre planète après la collision avec Théia, il y a plus de 4 milliards d’années, elle exerce sur la Terre une influence déterminante et revêt naturellement la fonction de bouclier en nous protégeant des impacts de corps célèstes.",
+      status: "naturelle | née d'un morceau de Terre lors de la collision avec Théia",
+      image: "lune-surface.jpg"
+    }
+  ]
+};
+  
   mars: [
     {
       name: "Phobos",
