@@ -154,20 +154,28 @@ main.dashboard {
 .infos-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0;
+  gap: 0.2rem;
   width: 100%;
 }
 
 .info-subwidget {
   background: transparent;
-  border: none;
-  border-left: 1px solid rgba(0, 255, 255, 0.1);
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
   padding: 0 0.5rem;
   font-size: 0.55rem;
+  position: relative;
 }
 
-.info-subwidget:first-child {
-  border-left: none;
+.info-subwidget:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 1px;
+  background: rgba(0, 255, 255, 0.1);
 }
 
 #widget-infos .info-subwidget h3 {
