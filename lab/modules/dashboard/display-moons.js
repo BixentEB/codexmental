@@ -1,4 +1,4 @@
-// display-moons.js – Injection enrichie des lunes dans le bloc infos
+// display-moons.js – Affichage enrichi des lunes, sans <ul>, format texte espacé
 import { MOON_DATA } from './moon-database.js';
 
 export function displayMoons(planetKey) {
@@ -12,12 +12,13 @@ export function displayMoons(planetKey) {
     return;
   }
 
+  // 🌙 Format : Io — 3 643 km — volcanique
   const html = moons.map(m => {
-    const parts = [m.name];
-    if (m.diameter) parts.push(`(${m.diameter})`);
-    if (m.composition) parts.push(`— ${m.composition}`);
-    return `<li>${parts.join(' ')}</li>`;
+    const parts = [`<strong>${m.name}</strong>`];
+    if (m.diameter) parts.push(m.diameter);
+    if (m.composition) parts.push(m.composition);
+    return `<p>${parts.join(' — ')}</p>`;
   }).join('');
 
-  container.innerHTML = `<ul class="moon-list">${html}</ul>`;
+  container.innerHTML = html;
 }
