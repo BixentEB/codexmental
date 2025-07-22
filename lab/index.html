@@ -92,10 +92,17 @@
 
 
     <!-- Bloc 3 : Lunes -->
-    <div class="info-subwidget" id="info-moons">
-      <h3>🌙 Lunes</h3>
-      <p><span id="planet-moons">—</span></p>
-    </div>
+<div class="info-subwidget" id="info-moons">
+  <h3>
+    🌙 
+    <select data-section="moons">
+      <option value="summary">Résumé</option>
+      <option value="details">Détails</option>
+    </select>
+  </h3>
+  <div class="section-content"></div>
+</div>
+
 
     <!-- Bloc 4 : Colonisation -->
     <div class="info-subwidget" id="info-colony">
