@@ -59,37 +59,34 @@ export function renderMissionList(data) {
   return missions.map(name => `<p>🚀 ${name}</p>`).join('');
 }
 
-// 🌙 LUNES (à continuer)
-export function renderMoonSummary({ planetKey }) {
+// 🌙 LUNES (sélection individuelle avec visualisation)
+export function renderMoonSelection({ planetKey }) {
   const moons = MOON_DATA[planetKey];
   if (!moons || moons.length === 0) return "<p>Aucune lune détectée</p>";
 
-  const html = moons.map(m => {
-    const line = [`<strong>${m.name}</strong>`];
-    if (m.diameter) line.push(m.diameter);
-    if (m.composition) line.push(m.composition);
-    return `<p>${line.join(" — ")}</p>`;
-  }).join('');
+  const options = moons.map((m, index) => `<option value="${index}">${m.name}</option>`).join('');
 
-  return html;
-}
-
-export function renderMoonDetails({ planetKey }) {
-  const moons = MOON_DATA[planetKey];
-  if (!moons || moons.length === 0) return "<p>Aucune lune détectée</p>";
-
-  return moons.map(m => {
-    return `
-      <div class="moon-block">
-        <p><strong>${m.name}</strong></p>
-        ${m.image ? `<img src="/lab/modules/dashboard/img/moons/${m.image}" alt="${m.name}" style="max-width: 80px; border-radius: 8px;" />` : ''}
-        <p>Diamètre : ${m.diameter || '—'}</p>
-        <p>Orbite : ${m.orbit || '—'}</p>
-        ${m.period ? `<p>Période orbitale : ${m.period}</p>` : ''}
-        ${m.composition ? `<p>Composition : ${m.composition}</p>` : ''}
-        ${m.description ? `<p>${m.description}</p>` : ''}
-      </div>
-      <hr style="opacity: 0.1;">
-    `;
-  }).join('');
+  return `
+    <label for="moon-select">Sélectionnez une lune :</label>
+    <select id="moon-select" class="codex-select">
+      <option value="">—</option>
+      ${options}
+    </select>
+    <script>
+      setTimeout(() => {
+        const select = document.getElementById('moon-select');
+        if (select) {
+          select.addEventListener('change', (e) => {
+            const idx = parseInt(e.target.value);
+            if (!isNaN(idx)) {
+              const moon = ${JSON.stringify(MOON_DATA[planetKey])}[idx];
+              if (moon && window.loadMoon3D) {
+                window.loadMoon3D(moon.name, moon);
+              }
+            }
+          });
+        }
+      }, 100);
+    </script>
+  `;
 }
