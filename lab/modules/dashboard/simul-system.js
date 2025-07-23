@@ -162,7 +162,7 @@ const ship = {
   x: CENTER.x + 120,
   y: CENTER.y - 50,
   angle: Math.random() * 2 * Math.PI,
-  speed: 0.1,
+  speed: 0.01,
   rotationSpeed: 0.002,
   state: "roaming",
   pauseUntil: 0,
@@ -242,7 +242,29 @@ function updateShip(planets, t) {
   if (shipTrail.length > 30) shipTrail.shift();
 }
 
-    requestAnimationFrame(drawSystem);
+    
+  // --- Mise à jour et affichage du vaisseau ---
+  updateShip([...planets, ...dwarfPlanets], Date.now());
+
+  // Dessiner la traînée du vaisseau
+  shipTrail.forEach(pt => {
+    ctx.beginPath();
+    ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(136, 136, 255, ${pt.alpha})`;
+    ctx.fill();
+    pt.alpha *= 0.9; // disparition progressive
+  });
+
+  // Dessiner le vaisseau (triangle)
+  ctx.beginPath();
+  ctx.moveTo(ship.x + 5 * Math.cos(ship.angle), ship.y + 5 * Math.sin(ship.angle));
+  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle + Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle + Math.PI * 0.75));
+  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle - Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle - Math.PI * 0.75));
+  ctx.closePath();
+  ctx.fillStyle = colors.ship;
+  ctx.fill();
+
+  requestAnimationFrame(drawSystem);
   }
 
   drawSystem();
