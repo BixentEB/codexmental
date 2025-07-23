@@ -74,6 +74,20 @@ if (!canvas) {
   const HITBOX_PADDING = 12;
   const allBodies = planets.concat(dwarfPlanets);
 
+    // Détection clic sur le centre (Soleil)
+const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
+if (distToSun <= 15) {
+  currentPlanet = { name: 'soleil', label: 'Soleil' };
+  const data = PLANET_DATA['soleil'];
+  loadPlanet3D('soleil', 'surface', data, 'planet-main-viewer');
+  updatePlanetUI(data, 'soleil');
+  const viewer = document.getElementById('planet-main-viewer');
+  if (viewer) viewer.dataset.planet = 'soleil';
+  const title = document.getElementById('planet-viewer-title');
+  if (title) title.textContent = 'SOLEIL';
+  return; // on sort sans continuer la boucle
+}
+
   for (const p of allBodies) {
     const px = CENTER.x + Math.cos(p.angle) * p.r;
     const py = CENTER.y + Math.sin(p.angle) * p.r;
