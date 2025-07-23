@@ -1,6 +1,27 @@
 // planet-database.js — Dictionnaire central des données planétaires pour le dashboard Codex Mental
 
 export const PLANET_DATA = {
+
+  soleil: {
+  name: "Soleil",
+  type: "étoile",
+  distance: "0",
+  radius: "696 340 km",
+  temp: "5 778 K",
+  colonized: "Non exploitable",
+  bases: [],
+  moons: [],
+  missions: ["SOHO", "Parker Solar Probe", "Solar Orbiter"],
+  textures: {
+    surface: "soleil-surface.jpg",
+    cloud: null,
+    infrared: "soleil-infrared.jpg"
+  },
+  symbol: "☉",
+  symbolImg: "soleil-symbol.svg",  // si dispo dans /img/symbols/
+  sciName: "Sol"
+},
+  
   mercure: {
     name: "Mercure",
     type: "tellurique",
@@ -17,6 +38,11 @@ export const PLANET_DATA = {
       infrared: null
     }
   },
+  symbol: "☿",
+  symbolImg: "mercrure-symbol.svg",  // si dispo dans /img/symbols/
+  sciName: ""
+},
+  
   venus: {
     name: "Vénus",
     type: "tellurique",
@@ -33,6 +59,7 @@ export const PLANET_DATA = {
       infrared: "venus-infrared.jpg"
     }
   },
+  
   terre: {
     name: "Terre",
     type: "tellurique",
@@ -49,6 +76,7 @@ export const PLANET_DATA = {
       infrared: "terre-infrared.jpg"
     }
   },
+  
   mars: {
     name: "Mars",
     type: "tellurique",
@@ -68,6 +96,7 @@ export const PLANET_DATA = {
       infrared: "mars-infrared.jpg"
     }
   },
+  
   jupiter: {
     name: "Jupiter",
     type: "gazeuse",
@@ -89,6 +118,7 @@ export const PLANET_DATA = {
       infrared: "jupiter-ir.jpg"
     }
   },
+  
   saturne: {
     name: "Saturne",
     type: "gazeuse",
@@ -110,6 +140,7 @@ export const PLANET_DATA = {
       infrared: "saturne-ir.jpg"
     }
   },
+  
   uranus: {
     name: "Uranus",
     type: "glaciaire",
@@ -131,6 +162,7 @@ export const PLANET_DATA = {
       infrared: null
     }
   },
+  
   neptune: {
     name: "Neptune",
     type: "glaciaire",
@@ -143,6 +175,7 @@ export const PLANET_DATA = {
       { name: "Triton" },
       { name: "Néréide" }
     ],
+    
     missions: ["Voyager 2"],
     textures: {
       surface: "neptune-surface.jpg",
@@ -168,6 +201,7 @@ export const PLANET_DATA = {
       infrared: null
     }
   },
+  
   pluton: {
     name: "Pluton",
     type: "naine",
@@ -188,6 +222,7 @@ export const PLANET_DATA = {
       infrared: null
     }
   },
+  
   haumea: {
     name: "Hauméa",
     type: "naine",
@@ -207,6 +242,7 @@ export const PLANET_DATA = {
       infrared: null
     }
   },
+  
   makemake: {
     name: "Makémaké",
     type: "naine",
@@ -223,6 +259,7 @@ export const PLANET_DATA = {
       infrared: null
     }
   },
+  
   eris: {
     name: "Éris",
     type: "naine",
