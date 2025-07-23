@@ -2,7 +2,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 import { updatePlanetUI } from './planet-data.js';
 
-// === Store des viewers multiples ===
 const viewers = new Map(); // key = canvasId
 
 export function loadPlanet3D(name, layer = 'surface', data = {}, canvasId = 'planet-main-viewer') {
@@ -28,12 +27,11 @@ export function loadMoon3D(name, data = {}, canvasId = 'moon-viewer') {
 
 function loadObject3D({ id, name, layer, data, isMoon }) {
   const canvas = document.getElementById(id);
-  if (!canvas) {
-    console.warn(`⚠️ Canvas #${id} introuvable`);
-    return;
-  }
+  if (!canvas) return console.warn(`⚠️ Canvas #${id} introuvable`);
 
-  cleanupViewer(id);
+  if (id !== 'simul-system') {
+    cleanupViewer(id);
+  }
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -70,14 +68,13 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
     undefined,
     () => {
       console.warn(`❌ Texture manquante : ${basePath}`);
-      const target = document.querySelector('#info-data .section-content');
-      if (target && !isMoon) {
-        target.innerHTML = `<p>Données de surface indisponibles. Expédition en cours...</p>`;
+      if (!isMoon) {
+        const target = document.querySelector('#info-data .section-content');
+        if (target) target.innerHTML = `<p>Données de surface indisponibles. Expédition en cours...</p>`;
       }
     }
   );
 
-  // Anneaux (planètes seulement)
   let ringMesh = null;
   if (!isMoon && data.rings?.texture) {
     const ringPath = `/lab/modules/dashboard/img/rings/${data.rings.texture}`;
@@ -122,21 +119,20 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
 }
 
 export function cleanupViewer(id) {
+  if (id === 'simul-system') return; // 🔒 Protection du radar
+
   const state = viewers.get(id);
   if (!state) return;
 
   cancelAnimationFrame(state.animId);
 
-  if (state.renderer) {
-    state.renderer.dispose();
-    // NE PAS supprimer .domElement pour éviter les conflits radar
-  }
   if (state.sphere) {
     state.scene.remove(state.sphere);
     state.sphere.geometry.dispose();
     state.sphere.material.map?.dispose();
     state.sphere.material.dispose();
   }
+
   if (state.ringMesh) {
     state.scene.remove(state.ringMesh);
     state.ringMesh.geometry.dispose();
@@ -147,7 +143,7 @@ export function cleanupViewer(id) {
   viewers.delete(id);
 }
 
-// 🎛️ Hook couche si select présent
+// 🔄 Selecteur de couche
 const selector = document.getElementById('layer-select');
 if (selector) {
   selector.addEventListener('change', e => {
@@ -159,5 +155,5 @@ if (selector) {
   });
 }
 
-// 🌍 Exposition globale pour la lune (depuis bouton UI)
+// 🌕 Exposition globale
 window.loadMoon3D = loadMoon3D;
