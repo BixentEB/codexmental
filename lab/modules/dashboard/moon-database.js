@@ -11,7 +11,7 @@ export const MOON_DATA = {
       description: "Satellite naturel de la Terre. Née au tout début de la formation de notre planète après la collision avec Théia, il y a plus de 4 milliards d’années, elle exerce sur la Terre une influence déterminante et revêt naturellement la fonction de bouclier en nous protégeant des impacts de corps célestes.",
       status: "naturelle",
       reason: "Née d’un fragment de la Terre après une collision géante avec Théia.",
-      image: "./img/moons/lune-surface.jpg"
+      image: "lune-surface.jpg"
     }
   ],
 
