@@ -64,7 +64,7 @@ const ship = {
   x: CENTER.x + 100,
   y: CENTER.y,
   angle: 0,
-  speed: 0.2,
+  speed: 0.1,
   rotationSpeed: 0.002,
   size: 3
 };
@@ -186,7 +186,7 @@ if (distToSun <= 14) {
   ship.y += Math.sin(ship.angle) * ship.speed;
 
   const distToSun = Math.sqrt((ship.x - CENTER.x) ** 2 + (ship.y - CENTER.y) ** 2);
-  if (distToSun < 80) {
+  if (distToSun < 40) {
     // évite le Soleil (rebond intelligent)
     ship.angle += Math.PI / 2;
   }
