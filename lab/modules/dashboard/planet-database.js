@@ -1,28 +1,6 @@
 // planet-database.js — Dictionnaire central des données planétaires pour le dashboard Codex Mental
 
 export const PLANET_DATA = {
-
-  soleil: {
-  name: "Soleil",
-  type: "étoile",
-  distance: "0 km (référence)",
-  radius: "696 340 km",
-  temp: "5 778 K (surface)",
-  colonized: "Utilisé indirectement",
-  bases: [],
-  moons: [],
-  missions: ["Parker Solar Probe", "Solar Orbiter"],
-  textures: {
-    surface: "soleil-surface.jpg",
-    cloud: null,
-    infrared: null
-  },
-  composition: "Hydrogène (74 %), Hélium (24 %), autres éléments légers",
-  climate: "N/A",
-  phase: "Étoile de type spectral G2V en séquence principale",
-  potentials: "Énergie, observation, influence gravitationnelle, étude de la physique stellaire"
-},
-  
   mercure: {
     name: "Mercure",
     type: "tellurique",
