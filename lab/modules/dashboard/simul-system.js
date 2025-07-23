@@ -58,7 +58,16 @@ if (!canvas) {
     { name: 'eris', label: 'Éris', r: scaleOrbit(9), size: 2, speed: 0.0002, angle: getAngleFromJ2000(daysSince, 203830), color: '#c6f' }
   ];
 
-  const ship = { orbit: scaleOrbit(6.7), angle: 0, size: 3 };
+  const shipTrail = [];
+
+const ship = {
+  x: CENTER.x + 100,
+  y: CENTER.y,
+  angle: 0,
+  speed: 0.2,
+  rotationSpeed: 0.002,
+  size: 3
+};
 
   const asteroids = [];
   for (let i = 0; i < 150; i++) {
@@ -123,6 +132,14 @@ if (distToSun <= 14) {
 
     // Planètes
     planets.forEach(p => {
+      // orbit style spécifique pour la planète 9
+      if (p.name === 'planete9') {
+        ctx.strokeStyle = '#8888ff';
+        ctx.setLineDash([3, 2]);
+      } else {
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.setLineDash([]);
+      }
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255,255,255,0.04)';
@@ -150,28 +167,51 @@ if (distToSun <= 14) {
       p.angle += 0.0003;
     });
 
-    // Vaisseau (triangle directionnel)
-      const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
-      const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
+    // Vaisseau (triangle directionnel libre)
+  ship.angle += ship.rotationSpeed;
+  ship.x += Math.cos(ship.angle) * ship.speed;
+  ship.y += Math.sin(ship.angle) * ship.speed;
 
-      ctx.beginPath();
-      ctx.moveTo(
-      sx + 5 * Math.cos(ship.angle),
-      sy + 5 * Math.sin(ship.angle)
-    );
-      ctx.lineTo(
-      sx + 3 * Math.cos(ship.angle + Math.PI * 0.75),
-      sy + 3 * Math.sin(ship.angle + Math.PI * 0.75)
-    );
-      ctx.lineTo(
-      sx + 3 * Math.cos(ship.angle - Math.PI * 0.75),
-      sy + 3 * Math.sin(ship.angle - Math.PI * 0.75)
-    );
-      ctx.closePath();
-      ctx.fillStyle = colors.ship;
-      ctx.fill();
+  if (ship.x < 0 || ship.x > W) ship.angle = Math.PI - ship.angle;
+  if (ship.y < 0 || ship.y > H) ship.angle = -ship.angle;
 
-    ship.angle += 0.0007;
+  ctx.beginPath();
+  ctx.moveTo(ship.x + 5 * Math.cos(ship.angle), ship.y + 5 * Math.sin(ship.angle));
+  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle + Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle + Math.PI * 0.75));
+  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle - Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle - Math.PI * 0.75));
+  ctx.closePath();
+  // Vaisseau (triangle directionnel libre avec évitement solaire + traînée)
+  ship.angle += ship.rotationSpeed;
+  ship.x += Math.cos(ship.angle) * ship.speed;
+  ship.y += Math.sin(ship.angle) * ship.speed;
+
+  const distToSun = Math.sqrt((ship.x - CENTER.x) ** 2 + (ship.y - CENTER.y) ** 2);
+  if (distToSun < 80) {
+    // évite le Soleil (rebond intelligent)
+    ship.angle += Math.PI / 2;
+  }
+
+  // ajouter à la traînée
+  shipTrail.push({ x: ship.x, y: ship.y, alpha: 1 });
+  if (shipTrail.length > 30) shipTrail.shift();
+
+  // dessiner traînée
+  shipTrail.forEach(pt => {
+    ctx.beginPath();
+    ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(136, 136, 255, ${pt.alpha})`;
+    ctx.fill();
+    pt.alpha *= 0.9; // disparition progressive
+  });
+
+  // vaisseau triangle
+  ctx.beginPath();
+  ctx.moveTo(ship.x + 5 * Math.cos(ship.angle), ship.y + 5 * Math.sin(ship.angle));
+  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle + Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle + Math.PI * 0.75));
+  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle - Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle - Math.PI * 0.75));
+  ctx.closePath();
+  ctx.fillStyle = colors.ship;
+  ctx.fill();
 
     requestAnimationFrame(drawSystem);
   }
