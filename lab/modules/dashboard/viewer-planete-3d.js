@@ -161,3 +161,37 @@ if (selector) {
 
 // 🌍 Exposition globale pour la lune (depuis bouton UI)
 window.loadMoon3D = loadMoon3D;
+
+
+// === Ajout : viewer dynamique pour lunes et missions ===
+import { PLANET_DATA } from './planet-database.js';
+
+export function loadDynamicViewer(name, type = "moon") {
+  const title = document.getElementById("moon-viewer-title");
+
+  if (type === "moon") {
+    const planetWithMoon = Object.values(PLANET_DATA).find(p => p.moons?.some(m => m.name === name));
+    const moonData = planetWithMoon?.moons.find(m => m.name === name) || {};
+
+    if (!planetWithMoon) {
+      if (title) title.textContent = "Données manquantes";
+      return;
+    }
+
+    loadMoon3D(name, moonData); // canvas : #moon-viewer
+    if (title) title.textContent = name.toUpperCase();
+  }
+
+  else if (type === "mission") {
+    if (title) title.textContent = name.toUpperCase() + " (mission)";
+    const canvas = document.getElementById("moon-viewer");
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "16px sans-serif";
+      ctx.fillText("Image du robot ou données à venir", 10, 30);
+    }
+  }
+}
+window.loadDynamicViewer = loadDynamicViewer;
