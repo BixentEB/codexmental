@@ -190,6 +190,14 @@ main.dashboard {
   border-radius: 50%;
 }
 
+/* Corps célèstes hypothétiques */
+.hypothetical {
+  stroke: #8888ff;
+  stroke-width: 1;
+  stroke-dasharray: 2,2;
+  fill: rgba(136, 136, 255, 0.3);
+}
+
 #widget-infos {
   grid-area: infos;
   display: block;
