@@ -1,17 +1,14 @@
-// simul-system.js — radar planétaire avec planètes naines et UI dynamique
+// simul-system.js — radar planétaire avec données enrichies et UI dynamique
 import { loadPlanet3D } from './viewer-planete-3d.js';
 import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.getElementById('simul-system');
-  let currentPlanet = null;
+const canvas = document.getElementById('simul-system');
+let currentPlanet = null;
 
-  if (!canvas) {
-    console.warn("⚠️ Aucun canvas #simul-system trouvé.");
-    return;
-  }
-
+if (!canvas) {
+  console.warn("⚠️ Aucun canvas #simul-system trouvé.");
+} else {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
@@ -41,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return baseOrbit + ratio * (maxRadius - baseOrbit);
   };
 
-  // Planètes principales
   const planets = [
     { name: 'mercure', label: 'Mercure', r: scaleOrbit(0), size: 2, speed: 0.004, angle: getAngleFromJ2000(daysSince, 87.97), color: colors.planets[0] },
     { name: 'venus', label: 'Vénus', r: scaleOrbit(1), size: 3, speed: 0.003, angle: getAngleFromJ2000(daysSince, 224.70), color: colors.planets[1] },
@@ -53,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'neptune', label: 'Neptune', r: scaleOrbit(7), size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7] }
   ];
 
-  // Planètes naines
   const dwarfPlanets = [
     { name: 'ceres', label: 'Cérès', r: scaleOrbit(3.5), size: 2, speed: 0.0005, angle: getAngleFromJ2000(daysSince, 1680), color: '#ccc' },
     { name: 'pluton', label: 'Pluton', r: scaleOrbit(8), size: 2, speed: 0.0003, angle: getAngleFromJ2000(daysSince, 90560), color: '#f9f' },
@@ -64,48 +59,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const ship = { orbit: scaleOrbit(6.7), angle: 0, size: 3 };
 
-  // Astéroïdes
-  const asteroids = Array.from({ length: 150 }, () => ({
-    r: scaleOrbit(3.3) + Math.random() * 20,
-    angle: Math.random() * Math.PI * 2
-  }));
+  const asteroids = [];
+  for (let i = 0; i < 150; i++) {
+    const r = scaleOrbit(3.3) + Math.random() * 20;
+    const angle = Math.random() * Math.PI * 2;
+    asteroids.push({ r, angle });
+  }
 
   function handleClick(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
-    const HITBOX_PADDING = 12;
+  const rect = canvas.getBoundingClientRect();
+  const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-    // Vérifie d'abord les planètes principales
-    for (const p of planets) {
-      const px = CENTER.x + Math.cos(p.angle) * p.r;
-      const py = CENTER.y + Math.sin(p.angle) * p.r;
-      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+  const HITBOX_PADDING = 12;
+  const allBodies = planets.concat(dwarfPlanets);
 
-      if (dist <= p.size + HITBOX_PADDING) {
-        currentPlanet = p;
-        const data = PLANET_DATA[p.name] || {};
-        loadPlanet3D(p.name, 'surface', data);
-        updatePlanetUI(data, p.name);
-        return;
-      }
-    }
+  for (const p of allBodies) {
+    const px = CENTER.x + Math.cos(p.angle) * p.r;
+    const py = CENTER.y + Math.sin(p.angle) * p.r;
+    const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
 
-    // Vérifie ensuite les planètes naines
-    for (const p of dwarfPlanets) {
-      const px = CENTER.x + Math.cos(p.angle) * p.r;
-      const py = CENTER.y + Math.sin(p.angle) * p.r;
-      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+    if (dist <= p.size + HITBOX_PADDING) {
+      currentPlanet = p;
+      const data = PLANET_DATA[p.name] || {};
+      loadPlanet3D(p.name, 'surface', data, 'planet-main-viewer');
+      updatePlanetUI(data, p.name);
 
-      if (dist <= p.size + HITBOX_PADDING) {
-        currentPlanet = p;
-        const data = PLANET_DATA[p.name] || {};
-        loadPlanet3D(p.name, 'surface', data);
-        updatePlanetUI(data, p.name);
-        return;
-      }
+// 🧠 Met à jour l’attribut data-planet (pour couche)
+     const viewer = document.getElementById('planet-main-viewer');
+     if (viewer) {
+     viewer.dataset.planet = p.name;
+   }
+
+// 🧠 Met à jour dynamiquement le titre
+    const title = document.getElementById('planet-viewer-title');
+    if (title) {
+    title.textContent = p.label.toUpperCase();
+   }
+
+      break;
     }
   }
+}
 
   canvas.addEventListener('click', handleClick);
 
@@ -127,22 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
       a.angle += 0.0003;
     });
 
-    // Orbites des planètes principales
+    // Planètes
     planets.forEach(p => {
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255,255,255,0.04)';
       ctx.stroke();
-    });
 
-    // Planètes principales
-    planets.forEach(p => {
       const x = CENTER.x + Math.cos(p.angle) * p.r;
       const y = CENTER.y + Math.sin(p.angle) * p.r;
       ctx.beginPath();
       ctx.arc(x, y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
+
       p.angle += p.speed;
     });
 
@@ -154,7 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.arc(x, y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
-      p.angle += p.speed;
+
+      p.angle += 0.0003;
     });
 
     // Vaisseau
@@ -164,10 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.arc(sx, sy, ship.size, 0, Math.PI * 2);
     ctx.fillStyle = colors.ship;
     ctx.fill();
+
     ship.angle += 0.0007;
 
     requestAnimationFrame(drawSystem);
   }
 
   drawSystem();
-});
+}
