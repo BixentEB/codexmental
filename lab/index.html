@@ -20,6 +20,22 @@
   <!-- ⚙️ Script principal site -->
   <script type="module" src="/assets/js/main.js"></script>
 
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('simul-system');
+  if (!canvas) {
+    console.error('❌ Canvas introuvable');
+    return;
+  }
+
+  // Test minimaliste de rendu
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'red';
+  ctx.fillRect(10, 10, 50, 50);
+  console.log('✅ Test canvas réussi');
+});
+</script>
+
   <!-- ⚙️ Script central des modules du labo -->
   <script type="module" src="/lab/modules/modules.js"></script>
 </head>
