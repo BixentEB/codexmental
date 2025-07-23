@@ -80,25 +80,26 @@ if (!canvas) {
     const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
 
     if (dist <= p.size + HITBOX_PADDING) {
-      currentPlanet = p;
-      const data = PLANET_DATA[p.name] || {};
-      loadPlanet3D(p.name, 'surface', data, 'planet-main-viewer');
-      updatePlanetUI(data, p.name);
+  currentPlanet = p;
+  const data = PLANET_DATA[p.name] || {};
 
-// 🧠 Met à jour l’attribut data-planet (pour couche)
-     const viewer = document.getElementById('planet-main-viewer');
-     if (viewer) {
-     viewer.dataset.planet = p.name;
-   }
+  loadPlanet3D(p.name, 'surface', data, 'planet-main-viewer');
+  updatePlanetUI(data, p.name);
 
-// 🧠 Met à jour dynamiquement le titre
-    const title = document.getElementById('planet-viewer-title');
-    if (title) {
+  // 🧠 Met à jour l’attribut data-planet (pour couche)
+  const viewer = document.getElementById('planet-main-viewer');
+  if (viewer) {
+    viewer.dataset.planet = p.name;
+  }
+
+  // 🧠 Met à jour dynamiquement le titre
+  const title = document.getElementById('planet-viewer-title');
+  if (title) {
     title.textContent = p.label.toUpperCase();
-   }
+  }
 
-      break;
-    }
+  break; // ✅ On sort de la boucle une fois la planète cliquée trouvée
+}
   }
 }
 
