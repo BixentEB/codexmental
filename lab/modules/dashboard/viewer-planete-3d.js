@@ -2,36 +2,23 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 import { updatePlanetUI } from './planet-data.js';
 
-const viewers = new Map(); // key = canvasId
+const viewers = new Map();
 
 export function loadPlanet3D(name, layer = 'surface', data = {}, canvasId = 'planet-main-viewer') {
-  loadObject3D({
-    id: canvasId,
-    name,
-    layer,
-    data,
-    isMoon: false
-  });
+  if (canvasId === 'simul-system') return; // 🚫 Protection radar
+  loadObject3D({ id: canvasId, name, layer, data, isMoon: false });
   updatePlanetUI(data, name);
 }
 
 export function loadMoon3D(name, data = {}, canvasId = 'moon-viewer') {
-  loadObject3D({
-    id: canvasId,
-    name,
-    layer: 'surface',
-    data,
-    isMoon: true
-  });
+  if (canvasId === 'simul-system') return; // 🚫 Protection radar
+  loadObject3D({ id: canvasId, name, layer: 'surface', data, isMoon: true });
 }
 
 function loadObject3D({ id, name, layer, data, isMoon }) {
   const canvas = document.getElementById(id);
   if (!canvas) return console.warn(`⚠️ Canvas #${id} introuvable`);
-
-  if (id !== 'simul-system') {
-    cleanupViewer(id);
-  }
+  cleanupViewer(id);
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -119,7 +106,7 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
 }
 
 export function cleanupViewer(id) {
-  if (id === 'simul-system') return; // 🔒 Protection du radar
+  if (id === 'simul-system') return; // 🚫 Ne jamais nettoyer le radar
 
   const state = viewers.get(id);
   if (!state) return;
@@ -143,7 +130,6 @@ export function cleanupViewer(id) {
   viewers.delete(id);
 }
 
-// 🔄 Selecteur de couche
 const selector = document.getElementById('layer-select');
 if (selector) {
   selector.addEventListener('change', e => {
@@ -155,5 +141,4 @@ if (selector) {
   });
 }
 
-// 🌕 Exposition globale
 window.loadMoon3D = loadMoon3D;
