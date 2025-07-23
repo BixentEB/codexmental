@@ -2,9 +2,7 @@
 import { MOON_DATA } from './moon-database.js';
 import { COLONIZATION_STATUS } from './colonization-status.js';
 
-//
 // 📋 INFORMATIONS
-//
 export function renderBasicInfo(data) {
   return `
     <p>Nom : ${data.name || '—'}</p>
@@ -26,9 +24,33 @@ export function renderClimate(data) {
     : `<p>Température moyenne : ${data.temp || '—'}</p>`;
 }
 
-//
-// 🌙 LUNES
-//
+// 🏙️ COLONISATION (nouvelle version)
+export function renderColonizationState(data) {
+  const status = data.colonization?.status || '—';
+  return `<p>État de colonisation : ${status}</p>`;
+}
+
+export function renderColonizationPotentials(data) {
+  return data.colonization?.potentials
+    ? `<p><strong>Potentiels :</strong><br>${data.colonization.potentials}</p>`
+    : `<p>Potentiels : Données manquantes</p>`;
+}
+
+export function renderColonizationPhase(data) {
+  return data.colonization?.phase
+    ? `<p><strong>Phase actuelle :</strong><br>${data.colonization.phase}</p>`
+    : `<p>Phase actuelle : Données manquantes</p>`;
+}
+
+export function renderColonizationBases(data) {
+  const bases = data.colonization?.bases;
+  if (Array.isArray(bases) && bases.length > 0) {
+    return `<p><strong>Bases ou robots présents :</strong><br>${bases.join(', ')}</p>`;
+  }
+  return `<p>Aucune base connue</p>`;
+}
+
+// 🌙 (le reste suivra dans les étapes suivantes)
 export function renderMoonSummary({ planetKey }) {
   const moons = MOON_DATA[planetKey];
   if (!moons || moons.length === 0) return "<p>Aucune lune détectée</p>";
@@ -61,34 +83,4 @@ export function renderMoonDetails({ planetKey }) {
       <hr style="opacity: 0.1;">
     `;
   }).join('');
-}
-
-//
-// 🏙️ COLONISATION
-//
-export function renderColonizationSummary(data) {
-  const statusKey = data.colonization?.status;
-  const status = COLONIZATION_STATUS[statusKey];
-  const bases = data.colonization?.bases?.join(', ') || '—';
-
-  return `
-    <p>État : ${status?.label || '—'}</p>
-    <p>Bases : ${bases}</p>
-  `;
-}
-
-export function renderColonizationExplanation(data) {
-  const statusKey = data.colonization?.status;
-  const status = COLONIZATION_STATUS[statusKey];
-  return `<p><strong>Pourquoi ?</strong><br>${status?.reason || '—'}</p>`;
-}
-
-//
-// 🚀 MISSIONS
-//
-export function renderMissionSummary(data) {
-  if (!Array.isArray(data.missions) || data.missions.length === 0) {
-    return `<p>Aucune mission connue</p>`;
-  }
-  return `<p>Missions : ${data.missions.join(', ')}</p>`;
 }
