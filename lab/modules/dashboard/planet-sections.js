@@ -2,7 +2,9 @@
 import { MOON_DATA } from './moon-database.js';
 import { COLONIZATION_STATUS } from './colonization-status.js';
 
+//
 // 📋 INFORMATIONS
+//
 export function renderBasicInfo(data) {
   return `
     <p>Nom : ${data.name || '—'}</p>
@@ -24,69 +26,69 @@ export function renderClimate(data) {
     : `<p>Température moyenne : ${data.temp || '—'}</p>`;
 }
 
-// 🏙️ COLONISATION
-export function renderColonizationState(data) {
-  const status = data.colonization?.status || '—';
-  return `<p>État de colonisation : ${status}</p>`;
-}
-
-export function renderColonizationPotentials(data) {
-  return data.colonization?.potentials
-    ? `<p><strong>Potentiels :</strong><br>${data.colonization.potentials}</p>`
-    : `<p>Potentiels : Données manquantes</p>`;
-}
-
-export function renderColonizationPhase(data) {
-  return data.colonization?.phase
-    ? `<p><strong>Phase actuelle :</strong><br>${data.colonization.phase}</p>`
-    : `<p>Phase actuelle : Données manquantes</p>`;
-}
-
-export function renderColonizationBases(data) {
-  const bases = data.colonization?.bases;
-  if (Array.isArray(bases) && bases.length > 0) {
-    return `<p><strong>Bases ou robots présents :</strong><br>${bases.join(', ')}</p>`;
-  }
-  return `<p>Aucune base connue</p>`;
-}
-
-// 🚀 EXPLORATION (missions)
-export function renderMissionList(data) {
-  const missions = data.missions;
-  if (!Array.isArray(missions) || missions.length === 0) {
-    return `<p>Aucune mission connue</p>`;
-  }
-  return missions.map(name => `<p>🚀 ${name}</p>`).join('');
-}
-
-// 🌙 LUNES (sélection individuelle avec visualisation)
-export function renderMoonSelection({ planetKey }) {
+//
+// 🌙 LUNES
+//
+export function renderMoonSummary({ planetKey }) {
   const moons = MOON_DATA[planetKey];
   if (!moons || moons.length === 0) return "<p>Aucune lune détectée</p>";
 
-  const options = moons.map((m, index) => `<option value="${index}">${m.name}</option>`).join('');
+  const html = moons.map(m => {
+    const line = [`<strong>${m.name}</strong>`];
+    if (m.diameter) line.push(m.diameter);
+    if (m.composition) line.push(m.composition);
+    return `<p>${line.join(" — ")}</p>`;
+  }).join('');
+
+  return html;
+}
+
+export function renderMoonDetails({ planetKey }) {
+  const moons = MOON_DATA[planetKey];
+  if (!moons || moons.length === 0) return "<p>Aucune lune détectée</p>";
+
+  return moons.map(m => {
+    return `
+      <div class="moon-block">
+        <p><strong>${m.name}</strong></p>
+        ${m.image ? `<img src="/lab/modules/dashboard/img/moons/${m.image}" alt="${m.name}" style="max-width: 80px; border-radius: 8px;" />` : ''}
+        <p>Diamètre : ${m.diameter || '—'}</p>
+        <p>Orbite : ${m.orbit || '—'}</p>
+        ${m.period ? `<p>Période orbitale : ${m.period}</p>` : ''}
+        ${m.composition ? `<p>Composition : ${m.composition}</p>` : ''}
+        ${m.description ? `<p>${m.description}</p>` : ''}
+      </div>
+      <hr style="opacity: 0.1;">
+    `;
+  }).join('');
+}
+
+//
+// 🏙️ COLONISATION
+//
+export function renderColonizationSummary(data) {
+  const statusKey = data.colonization?.status;
+  const status = COLONIZATION_STATUS[statusKey];
+  const bases = data.colonization?.bases?.join(', ') || '—';
 
   return `
-    <label for="moon-select">Sélectionnez une lune :</label>
-    <select id="moon-select" class="codex-select">
-      <option value="">—</option>
-      ${options}
-    </select>
-    <script>
-      setTimeout(() => {
-        const select = document.getElementById('moon-select');
-        if (select) {
-          select.addEventListener('change', (e) => {
-            const idx = parseInt(e.target.value);
-            if (!isNaN(idx)) {
-              const moon = ${JSON.stringify(MOON_DATA[planetKey])}[idx];
-              if (moon && window.loadMoon3D) {
-                window.loadMoon3D(moon.name, moon);
-              }
-            }
-          });
-        }
-      }, 100);
-    </script>
+    <p>État : ${status?.label || '—'}</p>
+    <p>Bases : ${bases}</p>
   `;
+}
+
+export function renderColonizationExplanation(data) {
+  const statusKey = data.colonization?.status;
+  const status = COLONIZATION_STATUS[statusKey];
+  return `<p><strong>Pourquoi ?</strong><br>${status?.reason || '—'}</p>`;
+}
+
+//
+// 🚀 MISSIONS
+//
+export function renderMissionSummary(data) {
+  if (!Array.isArray(data.missions) || data.missions.length === 0) {
+    return `<p>Aucune mission connue</p>`;
+  }
+  return `<p>Missions : ${data.missions.join(', ')}</p>`;
 }
