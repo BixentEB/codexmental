@@ -82,8 +82,21 @@ if (!canvas) {
     if (dist <= p.size + HITBOX_PADDING) {
       currentPlanet = p;
       const data = PLANET_DATA[p.name] || {};
-      loadPlanet3D(p.name, 'surface', data);
+      loadPlanet3D(p.name, 'surface', data, 'planet-main-viewer');
       updatePlanetUI(data, p.name);
+
+// 🧠 Met à jour l’attribut data-planet (pour couche)
+     const viewer = document.getElementById('planet-main-viewer');
+     if (viewer) {
+     viewer.dataset.planet = p.name;
+   }
+
+// 🧠 Met à jour dynamiquement le titre
+    const title = document.getElementById('planet-viewer-title');
+    if (title) {
+    title.textContent = p.label.toUpperCase();
+   }
+
       break;
     }
   }
