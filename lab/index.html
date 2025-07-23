@@ -32,6 +32,7 @@
 
   <!-- 🔬 Contenu principal -->
   
+  
   <main class="dashboard">
     <!-- 🧭 Titres verticaux -->
     <div id="dashboard-title-left">ORION INTERFACE</div>
@@ -39,43 +40,25 @@
 
     <!-- Ligne 1 : Alertes -->
     <div id="alert-left" class="widget"><h2>📡 Alerte G</h2></div>
-    <div id="alert-center" class="widget"><h2>🛰️ Données Stellaires</h2></div>
+    <div id="planet-symbol" class="widget"></div>
+    <div id="planet-name" class="widget"></div>
+    <div id="planet-scientific-name" class="widget"></div>
     <div id="alert-right" class="widget"><h2>🧬 Alerte D</h2></div>
 
     <!-- Radar et Blocs -->
-    <div id="bloc-g1" class="widget"><h2>🔋 Bloc G1</h2></div>
-    <div id="bloc-g2" class="widget"><h2>🧪 Bloc G2</h2></div>
-    
-    <!-- BLOC G3 - Viewer planet -->
-    <div id="bloc-g3" class="widget">
-  <h2 id="planet-viewer-title">🔭 Visualiseur planète</h2>
-  <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
-  <div style="margin-top: 0.5rem;">
-    <label for="layer-select">🛰️ Couche :</label>
-    <select id="layer-select" class="codex-select">
-      <option value="surface" selected>Surface</option>
-      <option value="cloud">Nuages</option>
-      <option value="infrared">Infrarouge</option>
-    </select>
-  </div>
-</div>
-
-    <div id="bloc-d1" class="widget"><h2>🧭 Bloc D1</h2></div>
-    <div id="bloc-d2" class="widget"><h2>🧬 Bloc D2</h2></div>
-    <div id="bloc-d3" class="widget"><h2>🧫 Bloc D3</h2></div>
-
-    <!-- Radar central -->
-    <div id="widget-core-radar" class="widget">
-      <canvas id="simul-system" width="600" height="600"></canvas>
+    <div id="bloc-g1" class="widget">
+      <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
+      <div style="margin-top: 0.5rem;">
+        <label for="layer-select">🛰️ Couche :</label>
+        <select id="layer-select" class="codex-select">
+          <option value="surface" selected>Surface</option>
+          <option value="cloud">Nuages</option>
+          <option value="infrared">Infrarouge</option>
+        </select>
+      </div>
     </div>
 
-    <!-- Ligne 5 : Données dynamiques -->
-<div id="widget-infos" class="widget">
-  <h2>📊 Données planétaires</h2>
-  <div class="infos-grid">
-
-    <!-- Bloc 1 : Informations -->
-    <div class="info-subwidget informations" id="info-data">
+    <div id="bloc-g2" class="widget">
       <h3>
         📋 
         <select data-section="informations" class="codex-select">
@@ -87,51 +70,60 @@
       <div class="section-content"></div>
     </div>
 
-    <!-- Bloc 2 : Colonisation -->
-    <div class="info-subwidget" id="info-colony">
+    <div id="bloc-g3" class="widget">
       <h3>
-        🏙️ 
+        🪐
         <select data-section="colony" class="codex-select">
-          <option value="summary">État et bases</option>
-          <option value="explanation">Explication</option>
+          <option value="colonization">État de terraformation</option>
+          <option value="potentials">Potentiels</option>
+          <option value="phases">Phases</option>
+          <option value="bases">Implantations</option>
         </select>
       </h3>
       <div class="section-content"></div>
     </div>
 
-    <!-- Bloc 3 : Missions -->
-    <div class="info-subwidget" id="info-missions">
+    <div id="bloc-d1" class="widget">
       <h3>
-        🚀 
+        🛰️ 
         <select data-section="missions" class="codex-select">
-          <option value="summary">Missions connues</option>
+          <option value="summary">Exploration</option>
         </select>
       </h3>
       <div class="section-content"></div>
     </div>
 
-
-    <!-- Bloc 4 : Lunes -->
-    <div class="info-subwidget" id="info-moons">
+    <div id="bloc-d2" class="widget">
       <h3>
         🌙 
         <select data-section="moons" class="codex-select">
-          <option value="summary">Résumé</option>
+          <option value="summary">Lunes</option>
           <option value="details">Détails</option>
         </select>
       </h3>
       <div class="section-content"></div>
     </div>
-    
-    <!-- Bloc 5 : Moon viewer -->
-<div class="info-subwidget" id="info-moon-3d">
-  <h3 id="moon-viewer-title">🌙 Viewer</h3>
-  <canvas id="moon-viewer" width="150" height="150"></canvas>
-</div>
-</div>
 
+    <div id="bloc-d3" class="widget">
+      <h3 id="moon-viewer-title"></h3>
+      <canvas id="moon-viewer" width="150" height="150"></canvas>
+    </div>
 
-</main>
+    <div id="widget-core-radar" class="widget">
+      <canvas id="simul-system" width="600" height="600"></canvas>
+    </div>
+
+    <!-- Ligne 5 : Données dynamiques -->
+    <div id="widget-infos" class="widget">
+      <h2>📊 Données planétaires</h2>
+      <div class="infos-grid">
+        <div class="info-subwidget informations" id="info-data"></div>
+        <div class="info-subwidget" id="info-colony"></div>
+        <div class="info-subwidget" id="info-missions"></div>
+      </div>
+    </div>
+  </main>
+
 
   <!-- 🡸 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
