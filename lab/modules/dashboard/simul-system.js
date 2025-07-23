@@ -74,6 +74,17 @@ if (!canvas) {
   const HITBOX_PADDING = 12;
   const allBodies = planets.concat(dwarfPlanets);
 
+    // Clic sur le Soleil (centre exact)
+const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
+if (distToSun <= 14) {
+  currentPlanet = { name: 'soleil', label: 'Soleil' };
+  const data = PLANET_DATA['soleil'];
+  loadPlanet3D('soleil', 'surface', data);
+  updatePlanetUI(data, 'soleil');
+  return;
+}
+
+
   for (const p of allBodies) {
     const px = CENTER.x + Math.cos(p.angle) * p.r;
     const py = CENTER.y + Math.sin(p.angle) * p.r;
