@@ -299,6 +299,30 @@ main.dashboard {
   box-shadow: 0 0 4px rgba(0, 255, 255, 0.05);
 }
 
+/* Ajouts pour viewer centrés et viewer lune masqué dynamiquement */
+canvas#planet-main-viewer,
+canvas#moon-viewer {
+  display: block;
+  margin: 0 auto;
+}
+
+#bloc-g3,
+#info-moon-3d {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#info-moon-3d {
+  display: none;
+}
+
+#info-moon-3d.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 
 
 @media (max-width: 900px) {
