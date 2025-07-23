@@ -3,25 +3,25 @@
 export const PLANET_DATA = {
 
   soleil: {
-  name: "Soleil",
-  type: "étoile",
-  distance: "0",
-  radius: "696 340 km",
-  temp: "5 778 K",
-  colonized: "Non exploitable",
-  bases: [],
-  moons: [],
-  missions: ["SOHO", "Parker Solar Probe", "Solar Orbiter"],
-  textures: {
-    surface: "soleil-surface.jpg",
-    cloud: null,
-    infrared: "soleil-infrared.jpg"
+    name: "Soleil",
+    type: "étoile",
+    distance: "0",
+    radius: "696 340 km",
+    temp: "5 778 K",
+    colonized: "Non exploitable",
+    bases: [],
+    moons: [],
+    missions: ["SOHO", "Parker Solar Probe", "Solar Orbiter"],
+    textures: {
+      surface: "soleil-surface.jpg",
+      cloud: null,
+      infrared: "soleil-infrared.jpg"
+    },
+    symbol: "☉",
+    symbolImg: "soleil-symbol.svg",
+    sciName: "Sol"
   },
-  symbol: "☉",
-  symbolImg: "soleil-symbol.svg",  // si dispo dans /img/symbols/
-  sciName: "Sol"
-},
-  
+
   mercure: {
     name: "Mercure",
     type: "tellurique",
@@ -36,13 +36,12 @@ export const PLANET_DATA = {
       surface: "mercure-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "☿",
+    symbolImg: "mercure-symbol.svg",
+    sciName: "Sol I"
   },
-  symbol: "☿",
-  symbolImg: "mercrure-symbol.svg",  // si dispo dans /img/symbols/
-  sciName: ""
-},
-  
+
   venus: {
     name: "Vénus",
     type: "tellurique",
@@ -57,9 +56,12 @@ export const PLANET_DATA = {
       surface: "venus-surface.jpg",
       cloud: "venus-cloud.jpg",
       infrared: "venus-infrared.jpg"
-    }
+    },
+    symbol: "♀",
+    symbolImg: "venus-symbol.svg",
+    sciName: "Sol II"
   },
-  
+
   terre: {
     name: "Terre",
     type: "tellurique",
@@ -74,9 +76,12 @@ export const PLANET_DATA = {
       surface: "terre-surface.jpg",
       cloud: "terre-cloud.jpg",
       infrared: "terre-infrared.jpg"
-    }
+    },
+    symbol: "♁",
+    symbolImg: "terre-symbol.svg",
+    sciName: "Sol III"
   },
-  
+
   mars: {
     name: "Mars",
     type: "tellurique",
@@ -94,9 +99,12 @@ export const PLANET_DATA = {
       surface: "mars-surface.jpg",
       cloud: null,
       infrared: "mars-infrared.jpg"
-    }
+    },
+    symbol: "♂",
+    symbolImg: "mars-symbol.svg",
+    sciName: "Sol IV"
   },
-  
+
   jupiter: {
     name: "Jupiter",
     type: "gazeuse",
@@ -116,9 +124,12 @@ export const PLANET_DATA = {
       surface: "jupiter-surface.jpg",
       cloud: "jupiter-cloud.jpg",
       infrared: "jupiter-ir.jpg"
-    }
+    },
+    symbol: "♃",
+    symbolImg: "jupiter-symbol.svg",
+    sciName: "Sol V"
   },
-  
+
   saturne: {
     name: "Saturne",
     type: "gazeuse",
@@ -138,9 +149,12 @@ export const PLANET_DATA = {
       surface: "saturne-surface.jpg",
       cloud: "saturne-cloud.jpg",
       infrared: "saturne-ir.jpg"
-    }
+    },
+    symbol: "♄",
+    symbolImg: "saturne-symbol.svg",
+    sciName: "Sol VI"
   },
-  
+
   uranus: {
     name: "Uranus",
     type: "glaciaire",
@@ -160,9 +174,12 @@ export const PLANET_DATA = {
       surface: "uranus-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "♅",
+    symbolImg: "uranus-symbol.svg",
+    sciName: "Sol VII"
   },
-  
+
   neptune: {
     name: "Neptune",
     type: "glaciaire",
@@ -175,16 +192,17 @@ export const PLANET_DATA = {
       { name: "Triton" },
       { name: "Néréide" }
     ],
-    
     missions: ["Voyager 2"],
     textures: {
       surface: "neptune-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "♆",
+    symbolImg: "neptune-symbol.svg",
+    sciName: "Sol VIII"
   },
 
-  // 🌑 Planètes naines
   ceres: {
     name: "Cérès",
     type: "naine",
@@ -199,9 +217,12 @@ export const PLANET_DATA = {
       surface: "ceres-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "⛳",
+    symbolImg: "ceres-symbol.svg",
+    sciName: "Sol (Ce)"
   },
-  
+
   pluton: {
     name: "Pluton",
     type: "naine",
@@ -220,9 +241,12 @@ export const PLANET_DATA = {
       surface: "pluton-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "♇",
+    symbolImg: "pluton-symbol.svg",
+    sciName: "Sol IX"
   },
-  
+
   haumea: {
     name: "Hauméa",
     type: "naine",
@@ -232,7 +256,7 @@ export const PLANET_DATA = {
     colonized: "Spéculative",
     bases: [],
     moons: [
-      { name: "Hiʻiaka" },
+      { name: "Hiʻīaka" },
       { name: "Namaka" }
     ],
     missions: [],
@@ -240,9 +264,12 @@ export const PLANET_DATA = {
       surface: "haumea-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "⯶",
+    symbolImg: "haumea-symbol.svg",
+    sciName: "Sol (Ha)"
   },
-  
+
   makemake: {
     name: "Makémaké",
     type: "naine",
@@ -257,9 +284,12 @@ export const PLANET_DATA = {
       surface: "makemake-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "⯺",
+    symbolImg: "makemake-symbol.svg",
+    sciName: "Sol (Ma)"
   },
-  
+
   eris: {
     name: "Éris",
     type: "naine",
@@ -274,17 +304,19 @@ export const PLANET_DATA = {
       surface: "eris-surface.jpg",
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "⯰",
+    symbolImg: "eris-symbol.svg",
+    sciName: "Sol (Er)"
   },
 
-  // 🧱 🧪 Structure à copier/coller pour de nouveaux objets
-  exemple: {
-    name: "Nom visible",
-    type: "type ou catégorie",
-    distance: "—",
-    radius: "—",
-    temp: "—",
-    colonized: "non | envisagée | spéculative",
+  planete9: {
+    name: "Planète Neuf",
+    type: "hypothétique",
+    distance: ">400 UA",
+    radius: "?",
+    temp: "?",
+    colonized: "Inconnue",
     bases: [],
     moons: [],
     missions: [],
@@ -292,6 +324,10 @@ export const PLANET_DATA = {
       surface: null,
       cloud: null,
       infrared: null
-    }
+    },
+    symbol: "?",
+    symbolImg: null,
+    sciName: "Hyp. IX"
   }
+
 };
