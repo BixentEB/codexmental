@@ -52,7 +52,7 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
   const sphere = new THREE.Mesh(geometry, material);
-  sphere.scale.set(0.85, 0.85, 0.85);
+  sphere.scale.set(0.7, 0.7, 0.7);
   scene.add(sphere);
 
   const loader = new THREE.TextureLoader();
