@@ -299,30 +299,6 @@ main.dashboard {
   box-shadow: 0 0 4px rgba(0, 255, 255, 0.05);
 }
 
-/* Ajouts pour viewer centrés et viewer lune masqué dynamiquement */
-canvas#planet-main-viewer,
-canvas#moon-viewer {
-  display: block;
-  margin: 0 auto;
-}
-
-#bloc-g3,
-#info-moon-3d {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-#info-moon-3d {
-  display: none;
-}
-
-#info-moon-3d.active {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 
 
 @media (max-width: 900px) {
@@ -347,26 +323,4 @@ body.lab #mobile-menu li button[onclick*='setTheme'] {
 
 body.lab #svg-lune-widget {
   display: none !important;
-}
-
-/* dashboard.css - Ajoutez à la fin */
-#simul-system.radar-error-mode {
-  position: relative;
-  background: 
-    radial-gradient(circle, transparent 20%, rgba(0,255,255,0.05) 100%),
-    repeating-linear-gradient(
-      45deg,
-      rgba(0,255,255,0.1) 0px 1px,
-      transparent 1px 10px
-    );
-}
-
-#simul-system.radar-error-mode::after {
-  content: "⚠️ Radar en maintenance";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: cyan;
-  font-family: 'Orbitron';
 }
