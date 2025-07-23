@@ -45,7 +45,21 @@
     <!-- Radar et Blocs -->
     <div id="bloc-g1" class="widget"><h2>🔋 Bloc G1</h2></div>
     <div id="bloc-g2" class="widget"><h2>🧪 Bloc G2</h2></div>
-    <div id="bloc-g3" class="widget"><h2>🔧 Bloc G3</h2></div>
+    
+    <!-- BLOC G3 - Viewer planet -->
+    <div id="bloc-g3" class="widget">
+  <h2 id="planet-viewer-title">🔭 Visualiseur planète</h2>
+  <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
+  <div style="margin-top: 0.5rem;">
+    <label for="layer-select">🛰️ Couche :</label>
+    <select id="layer-select" class="codex-select">
+      <option value="surface" selected>Surface</option>
+      <option value="cloud">Nuages</option>
+      <option value="infrared">Infrarouge</option>
+    </select>
+  </div>
+</div>
+
 
     <div id="bloc-d1" class="widget"><h2>🧭 Bloc D1</h2></div>
     <div id="bloc-d2" class="widget"><h2>🧬 Bloc D2</h2></div>
@@ -60,22 +74,8 @@
 <div id="widget-infos" class="widget">
   <h2>📊 Données planétaires</h2>
   <div class="infos-grid">
-  
-    <!-- Bloc 1 : Visualiseur -->
-    <div class="info-subwidget" id="info-visual">
-      <canvas id="planet-canvas" width="100" height="100"></canvas>
-      <!-- Sélecteur de couches -->
-      <div style="margin-bottom: 0.5rem;">
-        <label for="layer-select">🛰️ Couche :</label>
-        <select id="layer-select" class="codex-select">
-          <option value="surface" selected>Surface</option>
-          <option value="cloud">Nuages</option>
-          <option value="infrared">Infrarouge</option>
-        </select>
-      </div>
-    </div>
 
-    <!-- Bloc 2 : Informations -->
+    <!-- Bloc 1 : Informations -->
     <div class="info-subwidget informations" id="info-data">
       <h3>
         📋 
@@ -88,19 +88,7 @@
       <div class="section-content"></div>
     </div>
 
-    <!-- Bloc 3 : Lunes -->
-    <div class="info-subwidget" id="info-moons">
-      <h3>
-        🌙 
-        <select data-section="moons" class="codex-select">
-          <option value="summary">Résumé</option>
-          <option value="details">Détails</option>
-        </select>
-      </h3>
-      <div class="section-content"></div>
-    </div>
-
-    <!-- Bloc 4 : Colonisation -->
+    <!-- Bloc 2 : Colonisation -->
     <div class="info-subwidget" id="info-colony">
       <h3>
         🏙️ 
@@ -112,7 +100,7 @@
       <div class="section-content"></div>
     </div>
 
-    <!-- Bloc 5 : Missions -->
+    <!-- Bloc 3 : Missions -->
     <div class="info-subwidget" id="info-missions">
       <h3>
         🚀 
@@ -123,7 +111,24 @@
       <div class="section-content"></div>
     </div>
 
-  </div>
+
+    <!-- Bloc 4 : Lunes -->
+    <div class="info-subwidget" id="info-moons">
+      <h3>
+        🌙 
+        <select data-section="moons" class="codex-select">
+          <option value="summary">Résumé</option>
+          <option value="details">Détails</option>
+        </select>
+      </h3>
+      <div class="section-content"></div>
+    </div>
+    
+    <!-- Bloc 5 : Moon viewer -->
+<div class="info-subwidget" id="info-moon-3d">
+  <h3 id="moon-viewer-title">🌙 Viewer</h3>
+  <canvas id="moon-viewer" width="150" height="150"></canvas>
+</div>
 </div>
 
 
