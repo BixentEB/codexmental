@@ -14,6 +14,24 @@ import {
 } from './planet-sections.js';
 
 export function updatePlanetUI(data = {}, planetKey = null) {
+  // 🌐 Affichage dynamique : symbole, nom, nom scientifique
+  const symbolTarget = document.getElementById('planet-symbol');
+  if (symbolTarget) {
+    symbolTarget.innerHTML = data.symbolImg
+      ? `<img src="/lab/modules/dashboard/img/symbols/${data.symbolImg}" alt="${data.name}" class="symbol-img">`
+      : `<span class="symbol-text">${data.symbol || ""}</span>`;
+  }
+
+  const nameTarget = document.getElementById('planet-name');
+  if (nameTarget) {
+    nameTarget.textContent = data.name || "";
+  }
+
+  const sciNameTarget = document.getElementById('planet-scientific-name');
+  if (sciNameTarget) {
+    sciNameTarget.textContent = data.sciName || "";
+  }
+
   // 🧠 Bloc : Informations principales
   setupSectionSwitcher('#info-data', {
     basic: renderBasicInfo,
@@ -29,13 +47,13 @@ export function updatePlanetUI(data = {}, planetKey = null) {
     }, { planetKey, data });
   }
 
-  // 🏙️ Bloc : Colonisation
+  // 🏙️ Bloc : Terraformation
   setupSectionSwitcher('#info-colony', {
     summary: renderColonizationSummary,
     explanation: renderColonizationExplanation
   }, data);
 
-  // 🚀 Bloc : Missions
+  // 🚀 Bloc : Exploration
   setupSectionSwitcher('#info-missions', {
     summary: renderMissionSummary
   }, data);
