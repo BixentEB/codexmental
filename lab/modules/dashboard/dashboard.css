@@ -26,12 +26,13 @@ body.theme-stellaire {
   padding: 0;
 }
 
+/* === Nouvelle grille principale avec 3 blocs titres === */
 main.dashboard {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 70px 200px 200px 200px auto;
   grid-template-areas:
-    "alert-left alert-center alert-center alert-center alert-right"
+    "alert-left planet-symbol planet-name planet-scientific-name alert-right"
     "bloc-g1 radar radar radar bloc-d1"
     "bloc-g2 radar radar radar bloc-d2"
     "bloc-g3 radar radar radar bloc-d3"
@@ -45,6 +46,57 @@ main.dashboard {
   box-sizing: border-box;
 }
 
+/* === Nouveaux blocs pour les titres planétaires === */
+#planet-symbol {
+  grid-area: planet-symbol;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#planet-name {
+  grid-area: planet-name;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+}
+
+#planet-scientific-name {
+  grid-area: planet-scientific-name;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-style: italic;
+  opacity: 0.65;
+  color: var(--color-text);
+}
+
+/* === Style du symbole === */
+.symbol-img {
+  max-height: 40px;
+  display: block;
+  margin: auto;
+  opacity: 0.85;
+}
+
+.symbol-text {
+  font-size: 1.6rem;
+  text-align: center;
+  line-height: 1;
+  opacity: 0.8;
+  font-weight: bold;
+}
+
+/* === Wigets === */
 .widget {
   position: relative;
   background: var(--color-frame) !important;
