@@ -58,6 +58,23 @@ if (!canvas) {
     { name: 'eris', label: 'Éris', r: scaleOrbit(9), size: 2, speed: 0.0002, angle: getAngleFromJ2000(daysSince, 203830), color: '#c6f' }
   ];
 
+  const ship = {
+    x: CENTER.x + 120,
+    y: CENTER.y - 50,
+    angle: Math.random() * 2 * Math.PI,
+    speed: 0.02,
+    rotationSpeed: 0.001,
+    state: "roaming",
+    pauseUntil: 0,
+    logs: [],
+    lastTarget: null
+  };
+  const shipTrail = [];
+  const logLimit = 5;
+  const avoidRadius = 40;
+  const pauseMin = 10000;
+  const pauseMax = 180000;
+
   const asteroids = [];
   for (let i = 0; i < 150; i++) {
     const r = scaleOrbit(3.3) + Math.random() * 20;
@@ -65,15 +82,65 @@ if (!canvas) {
     asteroids.push({ r, angle });
   }
 
+  function isNear(objX, objY, shipX, shipY, radius = 20) {
+    const dx = objX - shipX;
+    const dy = objY - shipY;
+    return Math.sqrt(dx * dx + dy * dy) < radius;
+  }
+
+  function logVisit(label) {
+    if (label && ship.lastTarget !== label) {
+      ship.logs.unshift(`🛰️ Observation : ${label}`);
+      if (ship.logs.length > logLimit) ship.logs.pop();
+      ship.lastTarget = label;
+      const alertBox = document.getElementById("info-missions");
+      if (alertBox) {
+        alertBox.innerHTML = ship.logs.map(l => `<div>${l}</div>`).join("");
+      }
+    }
+  }
+
+  function updateShip(planets, t) {
+    if (ship.state === "observe") {
+      if (t > ship.pauseUntil) {
+        ship.state = "roaming";
+        ship.angle += (Math.random() - 0.5);
+      } else {
+        return;
+      }
+    }
+    for (let p of planets) {
+      if (isNear(p.x, p.y, ship.x, ship.y)) {
+        ship.state = "observe";
+        ship.pauseUntil = t + Math.random() * (pauseMax - pauseMin) + pauseMin;
+        logVisit(p.label);
+        return;
+      }
+    }
+    const r = Math.sqrt((ship.x - CENTER.x) ** 2 + (ship.y - CENTER.y) ** 2);
+    if (r > 130 && r < 180) {
+      ship.state = "observe";
+      ship.pauseUntil = t + Math.random() * (pauseMax - pauseMin) + pauseMin;
+      logVisit("Ceinture d'astéroïdes");
+      return;
+    }
+    const distToSun = Math.sqrt((ship.x - CENTER.x) ** 2 + (ship.y - CENTER.y) ** 2);
+    if (distToSun < avoidRadius) {
+      ship.angle += Math.PI / 2;
+    }
+    ship.angle += ship.rotationSpeed;
+    ship.x += Math.cos(ship.angle) * ship.speed;
+    ship.y += Math.sin(ship.angle) * ship.speed;
+    shipTrail.push({ x: ship.x, y: ship.y, alpha: 1 });
+    if (shipTrail.length > 30) shipTrail.shift();
+  }
+
   function handleClick(e) {
     const rect = canvas.getBoundingClientRect();
     const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
     const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
-
     const HITBOX_PADDING = 12;
     const allBodies = planets.concat(dwarfPlanets);
-
-    // Clic sur le Soleil (centre exact)
     const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
     if (distToSun <= 14) {
       currentPlanet = { name: 'soleil', label: 'Soleil' };
@@ -82,12 +149,10 @@ if (!canvas) {
       updatePlanetUI(data, 'soleil');
       return;
     }
-
     for (const p of allBodies) {
       const px = CENTER.x + Math.cos(p.angle) * p.r;
       const py = CENTER.y + Math.sin(p.angle) * p.r;
       const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
-
       if (dist <= p.size + HITBOX_PADDING) {
         currentPlanet = p;
         const data = PLANET_DATA[p.name] || {};
@@ -102,14 +167,11 @@ if (!canvas) {
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
-
-    // Soleil
     ctx.beginPath();
     ctx.arc(CENTER.x, CENTER.y, 7, 0, Math.PI * 2);
     ctx.fillStyle = colors.sun;
     ctx.fill();
 
-    // Astéroïdes
     asteroids.forEach(a => {
       const x = CENTER.x + Math.cos(a.angle) * a.r;
       const y = CENTER.y + Math.sin(a.angle) * a.r;
@@ -118,31 +180,21 @@ if (!canvas) {
       a.angle += 0.0003;
     });
 
-    // Planètes
     planets.forEach(p => {
-      // Dessiner l'orbite
+      ctx.strokeStyle = p.name === 'planete9' ? '#8888ff' : 'rgba(255,255,255,0.04)';
+      ctx.setLineDash(p.name === 'planete9' ? [3, 2] : []);
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
-      if (p.name === 'planete9') {
-        ctx.strokeStyle = '#8888ff';
-        ctx.setLineDash([3, 2]);
-      } else {
-        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-        ctx.setLineDash([]);
-      }
       ctx.stroke();
-
       const x = CENTER.x + Math.cos(p.angle) * p.r;
       const y = CENTER.y + Math.sin(p.angle) * p.r;
       ctx.beginPath();
       ctx.arc(x, y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
-
       p.angle += p.speed;
     });
 
-    // Planètes naines
     dwarfPlanets.forEach(p => {
       const x = CENTER.x + Math.cos(p.angle) * p.r;
       const y = CENTER.y + Math.sin(p.angle) * p.r;
@@ -150,107 +202,12 @@ if (!canvas) {
       ctx.arc(x, y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
-
       p.angle += 0.0003;
     });
 
-    // --- SECTION VAISSEAU COMPLÈTE ---
-    
-    // Variables du vaisseau (déclarées UNE SEULE FOIS ici)
-    if (!window.shipInitialized) {
-      window.ship = {
-        x: CENTER.x + 120,
-        y: CENTER.y - 50,
-        angle: Math.random() * 2 * Math.PI,
-        speed: 0.02,
-        rotationSpeed: 0.001,
-        state: "roaming",
-        pauseUntil: 0,
-        logs: [],
-        lastTarget: null
-      };
-      window.shipTrail = [];
-      window.shipInitialized = true;
-    }
-    
-    const logLimit = 5;
-    const avoidRadius = 40;
-    const pauseMin = 10000;
-    const pauseMax = 180000;
-
-    // Fonction de détection de proximité
-    function isNear(objX, objY, shipX, shipY, radius = 20) {
-      const dx = objX - shipX;
-      const dy = objY - shipY;
-      return Math.sqrt(dx * dx + dy * dy) < radius;
-    }
-
-    // Fonction de journalisation
-    function logVisit(label) {
-      if (label && window.ship.lastTarget !== label) {
-        window.ship.logs.unshift(`🛰️ Observation : ${label}`);
-        if (window.ship.logs.length > logLimit) window.ship.logs.pop();
-        window.ship.lastTarget = label;
-        const alertBox = document.getElementById("info-missions");
-        if (alertBox) {
-          alertBox.innerHTML = window.ship.logs.map(l => `<div>${l}</div>`).join("");
-        }
-      }
-    }
-
-    // Moteur du vaisseau
-    function updateShip(planetsArray, t) {
-      if (window.ship.state === "observe") {
-        if (t > window.ship.pauseUntil) {
-          window.ship.state = "roaming";
-          window.ship.angle += (Math.random() - 0.5);
-        } else {
-          return;
-        }
-      }
-
-      // Détection objets
-      for (let p of planetsArray) {
-        const px = CENTER.x + Math.cos(p.angle) * p.r;
-        const py = CENTER.y + Math.sin(p.angle) * p.r;
-        if (isNear(px, py, window.ship.x, window.ship.y)) {
-          window.ship.state = "observe";
-          window.ship.pauseUntil = t + Math.random() * (pauseMax - pauseMin) + pauseMin;
-          logVisit(p.label);
-          return;
-        }
-      }
-
-      // Détection ceinture d'astéroïdes
-      const r = Math.sqrt((window.ship.x - CENTER.x) ** 2 + (window.ship.y - CENTER.y) ** 2);
-      if (r > 130 && r < 180) {
-        window.ship.state = "observe";
-        window.ship.pauseUntil = t + Math.random() * (pauseMax - pauseMin) + pauseMin;
-        logVisit("Ceinture d'astéroïdes");
-        return;
-      }
-
-      // Évitement Soleil
-      const distToSun = Math.sqrt((window.ship.x - CENTER.x) ** 2 + (window.ship.y - CENTER.y) ** 2);
-      if (distToSun < avoidRadius) {
-        window.ship.angle += Math.PI / 2;
-      }
-
-      // Déplacement
-      window.ship.angle += window.ship.rotationSpeed;
-      window.ship.x += Math.cos(window.ship.angle) * window.ship.speed;
-      window.ship.y += Math.sin(window.ship.angle) * window.ship.speed;
-
-      // Traînée
-      window.shipTrail.push({ x: window.ship.x, y: window.ship.y, alpha: 1 });
-      if (window.shipTrail.length > 30) window.shipTrail.shift();
-    }
-
-    // Mise à jour du vaisseau
     updateShip([...planets, ...dwarfPlanets], Date.now());
 
-    // Dessiner la traînée du vaisseau
-    window.shipTrail.forEach(pt => {
+    shipTrail.forEach(pt => {
       ctx.beginPath();
       ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(136, 136, 255, ${pt.alpha})`;
@@ -258,11 +215,10 @@ if (!canvas) {
       pt.alpha *= 0.9;
     });
 
-    // Dessiner le vaisseau (triangle)
     ctx.beginPath();
-    ctx.moveTo(window.ship.x + 5 * Math.cos(window.ship.angle), window.ship.y + 5 * Math.sin(window.ship.angle));
-    ctx.lineTo(window.ship.x + 3 * Math.cos(window.ship.angle + Math.PI * 0.75), window.ship.y + 3 * Math.sin(window.ship.angle + Math.PI * 0.75));
-    ctx.lineTo(window.ship.x + 3 * Math.cos(window.ship.angle - Math.PI * 0.75), window.ship.y + 3 * Math.sin(window.ship.angle - Math.PI * 0.75));
+    ctx.moveTo(ship.x + 5 * Math.cos(ship.angle), ship.y + 5 * Math.sin(ship.angle));
+    ctx.lineTo(ship.x + 3 * Math.cos(ship.angle + Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle + Math.PI * 0.75));
+    ctx.lineTo(ship.x + 3 * Math.cos(ship.angle - Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle - Math.PI * 0.75));
     ctx.closePath();
     ctx.fillStyle = colors.ship;
     ctx.fill();
