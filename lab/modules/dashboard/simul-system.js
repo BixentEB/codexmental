@@ -163,7 +163,7 @@ const ship = {
   y: CENTER.y - 50,
   angle: Math.random() * 2 * Math.PI,
   speed: 0.02,
-  rotationSpeed: 0.001
+  rotationSpeed: 0.001,
   state: "roaming",
   pauseUntil: 0,
   logs: [],
