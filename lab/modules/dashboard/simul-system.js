@@ -67,62 +67,56 @@ if (!canvas) {
   }
 
   function handleClick(e) {
-  const rect = canvas.getBoundingClientRect();
-  const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-  const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+    const rect = canvas.getBoundingClientRect();
+    const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-  const HITBOX_PADDING = 12;
-  const allBodies = planets.concat(dwarfPlanets);
+    const HITBOX_PADDING = 12;
+    const allBodies = planets.concat(dwarfPlanets);
 
-    // Détection clic sur le centre (Soleil)
-const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
-if (distToSun <= 15) {
-  currentPlanet = { name: 'soleil', label: 'Soleil' };
-  const data = PLANET_DATA['soleil'];
-  loadPlanet3D('soleil', 'surface', data, 'planet-main-viewer');
-  updatePlanetUI(data, 'soleil');
-  const viewer = document.getElementById('planet-main-viewer');
-  if (viewer) viewer.dataset.planet = 'soleil';
-  const title = document.getElementById('planet-viewer-title');
-  if (title) title.textContent = 'SOLEIL';
-  return; // on sort sans continuer la boucle
-}
+    // 🔆 Clic sur le Soleil
+    const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
+    if (distToSun <= 15) {
+      currentPlanet = { name: 'soleil', label: 'Soleil' };
+      const data = PLANET_DATA['soleil'];
+      loadPlanet3D('soleil', 'surface', data, 'planet-main-viewer');
+      updatePlanetUI(data, 'soleil');
+      const viewer = document.getElementById('planet-main-viewer');
+      if (viewer) viewer.dataset.planet = 'soleil';
+      const title = document.getElementById('planet-viewer-title');
+      if (title) title.textContent = 'SOLEIL';
+      return;
+    }
 
-  for (const p of allBodies) {
-    const px = CENTER.x + Math.cos(p.angle) * p.r;
-    const py = CENTER.y + Math.sin(p.angle) * p.r;
-    const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+    for (const p of allBodies) {
+      const px = CENTER.x + Math.cos(p.angle) * p.r;
+      const py = CENTER.y + Math.sin(p.angle) * p.r;
+      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
 
-    if (dist <= p.size + HITBOX_PADDING) {
-  currentPlanet = p;
-  const data = PLANET_DATA[p.name] || {};
+      if (dist <= p.size + HITBOX_PADDING) {
+        currentPlanet = p;
+        const data = PLANET_DATA[p.name] || {};
 
-  loadPlanet3D(p.name, 'surface', data, 'planet-main-viewer');
-  updatePlanetUI(data, p.name);
+        loadPlanet3D(p.name, 'surface', data, 'planet-main-viewer');
+        updatePlanetUI(data, p.name);
 
-  // 🧠 Met à jour l’attribut data-planet (pour couche)
-  const viewer = document.getElementById('planet-main-viewer');
-  if (viewer) {
-    viewer.dataset.planet = p.name;
+        const viewer = document.getElementById('planet-main-viewer');
+        if (viewer) viewer.dataset.planet = p.name;
+
+        const title = document.getElementById('planet-viewer-title');
+        if (title) title.textContent = p.label.toUpperCase();
+
+        break;
+      }
+    }
   }
-
-  // 🧠 Met à jour dynamiquement le titre
-  const title = document.getElementById('planet-viewer-title');
-  if (title) {
-    title.textContent = p.label.toUpperCase();
-  }
-
-  break; // ✅ On sort de la boucle une fois la planète cliquée trouvée
-}
-  }
-}
 
   canvas.addEventListener('click', handleClick);
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
 
-    // Soleil
+    // 🌞 Soleil
     ctx.beginPath();
     ctx.arc(CENTER.x, CENTER.y, 7, 0, Math.PI * 2);
     ctx.fillStyle = colors.sun;
