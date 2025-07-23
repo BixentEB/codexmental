@@ -2,7 +2,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js';
 import { updatePlanetUI } from './planet-data.js';
 
-// === Store des viewers multiples ===
 const viewers = new Map(); // key = canvasId
 
 export function loadPlanet3D(name, layer = 'surface', data = {}, canvasId = 'planet-main-viewer') {
@@ -14,6 +13,12 @@ export function loadPlanet3D(name, layer = 'surface', data = {}, canvasId = 'pla
     isMoon: false
   });
   updatePlanetUI(data, name);
+
+  const title = document.getElementById('planet-viewer-title');
+  if (title) title.textContent = name.toUpperCase();
+
+  const viewer = document.getElementById(canvasId);
+  if (viewer) viewer.dataset.planet = name;
 }
 
 export function loadMoon3D(name, data = {}, canvasId = 'moon-viewer') {
@@ -24,6 +29,11 @@ export function loadMoon3D(name, data = {}, canvasId = 'moon-viewer') {
     data,
     isMoon: true
   });
+
+  const moonBlock = document.getElementById('info-moon-3d');
+  if (moonBlock) moonBlock.style.display = 'block';
+  const moonTitle = document.getElementById('moon-viewer-title');
+  if (moonTitle) moonTitle.textContent = name.toUpperCase();
 }
 
 function loadObject3D({ id, name, layer, data, isMoon }) {
@@ -48,6 +58,7 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
 
   const camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
   camera.position.z = 3.5;
+  camera.position.y = 0.2; // 🧭 Correction de centrage vertical
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
@@ -77,7 +88,6 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
     }
   );
 
-  // Anneaux (planètes seulement)
   let ringMesh = null;
   if (!isMoon && data.rings?.texture) {
     const ringPath = `/lab/modules/dashboard/img/rings/${data.rings.texture}`;
@@ -124,13 +134,9 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
 export function cleanupViewer(id) {
   const state = viewers.get(id);
   if (!state) return;
-
   cancelAnimationFrame(state.animId);
 
-  if (state.renderer) {
-    state.renderer.dispose();
-    // NE PAS supprimer .domElement pour éviter les conflits radar
-  }
+  if (state.renderer) state.renderer.dispose();
   if (state.sphere) {
     state.scene.remove(state.sphere);
     state.sphere.geometry.dispose();
@@ -147,7 +153,6 @@ export function cleanupViewer(id) {
   viewers.delete(id);
 }
 
-// 🎛️ Hook couche si select présent
 const selector = document.getElementById('layer-select');
 if (selector) {
   selector.addEventListener('change', e => {
@@ -159,5 +164,4 @@ if (selector) {
   });
 }
 
-// 🌍 Exposition globale pour la lune (depuis bouton UI)
 window.loadMoon3D = loadMoon3D;
