@@ -100,13 +100,13 @@ if (!canvas) {
 
   canvas.addEventListener('click', handleClick);
 
-  // --- Variables du vaisseau (déplacées avant drawSystem) ---
+  // --- Variables du vaisseau (TOUTES déclarées UNE SEULE FOIS ici) ---
   const ship = {
     x: CENTER.x + 120,
     y: CENTER.y - 50,
     angle: Math.random() * 2 * Math.PI,
     speed: 0.02,
-    rotationSpeed: 0.001,  // ← Virgule ajoutée
+    rotationSpeed: 0.001,
     state: "roaming",
     pauseUntil: 0,
     logs: [],
@@ -139,22 +139,22 @@ if (!canvas) {
     }
   }
 
-  // --- Moteur du vaisseau amélioré ---
+  // --- Moteur du vaisseau ---
   function updateShip(planetsArray, t) {
     if (ship.state === "observe") {
       if (t > ship.pauseUntil) {
         ship.state = "roaming";
-        ship.angle += (Math.random() - 0.5) * 0.8; // redirection plus marquée
+        ship.angle += (Math.random() - 0.5); // redirection
       } else {
         return; // ne bouge pas pendant l'observation
       }
     }
 
-    // Détection objets (calcul des coordonnées x,y)
+    // Détection objets
     for (let p of planetsArray) {
       const px = CENTER.x + Math.cos(p.angle) * p.r;
       const py = CENTER.y + Math.sin(p.angle) * p.r;
-      if (isNear(px, py, ship.x, ship.y, 25)) { // rayon de détection augmenté
+      if (isNear(px, py, ship.x, ship.y)) {
         ship.state = "observe";
         ship.pauseUntil = t + Math.random() * (pauseMax - pauseMin) + pauseMin;
         logVisit(p.label);
@@ -171,37 +171,20 @@ if (!canvas) {
       return;
     }
 
-    // Évitement Soleil avec correction de trajectoire
+    // Évitement Soleil
     const distToSun = Math.sqrt((ship.x - CENTER.x) ** 2 + (ship.y - CENTER.y) ** 2);
     if (distToSun < avoidRadius) {
-      const angleToSun = Math.atan2(ship.y - CENTER.y, ship.x - CENTER.x);
-      ship.angle = angleToSun + Math.PI / 2; // perpendiculaire au soleil
+      ship.angle += Math.PI / 2;
     }
 
-    // Évitement des bords du canvas
-    const margin = 30;
-    if (ship.x < margin || ship.x > W - margin || ship.y < margin || ship.y > H - margin) {
-      const angleToCenter = Math.atan2(CENTER.y - ship.y, CENTER.x - ship.x);
-      ship.angle = angleToCenter + (Math.random() - 0.5) * 0.5;
-    }
-
-    // Navigation aléatoire légère pour éviter les lignes droites
-    if (Math.random() < 0.02) { // 2% de chance à chaque frame
-      ship.angle += (Math.random() - 0.5) * 0.3;
-    }
-
-    // Déplacement avec légère accéleration/décélération
-    const baseSpeed = 0.8;
-    const currentSpeed = baseSpeed + Math.sin(t * 0.001) * 0.3;
-    
+    // Déplacement
     ship.angle += ship.rotationSpeed;
-    ship.x += Math.cos(ship.angle) * currentSpeed;
-    ship.y += Math.sin(ship.angle) * currentSpeed;
+    ship.x += Math.cos(ship.angle) * ship.speed;
+    ship.y += Math.sin(ship.angle) * ship.speed;
 
-    // Traînée avec effet de pulse
-    const trailAlpha = 0.8 + Math.sin(t * 0.005) * 0.2;
-    shipTrail.push({ x: ship.x, y: ship.y, alpha: trailAlpha });
-    if (shipTrail.length > 40) shipTrail.shift(); // traînée plus longue
+    // Traînée
+    shipTrail.push({ x: ship.x, y: ship.y, alpha: 1 });
+    if (shipTrail.length > 30) shipTrail.shift();
   }
 
   function drawSystem() {
@@ -224,7 +207,7 @@ if (!canvas) {
 
     // Planètes
     planets.forEach(p => {
-      // Dessiner l'orbite avec style spécifique pour la planète 9
+      // Dessiner l'orbite
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
       if (p.name === 'planete9') {
