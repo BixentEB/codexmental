@@ -348,3 +348,25 @@ body.lab #mobile-menu li button[onclick*='setTheme'] {
 body.lab #svg-lune-widget {
   display: none !important;
 }
+
+/* dashboard.css - Ajoutez à la fin */
+#simul-system.radar-error-mode {
+  position: relative;
+  background: 
+    radial-gradient(circle, transparent 20%, rgba(0,255,255,0.05) 100%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(0,255,255,0.1) 0px 1px,
+      transparent 1px 10px
+    );
+}
+
+#simul-system.radar-error-mode::after {
+  content: "⚠️ Radar en maintenance";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: cyan;
+  font-family: 'Orbitron';
+}
