@@ -13,12 +13,6 @@ export function loadPlanet3D(name, layer = 'surface', data = {}, canvasId = 'pla
     isMoon: false
   });
   updatePlanetUI(data, name);
-
-  const title = document.getElementById('planet-viewer-title');
-  if (title) title.textContent = name.toUpperCase();
-
-  const viewer = document.getElementById(canvasId);
-  if (viewer) viewer.dataset.planet = name;
 }
 
 export function loadMoon3D(name, data = {}, canvasId = 'moon-viewer') {
@@ -29,22 +23,16 @@ export function loadMoon3D(name, data = {}, canvasId = 'moon-viewer') {
     data,
     isMoon: true
   });
-
-  const moonBlock = document.getElementById('info-moon-3d');
-  if (moonBlock) moonBlock.style.display = 'block';
-  const moonTitle = document.getElementById('moon-viewer-title');
-  if (moonTitle) moonTitle.textContent = name.toUpperCase();
 }
 
 function loadObject3D({ id, name, layer, data, isMoon }) {
   const canvas = document.getElementById(id);
-  if (!canvas) {
-    console.warn(`⚠️ Canvas #${id} introuvable`);
-    return;
-  }
+  if (!canvas) return console.warn(`⚠️ Canvas #${id} introuvable`);
 
+  // Nettoyage du viewer précédent (sans supprimer le canvas !)
   cleanupViewer(id);
 
+  // ✅ Création du renderer propre à ce canvas
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -58,14 +46,14 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
 
   const camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
   camera.position.z = 3.5;
-  camera.position.y = 0.2; // 🧭 Correction de centrage vertical
 
   const geometry = new THREE.SphereGeometry(1, 64, 64);
   const material = new THREE.MeshPhongMaterial({ color: 0x888888 });
   const sphere = new THREE.Mesh(geometry, material);
-  sphere.scale.set(0.7, 0.7, 0.7);
+  sphere.scale.set(0.85, 0.85, 0.85);
   scene.add(sphere);
 
+  // ✅ Texture de surface
   const loader = new THREE.TextureLoader();
   const basePath = isMoon
     ? `/lab/modules/dashboard/img/moons/${data.image || `${name}.jpg`}`
@@ -81,13 +69,14 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
     undefined,
     () => {
       console.warn(`❌ Texture manquante : ${basePath}`);
-      const target = document.querySelector('#info-data .section-content');
-      if (target && !isMoon) {
-        target.innerHTML = `<p>Données de surface indisponibles. Expédition en cours...</p>`;
+      if (!isMoon) {
+        const target = document.querySelector('#info-data .section-content');
+        if (target) target.innerHTML = `<p>Données de surface indisponibles. Expédition en cours...</p>`;
       }
     }
   );
 
+  // ✅ Anneaux si disponibles
   let ringMesh = null;
   if (!isMoon && data.rings?.texture) {
     const ringPath = `/lab/modules/dashboard/img/rings/${data.rings.texture}`;
@@ -134,15 +123,16 @@ function loadObject3D({ id, name, layer, data, isMoon }) {
 export function cleanupViewer(id) {
   const state = viewers.get(id);
   if (!state) return;
+
   cancelAnimationFrame(state.animId);
 
-  if (state.renderer) state.renderer.dispose();
   if (state.sphere) {
     state.scene.remove(state.sphere);
     state.sphere.geometry.dispose();
     state.sphere.material.map?.dispose();
     state.sphere.material.dispose();
   }
+
   if (state.ringMesh) {
     state.scene.remove(state.ringMesh);
     state.ringMesh.geometry.dispose();
@@ -150,9 +140,13 @@ export function cleanupViewer(id) {
     state.ringMesh.material.dispose();
   }
 
+  // 🛑 Ne pas dispose le renderer ici — peut affecter d’autres canvases indirectement
+  // state.renderer.dispose();
+
   viewers.delete(id);
 }
 
+// 🔄 Selecteur de couche
 const selector = document.getElementById('layer-select');
 if (selector) {
   selector.addEventListener('change', e => {
@@ -164,4 +158,5 @@ if (selector) {
   });
 }
 
+// 🌕 Exposition globale
 window.loadMoon3D = loadMoon3D;
