@@ -3,13 +3,10 @@ import { loadPlanet3D } from './viewer-planete-3d.js';
 import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.getElementById('simul-system');
-  if (!canvas) {
-    console.warn("⚠️ Aucun canvas #simul-system trouvé.");
-    return;
-  }
-
+const canvas = document.getElementById('simul-system');
+if (!canvas) {
+  console.warn("⚠️ Aucun canvas #simul-system trouvé.");
+} else {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
@@ -117,4 +114,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   draw();
-});
+}
