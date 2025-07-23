@@ -150,13 +150,26 @@ if (distToSun <= 14) {
       p.angle += 0.0003;
     });
 
-    // Vaisseau
-    const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
-    const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
-    ctx.beginPath();
-    ctx.arc(sx, sy, ship.size, 0, Math.PI * 2);
-    ctx.fillStyle = colors.ship;
-    ctx.fill();
+    // Vaisseau (triangle directionnel)
+      const sx = CENTER.x + Math.cos(ship.angle) * ship.orbit;
+      const sy = CENTER.y + Math.sin(ship.angle) * ship.orbit;
+
+      ctx.beginPath();
+      ctx.moveTo(
+      sx + 5 * Math.cos(ship.angle),
+      sy + 5 * Math.sin(ship.angle)
+    );
+      ctx.lineTo(
+      sx + 3 * Math.cos(ship.angle + Math.PI * 0.75),
+      sy + 3 * Math.sin(ship.angle + Math.PI * 0.75)
+    );
+      ctx.lineTo(
+      sx + 3 * Math.cos(ship.angle - Math.PI * 0.75),
+      sy + 3 * Math.sin(ship.angle - Math.PI * 0.75)
+    );
+      ctx.closePath();
+      ctx.fillStyle = colors.ship;
+      ctx.fill();
 
     ship.angle += 0.0007;
 
