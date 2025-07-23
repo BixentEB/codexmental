@@ -24,7 +24,7 @@ export function renderClimate(data) {
     : `<p>Température moyenne : ${data.temp || '—'}</p>`;
 }
 
-// 🏙️ COLONISATION (nouvelle version)
+// 🏙️ COLONISATION
 export function renderColonizationState(data) {
   const status = data.colonization?.status || '—';
   return `<p>État de colonisation : ${status}</p>`;
@@ -50,7 +50,16 @@ export function renderColonizationBases(data) {
   return `<p>Aucune base connue</p>`;
 }
 
-// 🌙 (le reste suivra dans les étapes suivantes)
+// 🚀 EXPLORATION (missions)
+export function renderMissionList(data) {
+  const missions = data.missions;
+  if (!Array.isArray(missions) || missions.length === 0) {
+    return `<p>Aucune mission connue</p>`;
+  }
+  return missions.map(name => `<p>🚀 ${name}</p>`).join('');
+}
+
+// 🌙 LUNES (à continuer)
 export function renderMoonSummary({ planetKey }) {
   const moons = MOON_DATA[planetKey];
   if (!moons || moons.length === 0) return "<p>Aucune lune détectée</p>";
