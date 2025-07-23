@@ -105,8 +105,8 @@ if (!canvas) {
     x: CENTER.x + 120,
     y: CENTER.y - 50,
     angle: Math.random() * 2 * Math.PI,
-    speed: 0.02,
-    rotationSpeed: 0.001,  // ← Virgule ajoutée
+    speed: 0.08,            // ← vitesse d'accélération
+    rotationSpeed: 0.002,  // ← vitesse de rotation
     state: "roaming",
     pauseUntil: 0,
     logs: [],
