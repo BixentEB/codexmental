@@ -2,6 +2,7 @@
 import { loadPlanet3D } from './viewer-planete-3d.js';
 import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
+import { Ship } from './ship-module.js';
 
 const canvas = document.getElementById('simul-system');
 let currentPlanet = null;
@@ -26,7 +27,6 @@ if (!canvas) {
   const colors = {
     sun: '#ffaa00',
     planets: ['#aaa', '#f3a', '#0cf', '#c33', '#ffcc88', '#ccaa66', '#88f', '#44d'],
-    ship: '#f0f',
     asteroid: '#888'
   };
 
@@ -47,7 +47,7 @@ if (!canvas) {
     { name: 'saturne', label: 'Saturne', r: scaleOrbit(5), size: 5, speed: 0.0012, angle: getAngleFromJ2000(daysSince, 10759.22), color: colors.planets[5] },
     { name: 'uranus', label: 'Uranus', r: scaleOrbit(6), size: 4, speed: 0.001, angle: getAngleFromJ2000(daysSince, 30688.5), color: colors.planets[6] },
     { name: 'neptune', label: 'Neptune', r: scaleOrbit(7), size: 4, speed: 0.0008, angle: getAngleFromJ2000(daysSince, 60182), color: colors.planets[7] },
-    { name: 'planete9', label: 'Planète Neuf', r: scaleOrbit(9.5), size: 3, speed: 0.0001, angle: getAngleFromJ2000(daysSince, 180000), color: '#8888ff' }
+    { name: 'planete9', label: 'Planète Neuf', r: scaleOrbit(9.2), size: 3, speed: 0.0001, angle: getAngleFromJ2000(daysSince, 180000), color: '#8888ff' }
   ];
 
   const dwarfPlanets = [
@@ -58,17 +58,6 @@ if (!canvas) {
     { name: 'eris', label: 'Éris', r: scaleOrbit(9), size: 2, speed: 0.0002, angle: getAngleFromJ2000(daysSince, 203830), color: '#c6f' }
   ];
 
-  const shipTrail = [];
-
-const ship = {
-  x: CENTER.x + 100,
-  y: CENTER.y,
-  angle: 0,
-  speed: 0.2,
-  rotationSpeed: 0.002,
-  size: 3
-};
-
   const asteroids = [];
   for (let i = 0; i < 150; i++) {
     const r = scaleOrbit(3.3) + Math.random() * 20;
@@ -76,39 +65,40 @@ const ship = {
     asteroids.push({ r, angle });
   }
 
+  const ship = new Ship(CENTER);
+
   function handleClick(e) {
-  const rect = canvas.getBoundingClientRect();
-  const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-  const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+    const rect = canvas.getBoundingClientRect();
+    const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-  const HITBOX_PADDING = 12;
-  const allBodies = planets.concat(dwarfPlanets);
+    if (ship.onClick(clickX, clickY)) return;
 
-    // Clic sur le Soleil (centre exact)
-const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
-if (distToSun <= 14) {
-  currentPlanet = { name: 'soleil', label: 'Soleil' };
-  const data = PLANET_DATA['soleil'];
-  loadPlanet3D('soleil', 'surface', data);
-  updatePlanetUI(data, 'soleil');
-  return;
-}
+    const HITBOX_PADDING = 12;
+    const allBodies = planets.concat(dwarfPlanets);
 
+    const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
+    if (distToSun <= 14) {
+      currentPlanet = { name: 'soleil', label: 'Soleil' };
+      const data = PLANET_DATA['soleil'];
+      loadPlanet3D('soleil', 'surface', data);
+      updatePlanetUI(data, 'soleil');
+      return;
+    }
 
-  for (const p of allBodies) {
-    const px = CENTER.x + Math.cos(p.angle) * p.r;
-    const py = CENTER.y + Math.sin(p.angle) * p.r;
-    const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
-
-    if (dist <= p.size + HITBOX_PADDING) {
-      currentPlanet = p;
-      const data = PLANET_DATA[p.name] || {};
-      loadPlanet3D(p.name, 'surface', data);
-      updatePlanetUI(data, p.name);
-      break;
+    for (const p of allBodies) {
+      const px = CENTER.x + Math.cos(p.angle) * p.r;
+      const py = CENTER.y + Math.sin(p.angle) * p.r;
+      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+      if (dist <= p.size + HITBOX_PADDING) {
+        currentPlanet = p;
+        const data = PLANET_DATA[p.name] || {};
+        loadPlanet3D(p.name, 'surface', data);
+        updatePlanetUI(data, p.name);
+        break;
+      }
     }
   }
-}
 
   canvas.addEventListener('click', handleClick);
 
@@ -132,7 +122,6 @@ if (distToSun <= 14) {
 
     // Planètes
     planets.forEach(p => {
-      // orbit style spécifique pour la planète 9
       if (p.name === 'planete9') {
         ctx.strokeStyle = '#8888ff';
         ctx.setLineDash([3, 2]);
@@ -142,7 +131,6 @@ if (distToSun <= 14) {
       }
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
       ctx.stroke();
 
       const x = CENTER.x + Math.cos(p.angle) * p.r;
@@ -167,51 +155,8 @@ if (distToSun <= 14) {
       p.angle += 0.0003;
     });
 
-    // Vaisseau (triangle directionnel libre)
-  ship.angle += ship.rotationSpeed;
-  ship.x += Math.cos(ship.angle) * ship.speed;
-  ship.y += Math.sin(ship.angle) * ship.speed;
-
-  if (ship.x < 0 || ship.x > W) ship.angle = Math.PI - ship.angle;
-  if (ship.y < 0 || ship.y > H) ship.angle = -ship.angle;
-
-  ctx.beginPath();
-  ctx.moveTo(ship.x + 5 * Math.cos(ship.angle), ship.y + 5 * Math.sin(ship.angle));
-  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle + Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle + Math.PI * 0.75));
-  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle - Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle - Math.PI * 0.75));
-  ctx.closePath();
-  // Vaisseau (triangle directionnel libre avec évitement solaire + traînée)
-  ship.angle += ship.rotationSpeed;
-  ship.x += Math.cos(ship.angle) * ship.speed;
-  ship.y += Math.sin(ship.angle) * ship.speed;
-
-  const distToSun = Math.sqrt((ship.x - CENTER.x) ** 2 + (ship.y - CENTER.y) ** 2);
-  if (distToSun < 80) {
-    // évite le Soleil (rebond intelligent)
-    ship.angle += Math.PI / 2;
-  }
-
-  // ajouter à la traînée
-  shipTrail.push({ x: ship.x, y: ship.y, alpha: 1 });
-  if (shipTrail.length > 30) shipTrail.shift();
-
-  // dessiner traînée
-  shipTrail.forEach(pt => {
-    ctx.beginPath();
-    ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(136, 136, 255, ${pt.alpha})`;
-    ctx.fill();
-    pt.alpha *= 0.9; // disparition progressive
-  });
-
-  // vaisseau triangle
-  ctx.beginPath();
-  ctx.moveTo(ship.x + 5 * Math.cos(ship.angle), ship.y + 5 * Math.sin(ship.angle));
-  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle + Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle + Math.PI * 0.75));
-  ctx.lineTo(ship.x + 3 * Math.cos(ship.angle - Math.PI * 0.75), ship.y + 3 * Math.sin(ship.angle - Math.PI * 0.75));
-  ctx.closePath();
-  ctx.fillStyle = colors.ship;
-  ctx.fill();
+    ship.update(planets.concat(dwarfPlanets, asteroids), CENTER);
+    ship.draw(ctx);
 
     requestAnimationFrame(drawSystem);
   }
