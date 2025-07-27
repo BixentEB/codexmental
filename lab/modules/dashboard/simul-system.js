@@ -143,8 +143,15 @@ if (!canvas) {
       p.angle += p.speed;
     });
 
-    // Planètes naines
+    // Planètes naines + orbites visibles
     dwarfPlanets.forEach(p => {
+      ctx.setLineDash([2, 2]);
+      ctx.beginPath();
+      ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.stroke();
+      ctx.setLineDash([]);
+
       const x = CENTER.x + Math.cos(p.angle) * p.r;
       const y = CENTER.y + Math.sin(p.angle) * p.r;
       ctx.beginPath();
@@ -155,7 +162,8 @@ if (!canvas) {
       p.angle += 0.0003;
     });
 
-    ship.update(planets.concat(dwarfPlanets, asteroids), CENTER);
+    // Mise à jour du vaisseau (détection uniquement sur planètes connues)
+    ship.update(planets.concat(dwarfPlanets), CENTER);
     ship.draw(ctx);
 
     requestAnimationFrame(drawSystem);
