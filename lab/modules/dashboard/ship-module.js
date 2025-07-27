@@ -12,6 +12,7 @@ export class Ship {
     this.size = 5;
     this.trail = [];
     this.pausedUntil = 0;
+    this.lastObserved = 0;
   }
 
   update(objects, sunCenter) {
@@ -28,13 +29,15 @@ export class Ship {
       this.log("⚠️ Évitement du Soleil");
     }
 
-    // Détection de proximité
+    // Détection de proximité (avec cooldown)
     for (const obj of objects) {
       const ox = this.center.x + Math.cos(obj.angle) * obj.r;
       const oy = this.center.y + Math.sin(obj.angle) * obj.r;
       const dist = Math.sqrt((this.x - ox) ** 2 + (this.y - oy) ** 2);
-      if (dist < this.proximityRadius) {
-        this.log(`📡 Observation : ${obj.label || obj.name}`);
+      if (dist < this.proximityRadius && now - this.lastObserved > 2000) {
+        this.lastObserved = now;
+        const label = obj.label || obj.name || 'Objet inconnu';
+        this.log(`📡 Observation : ${label}`);
         if (SHIP_CONFIG.enableObservationPause) {
           this.pausedUntil = now + 1000 + Math.random() * 2000;
         }
@@ -55,7 +58,7 @@ export class Ship {
 
     // Traînée
     this.trail.push({ x: this.x, y: this.y, alpha: 1 });
-    if (this.trail.length > 30) this.trail.shift();
+    if (this.trail.length > 80) this.trail.shift(); // traînée plus longue
     for (const pt of this.trail) pt.alpha *= 0.9;
   }
 
@@ -104,6 +107,6 @@ export const SHIP_CONFIG = {
   speed: 0.2,
   rotationSpeed: 0.002,
   avoidanceRadius: 80,
-  proximityRadius: 18,
+  proximityRadius: 12,
   enableObservationPause: true
 };
