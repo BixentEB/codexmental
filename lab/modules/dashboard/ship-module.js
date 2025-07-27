@@ -1,4 +1,4 @@
-// ship-module.js — Vaisseau spatial avec comportement intelligent et traînée propulsive
+// ship-module.js — Vaisseau spatial avec évitement solaire intelligent et logs filtrés
 export class Ship {
   constructor(center) {
     this.center = center;
@@ -13,6 +13,8 @@ export class Ship {
     this.trail = [];
     this.pausedUntil = 0;
     this.lastObserved = 0;
+    this.lastAvoid = 0;
+    this.lastLog = "";
     this.lastLoggedObject = null;
   }
 
@@ -20,15 +22,19 @@ export class Ship {
     const now = Date.now();
     if (now < this.pausedUntil) return;
 
+    // Évitement solaire (avec cooldown)
     const dx = this.x - sunCenter.x;
     const dy = this.y - sunCenter.y;
     const distSun = Math.sqrt(dx * dx + dy * dy);
-    if (distSun < this.avoidanceRadius) {
+    if (distSun < this.avoidanceRadius && now - this.lastAvoid > 5000) {
+      this.lastAvoid = now;
       const awayAngle = Math.atan2(dy, dx);
-      this.angle = (this.angle * 4 + awayAngle) / 5 + (Math.random() - 0.5) * 0.1;
-      this.log("⚠️ Évitement du Soleil", "yellow");
+      const smooth = 0.05;
+      this.angle = this.angle * (1 - smooth) + awayAngle * smooth;
+      this.logOnce("⚠️ Évitement du Soleil", "yellow");
     }
 
+    // Détection d’objets
     for (const obj of objects) {
       const name = obj.label || obj.name;
       if (!name) continue;
@@ -40,7 +46,7 @@ export class Ship {
         if (name !== this.lastLoggedObject) {
           this.lastObserved = now;
           this.lastLoggedObject = name;
-          this.log(`📡 Observation : ${name}`, "cyan");
+          this.logOnce(`📡 Observation : ${name}`, "cyan");
           if (SHIP_CONFIG.enableObservationPause) {
             this.pausedUntil = now + 1000 + Math.random() * 1500;
           }
@@ -49,15 +55,18 @@ export class Ship {
       }
     }
 
+    // Mouvement
     this.angle += this.rotationSpeed;
     this.x += Math.cos(this.angle) * this.speed;
     this.y += Math.sin(this.angle) * this.speed;
 
+    // Rebonds limites
     const W = this.center.x * 2;
     const H = this.center.y * 2;
     if (this.x < 0 || this.x > W) this.angle = Math.PI - this.angle;
     if (this.y < 0 || this.y > H) this.angle = -this.angle;
 
+    // Traînée
     this.trail.push({ x: this.x, y: this.y, alpha: 1 });
     if (this.trail.length > 100) this.trail.shift();
     for (const pt of this.trail) pt.alpha *= 0.94;
@@ -100,6 +109,13 @@ export class Ship {
       line.style.margin = "2px 0";
       box.appendChild(line);
       box.scrollTop = box.scrollHeight;
+    }
+  }
+
+  logOnce(msg, color = "white") {
+    if (msg !== this.lastLog) {
+      this.lastLog = msg;
+      this.log(msg, color);
     }
   }
 }
