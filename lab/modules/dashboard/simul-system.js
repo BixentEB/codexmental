@@ -27,7 +27,8 @@ if (!canvas) {
   const colors = {
     sun: '#ffaa00',
     planets: ['#aaa', '#f3a', '#0cf', '#c33', '#ffcc88', '#ccaa66', '#88f', '#44d'],
-    asteroid: '#888'
+    asteroid: '#888',
+    kuiper: '#666'
   };
 
   const baseOrbit = 70;
@@ -63,6 +64,13 @@ if (!canvas) {
     const r = scaleOrbit(3.3) + Math.random() * 20;
     const angle = Math.random() * Math.PI * 2;
     asteroids.push({ r, angle });
+  }
+
+  const kuiper = [];
+  for (let i = 0; i < 120; i++) {
+    const r = scaleOrbit(10) + Math.random() * 30;
+    const angle = Math.random() * Math.PI * 2;
+    kuiper.push({ r, angle });
   }
 
   const ship = new Ship(CENTER);
@@ -120,10 +128,19 @@ if (!canvas) {
       a.angle += 0.0003;
     });
 
+    // Ceinture de Kuiper
+    kuiper.forEach(k => {
+      const x = CENTER.x + Math.cos(k.angle) * k.r;
+      const y = CENTER.y + Math.sin(k.angle) * k.r;
+      ctx.fillStyle = 'rgba(100,100,255,0.1)';
+      ctx.fillRect(x, y, 1.2, 1.2);
+      k.angle += 0.0001;
+    });
+
     // Planètes
     planets.forEach(p => {
       if (p.name === 'planete9') {
-        ctx.strokeStyle = '#8888ff';
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
         ctx.setLineDash([3, 2]);
       } else {
         ctx.strokeStyle = 'rgba(255,255,255,0.04)';
