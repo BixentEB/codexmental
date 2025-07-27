@@ -1,4 +1,3 @@
-// ship-module.js — Vaisseau spatial avec évitement solaire intelligent et logs filtrés
 export class Ship {
   constructor(center) {
     this.center = center;
@@ -16,25 +15,37 @@ export class Ship {
     this.lastAvoid = 0;
     this.lastLog = "";
     this.lastLoggedObject = null;
+    this.orbitTarget = null;
+    this.orbitUntil = 0;
   }
 
   update(objects, sunCenter) {
     const now = Date.now();
+
+    // Orbite temporaire autour d'un objet
+    if (this.orbitTarget && now < this.orbitUntil) {
+      this.angle += 0.01;
+      this.x = this.orbitTarget.x + Math.cos(this.angle) * 10;
+      this.y = this.orbitTarget.y + Math.sin(this.angle) * 10;
+      this._updateTrail();
+      return;
+    } else {
+      this.orbitTarget = null;
+    }
+
     if (now < this.pausedUntil) return;
 
-    // Évitement solaire (avec cooldown)
     const dx = this.x - sunCenter.x;
     const dy = this.y - sunCenter.y;
     const distSun = Math.sqrt(dx * dx + dy * dy);
     if (distSun < this.avoidanceRadius && now - this.lastAvoid > 5000) {
       this.lastAvoid = now;
       const awayAngle = Math.atan2(dy, dx);
-      const smooth = 0.05;
-      this.angle = this.angle * (1 - smooth) + awayAngle * smooth;
+      this.angle = this.angle * 0.95 + awayAngle * 0.05 + (Math.random() - 0.5) * 0.05;
       this.logOnce("⚠️ Évitement du Soleil", "yellow");
     }
 
-    // Détection d’objets
+    // Observation de planète
     for (const obj of objects) {
       const name = obj.label || obj.name;
       if (!name) continue;
@@ -47,15 +58,20 @@ export class Ship {
           this.lastObserved = now;
           this.lastLoggedObject = name;
           this.logOnce(`📡 Observation : ${name}`, "cyan");
+
           if (SHIP_CONFIG.enableObservationPause) {
-            this.pausedUntil = now + 1000 + Math.random() * 1500;
+            this.pausedUntil = now + 4000 + Math.random() * 2000;
           }
+
+          // Orbite temporaire autour de la planète
+          this.orbitTarget = { x: ox, y: oy };
+          this.orbitUntil = now + 8000 + Math.random() * 2000;
         }
         break;
       }
     }
 
-    // Mouvement
+    // Mouvement normal
     this.angle += this.rotationSpeed;
     this.x += Math.cos(this.angle) * this.speed;
     this.y += Math.sin(this.angle) * this.speed;
@@ -66,7 +82,10 @@ export class Ship {
     if (this.x < 0 || this.x > W) this.angle = Math.PI - this.angle;
     if (this.y < 0 || this.y > H) this.angle = -this.angle;
 
-    // Traînée
+    this._updateTrail();
+  }
+
+  _updateTrail() {
     this.trail.push({ x: this.x, y: this.y, alpha: 1 });
     if (this.trail.length > 100) this.trail.shift();
     for (const pt of this.trail) pt.alpha *= 0.94;
