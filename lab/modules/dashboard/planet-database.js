@@ -335,25 +335,25 @@ export const PLANET_DATA = {
   },
 
   //BELTS
-      "asteroid-belt": {
-    name: "Ceinture d'astéroïdes",
-    type: "ceinture",
-    distance: "300-600 Mkm",
-    radius: "~400 Mkm",
-    temp: "-100°C à -150°C",
-    colonized: "Inexploitable",
-    bases: [],
-    moons: [],
-    missions: ["Dawn", "Gaia", "Lucy"],
-    textures: {
-      surface: null,
-      cloud: null,
-      infrared: null
-    },
-    symbol: "☄",
-    symbolImg: "asteroid-symbol.svg",
-    sciName: "Asteroid Belt"
+    "asteroid-belt": {
+  name: "Ceinture d'astéroïdes",
+  type: "ceinture",
+  distance: "300-600 Mkm",
+  radius: "~400 Mkm",
+  temp: "-100°C à -150°C",
+  colonized: "Inexploitable",
+  bases: [],
+  moons: [],
+  missions: ["Dawn", "Lucy"],
+  textures: {
+    surface: null,
+    cloud: null,
+    infrared: null
   },
+  symbol: "☄",
+  symbolImg: "asteroid-symbol.svg",
+  sciName: "Asteroid Belt"
+},
 
 
     "kuiper-zone": {
