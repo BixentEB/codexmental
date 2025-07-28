@@ -246,6 +246,19 @@ main.dashboard {
   opacity: 0.85;
 }
 
+
+/* MENU SELECTION */
+.codex-select {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+}
+
+.widget h3 {
+  margin-top: 1.6rem !important;
+}
+
 .codex-select {
   background-color: #071018;
   color: cyan;
@@ -272,6 +285,13 @@ main.dashboard {
   font-size: 0.6rem;
 }
 
+
+
+/* 🔁 Fade-out des logs radar */
+#info-missions div.fade-out {
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+}
 
 
 
