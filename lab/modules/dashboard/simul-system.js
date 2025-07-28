@@ -4,6 +4,7 @@ import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
 import { Ship } from './ship-module.js';
 import { narrate } from './ship-module-narratif.js';
+import { Starfield } from './ship-stars.js';
 
 const canvas = document.getElementById('simul-system');
 let currentPlanet = null;
@@ -12,6 +13,7 @@ if (!canvas) {
   console.warn("⚠️ Aucun canvas #simul-system trouvé.");
 } else {
   const ctx = canvas.getContext('2d');
+  const starfield = new Starfield(W, H);
   const W = canvas.width;
   const H = canvas.height;
   const CENTER = { x: W / 2, y: H / 2 };
@@ -113,6 +115,8 @@ if (!canvas) {
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
+    starfield.update();
+    starfield.draw(ctx);
 
     // Soleil
     ctx.beginPath();
