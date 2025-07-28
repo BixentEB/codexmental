@@ -3,6 +3,7 @@ import { loadPlanet3D } from './viewer-planete-3d.js';
 import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
 import { Ship } from './ship-module.js';
+import { narrate } from './ship-module-narratif.js';
 
 const canvas = document.getElementById('simul-system');
 let currentPlanet = null;
@@ -128,15 +129,6 @@ if (!canvas) {
       a.angle += 0.0003;
     });
 
-    // Ceinture de Kuiper
-    kuiper.forEach(k => {
-      const x = CENTER.x + Math.cos(k.angle) * k.r;
-      const y = CENTER.y + Math.sin(k.angle) * k.r;
-      ctx.fillStyle = 'rgba(100,100,255,0.1)';
-      ctx.fillRect(x, y, 1.2, 1.2);
-      k.angle += 0.0001;
-    });
-
     // Planètes
     planets.forEach(p => {
       if (p.name === 'planete9') {
@@ -162,6 +154,16 @@ if (!canvas) {
 
     // Planètes naines + orbites visibles
     dwarfPlanets.forEach(p => {
+
+// Ceinture de Kuiper
+    kuiper.forEach(k => {
+      const x = CENTER.x + Math.cos(k.angle) * k.r;
+      const y = CENTER.y + Math.sin(k.angle) * k.r;
+      ctx.fillStyle = 'rgba(100,100,255,0.25)';
+      ctx.fillRect(x, y, 1.2, 1.2);
+      k.angle += 0.0001;
+    });
+
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
@@ -181,6 +183,7 @@ if (!canvas) {
 
     // Mise à jour du vaisseau (détection uniquement sur planètes connues)
     ship.update(planets.concat(dwarfPlanets), CENTER);
+    narrate(ship);
     ship.draw(ctx);
 
     requestAnimationFrame(drawSystem);
