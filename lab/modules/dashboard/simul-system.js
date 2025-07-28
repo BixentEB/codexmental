@@ -1,10 +1,9 @@
-// simul-system.js — radar planétaire avec données enrichies et UI dynamique
+// simul-system.js — radar planétaire avec fond stellaire dynamique et ceinture Kuiper visible
 import { loadPlanet3D } from './viewer-planete-3d.js';
 import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
 import { Ship } from './ship-module.js';
-import { narrate } from './ship-module-narratif.js';
-import { Starfield } from './ship-stars.js';
+import { generateStarfield } from './ship-stars.js';
 
 const canvas = document.getElementById('simul-system');
 let currentPlanet = null;
@@ -15,7 +14,6 @@ if (!canvas) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
-  const starfield = new Starfield(W, H);
   const CENTER = { x: W / 2, y: H / 2 };
 
   function getAngleFromJ2000(days, period) {
@@ -31,7 +29,8 @@ if (!canvas) {
     sun: '#ffaa00',
     planets: ['#aaa', '#f3a', '#0cf', '#c33', '#ffcc88', '#ccaa66', '#88f', '#44d'],
     asteroid: '#888',
-    kuiper: '#666'
+    kuiper: 'rgba(100,100,255,0.25)',
+    stars: '#446688'
   };
 
   const baseOrbit = 70;
@@ -70,54 +69,23 @@ if (!canvas) {
   }
 
   const kuiper = [];
-  for (let i = 0; i < 120; i++) {
-    const r = scaleOrbit(10) + Math.random() * 30;
+  for (let i = 0; i < 140; i++) {
+    const r = scaleOrbit(9.2 + Math.random() * 0.4);
     const angle = Math.random() * Math.PI * 2;
-  kuiper.push({ r: scaleOrbit(9.4), angle: Math.PI / 2, label: 'Zone Kuiper Δ', interactive: true });
     kuiper.push({ r, angle });
   }
 
+  const stars = generateStarfield(60, W, H);
   const ship = new Ship(CENTER);
-
-  function handleClick(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
-
-    if (ship.onClick(clickX, clickY)) return;
-
-    const HITBOX_PADDING = 18;
-    const allBodies = planets.concat(dwarfPlanets);
-
-    const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
-    if (distToSun <= 14) {
-      currentPlanet = { name: 'soleil', label: 'Soleil' };
-      const data = PLANET_DATA['soleil'];
-      loadPlanet3D('soleil', 'surface', data);
-      updatePlanetUI(data, 'soleil');
-      return;
-    }
-
-    for (const p of allBodies) {
-      const px = CENTER.x + Math.cos(p.angle) * p.r;
-      const py = CENTER.y + Math.sin(p.angle) * p.r;
-      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
-      if (dist <= p.size + HITBOX_PADDING) {
-        currentPlanet = p;
-        const data = PLANET_DATA[p.name] || {};
-        loadPlanet3D(p.name, 'surface', data);
-        updatePlanetUI(data, p.name);
-        break;
-      }
-    }
-  }
-
-  canvas.addEventListener('click', handleClick);
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
-    starfield.update();
-    starfield.draw(ctx);
+
+    // Fond stellaire
+    stars.forEach(star => {
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.fillRect(star.x, star.y, 1.5, 1.5);
+    });
 
     // Soleil
     ctx.beginPath();
@@ -132,6 +100,15 @@ if (!canvas) {
       ctx.fillStyle = colors.asteroid;
       ctx.fillRect(x, y, 1.5, 1.5);
       a.angle += 0.0003;
+    });
+
+    // Ceinture de Kuiper
+    kuiper.forEach(k => {
+      const x = CENTER.x + Math.cos(k.angle) * k.r;
+      const y = CENTER.y + Math.sin(k.angle) * k.r;
+      ctx.fillStyle = colors.kuiper;
+      ctx.fillRect(x, y, 1.2, 1.2);
+      k.angle += 0.0001;
     });
 
     // Planètes
@@ -157,18 +134,8 @@ if (!canvas) {
       p.angle += p.speed;
     });
 
-    // Planètes naines + orbites visibles
+    // Planètes naines
     dwarfPlanets.forEach(p => {
-
-// Ceinture de Kuiper
-    kuiper.forEach(k => {
-      const x = CENTER.x + Math.cos(k.angle) * k.r;
-      const y = CENTER.y + Math.sin(k.angle) * k.r;
-      ctx.fillStyle = 'rgba(100,100,255,0.25)';
-      ctx.fillRect(x, y, 1.2, 1.2);
-      k.angle += 0.0001;
-    });
-
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
       ctx.arc(CENTER.x, CENTER.y, p.r, 0, Math.PI * 2);
@@ -186,13 +153,45 @@ if (!canvas) {
       p.angle += 0.0003;
     });
 
-    // Mise à jour du vaisseau (détection uniquement sur planètes connues)
+    // Vaisseau
     ship.update(planets.concat(dwarfPlanets), CENTER);
-    narrate(ship);
     ship.draw(ctx);
 
     requestAnimationFrame(drawSystem);
   }
+
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+    if (ship.onClick(clickX, clickY)) return;
+
+    const HITBOX_PADDING = 12;
+    const allBodies = planets.concat(dwarfPlanets);
+    const distToSun = Math.sqrt((clickX - CENTER.x) ** 2 + (clickY - CENTER.y) ** 2);
+
+    if (distToSun <= 14) {
+      currentPlanet = { name: 'soleil', label: 'Soleil' };
+      const data = PLANET_DATA['soleil'];
+      loadPlanet3D('soleil', 'surface', data);
+      updatePlanetUI(data, 'soleil');
+      return;
+    }
+
+    for (const p of allBodies) {
+      const px = CENTER.x + Math.cos(p.angle) * p.r;
+      const py = CENTER.y + Math.sin(p.angle) * p.r;
+      const dist = Math.sqrt((clickX - px) ** 2 + (clickY - py) ** 2);
+      if (dist <= p.size + HITBOX_PADDING) {
+        currentPlanet = p;
+        const data = PLANET_DATA[p.name] || {};
+        loadPlanet3D(p.name, 'surface', data);
+        updatePlanetUI(data, p.name);
+        break;
+      }
+    }
+  });
 
   drawSystem();
 }
