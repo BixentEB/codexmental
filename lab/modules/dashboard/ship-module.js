@@ -161,6 +161,8 @@ export class Ship {
       line.style.color = color;
       line.style.margin = "2px 0";
       box.appendChild(line);
+      setTimeout(() => line.classList.add("fade-out"), 3000);
+      setTimeout(() => line.remove(), 4200);
       box.scrollTop = box.scrollHeight;
     }
   }
