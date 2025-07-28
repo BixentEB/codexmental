@@ -10,11 +10,11 @@ export function generateAsteroidBelt(scaleOrbit) {
   return asteroids;
 }
 
-export function drawAsteroidBelt(ctx, asteroids, CENTER, color = '#888') {
+export function drawAsteroidBelt(ctx, asteroids, CENTER, color = '#888', highlight = false) {
   asteroids.forEach(a => {
     const x = CENTER.x + Math.cos(a.angle) * a.r;
     const y = CENTER.y + Math.sin(a.angle) * a.r;
-    ctx.fillStyle = color;
+    ctx.fillStyle = highlight ? 'rgba(255,200,100,0.6)' : color;
     ctx.fillRect(x, y, 1.5, 1.5);
     a.angle += 0.0003;
   });
@@ -22,6 +22,6 @@ export function drawAsteroidBelt(ctx, asteroids, CENTER, color = '#888') {
 
 export function isInAsteroidHitbox(x, y, CENTER) {
   const dist = Math.sqrt((x - CENTER.x) ** 2 + (y - CENTER.y) ** 2);
-  const beltRadius = 3.3;
-  return dist >= CENTER.r + 90 && dist <= CENTER.r + 120; // ajustable
+  const r = Math.sqrt(CENTER.x ** 2 + CENTER.y ** 2);
+  return dist >= r * 0.36 && dist <= r * 0.42; // adapté à scaleOrbit(3.3)
 }
