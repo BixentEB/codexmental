@@ -5,7 +5,7 @@ import { PLANET_DATA } from './planet-database.js';
 import { Ship } from './ship-module.js';
 import { narrate } from './ship-module-narratif.js';
 import { Starfield } from './ship-stars.js';
-import { generateKuiperBelt, drawKuiperBelt, isInKuiperHitbox } from './kuiper-belt.js';
+import { generateKuiperBelt, drawKuiperBelt } from './kuiper-belt.js';
 
 const canvas = document.getElementById('simul-system');
 let currentPlanet = null;
@@ -101,17 +101,8 @@ if (!canvas) {
         const data = PLANET_DATA[p.name] || {};
         loadPlanet3D(p.name, 'surface', data);
         updatePlanetUI(data, p.name);
-        return;
+        break;
       }
-    }
-
-    // Hitbox fictive Kuiper Belt
-    if (isInKuiperHitbox(clickX, clickY, CENTER)) {
-      currentPlanet = { name: 'kuiper-zone', label: 'Ceinture de Kuiper' };
-      const data = PLANET_DATA['kuiper-zone'] || {};
-      loadPlanet3D('kuiper-zone', 'surface', data);
-      updatePlanetUI(data, 'kuiper-zone');
-      return;
     }
   }
 
