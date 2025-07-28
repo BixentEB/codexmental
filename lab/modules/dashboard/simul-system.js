@@ -32,8 +32,8 @@ if (!canvas) {
     return 70 + ratio * ((H / 2 - 20) - 70);
   };
 
-  const asteroids = generateAsteroidBelt(scaleOrbit);
-  const kuiper = generateKuiperBelt(scaleOrbit);
+  const asteroids = generateAsteroidBelt(scaleOrbit) || [];
+  const kuiper = generateKuiperBelt(scaleOrbit) || [];
 
   const planets = [
     { name: 'mercure', r: scaleOrbit(1), size: 3, angle: 0, speed: 0.015 },
