@@ -4,7 +4,6 @@ import { updatePlanetUI } from './planet-data.js';
 import { PLANET_DATA } from './planet-database.js';
 import { Ship } from './ship-module.js';
 import { narrate } from './ship-module-narratif.js';
-import { Starfield } from './ship-stars.js';
 
 const canvas = document.getElementById('simul-system');
 let currentPlanet = null;
@@ -13,7 +12,6 @@ if (!canvas) {
   console.warn("⚠️ Aucun canvas #simul-system trouvé.");
 } else {
   const ctx = canvas.getContext('2d');
-  const starfield = new Starfield(W, H);
   const W = canvas.width;
   const H = canvas.height;
   const CENTER = { x: W / 2, y: H / 2 };
@@ -70,11 +68,12 @@ if (!canvas) {
   }
 
   const kuiper = [];
-  for (let i = 0; i < 120; i++) {
-    const r = scaleOrbit(10) + Math.random() * 30;
-    const angle = Math.random() * Math.PI * 2;
-    kuiper.push({ r, angle });
-  }
+for (let i = 0; i < 120; i++) {
+  const base = 9.2 + Math.random() * 0.4; // Zone réaliste des TNO
+  const r = scaleOrbit(base) + Math.random() * 5; // Légère excentricité simulée
+  const angle = Math.random() * Math.PI * 2;
+  kuiper.push({ r, angle });
+}
 
   const ship = new Ship(CENTER);
 
@@ -115,8 +114,6 @@ if (!canvas) {
 
   function drawSystem() {
     ctx.clearRect(0, 0, W, H);
-    starfield.update();
-    starfield.draw(ctx);
 
     // Soleil
     ctx.beginPath();
@@ -160,13 +157,13 @@ if (!canvas) {
     dwarfPlanets.forEach(p => {
 
 // Ceinture de Kuiper
-    kuiper.forEach(k => {
-      const x = CENTER.x + Math.cos(k.angle) * k.r;
-      const y = CENTER.y + Math.sin(k.angle) * k.r;
-      ctx.fillStyle = 'rgba(100,100,255,0.25)';
-      ctx.fillRect(x, y, 1.2, 1.2);
-      k.angle += 0.0001;
-    });
+kuiper.forEach(k => {
+  const x = CENTER.x + Math.cos(k.angle) * k.r;
+  const y = CENTER.y + Math.sin(k.angle) * k.r;
+  ctx.fillStyle = 'rgba(120,160,255,0.2)';
+  ctx.fillRect(x, y, 1.4, 1.4);
+  k.angle += 0.0001;
+});
 
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
