@@ -356,6 +356,7 @@ export const PLANET_DATA = {
 },
 
 
+
     "kuiper-zone": {
     name: "Ceinture de Kuiper",
     type: "ceinture",
