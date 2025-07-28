@@ -6,6 +6,7 @@ import { Ship } from './ship-module.js';
 import { narrate } from './ship-module-narratif.js';
 import { Starfield } from './ship-stars.js';
 import { generateKuiperBelt, drawKuiperBelt } from './kuiper-belt.js';
+import { generateAsteroidBelt, drawAsteroidBelt, isInAsteroidHitbox } from './asteroid-belt.js';
 
 const canvas = document.getElementById('simul-system');
 let currentPlanet = null;
@@ -63,13 +64,7 @@ if (!canvas) {
     { name: 'eris', label: 'Éris', r: scaleOrbit(9), size: 2, speed: 0.0002, angle: getAngleFromJ2000(daysSince, 203830), color: '#c6f' }
   ];
 
-  const asteroids = [];
-  for (let i = 0; i < 150; i++) {
-    const r = scaleOrbit(3.3) + Math.random() * 20;
-    const angle = Math.random() * Math.PI * 2;
-    asteroids.push({ r, angle });
-  }
-
+  const asteroids = generateAsteroidBelt(scaleOrbit);
   const kuiper = generateKuiperBelt(scaleOrbit);
   const ship = new Ship(CENTER);
 
@@ -89,6 +84,15 @@ if (!canvas) {
       const data = PLANET_DATA['soleil'];
       loadPlanet3D('soleil', 'surface', data);
       updatePlanetUI(data, 'soleil');
+      return;
+    }
+
+    if (isInAsteroidHitbox(clickX, clickY, CENTER)) {
+      console.log("🪨 Ceinture d'astéroïdes — objets connus : Cérès");
+      updatePlanetUI({
+        name: 'Ceinture d’astéroïdes',
+        description: 'Zone située entre Mars et Jupiter contenant des milliers d’objets. Objet notable : Cérès.'
+      }, 'asteroid-belt');
       return;
     }
 
@@ -119,14 +123,8 @@ if (!canvas) {
     ctx.fillStyle = colors.sun;
     ctx.fill();
 
-    // Astéroïdes
-    asteroids.forEach(a => {
-      const x = CENTER.x + Math.cos(a.angle) * a.r;
-      const y = CENTER.y + Math.sin(a.angle) * a.r;
-      ctx.fillStyle = colors.asteroid;
-      ctx.fillRect(x, y, 1.5, 1.5);
-      a.angle += 0.0003;
-    });
+    // Ceinture d’astéroïdes
+    drawAsteroidBelt(ctx, asteroids, CENTER, colors.asteroid);
 
     // Ceinture de Kuiper
     drawKuiperBelt(ctx, kuiper, CENTER, colors.kuiper);
@@ -154,7 +152,7 @@ if (!canvas) {
       p.angle += p.speed;
     });
 
-    // Planètes naines + orbites visibles
+    // Planètes naines
     dwarfPlanets.forEach(p => {
       ctx.setLineDash([2, 2]);
       ctx.beginPath();
