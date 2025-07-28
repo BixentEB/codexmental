@@ -2,6 +2,7 @@
 
 export const PLANET_DATA = {
 
+  // STARS
   soleil: {
     name: "Soleil",
     type: "étoile",
@@ -22,6 +23,7 @@ export const PLANET_DATA = {
     sciName: "Sol"
   },
 
+// PLANETS  
   mercure: {
     name: "Mercure",
     type: "tellurique",
@@ -223,6 +225,7 @@ export const PLANET_DATA = {
     sciName: "Sol (Ce)"
   },
 
+  // DWARF PLANETS
   pluton: {
     name: "Pluton",
     type: "naine",
@@ -310,6 +313,7 @@ export const PLANET_DATA = {
     sciName: "Sol (Er)"
   },
 
+  // HYPOTHETIC PLANETS
   planete9: {
     name: "Planète Neuf",
     type: "hypothétique",
@@ -328,6 +332,49 @@ export const PLANET_DATA = {
     symbol: "?",
     symbolImg: null,
     sciName: "Hyp. IX"
-  }
+  },
+
+  //BELTS
+      "asteroid-belt": {
+    name: "Ceinture d'astéroïdes",
+    type: "ceinture",
+    distance: "300-600 Mkm",
+    radius: "~400 Mkm",
+    temp: "-100°C à -150°C",
+    colonized: "Inexploitable",
+    bases: [],
+    moons: [],
+    missions: ["Dawn", "Gaia", "Lucy"],
+    textures: {
+      surface: null,
+      cloud: null,
+      infrared: null
+    },
+    symbol: "☄",
+    symbolImg: "asteroid-symbol.svg",
+    sciName: "Asteroid Belt"
+  },
+
+
+    "kuiper-zone": {
+    name: "Ceinture de Kuiper",
+    type: "ceinture",
+    distance: "4 500 à 7 500 Mkm",
+    radius: "~6 000 Mkm",
+    temp: "-220°C à -250°C",
+    colonized: "Non",
+    bases: [],
+    moons: [],
+    missions: ["New Horizons", "Voyager 1", "Voyager 2"],
+    textures: {
+      surface: null,
+      cloud: null,
+      infrared: null
+    },
+    symbol: "⛛", // ou autre caractère fictif
+    symbolImg: "kuiper-symbol.svg", // optionnel
+    sciName: "Kuiper Belt"
+  },
+
 
 };
