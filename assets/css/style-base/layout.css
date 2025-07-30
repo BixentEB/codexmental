@@ -45,6 +45,31 @@ main.container {
   text-align: justify;
 }
 
+/* Notes */
+.codex-note {
+  margin-top: 2rem;
+  padding: 1.2rem;
+  border-left: 4px solid var(--color-accent, #4e89ff); /* fallback si variable absente */
+  background-color: var(--bg-subtle, rgba(78, 137, 255, 0.08));
+  border-radius: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #ccd6f6);
+}
+
+.codex-note h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-accent, #89b4ff);
+}
+
+.codex-note:hover {
+  box-shadow: 0 0 8px var(--color-accent, #4e89ff);
+  transition: box-shadow 0.3s ease;
+}
+
+
 /* 📐 Largeur contrôlée et centrée */
 .text-bloc {
   max-width: 640px;
