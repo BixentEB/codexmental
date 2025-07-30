@@ -5,7 +5,7 @@ import { PLANET_DATA } from './planet-database.js';
 import { Ship } from './ship-module.js';
 import { narrate } from './ship-module-narratif.js';
 import { Starfield } from './ship-stars.js';
-import { generateKuiperBelt, drawKuiperBelt } from './kuiper-belt.js';
+import { generateKuiperBelt, drawKuiperBelt, isInKuiperHitbox } from './kuiper-belt.js';
 import { generateAsteroidBelt, drawAsteroidBelt, isInAsteroidHitbox } from './asteroid-belt.js';
 
 const canvas = document.getElementById('simul-system');
@@ -88,6 +88,16 @@ if (!canvas) {
     }
 
     if (isInAsteroidHitbox(clickX, clickY, CENTER)) {
+    // ✅ Ajout détection Kuiper
+    if (isInKuiperHitbox(clickX, clickY, CENTER, scaleOrbit)) {
+      console.log("🧊 Ceinture de Kuiper — objets connus : Pluton, Hauméa, Makémaké, Éris...");
+      updatePlanetUI({
+        name: 'Ceinture de Kuiper',
+        description: 'Région au-delà de Neptune contenant des milliers d’objets transneptuniens. Objets notables : Pluton, Hauméa, Makémaké, Éris.'
+      }, 'kuiper-belt');
+      return;
+    }
+
       console.log("🪨 Ceinture d'astéroïdes — objets connus : Cérès");
       updatePlanetUI({
         name: 'Ceinture d’astéroïdes',
@@ -112,12 +122,6 @@ if (!canvas) {
   }
 
   
-function isInKuiperHitbox(x, y, CENTER) {
-  const dist = Math.sqrt((x - CENTER.x) ** 2 + (y - CENTER.y) ** 2);
-  const min = scaleOrbit(8.1);
-  const max = scaleOrbit(9.3);
-  return dist >= min && dist <= max;
-}
 
 
   canvas.addEventListener('click', handleClick);
