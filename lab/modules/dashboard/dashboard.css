@@ -103,10 +103,20 @@ main.dashboard {
   margin-top: 1rem;
   font-size: 0.75rem;
   line-height: 1.4;
+  display: block !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.codex-note p {
+  color: var(--color-text, #ccd6f6);
+  opacity: 1 !important;
+  font-size: 0.85rem;
 }
 
 .codex-note[open] {
-  display: block;
+  display: block !important;
+  height: auto !important;
 }
 
 .codex-note summary {
@@ -131,6 +141,10 @@ main.dashboard {
   content: "▶ ";
   font-size: 0.8rem;
   opacity: 0.5;
+}
+
+#widget-note * {
+  outline: 1px solid magenta;
 }
 
 
