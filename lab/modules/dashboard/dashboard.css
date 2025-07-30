@@ -100,70 +100,55 @@ main.dashboard {
 /* ✨ Support stylisé pour les blocs <details> codex-note */
 #widget-note {
   grid-area: note;
-  margin-top: 1rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   line-height: 1.4;
-  display: block;
+  padding: 1rem;
 }
 
-.codex-note {
-  padding: 1.2rem;
-  border-left: 4px solid var(--color-accent, #4e89ff);
-  background-color: var(--bg-subtle, rgba(78, 137, 255, 0.08));
-  border-radius: 0.6rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--text-secondary, #ccd6f6);
-  transition: box-shadow 0.3s ease;
-}
-
-.codex-note:hover {
-  box-shadow: 0 0 8px var(--color-accent, #4e89ff);
-}
-
-.codex-note summary {
-  font-weight: bold;
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-  cursor: pointer;
+.codex-note-toggle button {
+  background: none;
+  border: none;
   color: var(--color-accent, #4e89ff);
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: left;
+  padding: 0.5rem 0;
+  width: 100%;
+  transition: color 0.3s;
 }
 
-.codex-note summary::-webkit-details-marker {
-  display: none;
+.codex-note-toggle button:hover {
+  color: #73a6ff;
 }
 
-.codex-note[open] summary::before {
-  content: "▼ ";
-  font-size: 0.8rem;
+.codex-note-content {
+  background-color: var(--bg-subtle, rgba(78, 137, 255, 0.05));
+  border-left: 3px solid var(--color-accent, #4e89ff);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  color: var(--text-secondary, #ccd6f6);
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+  overflow: hidden;
+}
+
+.codex-note-content.hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.codex-note-content p {
+  margin-bottom: 0.5rem;
+}
+
+.note-astuce {
+  font-size: 0.85em;
   opacity: 0.7;
-}
-
-.codex-note summary::before {
-  content: "▶ ";
-  font-size: 0.8rem;
-  opacity: 0.5;
-}
-
-.codex-note p {
-  color: var(--color-text, #ccd6f6);
-  opacity: 1;
-  font-size: 0.85rem;
-}
-
-details.codex-note[open] {
-  animation: slideDown 0.4s ease forwards;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  font-style: italic;
 }
 
 
