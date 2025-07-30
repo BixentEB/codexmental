@@ -28,4 +28,19 @@ if (window.location.pathname.endsWith("/lab/index.html")) {
     .then(mod => mod.launchSimulMoonCanvas());                // 🌕 Simulation canvas de la Lune
 }
 
+
+// === 📝 Comportement note d'observation (bloc d'infos planétaires)
+document.addEventListener("DOMContentLoaded", () => {
+  const details = document.querySelector("#widget-note details");
+  const summary = details?.querySelector("summary");
+
+  if (details && summary) {
+    summary.addEventListener("click", () => {
+      details.classList.toggle("collapsed");
+    });
+  }
+});
+
 console.log("✅ Modules du lab chargés");
+
+
