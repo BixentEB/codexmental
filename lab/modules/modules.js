@@ -29,14 +29,14 @@ if (window.location.pathname.endsWith("/lab/index.html")) {
 }
 
 
-// === 📝 Comportement note d'observation (bloc d'infos planétaires)
+// === 📝 Toggle bloc note d'observation (dashboard)
 document.addEventListener("DOMContentLoaded", () => {
-  const details = document.querySelector("#widget-note details");
-  const summary = details?.querySelector("summary");
+  const toggleBtn = document.getElementById("toggle-note-btn");
+  const noteContent = document.getElementById("codex-note-content");
 
-  if (details && summary) {
-    summary.addEventListener("click", () => {
-      details.classList.toggle("collapsed");
+  if (toggleBtn && noteContent) {
+    toggleBtn.addEventListener("click", () => {
+      noteContent.classList.toggle("hidden");
     });
   }
 });
