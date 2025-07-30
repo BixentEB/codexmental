@@ -33,7 +33,7 @@ if (!canvas) {
     sun: '#ffaa00',
     planets: ['#aaa', '#f3a', '#0cf', '#c33', '#ffcc88', '#ccaa66', '#88f', '#44d'],
     asteroid: '#888',
-    kuiper: 'rgba(100,100,255,0.25)'
+    kuiper: 'rgba(130,130,255,0.4)'
   };
 
   const baseOrbit = 70;
@@ -96,6 +96,16 @@ if (!canvas) {
       return;
     }
 
+    if (isInKuiperHitbox(clickX, clickY, CENTER)) {
+      console.log("🌌 Ceinture de Kuiper — objets transneptuniens détectés !");
+      updatePlanetUI({
+        name: 'Ceinture de Kuiper',
+        description: 'Région glacée au-delà de Neptune contenant de nombreux objets transneptuniens. Exemples : Pluton, Hauméa, Makémaké, Éris…'
+      }, 'kuiper-belt');
+      return;
+    }
+
+
     for (const p of allBodies) {
       const px = CENTER.x + Math.cos(p.angle) * p.r;
       const py = CENTER.y + Math.sin(p.angle) * p.r;
@@ -109,6 +119,15 @@ if (!canvas) {
       }
     }
   }
+
+  
+function isInKuiperHitbox(x, y, CENTER) {
+  const dist = Math.sqrt((x - CENTER.x) ** 2 + (y - CENTER.y) ** 2);
+  const min = scaleOrbit(8.1);
+  const max = scaleOrbit(9.3);
+  return dist >= min && dist <= max;
+}
+
 
   canvas.addEventListener('click', handleClick);
 
