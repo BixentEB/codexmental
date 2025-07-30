@@ -98,22 +98,20 @@ main.dashboard {
 }
 
 /* ✨ Support stylisé pour les blocs <details> codex-note */
+#widget-note {
+  grid-area: note;
+  padding: 1rem;
+  display: block;
+  overflow: visible;
+  align-self: start; /* force à se caler en haut, utile dans une grid */
+}
+
 .codex-note {
   background-color: rgba(255, 255, 255, 0.02);
   padding: 1rem;
   border-left: 3px solid var(--color-accent, #4e89ff);
   border-radius: 8px;
   margin: 0;
-}
-
-#widget-note {
-  grid-area: note;
-  margin-top: 1rem;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  display: block !important;
-  height: auto !important;
-  overflow: visible !important;
 }
 
 .codex-note p {
@@ -155,6 +153,21 @@ main.dashboard {
 
 #widget-note * {
   outline: 1px solid magenta;
+}
+
+details.codex-note[open] {
+  animation: slideDown 0.4s ease forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
