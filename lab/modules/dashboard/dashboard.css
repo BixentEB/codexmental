@@ -131,7 +131,7 @@ main.dashboard {
 /* 📄 Contenu de la note */
 .codex-note-content {
   font-family: 'JetBrains Mono', Consolas, monospace;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   line-height: 1.5;
   color: var(--text-secondary, #ccd6f6);
   background-color: var(--bg-subtle, rgba(78, 137, 255, 0.05));
