@@ -325,7 +325,7 @@ export const PLANET_DATA = {
     moons: [],
     missions: [],
     textures: {
-      surface: null,
+      surface: "nine-surface.jpg",
       cloud: null,
       infrared: null
     },
