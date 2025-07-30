@@ -36,7 +36,8 @@ main.dashboard {
     "bloc-g1 radar radar radar bloc-d1"
     "bloc-g2 radar radar radar bloc-d2"
     "bloc-g3 radar radar radar bloc-d3"
-    "infos infos infos infos infos";
+    "infos infos infos infos infos"
+    "note note note note note";
   gap: var(--widget-gap);
   max-width: 1400px;
   margin: auto;
@@ -97,6 +98,13 @@ main.dashboard {
 }
 
 /* ✨ Support stylisé pour les blocs <details> codex-note */
+#widget-note {
+  grid-area: note;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
 .codex-note[open] {
   display: block;
 }
