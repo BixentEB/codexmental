@@ -33,13 +33,18 @@ if (window.location.pathname.endsWith("/lab/index.html")) {
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("toggle-note-btn");
   const noteContent = document.getElementById("codex-note-content");
+  const icon = toggleBtn?.querySelector(".note-icon");
 
   if (toggleBtn && noteContent) {
     toggleBtn.addEventListener("click", () => {
       noteContent.classList.toggle("hidden");
+      if (icon) {
+        icon.textContent = noteContent.classList.contains("hidden") ? "▶" : "▼";
+      }
     });
   }
 });
+
 
 console.log("✅ Modules du lab chargés");
 
