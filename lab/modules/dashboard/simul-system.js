@@ -96,15 +96,6 @@ if (!canvas) {
       return;
     }
 
-    if (isInKuiperHitbox(clickX, clickY, CENTER)) {
-      console.log("🌌 Ceinture de Kuiper — objets transneptuniens détectés !");
-      updatePlanetUI({
-        name: 'Ceinture de Kuiper',
-        description: 'Région glacée au-delà de Neptune contenant de nombreux objets transneptuniens. Exemples : Pluton, Hauméa, Makémaké, Éris…'
-      }, 'kuiper-belt');
-      return;
-    }
-
 
     for (const p of allBodies) {
       const px = CENTER.x + Math.cos(p.angle) * p.r;
