@@ -97,40 +97,50 @@ main.dashboard {
   font-weight: bold;
 }
 
-/* ✨ Support stylisé pour les blocs <details> codex-note */
+/* 🎯 Zone du widget note (grille dashboard) */
 #widget-note {
   grid-area: note;
+  padding: 1rem;
   font-size: 0.8rem;
   line-height: 1.4;
-  padding: 1rem;
 }
 
+/* 🎛️ Bouton de bascule (titre de la note) */
+#toggle-note-btn,
 .codex-note-toggle button {
-  background: none;
-  border: none;
-  color: var(--color-accent, #4e89ff);
-  font-size: 0.9rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
   font-weight: bold;
-  cursor: pointer;
-  text-align: left;
-  padding: 0.5rem 0;
+  color: var(--color-accent, #4e89ff);
+  background: none;
+  border: 1px solid var(--color-accent, #4e89ff);
+  border-radius: 0.5rem;
+  padding: 0.4rem 1rem;
   width: 100%;
-  transition: color 0.3s;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 
+#toggle-note-btn:hover,
 .codex-note-toggle button:hover {
+  background-color: rgba(78, 137, 255, 0.1);
   color: #73a6ff;
 }
 
+/* 📄 Contenu de la note */
 .codex-note-content {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #ccd6f6);
   background-color: var(--bg-subtle, rgba(78, 137, 255, 0.05));
   border-left: 3px solid var(--color-accent, #4e89ff);
   padding: 1rem;
   border-radius: 0.5rem;
   margin-top: 0.5rem;
-  color: var(--text-secondary, #ccd6f6);
-  transition: max-height 0.5s ease, opacity 0.5s ease;
   overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
 }
 
 .codex-note-content.hidden {
@@ -141,6 +151,7 @@ main.dashboard {
   pointer-events: none;
 }
 
+/* 📝 Paragraphe et note astuce */
 .codex-note-content p {
   margin-bottom: 0.5rem;
 }
