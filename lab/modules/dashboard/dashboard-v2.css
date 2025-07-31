@@ -471,3 +471,61 @@ body.lab #mobile-menu li button[onclick*='setTheme'] {
 body.lab #svg-lune-widget {
   display: none !important;
 }
+
+
+
+/* === HUD ENHANCEMENTS V2 === */
+:root {
+  --color-glow: rgba(0, 255, 255, 0.25);
+  --text-glow: 0 0 6px rgba(0, 255, 255, 0.5);
+  --widget-glow: 0 0 12px rgba(0, 255, 255, 0.1);
+  --color-magenta: #ff33cc;
+  --color-purple: #9e00ff;
+}
+
+/* Widgets avec glow + scaling */
+.widget {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--widget-glow);
+}
+.widget:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 20px var(--color-glow);
+}
+
+/* Titres lumineux */
+.widget h2, .widget h3, #planet-name {
+  text-shadow: var(--text-glow);
+  color: var(--color-cyan, #0ff);
+}
+
+/* Menus HUD */
+.codex-select {
+  box-shadow: 0 0 6px rgba(0, 255, 255, 0.1);
+}
+.codex-select:hover,
+.codex-select:focus {
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+}
+
+/* Canvas visuels */
+#planet-main-viewer,
+#moon-viewer,
+#simul-system {
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+/* Radar HUD central */
+#widget-core-radar {
+  background: radial-gradient(circle at center, rgba(0,255,255,0.03) 0%, transparent 90%);
+  box-shadow: inset 0 0 12px rgba(0,255,255,0.06);
+  border: 2px solid rgba(0,255,255,0.1);
+}
+
+/* Titres verticaux glow */
+#dashboard-title-left,
+#dashboard-title-right {
+  text-shadow: 0 0 6px rgba(255, 0, 255, 0.4);
+  color: var(--color-purple);
+}
