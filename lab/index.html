@@ -51,16 +51,24 @@
 
   <!-- Viewer Planète -->
   <div id="bloc-g1" class="widget">
-    <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
-    <div style="margin-top: 0.5rem;">
-      <label for="layer-select">🛰️ Couche :</label>
-      <select id="layer-select" class="codex-select">
-        <option value="surface" selected>Surface</option>
-        <option value="cloud">Nuages</option>
-        <option value="infrared">Infrarouge</option>
-      </select>
-    </div>
+  <div class="hud-title">Planète</div> <!-- ✅ Ajout décoratif -->
+
+  <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
+
+  <div style="margin-top: 0.5rem;">
+    <label for="layer-select">🛰️ Couche :</label>
+    <select id="layer-select" class="codex-select">
+      <option value="surface" selected>Surface</option>
+      <option value="cloud">Nuages</option>
+      <option value="infrared">Infrarouge</option>
+    </select>
   </div>
+
+  <div class="hud-bar">
+    <span></span><span></span><span></span><span></span>
+  </div> <!-- ✅ Bande décorative -->
+</div>
+
 
   <!-- Informations Principales -->
   <div id="bloc-g2" class="widget">
