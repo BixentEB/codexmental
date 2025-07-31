@@ -16,6 +16,8 @@
 
   <!-- 🎨 Styles modules du labo -->
   <link rel="stylesheet" href="/lab/modules/modules.css">
+  <link id="dashboard-style" rel="stylesheet" href="/lab/modules/dashboard/dashboard.css">
+
 
   <!-- ⚙️ Script principal site -->
   <script type="module" src="/assets/js/main.js"></script>
@@ -151,6 +153,7 @@
 </main>
 
   <!-- SELECTEUR THEME TEMPORAIRE -->
+  <!-- 🔁 Toggle dashboard.css / dashboard-v2.css -->
 <button id="theme-toggle" style="
   position: fixed; top: 100px; right: 20px;
   z-index: 1000; background: rgba(0,255,255,0.1);
@@ -163,15 +166,16 @@ HUD V1 / V2
 <script>
 const themeToggleBtn = document.getElementById("theme-toggle");
 let usingV2 = false;
+const styleTag = document.getElementById("dashboard-style");
+
 themeToggleBtn.addEventListener("click", () => {
-  const root = document.documentElement;
-  const newPath = usingV2
+  styleTag.href = usingV2
     ? "/lab/modules/dashboard/dashboard.css"
     : "/lab/modules/dashboard/dashboard-v2.css";
-  root.style.setProperty('--dashboard-theme', `url("${newPath}")`);
   usingV2 = !usingV2;
 });
 </script>
+
 
   
   <!-- 🡸 Footer injecté dynamiquement -->
