@@ -34,18 +34,6 @@
   
   
   <main class="dashboard">
-
-<!-- SELECTEUR THEME TEMPORAIRE -->
-<button id="theme-toggle" style="
-  position: fixed; top: 100px; right: 20px;
-  z-index: 1000; background: rgba(0,255,255,0.1);
-  border: 1px solid cyan; padding: 6px 10px;
-  font-family: Orbitron, sans-serif; font-size: 0.6rem;
-  color: cyan; cursor: pointer;">
-HUD V1 / V2
-</button>
-
-
     
   <!-- 🧭 Titres verticaux -->
   <div id="dashboard-title-left">ORION INTERFACE</div>
@@ -162,30 +150,27 @@ HUD V1 / V2
 
 </main>
 
-  <!-- 🔬 script temporaire select theme -->
-  <script>
-  const themeToggleBtn = document.getElementById("theme-toggle");
-  const head = document.head;
+  <!-- SELECTEUR THEME TEMPORAIRE -->
+<button id="theme-toggle" style="
+  position: fixed; top: 100px; right: 20px;
+  z-index: 1000; background: rgba(0,255,255,0.1);
+  border: 1px solid cyan; padding: 6px 10px;
+  font-family: Orbitron, sans-serif; font-size: 0.6rem;
+  color: cyan; cursor: pointer;">
+HUD V1 / V2
+</button>
 
-  // 🔁 Cherche la feuille actuelle
-  let currentLink = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-    .find(link => link.href.includes("dashboard"));
-
-  const linkV1 = "/lab/modules/dashboard/dashboard.css";
-  const linkV2 = "/lab/modules/dashboard/dashboard-v2.css";
-
-  themeToggleBtn.addEventListener("click", () => {
-    const newHref = currentLink.href.includes("dashboard-v2")
-      ? linkV1
-      : linkV2;
-
-    const newLink = document.createElement("link");
-    newLink.rel = "stylesheet";
-    newLink.href = newHref;
-
-    head.replaceChild(newLink, currentLink);
-    currentLink = newLink;
-  });
+<script>
+const themeToggleBtn = document.getElementById("theme-toggle");
+let usingV2 = false;
+themeToggleBtn.addEventListener("click", () => {
+  const root = document.documentElement;
+  const newPath = usingV2
+    ? "/lab/modules/dashboard/dashboard.css"
+    : "/lab/modules/dashboard/dashboard-v2.css";
+  root.style.setProperty('--dashboard-theme', `url("${newPath}")`);
+  usingV2 = !usingV2;
+});
 </script>
 
   
