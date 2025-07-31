@@ -1,8 +1,13 @@
 /* modules.css – Feuille de styles centralisée pour les widgets du Lab Codex */
 
 @import url("/lab/modules/simul-moon/simul-moon.css");
-@import url("/lab/modules/dashboard/dashboard.css");
+
+@import url("/lab/modules/dashboard/dashboard-structure.css");
 
 /* Autres modules à importer ici */
 /* @import url("/lab/modules/widget-solaire/widget-solaire.css"); */
 /* @import url("/lab/modules/widget-astro/widget-astro.css"); */
+
+
+/* Anciens css, en cas de problème technique on les réimplante */
+/* @import url("/lab/modules/dashboard/dashboard.css"); */
