@@ -1,531 +1,142 @@
-/** =======================================================
-    Dashboard SF – Codex Mental (Vincent)
-    Fichier : /lab/modules/dashboard/dashboard.css
-======================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=JetBrains+Mono&display=swap');
+/* === DASHBOARD V2 - STYLE FUTURISTE COMPLET === */
 
 :root {
-  --color-bg: linear-gradient(#0a0a14, #050510);
-  --color-primary: #0ff4;
-  --color-text: #d0eaff;
-  --color-shadow: rgba(0, 255, 255, 0.15);
-  --color-frame: rgba(255, 255, 255, 0.02);
-  --color-border: rgba(0, 255, 255, 0.06);
-  --widget-gap: 1rem;
-  --widget-padding: 1rem;
-  --widget-radius: 12px;
-  --widget-border: 1px solid var(--color-border);
+  --color-bg: #070a1a;
+  --color-accent: #00f0ff;
+  --color-glow: rgba(0, 255, 255, 0.4);
+  --color-border: #00c0ff;
+  --color-text: #d4faff;
+  --font-primary: 'Orbitron', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
-body.theme-stellaire {
-  font-family: 'Orbitron', 'JetBrains Mono', sans-serif;
+/* Fond général */
+body {
   background: var(--color-bg);
   color: var(--color-text);
+  font-family: var(--font-mono);
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
-/* === Nouvelle grille principale avec 3 blocs titres === */
-main.dashboard {
+/* Effet étoilé en fond */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('/lab/modules/dashboard/img/starscape.png') repeat;
+  opacity: 0.08;
+  z-index: 0;
+}
+
+/* Grille principale */
+#dashboard {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 70px 200px 200px 200px auto;
   grid-template-areas:
     "alert-left planet-symbol planet-name planet-scientific-name alert-right"
     "bloc-g1 radar radar radar bloc-d1"
     "bloc-g2 radar radar radar bloc-d2"
     "bloc-g3 radar radar radar bloc-d3"
-    "infos infos infos infos infos"
+    "zone-vaisseau zone-vaisseau zone-vaisseau zone-vaisseau zone-vaisseau"
     "note note note note note";
-  gap: var(--widget-gap);
-  max-width: 1400px;
-  margin: auto;
-  padding: 6rem 2rem 2rem;
-  padding-inline: 4rem;
+  gap: 10px;
+  padding: 20px;
   position: relative;
-  box-sizing: border-box;
+  z-index: 1;
 }
 
-/* === Nouveaux blocs pour les titres planétaires === */
-#planet-symbol {
-  grid-area: planet-symbol;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Blocs généraux */
+.info-widget {
+  background: linear-gradient(145deg, rgba(0,10,30,0.7), rgba(0,30,60,0.7));
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 0 12px var(--color-glow);
+  padding: 1rem;
+  position: relative;
+  transition: 0.3s ease;
+}
+.info-widget:hover {
+  box-shadow: 0 0 20px var(--color-accent);
+  border-color: var(--color-accent);
 }
 
-#planet-name {
-  grid-area: planet-name;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  font-weight: bold;
+/* Titres de blocs */
+.info-widget h3, .info-widget h4, .info-widget .label {
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text);
-}
-
-#planet-scientific-name {
-  grid-area: planet-scientific-name;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-style: italic;
-  opacity: 0.65;
-  color: var(--color-text);
-}
-
-/* === Style du symbole === */
-.symbol-img {
-  max-height: 40px;
-  display: block;
-  margin: auto;
-  opacity: 0.85;
-}
-
-.symbol-text {
-  font-size: 1.6rem;
-  text-align: center;
-  line-height: 1;
-  opacity: 0.8;
-  font-weight: bold;
-}
-
-/* 🎯 Zone du widget note (grille dashboard) */
-#widget-note {
-  grid-area: note;
-  padding: 1rem;
-  font-size: 0.8rem;
-  line-height: 1.4;
-}
-
-/* 🎛️ Bouton de bascule (titre de la note) */
-#toggle-note-btn,
-.codex-note-toggle button {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: var(--color-accent, #4e89ff);
-  background: none;
-  border: 1px solid var(--color-accent, #4e89ff);
-  border-radius: 0.5rem;
-  padding: 0.4rem 1rem;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-#toggle-note-btn:hover,
-.codex-note-toggle button:hover {
-  background-color: rgba(78, 137, 255, 0.1);
-  color: #73a6ff;
-}
-
-/* 📄 Contenu de la note */
-.codex-note-content {
-  font-family: 'JetBrains Mono', Consolas, monospace;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: var(--text-secondary, #ccd6f6);
-  background-color: var(--bg-subtle, rgba(78, 137, 255, 0.05));
-  border-left: 3px solid var(--color-accent, #4e89ff);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-top: 0.5rem;
-  overflow: hidden;
-  transition: max-height 0.5s ease, opacity 0.5s ease;
-}
-
-.codex-note-content.hidden {
-  max-height: 0;
-  opacity: 0;
-  padding: 0;
-  margin: 0;
-  pointer-events: none;
-}
-
-/* 📝 Paragraphe et note astuce */
-.codex-note-content p {
-  margin-bottom: 0.5rem;
-}
-
-.note-astuce {
-  font-size: 0.85em;
-  opacity: 0.7;
-  font-style: italic;
-}
-
-
-/* === Wigets === */
-.widget {
-  position: relative;
-  background: var(--color-frame) !important;
-  border: var(--widget-border);
-  border-radius: var(--widget-radius);
-  box-shadow: none !important;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: var(--widget-padding);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden;
-}
-
-.widget h2 {
-  margin: 0 auto 0.8rem auto;
-  font-size: 0.55rem !important;
-  text-align: center;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  padding-bottom: 0.2rem;
-  opacity: 0.6;
-  width: 90%;
-}
-
-.widget h2::before,
-.widget h2::after {
-  display: none !important;
-}
-
-.widget[data-active="false"]::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 120px;
-  height: 120px;
-  border: 1px dashed var(--color-primary);
-  border-radius: 50%;
-  transform: translate(-50%, -50%) rotate(0deg);
-  animation: spinRadar 4s linear infinite;
-  opacity: 0.08;
-  pointer-events: none;
-}
-
-#widget-soleil[data-active="false"]::before {
-  display: none !important;
-}
-
-@keyframes spinRadar {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-#alert-left     { grid-area: alert-left; height: 70px; }
-#alert-center   { grid-area: alert-center; height: 70px; }
-#alert-right    { grid-area: alert-right; height: 70px; }
-
-#bloc-g1        { grid-area: bloc-g1; }
-#bloc-g2        { grid-area: bloc-g2; }
-#bloc-g3        { grid-area: bloc-g3; }
-
-#bloc-d1        { grid-area: bloc-d1; }
-#bloc-d2        { grid-area: bloc-d2; }
-#bloc-d3        { grid-area: bloc-d3; }
-
-#widget-core-radar {
-  grid-area: radar;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1 / 1;
-  width: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-#widget-core-radar canvas {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-}
-
-/* Corps célèstes hypothétiques */
-.hypothetical {
-  stroke: #8888ff;
-  stroke-width: 1;
-  stroke-dasharray: 2,2;
-  fill: rgba(136, 136, 255, 0.3);
-}
-
-#widget-infos {
-  grid-area: infos;
-  display: block;
-  height: 200px;
-  overflow: hidden;
-  padding: 0.5rem;
-}
-
-#widget-planet-viewer,
-#widget-planet-info {
-  height: 100%;
-}
-
-.infos-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.2rem;
-  width: 100%;
-}
-
-.info-subwidget {
-  background: transparent;
-  border-left: none;
-  border-right: none;
-  border-radius: 0;
-  padding: 0 0.5rem;
-  font-size: 0.6rem;
-  position: relative;
-}
-
-.info-subwidget:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 15%;
-  bottom: 15%;
-  width: 1px;
-  background: rgba(0, 255, 255, 0.1);
-}
-
-#widget-infos .info-subwidget h3 {
-  font-size: 0.55rem !important;
   margin: 0 0 0.5rem 0;
-  font-weight: 600;
-  color: var(--color-text);
-  opacity: 0.85;
+  color: var(--color-accent);
+  letter-spacing: 1px;
 }
 
-
-/* MENU SELECTION */
-.codex-select {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 3;
-}
-
-.widget h3 {
-  margin-top: 1.6rem !important;
-}
-
-.codex-select {
-  background-color: #071018;
-  color: cyan;
-  border: 1px solid cyan;
-  font-family: 'Orbitron', sans-serif;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.6rem;
-  appearance: none;
-  cursor: pointer;
-}
-
-.codex-select:focus,
-.codex-select:hover {
-  background-color: #03141c;
-  box-shadow: 0 0 4px rgba(0, 255, 255, 0.2);
-  outline: none;
-}
-
-.codex-select option {
-  background-color: #071018;
-  color: cyan;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.6rem;
-}
-
-
-
-/* 🔁 Fade-out des logs radar */
-#info-missions div.fade-out {
-  opacity: 0;
-  transition: opacity 2s ease-in-out;
-}
-
-
-
-/* TITRES VERTICAUX DE LA CONSOLE */
-#dashboard-title-left {
-  position: absolute;
-  top: 4rem;
-  left: 0.5rem;
-  height: 60%;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.4rem !important;
-  letter-spacing: 0.3rem !important;
-  color: var(--color-primary);
-  opacity: 0.9 !important;
-  pointer-events: none;
-  z-index: 2;
-}
-
-#dashboard-title-right {
-  position: absolute;
-  bottom: 2rem;
-  right: 0.5rem;
-  height: 50%;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem !important;
-  letter-spacing: 0.25rem !important;
-  color: var(--color-primary);
-  opacity: 0.9 !important;
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* === 🌙 Bloc Lunes enrichi === */
-.moon-block {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(0, 255, 255, 0.06);
-  border-radius: 10px;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.52rem;
-  line-height: 1.3;
-  color: var(--color-text);
-  backdrop-filter: blur(3px);
-  box-shadow: 0 0 4px rgba(0, 255, 255, 0.05);
-}
-
-.moon-block img {
-  display: block;
-  margin: 0.3rem auto;
-  max-width: 70px;
-  border-radius: 6px;
-  opacity: 0.85;
-}
-
-.moon-block.glass {
-  background: rgba(0, 255, 255, 0.04);
-  border: 1px solid rgba(0, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 0.8rem;
-  margin: 0.5rem auto;
-  max-width: 90%;
-  backdrop-filter: blur(6px) brightness(1.05);
-  -webkit-backdrop-filter: blur(6px) brightness(1.05);
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.08);
-  font-size: 0.54rem;
-  color: var(--color-text);
-  transition: transform 0.3s ease;
-}
-
-.moon-block.glass:hover {
-  transform: scale(1.015);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
-}
-
-.moon-block.glass img {
-  display: block;
-  margin: 0.5rem auto 0.8rem auto;
-  max-width: 80px;
-  border-radius: 10px;
-  opacity: 0.95;
-  box-shadow: 0 0 4px rgba(0, 255, 255, 0.05);
-}
-
-
-
-@media (max-width: 900px) {
-  main.dashboard {
-    display: block;
-    padding: 4rem 1rem;
-  }
-  .widget {
-    margin-bottom: 1.5rem;
-  }
-  #dashboard-title-left,
-  #dashboard-title-right {
-    display: none;
-  }
-}
-
-body.lab .theme-fab-container,
-body.lab #mobile-menu li strong,
-body.lab #mobile-menu li button[onclick*='setTheme'] {
-  display: none !important;
-}
-
-body.lab #svg-lune-widget {
-  display: none !important;
-}
-
-
-
-/* === HUD ENHANCEMENTS V2 === */
-:root {
-  --color-glow: rgba(0, 255, 255, 0.25);
-  --text-glow: 0 0 6px rgba(0, 255, 255, 0.5);
-  --widget-glow: 0 0 12px rgba(0, 255, 255, 0.1);
-  --color-magenta: #ff33cc;
-  --color-purple: #9e00ff;
-}
-
-/* Widgets avec glow + scaling */
-.widget {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: var(--widget-glow);
-}
-.widget:hover {
-  transform: scale(1.01);
-  box-shadow: 0 0 20px var(--color-glow);
-}
-
-/* Titres lumineux */
-.widget h2, .widget h3, #planet-name {
-  text-shadow: var(--text-glow);
-  color: var(--color-cyan, #0ff);
-}
-
-/* Menus HUD */
-.codex-select {
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.1);
-}
-.codex-select:hover,
-.codex-select:focus {
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
-}
-
-/* Canvas visuels */
-#planet-main-viewer,
-#moon-viewer,
+/* Radar central */
 #simul-system {
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--color-border);
   border-radius: 50%;
+  box-shadow: 0 0 20px var(--color-glow);
+  background: radial-gradient(circle at center, rgba(0,255,255,0.05), transparent);
 }
 
-/* Radar HUD central */
-#widget-core-radar {
-  background: radial-gradient(circle at center, rgba(0,255,255,0.03) 0%, transparent 90%);
-  box-shadow: inset 0 0 12px rgba(0,255,255,0.06);
-  border: 2px solid rgba(0,255,255,0.1);
+/* Zone vaisseau */
+#zone-vaisseau {
+  grid-area: zone-vaisseau;
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(0,0,0,0.3);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 0 15px var(--color-glow);
+}
+#zone-vaisseau h3 {
+  color: var(--color-accent);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+#zone-vaisseau ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+#zone-vaisseau li {
+  font-size: 0.8rem;
+  padding: 0.2rem 0;
 }
 
-/* Titres verticaux glow */
-#dashboard-title-left,
-#dashboard-title-right {
-  text-shadow: 0 0 6px rgba(255, 0, 255, 0.4);
-  color: var(--color-purple);
+/* Boutons HUD */
+button {
+  font-family: var(--font-primary);
+  background: rgba(0,255,255,0.08);
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+button:hover {
+  background: rgba(0,255,255,0.2);
+  box-shadow: 0 0 8px var(--color-accent);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  #dashboard {
+    grid-template-areas:
+      "planet-symbol planet-name"
+      "radar radar"
+      "zone-vaisseau zone-vaisseau"
+      "note note";
+    grid-template-columns: 1fr 1fr;
+  }
+  #zone-vaisseau {
+    grid-template-columns: 1fr;
+  }
 }
