@@ -1,33 +1,103 @@
+/* =======================================================
+   dashboard-theme-hud.css
+   Thème visuel futuriste SF en CSS pur pour widgets
+   Inspiré des interfaces HUD
+======================================================= */
 
-/* HUD futuristic blocks for dashboard layout */
-
-#bloc-g1, #bloc-g2, #bloc-g3,
-#bloc-d1, #bloc-d2, #bloc-d3,
-#infos, #note {
-  position: relative;
-  background: linear-gradient(to bottom right, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
-  border: 2px solid cyan;
-  clip-path: polygon(0% 8%, 4% 0%, 96% 0%, 100% 8%, 100% 92%, 96% 100%, 4% 100%, 0% 92%);
-  padding: 1.2rem;
-  color: #aef;
-  font-family: JetBrains Mono, monospace;
-  box-shadow: 0 0 12px rgba(0,255,255,0.25);
-  transition: all 0.3s ease;
+:root {
+  --hud-border: 2px solid #00f0ff;
+  --hud-bg: rgba(0, 20, 40, 0.85);
+  --hud-glow: 0 0 8px rgba(0, 255, 255, 0.4);
+  --hud-accent: #00ffff;
+  --hud-corner-size: 14px;
 }
 
-#bloc-g1::before, #bloc-g2::before, #bloc-g3::before,
-#bloc-d1::before, #bloc-d2::before, #bloc-d3::before,
-#infos::before, #note::before {
-  content: attr(data-title);
+/* Style global HUD */
+.widget {
+  position: relative;
+  background: var(--hud-bg);
+  border: var(--hud-border);
+  border-radius: 6px;
+  padding: 1rem;
+  box-shadow: var(--hud-glow);
+  color: var(--hud-accent);
+  font-family: 'Orbitron', sans-serif;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Coins sci-fi */
+.widget::before,
+.widget::after {
+  content: "";
   position: absolute;
-  top: -1rem;
+  width: var(--hud-corner-size);
+  height: var(--hud-corner-size);
+  background: var(--hud-accent);
+}
+
+.widget::before {
+  top: 0;
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  opacity: 0.2;
+}
+
+.widget::after {
+  bottom: 0;
+  right: 0;
+  clip-path: polygon(100% 100%, 0 100%, 100% 0);
+  opacity: 0.2;
+}
+
+/* Titre en haut avec bandeau */
+.widget .hud-title {
+  position: absolute;
+  top: -0.7rem;
   left: 0.5rem;
-  font-size: 0.7rem;
-  color: cyan;
-  background: #000814;
-  padding: 2px 8px;
-  border: 1px solid cyan;
-  clip-path: polygon(0 0, 100% 0, 96% 100%, 4% 100%);
+  background: var(--hud-accent);
+  color: #000;
+  font-size: 0.6rem;
+  font-weight: bold;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
   text-transform: uppercase;
-  font-family: Orbitron, sans-serif;
+  letter-spacing: 0.05rem;
+  z-index: 1;
+}
+
+/* Bandeaux inférieurs stylisés */
+.widget .hud-bar {
+  position: absolute;
+  bottom: 0.2rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 2px;
+  z-index: 1;
+}
+
+.widget .hud-bar span {
+  display: block;
+  width: 6px;
+  height: 10px;
+  background: var(--hud-accent);
+  opacity: 0.3;
+  transform: skewX(-20deg);
+}
+
+/* Activation pour TOUS les blocs principaux */
+#bloc-g1::before, #bloc-g1::after,
+#bloc-g2::before, #bloc-g2::after,
+#bloc-g3::before, #bloc-g3::after,
+#bloc-d1::before, #bloc-d1::after,
+#bloc-d2::before, #bloc-d2::after,
+#bloc-d3::before, #bloc-d3::after,
+#bloc-g1 .hud-title, #bloc-g1 .hud-bar,
+#bloc-g2 .hud-title, #bloc-g2 .hud-bar,
+#bloc-g3 .hud-title, #bloc-g3 .hud-bar,
+#bloc-d1 .hud-title, #bloc-d1 .hud-bar,
+#bloc-d2 .hud-title, #bloc-d2 .hud-bar,
+#bloc-d3 .hud-title, #bloc-d3 .hud-bar {
+  display: block;
 }
