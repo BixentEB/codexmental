@@ -1,8 +1,8 @@
-// kuiper-belt.js — module pour génération, dessin et détection de la ceinture de Kuiper
+// kuiper-belt.js — version réaliste optimisée
 
 export function generateKuiperBelt(scaleOrbit) {
   const belt = [];
-  for (let i = 0; i < 160; i++) {
+  for (let i = 0; i < 240; i++) {
     const base = 9.3 + Math.random() * 0.3; // entre 9.3 et 9.6
     const r = scaleOrbit(base);
     const angle = Math.random() * Math.PI * 2;
@@ -11,12 +11,12 @@ export function generateKuiperBelt(scaleOrbit) {
   return belt;
 }
 
-export function drawKuiperBelt(ctx, belt, center, color = 'rgba(130,130,255,0.4)') {
+export function drawKuiperBelt(ctx, belt, center, color = 'rgba(160,180,255,0.45)') {
   belt.forEach(k => {
     const x = center.x + Math.cos(k.angle) * k.r;
     const y = center.y + Math.sin(k.angle) * k.r;
     ctx.fillStyle = color;
-    ctx.fillRect(x, y, 1.2, 1.2);
+    ctx.fillRect(x, y, 1.8, 1.8); // légèrement plus visibles
     k.angle += 0.0001;
   });
 }
