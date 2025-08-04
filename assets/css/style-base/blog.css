@@ -158,14 +158,15 @@ body:not(.theme-lunaire) #article-viewer {
   padding: 2px 6px;
   margin-right: 6px;
   border-radius: 6px;
-  background-color: var(--new-bg, rgba(255, 255, 255, 0.1));
-  color: var(--new-color, #ffd700);
-  border: 1px solid var(--new-border, rgba(255, 255, 255, 0.3));
+  background-color: var(--btn-bg, rgba(255, 255, 255, 0.08));
+  color: var(--btn-color, #ffd700);
+  border: 1px solid var(--btn-border, rgba(255, 255, 255, 0.3));
   text-transform: uppercase;
   letter-spacing: 0.03em;
   vertical-align: middle;
   line-height: 1;
 }
+
 
 
 
