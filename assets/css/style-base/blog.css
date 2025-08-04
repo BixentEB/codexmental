@@ -173,6 +173,13 @@ body.theme-galactique .new-badge {
   border-color: rgba(240, 200, 255, 0.4); /* bord doux lumineux */
 }
 
+/*symbole mis en valeur ~. */
+.symb-tilt {
+  display: inline-block;
+  transform: rotate(-90deg);
+  font-size: 1.2em;
+}
+
 
 
 
