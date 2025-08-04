@@ -176,9 +176,11 @@ body.theme-galactique .new-badge {
 /*symbole mis en valeur ~. */
 .symb-tilt {
   display: inline-block;
-  transform: rotate(-90deg);
-  font-size: 1.2em;
+  transform: rotate(90deg); /* pile vertical */
+  font-style: normal;
+  opacity: 0.95;
 }
+
 
 
 
