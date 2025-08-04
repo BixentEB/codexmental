@@ -160,3 +160,9 @@ body.theme-solaire .tabs .tab.active {
   background: var(--accent-primary, #f57f17); /* fond accent solaire */
   color: #fff; /* texte blanc dessus */
 }
+
+/* Correctif pour fond */
+body.theme-solaire {
+  --bg-subtle: rgba(255, 230, 180, 0.3); /* beige translucide doux */
+  --color-accent: #d97706; /* orange solaire (déjà utilisé ailleurs) */
+}
