@@ -12,6 +12,8 @@ import '/assets/js/viewer.js';
 import '/assets/js/cookie.js';
 import '/assets/js/onglets.js';
 import '/assets/js/table.js';
+import '/assets/js/new-badge.js'; // Module ajoutant un badge "new" aux articles récemment ajoutés avec mention data-date
+
 
 // === 🔧 Modules à fonctions exportées ===
 import { setTheme } from '/assets/js/theme-engine.js';
@@ -75,3 +77,4 @@ window.setTheme = (theme) => {
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
+
