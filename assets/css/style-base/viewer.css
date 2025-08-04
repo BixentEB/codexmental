@@ -150,6 +150,17 @@
   opacity: 0.85;
 }
 
+/* ⚙️ Surcharge spécifique au thème solaire */
+body.theme-solar .codex-note {
+  background-color: rgba(255, 255, 210, 0.2); /* jaune doux transparent */
+  color: #333;
+  border-left-color: #d88; /* accent chaud pour se détacher */
+}
+
+body.theme-solar .codex-note h4 {
+  color: #aa5500; /* accent chaud pour les titres */
+}
+
 
 
 
