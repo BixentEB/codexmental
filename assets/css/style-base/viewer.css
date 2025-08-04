@@ -145,6 +145,11 @@
   box-shadow: 0 0 8px var(--color-accent, #5cf);
 }
 
+.note-small {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
 
 
 
