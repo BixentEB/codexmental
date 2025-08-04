@@ -150,6 +150,18 @@ body:not(.theme-lunaire) #article-viewer {
   margin-top: -80px;
 }
 
+/*Badge "new" devant nouveaux articles moins de 7 jours*/
+.new-badge {
+  color: red;
+  font-weight: bold;
+  font-size: 0.65em;
+  margin-right: 6px;
+  background: yellow;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+
 
 @media screen and (max-width: 768px) {
   .blog-layout {
