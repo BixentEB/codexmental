@@ -152,14 +152,21 @@ body:not(.theme-lunaire) #article-viewer {
 
 /*Badge "new" devant nouveaux articles moins de 7 jours*/
 .new-badge {
-  color: red;
-  font-weight: bold;
+  display: inline-block;
   font-size: 0.65em;
+  font-weight: bold;
+  padding: 2px 6px;
   margin-right: 6px;
-  background: yellow;
-  padding: 2px 4px;
-  border-radius: 3px;
+  border-radius: 6px;
+  background-color: var(--new-bg, rgba(255, 255, 255, 0.1));
+  color: var(--new-color, #ffd700);
+  border: 1px solid var(--new-border, rgba(255, 255, 255, 0.3));
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+  line-height: 1;
 }
+
 
 
 
