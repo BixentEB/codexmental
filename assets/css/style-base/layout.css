@@ -80,6 +80,16 @@ main.container {
   transform: translateY(0);
 }
 
+/*Badge "new" devant nouveaux articles moins de 7 jours*/
+.new-badge {
+  color: red;
+  font-weight: bold;
+  font-size: 0.65em;
+  margin-right: 6px;
+  background: yellow;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
 
 
 
@@ -278,5 +288,6 @@ footer .theme-buttons {
   --bloc-border: rgba(255, 255, 255, 0.15);
   --bloc-shadow: rgba(0, 0, 0, 0.2);
 }
+
 
 
