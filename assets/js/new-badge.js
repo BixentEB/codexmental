@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const NEW_THRESHOLD_DAYS = 7; // ← nombre de jours où l'article est considéré comme "new"
-  const links = document.querySelectorAll('#menu-articles a');
+  const NEW_THRESHOLD_DAYS = 7;
+  const links = document.querySelectorAll('#viewer-menu a[data-date]'); // 👈 ici la bonne cible
 
   links.forEach(link => {
     const dateStr = link.dataset.date;
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const newBadge = document.createElement('span');
       newBadge.textContent = "NEW";
       newBadge.classList.add("new-badge");
-      link.prepend(newBadge); // ou link.append(newBadge) selon design
+      link.prepend(newBadge);
     }
   });
 });
