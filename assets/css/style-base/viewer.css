@@ -114,11 +114,12 @@
 #article-viewer .codex-note,
 #viewer .codex-note {
   margin-top: 2rem;
+  margin-bottom: 2em;
   padding: 1.2rem;
-  border-left: 4px solid var(--color-accent, #4e89ff);
-  background-color: var(--bg-subtle, rgba(78, 137, 255, 0.08));
+  border-left: 4px solid var(--color-accent, #5cf);
+  background-color: var(--bg-subtle, rgba(0, 0, 32, 0.7)); /* ta valeur par défaut + fallback */
   border-radius: 0.6rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.6;
   color: var(--text-secondary, #ccd6f6);
   opacity: 1;
@@ -126,18 +127,24 @@
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
+#article-viewer .codex-note p,
+#viewer .codex-note p {
+  margin-bottom: 0.9em;
+}
+
 #article-viewer .codex-note h4,
 #viewer .codex-note h4 {
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
   font-weight: bold;
-  color: var(--color-accent, #89b4ff);
+  color: var(--color-accent, #5cf);
 }
 
 #article-viewer .codex-note:hover,
 #viewer .codex-note:hover {
-  box-shadow: 0 0 8px var(--color-accent, #4e89ff);
+  box-shadow: 0 0 8px var(--color-accent, #5cf);
 }
+
 
 
 
