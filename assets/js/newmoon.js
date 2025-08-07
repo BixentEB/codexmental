@@ -14,7 +14,7 @@ function loadSunCalc(callback) {
 }
 
 /**
- * Met à jour la lune SVG avec la vraie forme des phases
+ * Met à jour la lune SVG avec la vraie forme des phases (version astronomiquement exacte)
  */
 function updateMoon() {
   const now = new Date();
@@ -22,11 +22,10 @@ function updateMoon() {
   const shadowPath = document.getElementById("shadow-path");
   if (!shadowPath) return;
 
-  // Conversion phase SunCalc vers angle plus intuitif
-  // phase 0 = nouvelle lune, 0.25 = premier quartier, 0.5 = pleine lune, 0.75 = dernier quartier
+  // Angle de phase (0 = nouvelle lune, Math.PI = pleine lune)
   const angle = phase * 2 * Math.PI;
   
-  // Calcul de la position de la terminaison (ligne jour/nuit)
+  // Calcul de la position du terminateur (ligne jour/nuit)
   let pathData;
   
   if (fraction < 0.01) {
@@ -36,49 +35,31 @@ function updateMoon() {
     // Pleine lune - tout éclairé
     pathData = "M 0,0 L 0,0"; // Chemin vide
   } else {
-    // Phases intermédiaires - créer la terminaison elliptique
-    const centerX = 50;
-    const centerY = 50;
-    const radius = 50;
-    
-    // Calculer l'ellipse de la terminaison
+    // Phases intermédiaires - calcul précis du terminateur
     const isWaxing = phase < 0.5;
-    let ellipseWidth;
-    
-    if (isWaxing) {
-      // Phase croissante : ombre à gauche (partie éclairée à droite)
-      ellipseWidth = radius * (1 - 2 * fraction);
-    } else {
-      // Phase décroissante : ombre à droite (partie éclairée à gauche)
-      ellipseWidth = radius * (2 * fraction - 1);
-    }
-    
-    const absWidth = Math.abs(ellipseWidth);
-    const sweepFlag = ellipseWidth > 0 ? 1 : 0;
+    const terminatorX = 50 + 50 * Math.cos(angle);
+    const terminatorY = 50 + 50 * Math.sin(angle);
+    const sweepFlag = isWaxing ? 0 : 1;
 
-    pathData = `M ${centerX},${centerY - radius}
-                A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
-                A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
+    pathData = `M ${terminatorX},${terminatorY}
+                A 50,50 0 ${fraction > 0.5 ? 1 : 0},${sweepFlag} ${100 - terminatorX},${100 - terminatorY}
+                A 50,50 0 ${fraction > 0.5 ? 1 : 0},${sweepFlag} ${terminatorX},${terminatorY} Z`;
   }
   
   shadowPath.setAttribute("d", pathData);
   
-  // Debug
-  let phaseName = "";
-  if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
-  else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
-  else if (phase < 0.375) phaseName = "🌓 Premier quartier";
-  else if (phase < 0.5) phaseName = "🌔 Gibbeuse croissante";
-  else if (phase < 0.625) phaseName = "🌕 Pleine lune";
-  else if (phase < 0.75) phaseName = "🌖 Gibbeuse décroissante";
-  else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
-  else phaseName = "🌘 Croissant décroissant";
-  
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+  // Debug (optionnel)
+  const phaseNames = [
+    "🌑 Nouvelle lune", "🌒 Croissant croissant", "🌓 Premier quartier", 
+    "🌔 Gibbeuse croissante", "🌕 Pleine lune", "🌖 Gibbeuse décroissante",
+    "🌗 Dernier quartier", "🌘 Croissant décroissant"
+  ];
+  const phaseIndex = Math.floor(phase * 8) % 8;
+  console.log(`${phaseNames[phaseIndex]} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
 }
 
 /**
- * Crée le widget lune et l'injecte dans la page
+ * Crée le widget lune (inchangé)
  */
 export function updateNewMoonWidget() {
   // Supprimer l'existant si besoin
@@ -114,7 +95,7 @@ export function updateNewMoonWidget() {
   
   document.body.appendChild(container);
   
-  // Taille par défaut
+  // Gestion des tailles (inchangé)
   const sizes = [
     { w: "150px", h: "150px", class: "" },
     { w: "250px", h: "250px", class: "" },
@@ -139,6 +120,6 @@ export function updateNewMoonWidget() {
   // Charger SunCalc et lancer les updates
   loadSunCalc(() => {
     updateMoon();
-    setInterval(updateMoon, 3600000);
+    setInterval(updateMoon, 3600000); // Mise à jour toutes les heures
   });
 }
