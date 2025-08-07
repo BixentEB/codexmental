@@ -25,20 +25,20 @@ function updateMoon() {
   let pathData;
 
   if (fraction < 0.01) {
-    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
+    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune (complètement sombre)
   } else if (fraction > 0.99) {
-    pathData = "M 0,0 L 0,0";
+    pathData = "M 0,0 L 0,0"; // Pleine lune (pas d'ombre)
   } else {
     const centerX = 50;
     const centerY = 50;
     const radius = 50;
     const isWaxing = phase < 0.5;
     
-    // NOUVELLE FORMULE CORRECTE
-    const normalizedFraction = isWaxing ? fraction : 1 - fraction;
-    const ellipseWidth = radius * (1 - 2 * normalizedFraction);
-    const absWidth = Math.max(1, Math.abs(ellipseWidth)); // Minimum 1 pour éviter les artefacts
-    const sweepFlag = ellipseWidth > 0 ? 1 : 0;
+    // CORRECTION: Formule optimisée pour les phases gibbeuses
+    const illuminationFactor = isWaxing ? fraction : 1 - fraction;
+    const ellipseWidth = radius * 2 * (0.5 - Math.abs(illuminationFactor - 0.5));
+    const absWidth = Math.max(1, Math.abs(ellipseWidth));
+    const sweepFlag = isWaxing ? 1 : 0;
 
     pathData = `M ${centerX},${centerY - radius}
                 A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
@@ -47,15 +47,13 @@ function updateMoon() {
 
   shadowPath.setAttribute("d", pathData);
   
-  // Debug
+  // Debug amélioré
   let phaseName = "";
-  if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
+  if (fraction < 0.01) phaseName = "🌑 Nouvelle lune";
+  else if (fraction > 0.99) phaseName = "🌕 Pleine lune";
   else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
-  else if (phase < 0.375) phaseName = "🌓 Premier quartier";
-  else if (phase < 0.5) phaseName = "🌔 Gibbeuse croissante";
-  else if (phase < 0.625) phaseName = "🌕 Pleine lune";
+  else if (phase < 0.5) phaseName = isWaxing ? "🌔 Gibbeuse croissante" : "🌖 Gibbeuse décroissante";
   else if (phase < 0.75) phaseName = "🌖 Gibbeuse décroissante";
-  else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
   
   console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
@@ -72,6 +70,11 @@ export function updateNewMoonWidget() {
   // Conteneur
   const container = document.createElement("div");
   container.id = "svg-lune-widget";
+  container.style.position = "fixed";
+  container.style.bottom = "20px";
+  container.style.right = "20px";
+  container.style.zIndex = "1000";
+  container.style.cursor = "pointer";
   
   // SVG avec masque basé sur path pour les vraies formes de phases
   container.innerHTML = `
@@ -101,9 +104,9 @@ export function updateNewMoonWidget() {
   
   // Taille par défaut
   const sizes = [
+    { w: "80px", h: "80px", class: "mini-lune" },
     { w: "150px", h: "150px", class: "" },
-    { w: "250px", h: "250px", class: "" },
-    { w: "500px", h: "500px", class: "super-lune" }
+    { w: "250px", h: "250px", class: "super-lune" }
   ];
   let sizeIndex = 1;
   
@@ -126,4 +129,10 @@ export function updateNewMoonWidget() {
     updateMoon();
     setInterval(updateMoon, 3600000); // Mise à jour toutes les heures
   });
+}
+
+// Initialisation automatique si chargé directement
+if (!window.moonWidgetInitialized) {
+  window.moonWidgetInitialized = true;
+  updateNewMoonWidget();
 }
