@@ -1,4 +1,4 @@
-// newmoon.js (SVG avec masque corrigé et path recalibré)
+// newmoon.js (correction stricte : orientation via phase, taille via fraction)
 
 function loadSunCalc(callback) {
   if (window.SunCalc) {
@@ -78,27 +78,34 @@ function updateMoon() {
   if (fraction < 0.01) {
     shadowPath.setAttribute("d", "M0,0L100,0L100,100L0,100Z");
     return;
-  } else if (fraction > 0.99) {
+  }
+
+  if (fraction > 0.99) {
     shadowPath.setAttribute("d", "");
     return;
   }
 
+  // 1. Orientation : croissante (lumière à droite), décroissante (lumière à gauche)
   const isWaxing = phase < 0.5;
-  const overlap = (1 - fraction) * r;
-  const dx = isWaxing ? -overlap : overlap;
-  const x1 = cx;
-  const x2 = cx + dx;
 
-  const pathData = `
-    M ${x1},${cy - r}
-    A ${r},${r} 0 0,1 ${x1},${cy + r}
-    A ${r},${r} 0 0,${isWaxing ? 1 : 0} ${x2},${cy - r}
-    A ${r},${r} 0 0,1 ${x2},${cy + r}
-    A ${r},${r} 0 0,${isWaxing ? 0 : 1} ${x1},${cy - r}
+  // 2. Taille : on calcule la largeur de l'ellipse d'ombre selon la fraction visible
+  const lightRatio = fraction;
+  const shadowRatio = 1 - lightRatio;
+  const ellipseWidth = r * 2 * shadowRatio;
+  const ellipseX = isWaxing ? cx - ellipseWidth / 2 : cx + ellipseWidth / 2;
+
+  const d = `
+    M ${cx},${cy - r}
+    A ${r},${r} 0 0,1 ${cx},${cy + r}
+    A ${r},${r} 0 0,1 ${cx},${cy - r}
+    Z
+    M ${ellipseX},${cy - r}
+    A ${ellipseWidth / 2},${r} 0 0,${isWaxing ? 1 : 0} ${ellipseX},${cy + r}
+    A ${ellipseWidth / 2},${r} 0 0,${isWaxing ? 0 : 1} ${ellipseX},${cy - r}
     Z
   `;
 
-  shadowPath.setAttribute("d", pathData.trim());
+  shadowPath.setAttribute("d", d.trim());
 
   let phaseName = "";
   if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
