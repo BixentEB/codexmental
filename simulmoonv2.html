@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulateur Lunaire Canvas v2</title>
+  <style>
+    body {
+      background: #0d0d15;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    canvas {
+      background: #111;
+      border-radius: 50%;
+      box-shadow: 0 0 25px rgba(200, 200, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>Simulateur Lunaire (Canvas)</h1>
+  <canvas id="moonCanvas" width="300" height="300"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js"></script>
+  <script>
+    const canvas = document.getElementById("moonCanvas");
+    const ctx = canvas.getContext("2d");
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const radius = 120;
+
+    function drawMoonPhase() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Données astronomiques
+      const now = new Date();
+      const { fraction, phase } = SunCalc.getMoonIllumination(now);
+      const isWaxing = phase < 0.5;
+
+      // Lune pleine
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = "#ccc";
+      ctx.fill();
+
+      // Ombre
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+
+      const ellipseWidth = isWaxing
+        ? radius * (1 - 2 * fraction)
+        : radius * (2 * fraction - 1);
+
+      const absWidth = Math.max(0.5, Math.abs(ellipseWidth));
+      const sweepFlag = ellipseWidth >= 0 ? 1 : 0;
+
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, absWidth, radius, 0, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.restore();
+
+      // Debug
+      const phaseText = (fraction * 100).toFixed(1) + "% - " +
+        (isWaxing ? "croissante" : "décroissante");
+
+      ctx.fillStyle = "white";
+      ctx.font = "16px sans-serif";
+      ctx.fillText(phaseText, 10, canvas.height - 10);
+    }
+
+    drawMoonPhase();
+    setInterval(drawMoonPhase, 3600000);
+  </script>
+</body>
+</html>
