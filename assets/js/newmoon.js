@@ -84,25 +84,20 @@ function updateMoon() {
     return;
   }
 
-  const overlap = (1 - fraction) * r;
-  const dx = isWaxing ? overlap : -overlap;
-
-  // correction progressive selon la courbure pour une transition plus douce
-  const correction = 1 - Math.abs(0.5 - fraction);
-  const shrinkFactor = 0.3 + 0.7 * correction;
-  const arcRadius = r * shrinkFactor;
-
+  // Nouvelle logique avec une seule zone d'ombre progressive
+  const shift = (1 - 2 * fraction) * r;
+  const dx = isWaxing ? shift : -shift;
   const x1 = cx;
   const x2 = cx + dx;
 
-  const d =
-    "M " + x1 + "," + (cy - r) +
-    " A" + r + "," + r + " 0 0,1 " + x1 + "," + (cy + r) +
-    " A" + arcRadius + "," + r + " 0 0," + (isWaxing ? 1 : 0) + " " + x2 + "," + (cy - r) +
-    " A" + arcRadius + "," + r + " 0 0,1 " + x2 + "," + (cy + r) +
-    " A" + r + "," + r + " 0 0," + (isWaxing ? 0 : 1) + " " + x1 + "," + (cy - r) + " Z";
+  const d = `
+    M ${x1},${cy - r}
+    A ${r},${r} 0 0,1 ${x1},${cy + r}
+    Q ${x2},${cy} ${x1},${cy - r}
+    Z
+  `;
 
-  shadowPath.setAttribute("d", d);
+  shadowPath.setAttribute("d", d.trim());
 
   let phaseName = "";
   if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
