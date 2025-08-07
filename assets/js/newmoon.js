@@ -1,4 +1,4 @@
-// newmoon.js (correction stricte : orientation via phase, taille via fraction)
+// newmoon.js (version corrigée : orientation via angle, forme via trigonométrie)
 
 function loadSunCalc(callback) {
   if (window.SunCalc) {
@@ -31,8 +31,10 @@ export function updateNewMoonWidget() {
       </defs>
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
              filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
+      <g id="moon-group">
+        <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
+               mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
+      </g>
     </svg>
   `;
 
@@ -67,9 +69,10 @@ export function updateNewMoonWidget() {
 
 function updateMoon() {
   const now = new Date();
-  const { fraction, phase } = SunCalc.getMoonIllumination(now);
+  const { fraction, phase, angle } = SunCalc.getMoonIllumination(now);
   const shadowPath = document.getElementById("shadow-path");
-  if (!shadowPath) return;
+  const moonGroup = document.getElementById("moon-group");
+  if (!shadowPath || !moonGroup) return;
 
   const cx = 50;
   const cy = 50;
@@ -77,22 +80,29 @@ function updateMoon() {
 
   if (fraction < 0.01) {
     shadowPath.setAttribute("d", "M0,0L100,0L100,100L0,100Z");
+    moonGroup.setAttribute("transform", "");
     return;
   }
 
   if (fraction > 0.99) {
     shadowPath.setAttribute("d", "");
+    moonGroup.setAttribute("transform", "");
     return;
   }
 
-  // 1. Orientation : croissante (lumière à droite), décroissante (lumière à gauche)
+  // Détermination de la largeur de l'ombre (terminateur)
+  // Formule géométrique : largeur liée à la fraction éclairée
+  const terminatorOffset = Math.sqrt(1 - Math.pow((fraction * 2) - 1, 2)) * r;
+
+  // Orientation réelle : angle en radians -> rotation SVG
+  const rotationDeg = angle * (180 / Math.PI);
+  moonGroup.setAttribute("transform", `rotate(${rotationDeg}, ${cx}, ${cy})`);
+
+  // Détermination sens croissant/décroissant
   const isWaxing = phase < 0.5;
 
-  // 2. Taille : on calcule la largeur de l'ellipse d'ombre selon la fraction visible
-  const lightRatio = fraction;
-  const shadowRatio = 1 - lightRatio;
-  const ellipseWidth = r * 2 * shadowRatio;
-  const ellipseX = isWaxing ? cx + ellipseWidth / 2 : cx - ellipseWidth / 2;
+  // Tracé du terminateur lunaire
+  const ellipseX = isWaxing ? cx + terminatorOffset : cx - terminatorOffset;
 
   const d = `
     M ${cx},${cy - r}
@@ -100,13 +110,14 @@ function updateMoon() {
     A ${r},${r} 0 0,1 ${cx},${cy - r}
     Z
     M ${ellipseX},${cy - r}
-    A ${ellipseWidth / 2},${r} 0 0,${isWaxing ? 0 : 1} ${ellipseX},${cy + r}
-    A ${ellipseWidth / 2},${r} 0 0,${isWaxing ? 1 : 0} ${ellipseX},${cy - r}
+    A ${terminatorOffset},${r} 0 0,${isWaxing ? 0 : 1} ${ellipseX},${cy + r}
+    A ${terminatorOffset},${r} 0 0,${isWaxing ? 1 : 0} ${ellipseX},${cy - r}
     Z
   `;
 
   shadowPath.setAttribute("d", d.trim());
 
+  // Nom de phase
   let phaseName = "";
   if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
   else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
@@ -117,5 +128,5 @@ function updateMoon() {
   else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
 
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} Angle=${rotationDeg.toFixed(1)}°`);
 }
