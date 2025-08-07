@@ -1,5 +1,8 @@
-/* gérer le comportement exclusif d’ouverture des menus <details> */
-/* Se déclenche à chaque ouverture - Ferme tous les autres <details> sauf celui qu'on vient d’ouvrir */
+// ========================================================
+// openmenu.js - 
+// gérer le comportement exclusif d’ouverture des menus <details>
+// Se déclenche à chaque ouverture - Ferme tous les autres <details> sauf celui qu'on vient d’ouvrir
+// ========================================================
 
 <script>
   document.querySelectorAll('details').forEach((menu) => {
