@@ -23,32 +23,48 @@ function updateMoon() {
   if (!shadowPath) return;
 
   let pathData;
+  const centerX = 50;
+  const centerY = 50;
+  const radius = 50;
 
   if (fraction < 0.01) {
-    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
+    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune
   } else if (fraction > 0.99) {
-    pathData = "M 0,0 L 0,0"; 
+    pathData = "M 0,0 L 0,0"; // Pleine lune
   } else {
-    const centerX = 50;
-    const centerY = 50;
-    const radius = 50;
     const isWaxing = phase < 0.5;
+    const illumination = isWaxing ? fraction : 1 - fraction;
     
-    // NOUVELLE FORMULE CORRECTE
-    const illuminationFactor = isWaxing ? fraction : 1 - fraction;
-    const ellipseWidth = radius * 2 * (illuminationFactor - 0.5);
-    const absWidth = Math.max(1, Math.abs(ellipseWidth));
-    const sweepFlag = isWaxing ? 1 : 0;
+    // NOUVELLE LOGIQUE DE CALCUL
+    const angle = Math.PI * 2 * phase;
+    const shadowWidth = radius * (1 - illumination);
+    const startAngle = angle - Math.PI/2;
+    const endAngle = angle + Math.PI/2;
 
-    pathData = `M ${centerX},${centerY - radius}
-                A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
-                A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
+    // Construction du chemin d'ombre
+    const startX = centerX + Math.cos(startAngle) * radius;
+    const startY = centerY + Math.sin(startAngle) * radius;
+    const endX = centerX + Math.cos(endAngle) * radius;
+    const endY = centerY + Math.sin(endAngle) * radius;
+
+    pathData = `
+      M ${centerX},${centerY}
+      L ${startX},${startY}
+      A ${radius},${radius} 0 0,1 ${endX},${endY}
+      L ${centerX},${centerY}
+      Z
+      
+      M ${centerX},${centerY}
+      L ${endX},${endY}
+      A ${radius},${radius} 0 0,1 ${startX},${startY}
+      L ${centerX},${centerY}
+      Z
+    `;
   }
 
   shadowPath.setAttribute("d", pathData);
-  console.log(`🌙 Phase=${phase.toFixed(3)} Illum=${(fraction*100).toFixed(1)}% Path=${pathData}`);
+  console.log(`🌙 Phase=${phase.toFixed(3)} Illum=${(fraction*100).toFixed(1)}%`);
 }
-  
 
 /**
  * Crée le widget lune et l'injecte dans la page
@@ -68,28 +84,27 @@ export function updateNewMoonWidget() {
   container.style.cursor = "pointer";
   
   // SVG avec masque lunaire
-  container.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <clipPath id="moon-clip">
-          <circle cx="50" cy="50" r="50"/>
-        </clipPath>
-        <mask id="moon-mask">
-          <rect width="100%" height="100%" fill="white"/>
-          <path id="shadow-path" fill="black"/>
-        </mask>
-      </defs>
+container.innerHTML = `
+  <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <!-- CONSERVATION du clipPath pour la forme circulaire -->
+      <clipPath id="moon-clip">
+        <circle cx="50" cy="50" r="50"/>
+      </clipPath>
       
-      <!-- Couche sombre -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             filter="brightness(0.3)" clip-path="url(#moon-clip)"/>
-      
-      <!-- Couche éclairée (masquée dynamiquement) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             mask="url(#moon-mask)" clip-path="url(#moon-clip)"
-             style="filter: brightness(1.2);"/>
-    </svg>
-  `;
+      <!-- MASQUE INVERSE (seul changement critique) -->
+      <mask id="moon-mask">
+        <rect width="100%" height="100%" fill="black"/> <!-- Fond masqué par défaut -->
+        <path id="shadow-path" fill="white"/> <!-- Zones éclairées -->
+      </mask>
+    </defs>
+    
+    <!-- COUCHE UNIQUE (simplification) -->
+    <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
+           mask="url(#moon-mask)" clip-path="url(#moon-clip)"
+           style="filter: brightness(1.1);"/>
+  </svg>
+`;
   
   document.body.appendChild(container);
   
