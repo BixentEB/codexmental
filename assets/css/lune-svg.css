@@ -72,12 +72,7 @@ body.theme-lunaire #svg-lune-widget svg circle#ombre {
   transition: cx 0.5s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
-/* Pour améliorer la visibilité du terminateur */
-#shadow-path {
-  stroke: rgba(255,255,255,0.15);
-  stroke-width: 0.5;
-  stroke-linejoin: round;
-}
+
 
 /* ===== Version Mobile Optimisée (remplace les deux @media existants) ===== */
 @media (max-width: 568px), (pointer: coarse) {
