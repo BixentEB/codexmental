@@ -1,7 +1,5 @@
-// newmoon.js
-/**
- * Charge SunCalc depuis CDN si non présent
- */
+// newmoon.js (version Matrix-compatible, sans template string)
+
 function loadSunCalc(callback) {
   if (window.SunCalc) {
     callback();
@@ -13,40 +11,35 @@ function loadSunCalc(callback) {
   }
 }
 
-/**
- * Met à jour la lune SVG avec la vraie forme des phases
- */
 function updateMoon() {
   const now = new Date();
   const { fraction, phase } = SunCalc.getMoonIllumination(now);
   const shadowPath = document.getElementById("shadow-path");
   if (!shadowPath) return;
 
-  const angle = phase * 2 * Math.PI;
+  const centerX = 50;
+  const centerY = 50;
+  const radius = 50;
 
-  let pathData;
+  let pathData = "";
 
   if (fraction < 0.01) {
     pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
   } else if (fraction > 0.99) {
     pathData = "M 0,0 L 0,0";
   } else {
-    const centerX = 50;
-    const centerY = 50;
-    const radius = 50;
-
     const isWaxing = phase < 0.5;
-
     let ellipseWidth = isWaxing
       ? radius * (1 - 2 * fraction)
       : radius * (2 * fraction - 1);
 
     const absWidth = Math.max(0.5, Math.abs(ellipseWidth));
-    const sweepFlag = (ellipseWidth >= 0) ? 1 : 0;
+    const sweepFlag = ellipseWidth >= 0 ? 1 : 0;
 
-    pathData = `M ${centerX},${centerY - radius}
-            A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
-            A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
+    pathData =
+      "M " + centerX + "," + (centerY - radius) +
+      " A " + absWidth.toFixed(1) + "," + radius + " 0 0," + sweepFlag + " " + centerX + "," + (centerY + radius) +
+      " A " + radius + "," + radius + " 0 0," + sweepFlag + " " + centerX + "," + (centerY - radius) + " Z";
   }
 
   shadowPath.setAttribute("d", pathData);
@@ -61,12 +54,9 @@ function updateMoon() {
   else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
 
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+  console.log(phaseName + " - Illumination=" + (fraction * 100).toFixed(1) + "% Phase=" + phase.toFixed(3));
 }
 
-/**
- * Crée le widget lune et l'injecte dans la page
- */
 export function updateNewMoonWidget() {
   const old = document.getElementById("svg-lune-widget");
   if (old) old.remove();
@@ -74,23 +64,20 @@ export function updateNewMoonWidget() {
   const container = document.createElement("div");
   container.id = "svg-lune-widget";
 
-  container.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <clipPath id="moon-clip">
-          <circle cx="50" cy="50" r="50"/>
-        </clipPath>
-        <mask id="moon-mask">
-          <rect width="100%" height="100%" fill="white"/>
-          <path id="shadow-path" fill="black"/>
-        </mask>
-      </defs>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-             mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
-    </svg>
-  `;
+  container.innerHTML =
+    '<svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">' +
+    '<defs>' +
+    '<clipPath id="moon-clip">' +
+    '<circle cx="50" cy="50" r="50"/>' +
+    '</clipPath>' +
+    '<mask id="moon-mask">' +
+    '<rect width="100%" height="100%" fill="white"/>' +
+    '<path id="shadow-path" fill="black"/>' +
+    '</mask>' +
+    '</defs>' +
+    '<image href="/img/lune/lune-pleine.png" width="100%" height="100%" filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>' +
+    '<image href="/img/lune/lune-pleine.png" width="100%" height="100%" mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>' +
+    '</svg>';
 
   document.body.appendChild(container);
 
@@ -109,13 +96,13 @@ export function updateNewMoonWidget() {
 
   applySize();
 
-  container.addEventListener("click", (e) => {
+  container.addEventListener("click", function (e) {
     e.preventDefault();
     sizeIndex = (sizeIndex + 1) % sizes.length;
     applySize();
   });
 
-  loadSunCalc(() => {
+  loadSunCalc(function () {
     updateMoon();
     setInterval(updateMoon, 3600000);
   });
