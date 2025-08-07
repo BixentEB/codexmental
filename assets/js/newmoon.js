@@ -1,4 +1,4 @@
-// newmoon.js (version corrigée : orientation via angle, forme via trigonométrie)
+// newmoon.js (version corrigée sans <g>, compatible avec ton CSS actuel)
 
 function loadSunCalc(callback) {
   if (window.SunCalc) {
@@ -31,10 +31,8 @@ export function updateNewMoonWidget() {
       </defs>
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
              filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
-      <g id="moon-group">
-        <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-               mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
-      </g>
+      <image id="moon-lit" href="/img/lune/lune-pleine.png" width="100%" height="100%"
+             mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
     </svg>
   `;
 
@@ -71,8 +69,8 @@ function updateMoon() {
   const now = new Date();
   const { fraction, phase, angle } = SunCalc.getMoonIllumination(now);
   const shadowPath = document.getElementById("shadow-path");
-  const moonGroup = document.getElementById("moon-group");
-  if (!shadowPath || !moonGroup) return;
+  const litImage = document.getElementById("moon-lit");
+  if (!shadowPath || !litImage) return;
 
   const cx = 50;
   const cy = 50;
@@ -80,28 +78,26 @@ function updateMoon() {
 
   if (fraction < 0.01) {
     shadowPath.setAttribute("d", "M0,0L100,0L100,100L0,100Z");
-    moonGroup.setAttribute("transform", "");
+    litImage.setAttribute("transform", "");
     return;
   }
 
   if (fraction > 0.99) {
     shadowPath.setAttribute("d", "");
-    moonGroup.setAttribute("transform", "");
+    litImage.setAttribute("transform", "");
     return;
   }
 
-  // Détermination de la largeur de l'ombre (terminateur)
-  // Formule géométrique : largeur liée à la fraction éclairée
+  // Largeur du terminateur selon fraction
   const terminatorOffset = Math.sqrt(1 - Math.pow((fraction * 2) - 1, 2)) * r;
 
-  // Orientation réelle : angle en radians -> rotation SVG
+  // Rotation réelle selon angle
   const rotationDeg = angle * (180 / Math.PI);
-  moonGroup.setAttribute("transform", `rotate(${rotationDeg}, ${cx}, ${cy})`);
+  litImage.setAttribute("transform", `rotate(${rotationDeg}, ${cx}, ${cy})`);
 
-  // Détermination sens croissant/décroissant
+  // Sens croissant/décroissant
   const isWaxing = phase < 0.5;
 
-  // Tracé du terminateur lunaire
   const ellipseX = isWaxing ? cx + terminatorOffset : cx - terminatorOffset;
 
   const d = `
@@ -117,7 +113,6 @@ function updateMoon() {
 
   shadowPath.setAttribute("d", d.trim());
 
-  // Nom de phase
   let phaseName = "";
   if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
   else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
