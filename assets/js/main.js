@@ -13,6 +13,7 @@ import '/assets/js/cookie.js';
 import '/assets/js/onglets.js';
 import '/assets/js/table.js';
 import '/assets/js/new-badge.js'; // Module ajoutant un badge "new" aux articles récemment ajoutés avec mention data-date
+import '/assets/js/openmenu.js'; // Module pour ouvrir et fermer auto les menus <details> blogs et atelier
 
 
 // === 🔧 Modules à fonctions exportées ===
@@ -77,4 +78,5 @@ window.setTheme = (theme) => {
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
+
 
