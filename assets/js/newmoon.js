@@ -85,26 +85,30 @@ export function updateNewMoonWidget() {
   
   // SVG avec masque lunaire
 container.innerHTML = `
-  <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-    <defs>
-      <!-- CONSERVATION du clipPath pour la forme circulaire -->
-      <clipPath id="moon-clip">
-        <circle cx="50" cy="50" r="50"/>
-      </clipPath>
-      
-      <!-- MASQUE INVERSE (seul changement critique) -->
-      <mask id="moon-mask">
-        <rect width="100%" height="100%" fill="black"/> <!-- Fond masqué par défaut -->
-        <path id="shadow-path" fill="white"/> <!-- Zones éclairées -->
-      </mask>
-    </defs>
+<svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <!-- ClipPath pour la forme circulaire -->
+    <clipPath id="moon-clip">
+      <circle cx="50" cy="50" r="50"/>
+    </clipPath>
     
-    <!-- COUCHE UNIQUE (simplification) -->
-    <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-           mask="url(#moon-mask)" clip-path="url(#moon-clip)"
-           style="filter: brightness(1.1);"/>
-  </svg>
-`;
+    <!-- Masque inversé plus précis -->
+    <mask id="moon-mask">
+      <rect width="100%" height="100%" fill="white"/>
+      <!-- Ombre dynamique avec flou pour un rendu naturel -->
+      <path id="shadow-path" fill="black" filter="url(#shadow-filter)"/>
+    </mask>
+    
+    <filter id="shadow-filter">
+      <feGaussianBlur stdDeviation="0.5" edgeMode="none"/>
+    </filter>
+  </defs>
+  
+  <!-- Couche unique avec texture -->
+  <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
+         mask="url(#moon-mask)" clip-path="url(#moon-clip)"
+         style="filter: brightness(1.15);"/>
+</svg>`;
   
   document.body.appendChild(container);
   
