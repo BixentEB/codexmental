@@ -42,10 +42,10 @@ function updateMoon() {
     
     if (isWaxing) {
       // Phase croissante : ombre à gauche (partie éclairée à droite)
-      ellipseWidth = radius * (1 - 2 * fraction);
+      ellipseWidth = radius * (2 * fraction - 1); // INVERSER pour croissante
     } else {
       // Phase décroissante : ombre à droite (partie éclairée à gauche)
-      ellipseWidth = radius * (2 * fraction - 1);
+      ellipseWidth = radius * (1 - 2 * fraction); // GARDER pour décroissante
     }
     
     const absWidth = Math.abs(ellipseWidth);
