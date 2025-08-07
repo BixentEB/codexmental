@@ -2,80 +2,114 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Simulateur Lunaire Canvas v2</title>
+  <title>Simulateur + Grille des phases lunaires</title>
   <style>
     body {
       background: #0d0d15;
       color: white;
       font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      justify-items: center;
+    }
+    .phase-block {
+      text-align: center;
     }
     canvas {
       background: #111;
       border-radius: 50%;
-      box-shadow: 0 0 25px rgba(200, 200, 255, 0.2);
+      box-shadow: 0 0 10px rgba(200, 200, 255, 0.2);
+    }
+    #moonCanvas {
+      display: block;
+      margin: 0 auto 40px;
     }
   </style>
 </head>
 <body>
-  <h1>Simulateur Lunaire (Canvas)</h1>
+  <h1>Simulateur Lunaire Actuel (Canvas)</h1>
   <canvas id="moonCanvas" width="300" height="300"></canvas>
+
+  <h2>Grille des Phases Lunaires</h2>
+  <div class="grid" id="grid"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js"></script>
   <script>
-    const canvas = document.getElementById("moonCanvas");
-    const ctx = canvas.getContext("2d");
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-    const radius = 120;
+    function drawPhase(ctx, cx, cy, radius, fraction, isWaxing) {
+      ctx.clearRect(0, 0, cx * 2, cy * 2);
 
-    function drawMoonPhase() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Données astronomiques
-      const now = new Date();
-      const { fraction, phase } = SunCalc.getMoonIllumination(now);
-      const isWaxing = phase < 0.5;
-
-      // Lune pleine
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
       ctx.fillStyle = "#ccc";
       ctx.fill();
 
-      // Ombre
       ctx.save();
       ctx.globalCompositeOperation = "destination-out";
 
-      const ellipseWidth = isWaxing
-        ? radius * (1 - 2 * fraction)
-        : radius * (2 * fraction - 1);
-
-      const absWidth = Math.max(0.5, Math.abs(ellipseWidth));
-      const sweepFlag = ellipseWidth >= 0 ? 1 : 0;
+      const coeff = Math.abs(1 - 2 * fraction);
+      const arcRadius = radius * coeff;
 
       ctx.beginPath();
-      ctx.ellipse(cx, cy, absWidth, radius, 0, 0, 2 * Math.PI);
+      if (isWaxing) {
+        ctx.arc(cx, cy, radius, -Math.PI / 2, Math.PI / 2, false);
+        ctx.arc(cx, cy, arcRadius, Math.PI / 2, -Math.PI / 2, true);
+      } else {
+        ctx.arc(cx, cy, arcRadius, -Math.PI / 2, Math.PI / 2, false);
+        ctx.arc(cx, cy, radius, Math.PI / 2, -Math.PI / 2, true);
+      }
+      ctx.closePath();
       ctx.fill();
 
       ctx.restore();
-
-      // Debug
-      const phaseText = (fraction * 100).toFixed(1) + "% - " +
-        (isWaxing ? "croissante" : "décroissante");
-
-      ctx.fillStyle = "white";
-      ctx.font = "16px sans-serif";
-      ctx.fillText(phaseText, 10, canvas.height - 10);
     }
 
-    drawMoonPhase();
-    setInterval(drawMoonPhase, 3600000);
+    // --- Simulateur lunaire actuel ---
+    const moonCanvas = document.getElementById("moonCanvas");
+    const moonCtx = moonCanvas.getContext("2d");
+    const cx = moonCanvas.width / 2;
+    const cy = moonCanvas.height / 2;
+    const radius = 120;
+
+    function drawCurrentMoon() {
+      const now = new Date();
+      const { fraction, phase } = SunCalc.getMoonIllumination(now);
+      const isWaxing = phase < 0.5;
+      drawPhase(moonCtx, cx, cy, radius, fraction, isWaxing);
+    }
+
+    drawCurrentMoon();
+    setInterval(drawCurrentMoon, 3600000);
+
+    // --- Grille des phases ---
+    const grid = document.getElementById("grid");
+
+    for (let i = 0; i <= 20; i++) {
+      const fraction = i / 20;
+      const isWaxing = fraction <= 0.5;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 120;
+      canvas.height = 120;
+      const ctx = canvas.getContext("2d");
+
+      drawPhase(ctx, 60, 60, 50, fraction, isWaxing);
+
+      const label = document.createElement("div");
+      label.className = "phase-block";
+      label.innerHTML = `<canvas width="120" height="120">${fraction}</canvas><div>${(fraction * 100).toFixed(0)}%</div>`;
+      label.firstChild.replaceWith(canvas);
+
+      grid.appendChild(label);
+    }
   </script>
 </body>
 </html>
