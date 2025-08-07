@@ -36,45 +36,24 @@ function updateMoon() {
     const centerY = 50;
     const radius = 50;
     
-    // Calculer l'ellipse de la terminaison
+    // Calculer l'ellipse de la terminaison - RETOUR À VOTRE LOGIQUE EXACTE
     const isWaxing = phase < 0.5;
-    
-    // Pour la largeur de l'ellipse, on utilise le cosinus de l'angle de phase
-    // fraction = 0.5 correspond à un quartier (ellipse plate)
-    // fraction proche de 0 ou 1 correspond à des ellipses très incurvées
-    const ellipseWidth = radius * Math.cos(2 * Math.PI * (fraction - 0.5));
-    
-    const absWidth = Math.abs(ellipseWidth);
+    let ellipseWidth;
     
     if (isWaxing) {
-      // Phase croissante : l'ombre est à gauche, partie éclairée à droite
-      if (ellipseWidth >= 0) {
-        // Ellipse convexe vers la droite (croissant)
-        pathData = `M 0,0 L 0,100 
-                    L ${centerX},100
-                    A ${absWidth},${radius} 0 0,1 ${centerX},0
-                    L 0,0 Z`;
-      } else {
-        // Ellipse concave vers la droite (gibbeuse croissante)
-        pathData = `M 0,0 L 0,100 
-                    L ${centerX},100
-                    A ${absWidth},${radius} 0 0,0 ${centerX},0
-                    L 0,0 Z`;
-      }
+      // Phase croissante : ombre à gauche (partie éclairée à droite)
+      ellipseWidth = radius * (1 - 2 * fraction);
     } else {
-      // Phase décroissante : l'ombre est à droite, partie éclairée à gauche
-      if (ellipseWidth >= 0) {
-        // Ellipse convexe vers la gauche (gibbeuse décroissante)
-        pathData = `M ${centerX},0
-                    A ${absWidth},${radius} 0 0,1 ${centerX},100
-                    L 100,100 L 100,0 Z`;
-      } else {
-        // Ellipse concave vers la gauche (croissant décroissant)
-        pathData = `M ${centerX},0
-                    A ${absWidth},${radius} 0 0,0 ${centerX},100
-                    L 100,100 L 100,0 Z`;
-      }
+      // Phase décroissante : ombre à droite (partie éclairée à gauche)
+      ellipseWidth = radius * (2 * fraction - 1);
     }
+    
+    const absWidth = Math.abs(ellipseWidth);
+    const sweepFlag = ellipseWidth > 0 ? 1 : 0;
+
+    pathData = `M ${centerX},${centerY - radius}
+                A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
+                A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
   }
   
   shadowPath.setAttribute("d", pathData);
@@ -90,7 +69,7 @@ function updateMoon() {
   else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
   
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} EllipseWidth=${ellipseWidth.toFixed(2)}`);
+  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} EllipseWidth=${ellipseWidth.toFixed(2)} ${isWaxing ? '(croissante)' : '(décroissante)'}`); 
 }
 
 /**
