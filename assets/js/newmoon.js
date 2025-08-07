@@ -22,59 +22,89 @@ function updateMoon() {
   const shadowPath = document.getElementById("shadow-path");
   if (!shadowPath) return;
 
-  // Conversion phase SunCalc vers angle plus intuitif
-  // phase 0 = nouvelle lune, 0.25 = premier quartier, 0.5 = pleine lune, 0.75 = dernier quartier
-  const angle = phase * 2 * Math.PI;
-  
-  // Calcul de la position de la terminaison (ligne jour/nuit)
   let pathData;
   
   if (fraction < 0.01) {
     // Nouvelle lune - tout sombre
     pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
   } else if (fraction > 0.99) {
-    // Pleine lune - tout éclairé
+    // Pleine lune - tout éclairé (pas d'ombre)
     pathData = "M 0,0 L 0,0"; // Chemin vide
   } else {
-    // Phases intermédiaires - créer la terminaison elliptique
+    // Phases intermédiaires
     const centerX = 50;
     const centerY = 50;
     const radius = 50;
     
-    // Calculer l'ellipse de la terminaison
+    // Déterminer si on est en phase croissante ou décroissante
     const isWaxing = phase < 0.5;
-    let ellipseWidth;
     
+    // Calculer la largeur de l'ellipse de la terminaison
+    // fraction = 0.5 -> ellipse plate (premier/dernier quartier)
+    // fraction proche de 0 ou 1 -> ellipse très étroite ou très large
+    
+    let ellipseWidth;
     if (isWaxing) {
-      // Phase croissante : ombre à gauche (partie éclairée à droite)
-      ellipseWidth = radius * (1 - 2 * fraction);
+      // Phase croissante (0 -> 0.5) : de nouvelle lune à pleine lune
+      // L'ombre diminue de gauche à droite
+      ellipseWidth = radius * Math.cos(Math.PI * fraction);
     } else {
-      // Phase décroissante : ombre à droite (partie éclairée à gauche)
-      ellipseWidth = radius * (2 * fraction - 1);
+      // Phase décroissante (0.5 -> 1) : de pleine lune à nouvelle lune
+      // L'ombre augmente de droite à gauche
+      ellipseWidth = -radius * Math.cos(Math.PI * fraction);
     }
     
     const absWidth = Math.abs(ellipseWidth);
-    const sweepFlag = ellipseWidth > 0 ? 1 : 0;
-
-    pathData = `M ${centerX},${centerY - radius}
-                A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
-                A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
+    
+    if (isWaxing) {
+      // Phase croissante : ombre à gauche
+      if (fraction < 0.5) {
+        // Premier quartier approchant : ombre à gauche, terminaison convexe vers la droite
+        const sweepFlag = ellipseWidth >= 0 ? 1 : 0;
+        pathData = `M 0,0 L 0,100 
+                    L ${centerX - absWidth},100
+                    A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX - absWidth},0
+                    L 0,0 Z`;
+      } else {
+        // Gibbeuse croissante : petite ombre à gauche
+        const sweepFlag = 1;
+        pathData = `M 0,0 L 0,100
+                    L ${centerX + absWidth},100
+                    A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX + absWidth},0
+                    L 0,0 Z`;
+      }
+    } else {
+      // Phase décroissante : ombre à droite
+      if (fraction > 0.5) {
+        // Gibbeuse décroissante : petite ombre à droite
+        const sweepFlag = 0;
+        pathData = `M ${centerX - absWidth},0
+                    A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX - absWidth},100
+                    L 100,100 L 100,0 Z`;
+      } else {
+        // Dernier quartier approchant : ombre à droite, terminaison convexe vers la gauche
+        const sweepFlag = ellipseWidth >= 0 ? 0 : 1;
+        pathData = `M ${centerX + absWidth},0
+                    A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX + absWidth},100
+                    L 100,100 L 100,0 Z`;
+      }
+    }
   }
   
   shadowPath.setAttribute("d", pathData);
   
-  // Debug
+  // Debug amélioré
   let phaseName = "";
-  if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
+  if (fraction < 0.01) phaseName = "🌑 Nouvelle lune";
   else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
-  else if (phase < 0.375) phaseName = "🌓 Premier quartier";
+  else if (Math.abs(phase - 0.25) < 0.05) phaseName = "🌓 Premier quartier";
   else if (phase < 0.5) phaseName = "🌔 Gibbeuse croissante";
-  else if (phase < 0.625) phaseName = "🌕 Pleine lune";
+  else if (fraction > 0.99) phaseName = "🌕 Pleine lune";
   else if (phase < 0.75) phaseName = "🌖 Gibbeuse décroissante";
-  else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
+  else if (Math.abs(phase - 0.75) < 0.05) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
   
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} ${isWaxing ? '(croissante)' : '(décroissante)'}`);
 }
 
 /**
