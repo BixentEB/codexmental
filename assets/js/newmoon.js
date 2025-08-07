@@ -45,9 +45,9 @@ function updateMoon() {
     const sweepFlag = (ellipseWidth >= 0) ? 1 : 0;
 
     pathData = `
-      M ${centerX},${centerY - radius}
-      A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
-      A ${radius},${radius} 0 0,${sweapFlag} ${centerX},${centerY - radius} Z
+      M \${centerX},\${centerY - radius}
+      A \${absWidth},\${radius} 0 0,\${sweepFlag} \${centerX},\${centerY + radius}
+      A \${absWidth},\${radius} 0 0,\${sweepFlag} \${centerX},\${centerY - radius} Z
     `;
   }
 
@@ -63,7 +63,7 @@ function updateMoon() {
   else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
 
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+  console.log(`\${phaseName} - Illumination=\${(fraction * 100).toFixed(1)}% Phase=\${phase.toFixed(3)}`);
 }
 
 /**
