@@ -25,16 +25,16 @@ function updateMoon() {
   let pathData;
 
   if (fraction < 0.01) {
-    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune (complètement sombre)
+    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune
   } else if (fraction > 0.99) {
-    pathData = "M 0,0 L 0,0"; // Pleine lune (pas d'ombre)
+    pathData = "M 0,0 L 0,0"; // Pleine lune
   } else {
     const centerX = 50;
     const centerY = 50;
     const radius = 50;
     const isWaxing = phase < 0.5;
     
-    // CORRECTION: Formule optimisée pour les phases gibbeuses
+    // Formule corrigée pour les gibbeuses (94% d'illumination)
     const illuminationFactor = isWaxing ? fraction : 1 - fraction;
     const ellipseWidth = radius * 2 * (0.5 - Math.abs(illuminationFactor - 0.5));
     const absWidth = Math.max(1, Math.abs(ellipseWidth));
@@ -47,16 +47,8 @@ function updateMoon() {
 
   shadowPath.setAttribute("d", pathData);
   
-  // Debug amélioré
-  let phaseName = "";
-  if (fraction < 0.01) phaseName = "🌑 Nouvelle lune";
-  else if (fraction > 0.99) phaseName = "🌕 Pleine lune";
-  else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
-  else if (phase < 0.5) phaseName = isWaxing ? "🌔 Gibbeuse croissante" : "🌖 Gibbeuse décroissante";
-  else if (phase < 0.75) phaseName = "🌖 Gibbeuse décroissante";
-  else phaseName = "🌘 Croissant décroissant";
-  
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+  // Debug
+  console.log(`🌙 Phase=${phase.toFixed(3)} Illumination=${(fraction * 100).toFixed(1)}%`);
 }
 
 /**
@@ -67,7 +59,7 @@ export function updateNewMoonWidget() {
   const old = document.getElementById("svg-lune-widget");
   if (old) old.remove();
   
-  // Conteneur
+  // Conteneur (position fixed par défaut)
   const container = document.createElement("div");
   container.id = "svg-lune-widget";
   container.style.position = "fixed";
@@ -76,7 +68,7 @@ export function updateNewMoonWidget() {
   container.style.zIndex = "1000";
   container.style.cursor = "pointer";
   
-  // SVG avec masque basé sur path pour les vraies formes de phases
+  // SVG avec masque lunaire
   container.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
@@ -89,24 +81,24 @@ export function updateNewMoonWidget() {
         </mask>
       </defs>
       
-      <!-- Lune de base (sombre) avec texture -->
+      <!-- Couche sombre -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             filter="brightness(0.3) opacity(0.2)" clip-path="url(#moon-clip)"/>
+             filter="brightness(0.3)" clip-path="url(#moon-clip)"/>
       
-      <!-- Lune éclairée (masquée par les ombres) avec halo -->
+      <!-- Couche éclairée (masquée dynamiquement) -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
              mask="url(#moon-mask)" clip-path="url(#moon-clip)"
-             style="filter: brightness(1.1) contrast(1.1);"/>
+             style="filter: brightness(1.2);"/>
     </svg>
   `;
   
   document.body.appendChild(container);
   
-  // Taille par défaut
+  // TAILLES ORIGINALES CONSERVÉES (comme demandé)
   const sizes = [
-    { w: "80px", h: "80px", class: "mini-lune" },
     { w: "150px", h: "150px", class: "" },
-    { w: "250px", h: "250px", class: "super-lune" }
+    { w: "250px", h: "250px", class: "" },
+    { w: "500px", h: "500px", class: "super-lune" }
   ];
   let sizeIndex = 1;
   
@@ -118,20 +110,21 @@ export function updateNewMoonWidget() {
   
   applySize();
   
+  // Clic pour changer la taille (cycle 150px → 250px → 500px)
   container.addEventListener("click", (e) => {
     e.preventDefault();
     sizeIndex = (sizeIndex + 1) % sizes.length;
     applySize();
   });
   
-  // Charger SunCalc et lancer les updates
+  // Chargement et mise à jour automatique
   loadSunCalc(() => {
     updateMoon();
-    setInterval(updateMoon, 3600000); // Mise à jour toutes les heures
+    setInterval(updateMoon, 3600000); // Actualisation horaire
   });
 }
 
-// Initialisation automatique si chargé directement
+// Auto-init
 if (!window.moonWidgetInitialized) {
   window.moonWidgetInitialized = true;
   updateNewMoonWidget();
