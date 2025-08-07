@@ -36,49 +36,23 @@ function updateMoon() {
     const centerY = 50;
     const radius = 50;
     
-    // La logique correcte : 
-    // - En phase croissante (0 < phase < 0.5) : l'ombre diminue depuis la droite
-    // - En phase décroissante (0.5 < phase < 1) : l'ombre grandit depuis la gauche
-    
+    // CORRECTION : Inverser la logique pour les phases croissantes
     const isWaxing = phase < 0.5;
+    let ellipseWidth;
     
     if (isWaxing) {
-      // Phase croissante : l'ombre est à DROITE et se réduit
-      // À fraction=0.5 (premier quartier), on veut ellipseWidth=0 (ligne droite)
-      // À fraction proche de 1, on veut ellipseWidth négatif (ombre très mince à droite)
-      const ellipseWidth = radius * (2 * fraction - 1);
-      
-      if (ellipseWidth >= 0) {
-        // Ellipse bombée vers la gauche (partie éclairée)
-        pathData = `M ${centerX},${centerY - radius} 
-                   A ${ellipseWidth},${radius} 0 0,0 ${centerX},${centerY + radius} 
-                   A ${radius},${radius} 0 0,1 ${centerX},${centerY - radius} Z`;
-      } else {
-        // Ellipse bombée vers la droite (ombre mince)
-        const absWidth = Math.abs(ellipseWidth);
-        pathData = `M ${centerX},${centerY - radius} 
-                   A ${absWidth},${radius} 0 0,1 ${centerX},${centerY + radius} 
-                   A ${radius},${radius} 0 0,1 ${centerX},${centerY - radius} Z`;
-      }
+      // Phase croissante : INVERSER - l'ombre diminue depuis la droite
+      ellipseWidth = radius * (1 - 2 * fraction); // CORRECTION ICI
     } else {
-      // Phase décroissante : l'ombre est à GAUCHE et grandit
-      // À fraction=0.5 (dernier quartier), on veut ellipseWidth=0 (ligne droite)  
-      // À fraction proche de 0, on veut ellipseWidth négatif (ombre très large à gauche)
-      const ellipseWidth = radius * (1 - 2 * fraction);
-      
-      if (ellipseWidth >= 0) {
-        // Ellipse bombée vers la droite (partie éclairée)
-        pathData = `M ${centerX},${centerY - radius} 
-                   A ${ellipseWidth},${radius} 0 0,1 ${centerX},${centerY + radius} 
-                   A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
-      } else {
-        // Ellipse bombée vers la gauche (ombre mince)
-        const absWidth = Math.abs(ellipseWidth);
-        pathData = `M ${centerX},${centerY - radius} 
-                   A ${absWidth},${radius} 0 0,0 ${centerX},${centerY + radius} 
-                   A ${radius},${radius} 0 0,0 ${centerX},${centerY - radius} Z`;
-      }
+      // Phase décroissante : l'ombre grandit depuis la gauche
+      ellipseWidth = radius * (1 - 2 * fraction);
     }
+    
+    const absWidth = Math.abs(ellipseWidth);
+    const sweepFlag = ellipseWidth > 0 ? 1 : 0;
+
+    // Garder votre structure de double arc originale qui fonctionnait
+    pathData = `M ${centerX},${centerY - radius} A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius} A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
   }
   
   shadowPath.setAttribute("d", pathData);
@@ -94,7 +68,7 @@ function updateMoon() {
   else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
   
-  const ellipseWidth = isWaxing ? radius * (2 * fraction - 1) : radius * (1 - 2 * fraction);
+  const ellipseWidth = isWaxing ? radius * (1 - 2 * fraction) : radius * (1 - 2 * fraction);
   console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)} EllipseWidth=${ellipseWidth.toFixed(2)} ${isWaxing ? '(croissante)' : '(décroissante)'}`); 
 }
 
