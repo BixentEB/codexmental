@@ -71,27 +71,30 @@ export function updateNewMoonWidget() {
   container.id = "svg-lune-widget";
   
   // SVG avec masque basé sur path pour les vraies formes de phases
-  container.innerHTML = `
-    <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-      <defs>
-        <clipPath id="moon-clip">
-          <circle cx="50" cy="50" r="50"/>
-        </clipPath>
-        <mask id="moon-mask">
-          <rect width="100%" height="100%" fill="white"/>
-          <path id="shadow-path" fill="black"/>
-        </mask>
-      </defs>
-      
-      <!-- Lune de base (sombre) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
-      
-      <!-- Lune éclairée (masquée par les ombres) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
-    </svg>
-  `;
+  // Remplacez la partie innerHTML du conteneur par ceci :
+container.innerHTML = `
+  <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <clipPath id="moon-clip">
+        <circle cx="50" cy="50" r="50"/>
+      </clipPath>
+      <mask id="moon-mask">
+        <rect x="0" y="0" width="100" height="100" fill="white"/>
+        <path id="shadow-path" fill="black" d="M 0,0 L 100,0 L 100,100 L 0,100 Z"/>
+      </mask>
+    </defs>
+    
+    <!-- Fond sombre (toujours visible) -->
+    <circle cx="50" cy="50" r="50" fill="#222" opacity="0.2"/>
+    
+    <!-- Partie éclairée (masquée dynamiquement) -->
+    <circle cx="50" cy="50" r="50" fill="white" mask="url(#moon-mask)"/>
+    
+    <!-- Texture lunaire optionnelle -->
+    <image href="/img/lune/lune-pleine.png" width="100" height="100" 
+           mask="url(#moon-mask)" clip-path="url(#moon-clip)" opacity="0.9"/>
+  </svg>
+`;
   
   document.body.appendChild(container);
   
