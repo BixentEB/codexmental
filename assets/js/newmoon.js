@@ -36,7 +36,7 @@ function updateMoon() {
     const centerY = 50;
     const radius = 50;
     
-    // Calculer l'ellipse de la terminaison - RETOUR À VOTRE LOGIQUE EXACTE
+    // Calculer l'ellipse de la terminaison - VOTRE LOGIQUE EXACTE
     const isWaxing = phase < 0.5;
     let ellipseWidth;
     
@@ -51,9 +51,8 @@ function updateMoon() {
     const absWidth = Math.abs(ellipseWidth);
     const sweepFlag = ellipseWidth > 0 ? 1 : 0;
 
-    pathData = `M ${centerX},${centerY - radius}
-                A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
-                A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
+    // Double arc comme dans votre code original
+    pathData = `M ${centerX},${centerY - radius} A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius} A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
   }
   
   shadowPath.setAttribute("d", pathData);
