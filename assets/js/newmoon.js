@@ -22,44 +22,29 @@ function updateMoon() {
   const shadowPath = document.getElementById("shadow-path");
   if (!shadowPath) return;
 
-  // Conversion phase SunCalc vers angle plus intuitif
-  // phase 0 = nouvelle lune, 0.25 = premier quartier, 0.5 = pleine lune, 0.75 = dernier quartier
-  const angle = phase * 2 * Math.PI;
-  
-  // Calcul de la position de la terminaison (ligne jour/nuit)
   let pathData;
-  
+
   if (fraction < 0.01) {
-    // Nouvelle lune - tout sombre
     pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
   } else if (fraction > 0.99) {
-    // Pleine lune - tout éclairé
-    pathData = "M 0,0 L 0,0"; // Chemin vide
+    pathData = "M 0,0 L 0,0";
   } else {
-    // Phases intermédiaires - créer la terminaison elliptique
     const centerX = 50;
     const centerY = 50;
     const radius = 50;
-    
-    // Calculer l'ellipse de la terminaison
     const isWaxing = phase < 0.5;
-    let ellipseWidth;
     
-    if (isWaxing) {
-  ellipseWidth = radius * (1 - 2 * fraction); // Phase croissante (inchangé)
-} else {
-  const adjustedFraction = 1 - fraction; // Phase décroissante CORRIGÉE
-  ellipseWidth = radius * (1 - 2 * adjustedFraction);
-}
-    
-    const absWidth = Math.abs(ellipseWidth);
+    // NOUVELLE FORMULE CORRECTE
+    const normalizedFraction = isWaxing ? fraction : 1 - fraction;
+    const ellipseWidth = radius * (1 - 2 * normalizedFraction);
+    const absWidth = Math.max(1, Math.abs(ellipseWidth)); // Minimum 1 pour éviter les artefacts
     const sweepFlag = ellipseWidth > 0 ? 1 : 0;
 
     pathData = `M ${centerX},${centerY - radius}
                 A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
                 A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
   }
-  
+
   shadowPath.setAttribute("d", pathData);
   
   // Debug
@@ -101,13 +86,14 @@ export function updateNewMoonWidget() {
         </mask>
       </defs>
       
-      <!-- Lune de base (sombre) -->
+      <!-- Lune de base (sombre) avec texture -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
+             filter="brightness(0.3) opacity(0.2)" clip-path="url(#moon-clip)"/>
       
-      <!-- Lune éclairée (masquée par les ombres) -->
+      <!-- Lune éclairée (masquée par les ombres) avec halo -->
       <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
+             mask="url(#moon-mask)" clip-path="url(#moon-clip)"
+             style="filter: brightness(1.1) contrast(1.1);"/>
     </svg>
   `;
   
@@ -138,6 +124,6 @@ export function updateNewMoonWidget() {
   // Charger SunCalc et lancer les updates
   loadSunCalc(() => {
     updateMoon();
-    setInterval(updateMoon, 3600000);
+    setInterval(updateMoon, 3600000); // Mise à jour toutes les heures
   });
 }
