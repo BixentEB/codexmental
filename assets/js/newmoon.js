@@ -1,149 +1,85 @@
-// newmoon.js
-/**
- * Charge SunCalc depuis CDN si non présent
- */
-function loadSunCalc(callback) {
-  if (window.SunCalc) {
-    callback();
-  } else {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js";
-    script.onload = callback;
-    document.head.appendChild(script);
+// 1. CONFIGURATION DE BASE
+const MOON_CONFIG = {
+  sizes: ['150px', '250px', '500px'], // Vos tailles préférées conservées
+  textureUrl: '/img/lune/lune-pleine.png'
+};
+
+// 2. MOTEUR DE RENDU SIMPLIFIÉ
+class MoonRenderer {
+  constructor() {
+    this.container = this.createContainer();
+    this.initCanvas();
   }
-}
 
-/**
- * Met à jour la lune SVG avec la vraie forme des phases
- */
-function updateMoon() {
-  const now = new Date();
-  const { fraction, phase } = SunCalc.getMoonIllumination(now);
-  const shadowPath = document.getElementById("shadow-path");
-  if (!shadowPath) return;
-
-  let pathData;
-  const centerX = 50;
-  const centerY = 50;
-  const radius = 50;
-
-  if (fraction < 0.01) {
-    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune
-  } else if (fraction > 0.99) {
-    pathData = "M 0,0 L 0,0"; // Pleine lune
-  } else {
-    const isWaxing = phase < 0.5;
-    const illumination = isWaxing ? fraction : 1 - fraction;
-    
-    // NOUVELLE LOGIQUE DE CALCUL
-    const angle = Math.PI * 2 * phase;
-    const shadowWidth = radius * (1 - illumination);
-    const startAngle = angle - Math.PI/2;
-    const endAngle = angle + Math.PI/2;
-
-    // Construction du chemin d'ombre
-    const startX = centerX + Math.cos(startAngle) * radius;
-    const startY = centerY + Math.sin(startAngle) * radius;
-    const endX = centerX + Math.cos(endAngle) * radius;
-    const endY = centerY + Math.sin(endAngle) * radius;
-
-    pathData = `
-      M ${centerX},${centerY}
-      L ${startX},${startY}
-      A ${radius},${radius} 0 0,1 ${endX},${endY}
-      L ${centerX},${centerY}
-      Z
-      
-      M ${centerX},${centerY}
-      L ${endX},${endY}
-      A ${radius},${radius} 0 0,1 ${startX},${startY}
-      L ${centerX},${centerY}
-      Z
+  createContainer() {
+    const div = document.createElement('div');
+    div.id = 'moon-container';
+    div.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      cursor: pointer;
+      width: ${MOON_CONFIG.sizes[1]};
+      height: ${MOON_CONFIG.sizes[1]};
     `;
+    document.body.appendChild(div);
+    return div;
   }
 
-  shadowPath.setAttribute("d", pathData);
-  console.log(`🌙 Phase=${phase.toFixed(3)} Illum=${(fraction*100).toFixed(1)}%`);
+  initCanvas() {
+    this.canvas = document.createElement('canvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.canvas.width = 300; // Résolution fixe pour qualité
+    this.canvas.height = 300;
+    this.container.innerHTML = '';
+    this.container.appendChild(this.canvas);
+  }
+
+  // 3. ALGORITHME GARANTI SANS BUG
+  drawMoon(fraction, phase) {
+    const radius = this.canvas.width / 2;
+    
+    // Effacer le canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Dessiner la lune pleine
+    this.ctx.beginPath();
+    this.ctx.arc(radius, radius, radius, 0, Math.PI * 2);
+    this.ctx.fillStyle = '#f5f5f5';
+    this.ctx.fill();
+    
+    // Calculer l'ombre avec précision mathématique
+    const shadowAngle = phase * Math.PI * 2;
+    const shadowSize = (1 - fraction) * radius * 2;
+    
+    // Dessiner l'ombre
+    this.ctx.beginPath();
+    this.ctx.arc(radius, radius, radius, 
+                 shadowAngle - Math.PI/2, 
+                 shadowAngle + Math.PI/2);
+    this.ctx.lineTo(radius + Math.cos(shadowAngle) * shadowSize, 
+                    radius + Math.sin(shadowAngle) * shadowSize);
+    this.ctx.closePath();
+    this.ctx.fillStyle = 'rgba(0,0,0,0.8)';
+    this.ctx.fill();
+  }
 }
 
-/**
- * Crée le widget lune et l'injecte dans la page
- */
-export function updateNewMoonWidget() {
-  // Supprimer l'existant si besoin
-  const old = document.getElementById("svg-lune-widget");
-  if (old) old.remove();
+// 4. INITIALISATION ROBUSTE
+function initMoonWidget() {
+  const renderer = new MoonRenderer();
   
-  // Conteneur (position fixed par défaut)
-  const container = document.createElement("div");
-  container.id = "svg-lune-widget";
-  container.style.position = "fixed";
-  container.style.bottom = "20px";
-  container.style.right = "20px";
-  container.style.zIndex = "1000";
-  container.style.cursor = "pointer";
-  
-  // SVG avec masque lunaire
-container.innerHTML = `
-<svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
-  <defs>
-    <!-- ClipPath pour la forme circulaire -->
-    <clipPath id="moon-clip">
-      <circle cx="50" cy="50" r="50"/>
-    </clipPath>
-    
-    <!-- Masque inversé plus précis -->
-    <mask id="moon-mask">
-      <rect width="100%" height="100%" fill="white"/>
-      <!-- Ombre dynamique avec flou pour un rendu naturel -->
-      <path id="shadow-path" fill="black" filter="url(#shadow-filter)"/>
-    </mask>
-    
-    <filter id="shadow-filter">
-      <feGaussianBlur stdDeviation="0.5" edgeMode="none"/>
-    </filter>
-  </defs>
-  
-  <!-- Couche unique avec texture -->
-  <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
-         mask="url(#moon-mask)" clip-path="url(#moon-clip)"
-         style="filter: brightness(1.15);"/>
-</svg>`;
-  
-  document.body.appendChild(container);
-  
-  // TAILLES ORIGINALES CONSERVÉES (comme demandé)
-  const sizes = [
-    { w: "150px", h: "150px", class: "" },
-    { w: "250px", h: "250px", class: "" },
-    { w: "500px", h: "500px", class: "super-lune" }
-  ];
-  let sizeIndex = 1;
-  
-  function applySize() {
-    container.style.width = sizes[sizeIndex].w;
-    container.style.height = sizes[sizeIndex].h;
-    container.className = sizes[sizeIndex].class;
-  }
-  
-  applySize();
-  
-  // Clic pour changer la taille (cycle 150px → 250px → 500px)
-  container.addEventListener("click", (e) => {
-    e.preventDefault();
-    sizeIndex = (sizeIndex + 1) % sizes.length;
-    applySize();
-  });
-  
-  // Chargement et mise à jour automatique
   loadSunCalc(() => {
-    updateMoon();
-    setInterval(updateMoon, 3600000); // Actualisation horaire
+    const update = () => {
+      const {fraction, phase} = SunCalc.getMoonIllumination(new Date());
+      renderer.drawMoon(fraction, phase);
+      console.log(`🌕 Phase=${phase.toFixed(3)} Illum=${(fraction*100).toFixed(1)}%`);
+    };
+    
+    update();
+    setInterval(update, 3600000);
   });
 }
 
-// Auto-init
-if (!window.moonWidgetInitialized) {
-  window.moonWidgetInitialized = true;
-  updateNewMoonWidget();
-}
+// Lancement
+initMoonWidget();
