@@ -25,18 +25,18 @@ function updateMoon() {
   let pathData;
 
   if (fraction < 0.01) {
-    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z"; // Nouvelle lune
+    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
   } else if (fraction > 0.99) {
-    pathData = "M 0,0 L 0,0"; // Pleine lune
+    pathData = "M 0,0 L 0,0"; 
   } else {
     const centerX = 50;
     const centerY = 50;
     const radius = 50;
     const isWaxing = phase < 0.5;
     
-    // Formule corrigée pour les gibbeuses (94% d'illumination)
+    // NOUVELLE FORMULE CORRECTE
     const illuminationFactor = isWaxing ? fraction : 1 - fraction;
-    const ellipseWidth = radius * 2 * (0.5 - Math.abs(illuminationFactor - 0.5));
+    const ellipseWidth = radius * 2 * (illuminationFactor - 0.5);
     const absWidth = Math.max(1, Math.abs(ellipseWidth));
     const sweepFlag = isWaxing ? 1 : 0;
 
@@ -46,10 +46,9 @@ function updateMoon() {
   }
 
   shadowPath.setAttribute("d", pathData);
-  
-  // Debug
-  console.log(`🌙 Phase=${phase.toFixed(3)} Illumination=${(fraction * 100).toFixed(1)}%`);
+  console.log(`🌙 Phase=${phase.toFixed(3)} Illum=${(fraction*100).toFixed(1)}% Path=${pathData}`);
 }
+  
 
 /**
  * Crée le widget lune et l'injecte dans la page
