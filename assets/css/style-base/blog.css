@@ -151,6 +151,7 @@ body:not(.theme-lunaire) #article-viewer {
 }
 
 /*Badge "new" devant nouveaux articles moins de 7 jours*/
+/* Badge "NEW" devant le lien */
 .new-badge {
   display: inline-block;
   font-size: 0.65em;
@@ -167,11 +168,43 @@ body:not(.theme-lunaire) #article-viewer {
   line-height: 1;
 }
 
-body.theme-galactique .new-badge {
-  background-color: rgba(255, 255, 255, 0.07); /* capsule plus claire */
-  color: #eac5ff; /* lilas plus clair */
-  border-color: rgba(240, 200, 255, 0.4); /* bord doux lumineux */
+/* Pastille ronde sur le <summary> si la section contient un lien NEW */
+.blog-menu summary {
+  position: relative; /* pour un éventuel positionnement absolu futur */
 }
+
+.section-new-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--new-dot, var(--btn-color, #ffd700));
+  box-shadow: 0 0 6px color-mix(in oklab, var(--new-dot, var(--btn-color, #ffd700)) 60%, transparent);
+  vertical-align: middle;
+}
+
+/* Option: rendre la pastille un peu plus visible au survol */
+.blog-menu details.has-new summary:hover .section-new-dot {
+  transform: scale(1.15);
+  transition: transform 120ms ease;
+}
+
+/* Overrides doux pour lisibilité selon tes thèmes (si besoin) */
+body.theme-galactique .section-new-dot {
+  background: var(--new-dot, #e2b5ff);
+  box-shadow: 0 0 8px rgba(226, 181, 255, 0.45);
+}
+body.theme-lunaire .section-new-dot {
+  background: var(--new-dot, #cce6ff);
+}
+body.theme-solaire .section-new-dot {
+  background: var(--new-dot, #ffaa00);
+}
+body.theme-stellaire .section-new-dot {
+  background: var(--new-dot, #aeeeff);
+}
+
 
 /*symbole mis en valeur ~. */
 .symb-tilt {
@@ -180,6 +213,8 @@ body.theme-galactique .new-badge {
   font-style: normal;
   opacity: 0.95;
 }
+
+
 
 
 
