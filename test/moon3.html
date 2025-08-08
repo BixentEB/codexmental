@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Widget Lunaire SVG</title>
+  <style>
+    #moon-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 160px;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 16px;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    svg {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+    .moon-info {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .moon-percent {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .moon-location {
+      margin-top: 6px;
+      font-size: 11px;
+      opacity: 0.65;
+    }
+  </style>
+</head>
+<body>
+  <div id="moon-container">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <mask id="moon-mask">
+          <rect x="0" y="0" width="100" height="100" fill="white"/>
+          <circle id="moon-shadow" cx="50" cy="50" r="50" fill="black"/>
+        </mask>
+      </defs>
+      <circle cx="50" cy="50" r="50" fill="white" mask="url(#moon-mask)" />
+      <circle cx="50" cy="50" r="50" fill="none" stroke="gold" stroke-opacity="0.2" stroke-width="2"/>
+    </svg>
+    <div class="moon-info">
+      <div class="moon-percent" id="moon-percent">--%</div>
+      <div id="moon-phase">Chargement...</div>
+      <div class="moon-location" id="moon-location">---</div>
+    </div>
+  </div>
+
+  <script>
+    const defaultLocation = { lat: 45.75, lon: 4.85 }; // Lyon
+    let currentLocation = { ...defaultLocation };
+
+    async function initMoonWidget() {
+      await loadSunCalc();
+
+      try {
+        currentLocation = await getUserLocation();
+      } catch (e) {
+        console.warn("Localisation refusée, fallback sur Lyon");
+      }
+
+      updateMoon();
+      setInterval(updateMoon, 60 * 60 * 1000); // toutes les heures
+    }
+
+    function loadSunCalc() {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = "https://cdn.jsdelivr.net/npm/suncalc@1.8.0/suncalc.min.js";
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    function getUserLocation() {
+      return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) return reject();
+        navigator.geolocation.getCurrentPosition(pos => {
+          resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        }, reject);
+      });
+    }
+
+    async function updateMoon() {
+      const now = new Date();
+      const moon = SunCalc.getMoonIllumination(now);
+      const fraction = moon.fraction;
+      const angle = moon.angle;
+
+      updateMoonVisual(fraction, angle);
+      updateMoonText(fraction, moon.phase);
+
+      try {
+        const locText = await getLocationName(currentLocation.lat, currentLocation.lon);
+        document.getElementById('moon-location').textContent = locText;
+      } catch {
+        document.getElementById('moon-location').textContent = "Lyon, FR";
+      }
+    }
+
+    function updateMoonVisual(fraction, angle) {
+      const shadow = document.getElementById('moon-shadow');
+
+      const phaseOffset = (1 - fraction) * 100;
+      const isWaxing = Math.cos(angle) > 0;
+
+      // Positionne le disque d'ombre à gauche ou à droite selon phase
+      const offsetX = 50 + (isWaxing ? -1 : 1) * phaseOffset / 2;
+
+      shadow.setAttribute('cx', offsetX);
+    }
+
+    function updateMoonText(fraction, phase) {
+      const percent = Math.round(fraction * 100);
+      document.getElementById('moon-percent').textContent = `${percent}%`;
+      document.getElementById('moon-phase').textContent = getPhaseName(phase, fraction);
+    }
+
+    function getPhaseName(phase, fraction) {
+      if (phase < 0.03 || phase > 0.97) return 'Nouvelle Lune';
+      if (phase < 0.22) return 'Premier Croissant';
+      if (phase < 0.28) return 'Premier Quartier';
+      if (phase < 0.47) return 'Gibbeuse Croissante';
+      if (phase < 0.53) return 'Pleine Lune';
+      if (phase < 0.72) return 'Gibbeuse Décroissante';
+      if (phase < 0.78) return 'Dernier Quartier';
+      return 'Dernier Croissant';
+    }
+
+    async function getLocationName(lat, lon) {
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
+      const data = await r.json();
+      return data.address?.city || data.address?.town || "Position locale";
+    }
+
+    document.addEventListener('DOMContentLoaded', initMoonWidget);
+  </script>
+</body>
+</html>
