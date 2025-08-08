@@ -35,17 +35,25 @@
     box-shadow: 0 15px 60px rgba(0, 0, 0, 0.5);
 }
 
+/* Remplacer le style existant de #moon-phase */
 #moon-phase {
     width: 180px;
     height: 180px;
     border-radius: 50%;
     background: #f8f8f8;
     box-shadow: 
-        inset 10px 10px 20px rgba(0, 0, 0, 0.25),
+        inset 5px 5px 15px rgba(0, 0, 0, 0.2),
         0 0 40px rgba(255, 215, 0, 0.6);
     position: relative;
     overflow: hidden;
     margin-bottom: 20px;
+    /* Nouveau: masque pour les phases */
+    mask: radial-gradient(circle at var(--mask-position, 50% 50%), 
+          transparent var(--mask-size, 0%), 
+          #000 0);
+    -webkit-mask: radial-gradient(circle at var(--mask-position, 50% 50%), 
+          transparent var(--mask-size, 0%), 
+          #000 0);
 }
 
 #moon-phase::before {
@@ -237,42 +245,31 @@ function updateMoon() {
 
 function updateMoonVisual(fraction, angle) {
     const moonElement = document.getElementById('moon-phase');
-    const shadowScale = fraction > 0.5 ? 2 * (1 - fraction) : 2 * fraction;
-    const shadowDirection = angle < 0 ? 1 : -1;
+    const radianAngle = angle;
     
-    // Rotation pour l'angle d'éclairage
-    moonElement.style.transform = `rotate(${angle}rad)`;
+    // Calcul de la position du masque en fonction de l'angle
+    const x = 50 + 50 * Math.cos(radianAngle);
+    const y = 50 + 50 * Math.sin(radianAngle);
     
-    // Ajustement de l'ombre en fonction de la phase
-    const style = moonElement.style;
-    style.setProperty('--shadow-scale', shadowScale);
-    style.setProperty('--shadow-direction', shadowDirection);
-    
-    // Animation CSS dynamique
-    moonElement.style.animation = 'none';
-    void moonElement.offsetWidth; // Trigger reflow
-    moonElement.style.animation = 'moonGlow 3s infinite alternate';
-    
-    // Style dynamique pour l'ombre
-    moonElement.style.setProperty('--shadow-pos', 
-        fraction > 0.5 ? 'left' : 'right');
-    
-    // Ajout du style dynamique si non présent
-    if (!document.getElementById('moon-dynamic-style')) {
-        const style = document.createElement('style');
-        style.id = 'moon-dynamic-style';
-        style.textContent = `
-            #moon-phase::before {
-                transform: scale(var(--shadow-scale)) translateX(calc(var(--shadow-direction) * 50%));
-            }
-            
-            @keyframes moonGlow {
-                0% { box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 215, 0, 0.4); }
-                100% { box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 215, 0, 0.7); }
-            }
-        `;
-        document.head.appendChild(style);
+    // Déterminer la taille du masque en fonction de la phase
+    let maskSize;
+    if (fraction <= 0.5) {
+        // Phase croissante (0% à 50%)
+        maskSize = 100 - (fraction * 200);
+    } else {
+        // Phase décroissante (50% à 100%)
+        maskSize = (fraction - 0.5) * 200;
     }
+    
+    // Appliquer les propriétés CSS
+    moonElement.style.setProperty('--mask-position', `${x}% ${y}%`);
+    moonElement.style.setProperty('--mask-size', `${maskSize}%`);
+    
+    // Rotation pour orienter correctement la phase
+    moonElement.style.transform = `rotate(${radianAngle + Math.PI/2}rad)`;
+    
+    // Animation de lueur
+    moonElement.style.animation = 'moonGlow 3s infinite alternate';
 }
 
 function updateMoonInfo(fraction, phase) {
