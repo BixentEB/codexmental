@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug SunCalc - Analyse Lunaire</title>
+    <style>
+    #moon-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#moon-widget {
+    width: 120px;
+    height: 120px;
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    transition: all 0.3s ease;
+}
+
+#moon-widget:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
+#moon-phase {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #f8f8f8;
+    box-shadow: 
+        inset 5px 5px 10px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(255, 215, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+#moon-phase::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    border-radius: 50%;
+    transform: scale(1);
+    transform-origin: right center;
+    transition: transform 0.5s ease;
+}
+
+#moon-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    text-align: center;
+}
+
+#moon-percent {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+#moon-name {
+    opacity: 0.8;
+    font-size: 11px;
+}
+
+#moon-location {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+#moon-location-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 10px;
+    margin-left: 5px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+#moon-location-btn:hover {
+    opacity: 1;
+}
+    </style>
+</head>
+<body>
+    <h1>🌙 Debug SunCalc - Données Lunaires Actuelles</h1>
+    
+<div id="moon-container">
+    <div id="moon-widget">
+        <div id="moon-phase"></div>
+        <div id="moon-info">
+            <span id="moon-percent"></span>
+            <span id="moon-name"></span>
+        </div>
+        <div id="moon-location">
+            <span id="moon-location-text"></span>
+            <button id="moon-location-btn">🔄</button>
+        </div>
+    </div>
+</div>
+
+    <script>
+    // Chargement de SunCalc depuis CDN
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/suncalc@1.8.0/suncalc.min.js';
+script.onload = initMoonWidget;
+document.head.appendChild(script);
+
+// Configuration par défaut (Lyon, France)
+const defaultLocation = {
+    lat: 45.764043,
+    lng: 4.835659
+};
+
+let currentLocation = {...defaultLocation};
+let locationName = "Lyon, FR";
+
+function initMoonWidget() {
+    // Vérifier si la géolocalisation est disponible
+    if (navigator.geolocation) {
+        getLocationName(defaultLocation.lat, defaultLocation.lng)
+            .then(name => {
+                locationName = name || "Lyon, FR";
+                updateLocationText();
+            });
+        
+        // Demander la position actuelle
+        requestLocation();
+    } else {
+        updateLocationText();
+    }
+    
+    // Mettre à jour la lune immédiatement
+    updateMoon();
+    
+    // Mettre à jour toutes les heures et à minuit pour le changement de jour
+    setInterval(updateMoon, 3600000); // 1 heure
+    scheduleMidnightUpdate();
+    
+    // Bouton de rafraîchissement de la localisation
+    document.getElementById('moon-location-btn').addEventListener('click', requestLocation);
+}
+
+function requestLocation() {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            currentLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            
+            getLocationName(currentLocation.lat, currentLocation.lng)
+                .then(name => {
+                    locationName = name || `Lat: ${currentLocation.lat.toFixed(2)}, Lng: ${currentLocation.lng.toFixed(2)}`;
+                    updateLocationText();
+                    updateMoon();
+                });
+        },
+        (error) => {
+            console.log("Geolocation error:", error);
+            // Utiliser la position par défaut
+            currentLocation = {...defaultLocation};
+            updateLocationText();
+        },
+        { timeout: 5000 }
+    );
+}
+
+async function getLocationName(lat, lng) {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`);
+        const data = await response.json();
+        
+        if (data.address) {
+            if (data.address.city) {
+                return `${data.address.city}, ${data.address.country_code.toUpperCase()}`;
+            } else if (data.address.town) {
+                return `${data.address.town}, ${data.address.country_code.toUpperCase()}`;
+            } else if (data.address.village) {
+                return `${data.address.village}, ${data.address.country_code.toUpperCase()}`;
+            }
+        }
+        return null;
+    } catch (error) {
+        console.log("Geocoding error:", error);
+        return null;
+    }
+}
+
+function updateLocationText() {
+    document.getElementById('moon-location-text').textContent = locationName;
+}
+
+function updateMoon() {
+    const now = new Date();
+    const moonData = SunCalc.getMoonIllumination(now);
+    const phase = moonData.phase; // 0 à 1
+    const fraction = moonData.fraction; // % illuminé (0 à 1)
+    const angle = moonData.angle; // angle de l'éclairage
+    
+    // Mettre à jour l'affichage de la lune
+    updateMoonVisual(fraction, angle);
+    
+    // Mettre à jour les infos textuelles
+    updateMoonInfo(fraction, phase);
+}
+
+function updateMoonVisual(fraction, angle) {
+    const moonElement = document.getElementById('moon-phase');
+    const shadowScale = fraction > 0.5 ? 2 * (1 - fraction) : 2 * fraction;
+    const shadowDirection = angle < 0 ? 1 : -1;
+    
+    // Rotation pour l'angle d'éclairage
+    moonElement.style.transform = `rotate(${angle}rad)`;
+    
+    // Ajustement de l'ombre en fonction de la phase
+    const style = moonElement.style;
+    style.setProperty('--shadow-scale', shadowScale);
+    style.setProperty('--shadow-direction', shadowDirection);
+    
+    // Animation CSS dynamique
+    moonElement.style.animation = 'none';
+    void moonElement.offsetWidth; // Trigger reflow
+    moonElement.style.animation = 'moonGlow 3s infinite alternate';
+    
+    // Style dynamique pour l'ombre
+    moonElement.style.setProperty('--shadow-pos', 
+        fraction > 0.5 ? 'left' : 'right');
+    
+    // Ajout du style dynamique si non présent
+    if (!document.getElementById('moon-dynamic-style')) {
+        const style = document.createElement('style');
+        style.id = 'moon-dynamic-style';
+        style.textContent = `
+            #moon-phase::before {
+                transform: scale(var(--shadow-scale)) translateX(calc(var(--shadow-direction) * 50%));
+            }
+            
+            @keyframes moonGlow {
+                0% { box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 215, 0, 0.4); }
+                100% { box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.2), 0 0 30px rgba(255, 215, 0, 0.7); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function updateMoonInfo(fraction, phase) {
+    const percentElement = document.getElementById('moon-percent');
+    const nameElement = document.getElementById('moon-name');
+    
+    // Pourcentage arrondi
+    const percent = Math.round(fraction * 100);
+    percentElement.textContent = `${percent}%`;
+    
+    // Nom de la phase
+    const phaseName = getMoonPhaseName(phase, fraction);
+    nameElement.textContent = phaseName;
+}
+
+function getMoonPhaseName(phase, fraction) {
+    if (phase < 0.03 || phase >= 0.97) return 'Nouvelle Lune';
+    if (phase < 0.22) return fraction < 0.5 ? 'Premier Croissant' : 'Premier Quartier';
+    if (phase < 0.28) return 'Lune Gibbeuse Croissante';
+    if (phase < 0.47) return 'Pleine Lune';
+    if (phase < 0.53) return 'Lune Gibbeuse Décroissante';
+    if (phase < 0.72) return fraction < 0.5 ? 'Dernier Quartier' : 'Dernier Croissant';
+    if (phase < 0.78) return 'Lune Gibbeuse Décroissante';
+    return 'Lune Gibbeuse Croissante';
+}
+
+function scheduleMidnightUpdate() {
+    const now = new Date();
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+    
+    const timeToMidnight = midnight - now;
+    
+    setTimeout(() => {
+        updateMoon();
+        // Reschedule pour le prochain minuit
+        scheduleMidnightUpdate();
+    }, timeToMidnight);
+}
+    </script>
+</body>
+</html>
