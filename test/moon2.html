@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Widget Lunaire Réel</title>
+    <title>Widget Lunaire Ultra-Précis</title>
     <style>
         #moon-container {
             position: fixed;
@@ -15,11 +15,11 @@
         #moon-widget {
             width: 150px;
             height: 150px;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             border-radius: 20px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 15px;
             display: flex;
             flex-direction: column;
@@ -30,31 +30,29 @@
         }
 
         #moon-phase-container {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             position: relative;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        #moon-illuminated {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #f8f8f8;
-            position: absolute;
-            box-shadow: 
-                inset 3px 3px 8px rgba(0, 0, 0, 0.2),
-                0 0 20px rgba(255, 215, 0, 0.4);
-            overflow: hidden;
-        }
-
-        #moon-shadow {
+        #moon-base {
             width: 100%;
             height: 100%;
             border-radius: 50%;
             background: #0f172a;
             position: absolute;
-            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        #moon-light {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #f8f8f8;
+            position: absolute;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: clip-path 0.5s ease;
         }
 
         #moon-info {
@@ -65,6 +63,7 @@
         #moon-percent {
             font-weight: bold;
             display: block;
+            font-size: 16px;
         }
 
         #moon-name {
@@ -87,6 +86,16 @@
             color: white;
             cursor: pointer;
             margin-left: 5px;
+            font-size: 12px;
+        }
+
+        .moon-glow {
+            animation: moonGlow 3s infinite alternate;
+        }
+
+        @keyframes moonGlow {
+            0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+            100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
         }
     </style>
 </head>
@@ -94,8 +103,8 @@
     <div id="moon-container">
         <div id="moon-widget">
             <div id="moon-phase-container">
-                <div id="moon-illuminated"></div>
-                <div id="moon-shadow"></div>
+                <div id="moon-base"></div>
+                <div id="moon-light"></div>
             </div>
             <div id="moon-info">
                 <span id="moon-percent"></span>
@@ -109,17 +118,6 @@
     </div>
 
     <script>
-        // Chargement asynchrone de SunCalc
-        function loadScript(src) {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-        }
-
         // Configuration
         const defaultLocation = { lat: 45.764043, lng: 4.835659 }; // Lyon, FR
         let currentLocation = {...defaultLocation};
@@ -128,7 +126,6 @@
         // Initialisation
         async function init() {
             await loadScript('https://cdn.jsdelivr.net/npm/suncalc@1.8.0/suncalc.min.js');
-            
             setupEventListeners();
             try {
                 await requestLocation();
@@ -137,6 +134,16 @@
             }
             updateMoon();
             startUpdateCycle();
+        }
+
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
         }
 
         function setupEventListeners() {
@@ -199,29 +206,42 @@
         }
 
         function updateMoonVisual(fraction, angle) {
-            const shadow = document.getElementById('moon-shadow');
-            const illuminated = document.getElementById('moon-illuminated');
+            const moonLight = document.getElementById('moon-light');
+            const moonBase = document.getElementById('moon-base');
             
-            // Calcul de la position de l'ombre
-            const shadowWidth = fraction <= 0.5 ? 
-                100 - (fraction * 200) : 
-                (fraction - 0.5) * 200;
+            // Réinitialisation
+            moonLight.style.clipPath = '';
+            moonLight.classList.remove('moon-glow');
             
-            const shadowX = 50 + 50 * Math.cos(angle);
-            const shadowY = 50 + 50 * Math.sin(angle);
-            
-            // Application du clipping
-            if (fraction <= 0.5) {
-                shadow.style.clipPath = `circle(${shadowWidth}% at ${shadowX}% ${shadowY}%)`;
-                illuminated.style.clipPath = 'none';
+            if (fraction === 0) {
+                // Nouvelle Lune
+                moonLight.style.opacity = '0';
+            } else if (fraction === 1) {
+                // Pleine Lune
+                moonLight.style.opacity = '1';
+                moonLight.style.clipPath = 'none';
+                moonLight.classList.add('moon-glow');
             } else {
-                shadow.style.clipPath = 'none';
-                illuminated.style.clipPath = `circle(${shadowWidth}% at ${100 - shadowX}% ${100 - shadowY}%)`;
+                moonLight.style.opacity = '1';
+                
+                // Calcul de la forme du terminateur
+                const x = 50 + 40 * Math.cos(angle);
+                const y = 50 + 40 * Math.sin(angle);
+                
+                if (fraction <= 0.5) {
+                    // Phases croissantes
+                    const radius = fraction * 200;
+                    moonLight.style.clipPath = `circle(${radius}% at ${x}% ${y}%)`;
+                } else {
+                    // Phases décroissantes
+                    const radius = (1 - fraction) * 200;
+                    moonLight.style.clipPath = `circle(${radius}% at ${100 - x}% ${100 - y}%)`;
+                }
+                
+                if (fraction > 0.9 || fraction < 0.1) {
+                    moonLight.classList.add('moon-glow');
+                }
             }
-            
-            // Rotation pour l'orientation
-            shadow.style.transform = `rotate(${angle + Math.PI/2}rad)`;
-            illuminated.style.transform = `rotate(${angle + Math.PI/2}rad)`;
         }
 
         function updateMoonInfo(fraction, phase) {
@@ -240,8 +260,7 @@
         }
 
         function startUpdateCycle() {
-            // Mise à jour toutes les heures
-            setInterval(updateMoon, 3600000);
+            setInterval(updateMoon, 3600000); // Toutes les heures
             
             // Mise à jour à minuit
             const now = new Date();
@@ -249,11 +268,11 @@
             midnight.setHours(24, 0, 0, 0);
             setTimeout(() => {
                 updateMoon();
-                startUpdateCycle(); // Reprogrammation récursive
+                startUpdateCycle();
             }, midnight - now);
         }
 
-        // Démarrer l'application
+        // Lancement
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
