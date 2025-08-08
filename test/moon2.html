@@ -247,29 +247,45 @@ function updateMoonVisual(fraction, angle) {
     const moonElement = document.getElementById('moon-phase');
     const radianAngle = angle;
     
-    // Calcul de la position du masque en fonction de l'angle
+    // 1. Calcul de la position du terminateur (ligne jour/nuit)
     const x = 50 + 50 * Math.cos(radianAngle);
     const y = 50 + 50 * Math.sin(radianAngle);
     
-    // Déterminer la taille du masque en fonction de la phase
-    let maskSize;
-    if (fraction <= 0.5) {
-        // Phase croissante (0% à 50%)
-        maskSize = 100 - (fraction * 200);
-    } else {
-        // Phase décroissante (50% à 100%)
-        maskSize = (fraction - 0.5) * 200;
+    // 2. Configuration du masque en fonction de la phase
+    let maskSize, maskPosition;
+    
+    if (fraction === 0) { // Nouvelle Lune
+        maskSize = '100%';
+        maskPosition = '50% 50%';
+    } else if (fraction === 1) { // Pleine Lune
+        maskSize = '0%';
+        maskPosition = '50% 50%';
+    } else if (fraction <= 0.5) { // Croissant -> Premier Quartier
+        maskSize = `${100 - (fraction * 200)}%`;
+        maskPosition = `${x}% ${y}%`;
+    } else { // Gibbeuse -> Pleine Lune
+        maskSize = `${(fraction - 0.5) * 200}%`;
+        maskPosition = `${x}% ${y}%`;
     }
     
-    // Appliquer les propriétés CSS
-    moonElement.style.setProperty('--mask-position', `${x}% ${y}%`);
-    moonElement.style.setProperty('--mask-size', `${maskSize}%`);
+    // 3. Application des styles
+    moonElement.style.setProperty('--mask-position', maskPosition);
+    moonElement.style.setProperty('--mask-size', maskSize);
     
-    // Rotation pour orienter correctement la phase
+    // 4. Rotation pour l'orientation astronomique correcte
     moonElement.style.transform = `rotate(${radianAngle + Math.PI/2}rad)`;
     
-    // Animation de lueur
-    moonElement.style.animation = 'moonGlow 3s infinite alternate';
+    // 5. Gestion spéciale des phases extrêmes
+    if (fraction < 0.03 || fraction > 0.97) {
+        moonElement.style.boxShadow = 'inset 5px 5px 15px rgba(0, 0, 0, 0.2)';
+    } else {
+        moonElement.style.boxShadow = 
+            'inset 5px 5px 15px rgba(0, 0, 0, 0.2), ' +
+            '0 0 40px rgba(255, 215, 0, 0.6)';
+    }
+    
+    // 6. Animation de lueur (sauf nouvelle lune)
+    moonElement.style.animation = fraction === 0 ? 'none' : 'moonGlow 3s infinite alternate';
 }
 
 function updateMoonInfo(fraction, phase) {
