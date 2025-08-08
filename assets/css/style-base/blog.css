@@ -215,6 +215,31 @@ body.theme-stellaire .section-new-dot {
 }
 
 
+.section-new-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--new-dot, var(--btn-color, #ffd700));
+  box-shadow: 0 0 6px color-mix(in oklab, var(--new-dot, var(--btn-color, #ffd700)) 60%, transparent);
+  vertical-align: middle;
+  animation: dotPulse 2.5s ease-in-out infinite;
+}
+
+/* Animation douce */
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 6px color-mix(in oklab, var(--new-dot, var(--btn-color, #ffd700)) 60%, transparent);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    box-shadow: 0 0 10px color-mix(in oklab, var(--new-dot, var(--btn-color, #ffd700)) 80%, transparent);
+    opacity: 0.9;
+  }
+}
 
 
 
