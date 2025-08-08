@@ -3,13 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyse Lunaire</title>
+    <title>Debug SunCalc - Analyse Lunaire</title>
+    <style>
+        #moon-phase-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  font-family: 'Arial', sans-serif;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
 
+#moon-phase-widget:hover {
+  transform: translateY(-5px);
+}
+
+#moon-phase-container {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(5px);
+  border-radius: 50px;
+  padding: 8px 15px 8px 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: glow 8s infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(138, 180, 248, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(138, 180, 248, 0.6);
+  }
+}
+
+#moon-phase-visual {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f8f3e6;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 231, 150, 0.6);
+  margin-right: 12px;
+}
+
+#moon-phase-shadow {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.9);
+  transition: all 2s ease;
+}
+
+#moon-phase-info {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+#moon-phase-name {
+  font-weight: bold;
+  color: #f8f3e6;
+}
+
+#moon-phase-percent {
+  opacity: 0.8;
+  font-size: 11px;
+}
+    </style>
 </head>
 <body>
-    <h1>🌙 Données Lunaires Actuelles</h1>
+    <h1>🌙 Debug SunCalc - Données Lunaires Actuelles</h1>
     
-<div id="moon-phase-widget">
+ <div id="moon-phase-widget">
   <div id="moon-phase-container">
     <div id="moon-phase-visual">
       <div id="moon-phase-shadow"></div>
@@ -20,6 +90,131 @@
     </div>
   </div>
 </div>
+
+    <script>
+       class MoonPhaseWidget {
+  constructor() {
+    this.widget = document.getElementById('moon-phase-widget');
+    this.moonVisual = document.getElementById('moon-phase-visual');
+    this.moonShadow = document.getElementById('moon-phase-shadow');
+    this.moonName = document.getElementById('moon-phase-name');
+    this.moonPercent = document.getElementById('moon-phase-percent');
+    
+    this.phases = [
+      { name: "Nouvelle Lune", shadow: 100, pos: 0 },
+      { name: "Premier Croissant", shadow: 75, pos: 1 },
+      { name: "Premier Quartier", shadow: 50, pos: 2 },
+      { name: "Lune Gibbeuse Croissante", shadow: 25, pos: 3 },
+      { name: "Pleine Lune", shadow: 0, pos: 4 },
+      { name: "Lune Gibbeuse Décroissante", shadow: 25, pos: 5 },
+      { name: "Dernier Quartier", shadow: 50, pos: 6 },
+      { name: "Dernier Croissant", shadow: 75, pos: 7 }
+    ];
+    
+    this.init();
+  }
   
+  init() {
+    this.updateMoonPhase();
+    // Mise à jour toutes les heures
+    setInterval(() => this.updateMoonPhase(), 3600000);
+    
+    // Animation d'entrée
+    setTimeout(() => {
+      this.widget.style.transition = 'opacity 1s ease, transform 1s ease';
+      this.widget.style.opacity = '1';
+    }, 100);
+  }
+  
+  getMoonPhase(date) {
+    // Calcul basé sur l'algorithme de Conway
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    
+    let r = year % 100;
+    r %= 19;
+    if (r > 9) r -= 19;
+    r = ((r * 11) % 30) + month + day;
+    if (month < 3) r += 2;
+    
+    let phase = (r + (year < 2000 ? -4 : 8.3)) % 30;
+    phase = Math.floor(phase < 0 ? phase + 30 : phase);
+    
+    // Normalisation entre 0 et 7 (8 phases)
+    const normalizedPhase = Math.floor((phase / 30) * 8) % 8;
+    
+    // Calcul du pourcentage d'illumination
+    const percent = 50 * (1 - Math.cos(2 * Math.PI * phase / 29.53));
+    
+    return {
+      phase: normalizedPhase,
+      percent: Math.round(percent),
+      age: phase
+    };
+  }
+  
+  updateMoonPhase() {
+    const now = new Date();
+    const moonData = this.getMoonPhase(now);
+    const currentPhase = this.phases[moonData.phase];
+    
+    // Mise à jour de l'affichage
+    this.moonName.textContent = currentPhase.name;
+    this.moonPercent.textContent = `${moonData.percent}% illuminée`;
+    
+    // Animation de la phase lunaire
+    this.updateMoonVisual(currentPhase.shadow, currentPhase.pos);
+    
+    // Effet de brillance aléatoire
+    this.addMoonGlow();
+  }
+  
+  updateMoonVisual(shadowPercent, position) {
+    // Positionnement de l'ombre en fonction de la phase
+    let shadowSize = 40 * (shadowPercent / 100);
+    let shadowX = 0;
+    
+    if (position < 4) {
+      // Ombre à droite (lune croissante)
+      shadowX = 40 - shadowSize;
+      this.moonShadow.style.left = `${shadowX}px`;
+      this.moonShadow.style.right = 'auto';
+    } else if (position > 4) {
+      // Ombre à gauche (lune décroissante)
+      shadowX = 0;
+      this.moonShadow.style.left = 'auto';
+      this.moonShadow.style.right = `${40 - shadowSize}px`;
+    } else {
+      // Pleine lune - pas d'ombre
+      shadowSize = 0;
+    }
+    
+    this.moonShadow.style.width = `${shadowSize}px`;
+    this.moonShadow.style.height = '40px';
+    this.moonShadow.style.top = '0';
+    this.moonShadow.style.bottom = '0';
+  }
+  
+  addMoonGlow() {
+    // Effet de scintillement aléatoire
+    const glowIntensity = Math.random() * 0.3 + 0.7;
+    const glowSize = Math.random() * 10 + 15;
+    
+    this.moonVisual.style.boxShadow = `
+      inset 0 0 10px rgba(0, 0, 0, 0.2),
+      0 0 ${glowSize}px rgba(255, 231, 150, ${glowIntensity})
+    `;
+    
+    // Programmer le prochain scintillement
+    setTimeout(() => this.addMoonGlow(), Math.random() * 5000 + 3000);
+  }
+}
+
+// Initialisation lorsque le DOM est chargé
+document.addEventListener('DOMContentLoaded', () => {
+  new MoonPhaseWidget();
+});
+    </script>
 </body>
 </html>
