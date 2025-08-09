@@ -34,9 +34,12 @@ async function getObserver(){
 
 // ————— Nuit simple: Soleil sous -6°
 function isNightish(observer, date){
-  const hrz = Astro.Horizon(observer, date, Astro.Body.Sun, 'normal');
+  // Need RA/Dec of the Sun first
+  const sunEq = Astro.Equator(Astro.Body.Sun, date, observer, true, true);
+  const hrz = Astro.Horizon(observer, date, sunEq.ra, sunEq.dec, 'normal');
   return hrz.altitude < -6;
 }
+
 
 // ————— Calcul des planètes (maintenant)
 async function computePlanets(now = new Date()){
