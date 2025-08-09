@@ -75,34 +75,52 @@ function handleThemeChange(currentTheme) {
 }
 
 
-  if (currentTheme === "stellaire" || currentTheme === "galactique") {
-    if (!dataLoaded) {
-      fetch('/arc/events-astro-2025.json')
-        .then(res => res.json())
-        .then(data => {
-          astroData = data;
-          dataLoaded = true;
-          console.log("✅ Événements astro chargés.");
-          afficherNoteAstro(astroData, currentTheme);
-        })
-        .catch(err => {
-          console.error("❌ Erreur chargement événements astro:", err);
-          setCurrentAlertText("🪐 Impossible de charger les événements.");
-          lancerIntroAstro(currentTheme);
-        });
-    } else {
-      afficherNoteAstro(astroData, currentTheme);
-    }
-    return;
-  }
+  // ———— STELLAIRE
+if (currentTheme === "stellaire") {
+  console.log("🌟 Thème stellaire : calcul des planètes visibles...");
+  import("/assets/js/astro-stellaire.js")
+    .then(mod => mod.getStellarInfo())
+    .then(text => {
+      setCurrentAlertText(text || "🪐 Aucune donnée stellaire.");
+      lancerIntroAstro(currentTheme);
+    })
+    .catch(err => {
+      console.error("❌ Erreur stellaire:", err);
+      setCurrentAlertText("🪐 Impossible de calculer les données stellaires.");
+      lancerIntroAstro(currentTheme);
+    });
+  return;
+}
 
+// ———— GALACTIQUE (inchangé pour l’instant)
+if (currentTheme === "galactique") {
+  if (!dataLoaded) {
+    fetch('/arc/events-astro-2025.json')
+      .then(res => res.json())
+      .then(data => {
+        astroData = data;
+        dataLoaded = true;
+        console.log("✅ Événements astro chargés.");
+        afficherNoteAstro(astroData, currentTheme);
+      })
+      .catch(err => {
+        console.error("❌ Erreur chargement événements astro:", err);
+        setCurrentAlertText("🛰️ Impossible de charger les événements.");
+        lancerIntroAstro(currentTheme);
+      });
+  } else {
+    afficherNoteAstro(astroData, currentTheme);
+  }
+  return;
+}
+
+  
+// ———— Si thème inconnu
   setCurrentAlertText('🌌 Thème inconnu.');
   lancerIntroAstro(currentTheme);
 }
 
-/**
- * Initialise l'observateur de thème
- */
+// ———— Initialise l'observateur de thème
 export function initThemeObserver() {
   let previousTheme = null;
 
