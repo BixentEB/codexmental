@@ -109,6 +109,41 @@ async function loadMeteorShowers(){
   }
 }
 
+// ————— Prochains pics dans X jours (à teaser si rien aujourd'hui)
+async function loadUpcomingShowers(windowDays = 30){
+  try{
+    const y = new Date().getFullYear();
+    const res = await fetch(`/arc/meteors-${y}.json`, { cache:'no-store' });
+    if(!res.ok) return [];
+    const data = await res.json();
+
+    const now = new Date();
+    const maxDate = new Date(now); maxDate.setDate(maxDate.getDate() + windowDays);
+
+    const upcoming = (Array.isArray(data)?data:[])
+      .filter(ev => {
+        const peakISO = ev?.maximum?.date;
+        if(!peakISO) return false;
+        const peak = new Date(peakISO);
+        return peak >= now && peak <= maxDate; // pic dans la fenêtre
+      })
+      .sort((a,b)=> new Date(a.maximum.date) - new Date(b.maximum.date))
+      .slice(0, 3) // 1 à 3 entrées max
+      .map(ev => {
+        const name = ev.name_fr || ev.name_en || ev.iau_code || 'Pluie';
+        const peak = new Date(ev.maximum.date);
+        const jour  = peak.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+        const heure = peak.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+        const zhr = (ev.zhr === 0 || ev.zhr) ? ev.zhr : '—';
+        return `${name} — pic ${jour} ${heure} • ZHR~${zhr}`;
+      });
+
+    return upcoming;
+  }catch{
+    return [];
+  }
+}
+
 
 // ————— Helpers d’affichage courts
 function compactPlanetsLine(planets){
@@ -137,8 +172,22 @@ function compactMeteorsLine(showers){
 export async function getStellarInfo(){
   const planets = await computePlanets(new Date());
   const lineP = compactPlanetsLine(planets);
+
+  // ☄️ aujourd'hui
   const meteors = await loadMeteorShowers();
   const lineM = compactMeteorsLine(meteors);
-  const text = `${lineP}${lineM}`.trim();
-  return text || '🪐 Aucune donnée stellaire.';
+
+  let text = `${lineP}${lineM}`.trim();
+  if (text && !text.includes('Aucune')) return text; // on a de la matière, go
+
+  // 📅 Fallback: teaser du mois (si rien d’actif aujourd’hui)
+  const upcoming = await loadUpcomingShowers(30);
+  if (upcoming.length){
+    const teaser = upcoming.join(' • ');
+    return `📅 À surveiller ce mois-ci : ${teaser}`;
+  }
+
+  // Toujours rien ? Message clean.
+  return '🪐 Ciel calme pour l’instant — rien d’important à signaler.';
 }
+
