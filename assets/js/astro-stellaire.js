@@ -73,25 +73,42 @@ async function computePlanets(now = new Date()){
   return out;
 }
 
-// ————— Pluies de météores (facultatif)
+// ————— Pluies de météores (format meteors-YYYY.json enrichi)
 async function loadMeteorShowers(){
   try{
     const y = new Date().getFullYear();
     const res = await fetch(`/arc/meteors-${y}.json`, { cache:'no-store' });
     if(!res.ok) return [];
+
     const data = await res.json();
-    // garde celles actives aujourd'hui
-    const today = new Date(); const t0 = new Date(today); t0.setHours(0,0,0,0);
+    const today = new Date();
+    const t0 = new Date(today); t0.setHours(0,0,0,0);
     const t1 = new Date(today); t1.setHours(23,59,59,999);
-    return (Array.isArray(data)?data:[]).filter(ev=>{
-      const start = new Date(ev.start); const end = new Date(ev.end);
-      return end>=t0 && start<=t1;
-    }).map(ev=>{
-      const peak = ev.peakLocal || (ev.peakUTC ? new Date(ev.peakUTC).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : 'bientôt');
-      return { name: ev.name || ev.code || 'Pluie', peak, zhr: ev.zhr ?? '—' };
+
+    // garde celles actives aujourd'hui (via activity.start/end)
+    const todays = (Array.isArray(data) ? data : []).filter(ev=>{
+      const start = ev?.activity?.start ? new Date(ev.activity.start) : null;
+      const end   = ev?.activity?.end   ? new Date(ev.activity.end)   : null;
+      if(!start || !end) return false;
+      return end >= t0 && start <= t1;
     });
-  }catch{ return []; }
+
+    // map -> format court attendu par le widget
+    return todays.map(ev=>{
+      const name = ev.name_fr || ev.name_en || ev.iau_code || 'Pluie';
+      const peakISO = ev?.maximum?.date || null;
+      const peak = peakISO
+        ? new Date(peakISO).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})
+        : 'bientôt';
+      // zhr peut être un nombre ou "variable"
+      const zhr = (ev.zhr === 0 || ev.zhr) ? ev.zhr : '—';
+      return { name, peak, zhr };
+    });
+  }catch{
+    return [];
+  }
 }
+
 
 // ————— Helpers d’affichage courts
 function compactPlanetsLine(planets){
