@@ -1,11 +1,12 @@
 // ========================================================
-// astro-stellaire.js – Planètes visibles + note stellaire
-// Dépendance: Astronomy Engine (calculs alt/az, magnitude, rise/set)
+// astro-stellaire.js — Codex Mental
+// Planètes visibles (œil nu) + pluies de météores (optionnel)
+// Dépendance: Astronomy Engine (ESM) — aucun serveur requis
 // ========================================================
 
 import * as Astro from 'https://esm.sh/astronomy-engine@2';
 
-// —————————————— Utils
+// ————— Config de base
 const NAKED_EYE = [
   { name: 'Mercure', body: Astro.Body.Mercury },
   { name: 'Vénus',   body: Astro.Body.Venus   },
@@ -14,133 +15,113 @@ const NAKED_EYE = [
   { name: 'Saturne', body: Astro.Body.Saturn  },
 ];
 
-function round1(x) { return Math.round(x * 10) / 10; }
+function r1(x){ return Math.round(x*10)/10; }
+function fmtTime(d){ return d ? d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—'; }
 
-function formatTime(d) {
-  return d ? d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
-}
-
-async function getObserver() {
-  // 1) tente geoloc navigateur
-  const fromGeo = await new Promise(resolve => {
-    if (!('geolocation' in navigator)) return resolve(null);
-    const opts = { enableHighAccuracy: false, timeout: 3500, maximumAge: 60_000 };
+// ————— Localisation (géoloc → fallback Paris)
+async function getObserver(){
+  const pos = await new Promise(res=>{
+    if(!('geolocation' in navigator)) return res(null);
     navigator.geolocation.getCurrentPosition(
-      pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-      ()  => resolve(null),
-      opts
+      p=>res({lat:p.coords.latitude, lon:p.coords.longitude}),
+      ()=>res(null),
+      { enableHighAccuracy:false, timeout:3500, maximumAge:60000 }
     );
   });
-
-  // 2) fallback (Paris) si pas dispo
-  const { lat, lon } = fromGeo ?? { lat: 48.8566, lon: 2.3522 };
+  const {lat,lon} = pos ?? {lat:48.8566, lon:2.3522};
   return new Astro.Observer(lat, lon, 0);
 }
 
-function sunAltitudeDeg(observer, date) {
+// ————— Nuit simple: Soleil sous -6°
+function isNightish(observer, date){
   const hrz = Astro.Horizon(observer, date, Astro.Body.Sun, 'normal');
-  return hrz.altitude;
+  return hrz.altitude < -6;
 }
 
-function isNightish(observer, date) {
-  // nuit “simple” : soleil < -6°
-  return sunAltitudeDeg(observer, date) < -6;
-}
-
-async function computeVisiblePlanets(date = new Date()) {
+// ————— Calcul des planètes
+async function computePlanets(now = new Date()){
   const observer = await getObserver();
+  const night = isNightish(observer, now);
+  const out = [];
 
-  const results = [];
-  const night = isNightish(observer, date);
-
-  for (const p of NAKED_EYE) {
-    // Position apparente
-    const equ = Astro.Equator(p.body, date, observer, true, true);
-    const hrz = Astro.Horizon(observer, date, equ.ra, equ.dec, 'normal');
-
-    // Magnitude & événements lever/coucher
-    const ill = Astro.Illumination(p.body, date);
+  for(const p of NAKED_EYE){
+    const equ = Astro.Equator(p.body, now, observer, true, true);
+    const hrz = Astro.Horizon(observer, now, equ.ra, equ.dec, 'normal');
+    const ill = Astro.Illumination(p.body, now);
     const mag = ill?.mag ?? null;
 
-    let nextRise = null;
-    let nextSet  = null;
-    try {
-      nextRise = Astro.SearchRiseSet(p.body, observer, +1, date, 1)?.date ?? null;
-    } catch {}
-    try {
-      nextSet  = Astro.SearchRiseSet(p.body, observer, -1, date, 1)?.date ?? null;
-    } catch {}
+    let nextRise=null, nextSet=null;
+    try{ nextRise = Astro.SearchRiseSet(p.body, observer, +1, now, 1)?.date ?? null; }catch{}
+    try{ nextSet  = Astro.SearchRiseSet(p.body, observer, -1, now, 1)?.date ?? null; }catch{}
 
-    results.push({
-      name: p.name,
-      altitude: round1(hrz.altitude),
-      azimuth:  round1(hrz.azimuth),
-      magnitude: mag !== null ? Math.round(mag * 10) / 10 : null,
-      visibleNow: night && hrz.altitude > 0,
+    out.push({
+      name:p.name,
+      alt:r1(hrz.altitude),
+      az:r1(hrz.azimuth),
+      mag: mag!=null ? r1(mag) : null,
+      visible: night && hrz.altitude>0,
       nextRise, nextSet
     });
   }
 
-  // visibles d’abord, puis + brillant (mag plus petite)
-  results.sort((a,b)=>{
-    if (a.visibleNow !== b.visibleNow) return a.visibleNow ? -1 : 1;
-    return (a.magnitude ?? 99) - (b.magnitude ?? 99);
+  // visibles d’abord puis magnitude croissante (plus brillant)
+  out.sort((a,b)=>{
+    if(a.visible!==b.visible) return a.visible?-1:1;
+    return (a.mag??99)-(b.mag??99);
   });
 
-  return { observer, results, date };
+  return out;
 }
 
-function composePlanetLine(p) {
-  const alt = `${p.altitude}°`;
-  const mag = p.magnitude !== null ? `mag ${p.magnitude}` : 'mag —';
-  if (p.visibleNow) {
-    return `• ${p.name} – ${alt}, ${mag}`;
-  }
-  // sinon prochaine fenêtre la plus proche
-  const when = p.nextRise || p.nextSet;
-  const tag  = p.nextRise ? 'lever' : (p.nextSet ? 'coucher' : null);
-  return when
-    ? `• ${p.name} – ${mag}, prochain ${tag} vers ${formatTime(when)}`
-    : `• ${p.name} – ${mag}, fenêtre indisponible`;
-}
-
-// (optionnel) charge un JSON local des pluies de météores si présent
-async function loadMeteorShowers() {
-  try {
-    const year = new Date().getFullYear();
-    const res = await fetch(`/arc/meteors-${year}.json`, { cache: 'no-store' });
-    if (!res.ok) return [];
+// ————— Pluies de météores (facultatif)
+async function loadMeteorShowers(){
+  try{
+    const y = new Date().getFullYear();
+    const res = await fetch(`/arc/meteors-${y}.json`, { cache:'no-store' });
+    if(!res.ok) return [];
     const data = await res.json();
-    const today = new Date();
-    const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
-
-    return data.filter(ev => {
-      const start = new Date(ev.start);
-      const end   = new Date(ev.end);
-      const t0 = new Date(y, m, d, 0, 0, 0);
-      const t1 = new Date(y, m, d, 23, 59, 59);
-      return end >= t0 && start <= t1; // actif aujourd'hui
+    // garde celles actives aujourd'hui
+    const today = new Date(); const t0 = new Date(today); t0.setHours(0,0,0,0);
+    const t1 = new Date(today); t1.setHours(23,59,59,999);
+    return (Array.isArray(data)?data:[]).filter(ev=>{
+      const start = new Date(ev.start); const end = new Date(ev.end);
+      return end>=t0 && start<=t1;
+    }).map(ev=>{
+      const peak = ev.peakLocal || (ev.peakUTC ? new Date(ev.peakUTC).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : 'bientôt');
+      return { name: ev.name || ev.code || 'Pluie', peak, zhr: ev.zhr ?? '—' };
     });
-  } catch {
-    return [];
-  }
+  }catch{ return []; }
 }
 
-// —————————————— API exportée
-export async function getStellarInfo() {
-  const { results } = await computeVisiblePlanets(new Date());
-
-  const visibles = results.filter(p => p.visibleNow);
-  const lines = (visibles.length ? visibles : results.slice(0, 3)).map(composePlanetLine);
-
-  // Pluies de météores du jour (si fichier dispo)
-  const showers = await loadMeteorShowers();
-  const showersLine = showers.length
-    ? '\n☄️ ' + showers.map(s => `${s.name} – pic ${s.peakLocal ?? s.peakUTC ?? 'bientôt'}`).join(' • ')
-    : '';
-
-  if (visibles.length) {
-    return `🔭 Visibles maintenant :\n${lines.join('\n')}${showersLine}`;
+// ————— Helpers d’affichage courts
+function compactPlanetsLine(planets){
+  const visibles = planets.filter(p=>p.visible);
+  if(visibles.length){
+    const list = visibles
+      .map(p=>`${p.name}${p.mag!=null?` (${p.mag})`:''}`)
+      .join(', ');
+    return `🔭 Visibles : ${list}`;
   }
-  return `🕑 Aucune planète visible à l’instant.\n${lines.join('\n')}${showersLine}`;
+  // sinon annonce la plus proche fenêtre
+  const soon = planets
+    .map(p=>({name:p.name, at:p.nextRise||p.nextSet, tag:p.nextRise?'lever':(p.nextSet?'coucher':null)}))
+    .filter(x=>!!x.at)
+    .sort((a,b)=>a.at-b.at)[0];
+  return soon ? `🕑 Prochaine : ${soon.name} ${soon.tag} vers ${fmtTime(soon.at)}` : `🕑 Aucune fenêtre aujourd’hui`;
+}
+
+function compactMeteorsLine(showers){
+  if(!showers.length) return '';
+  const s = showers.map(x=>`${x.name} — pic ${x.peak} • ZHR~${x.zhr}`).join(' • ');
+  return `\n☄️ ${s}`;
+}
+
+// ————— API publique
+export async function getStellarInfo(){
+  const planets = await computePlanets(new Date());
+  const lineP = compactPlanetsLine(planets);
+  const meteors = await loadMeteorShowers();
+  const lineM = compactMeteorsLine(meteors);
+  const text = `${lineP}${lineM}`.trim();
+  return text || '🪐 Aucune donnée stellaire.';
 }
