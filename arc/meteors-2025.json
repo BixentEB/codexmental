@@ -1,0 +1,1225 @@
+[
+  {
+    "iau_code": "ANT",
+    "name_en": "Antihelion Source",
+    "name_fr": "Source anti-hélion (région)",
+    "category": "visuel",
+    "activity": {
+      "start": "2024-12-10T00:00:00Z",
+      "end": "2025-09-20T00:00:00Z"
+    },
+    "maximum": {
+      "date": null,
+      "solar_longitude_deg": null,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": null,
+      "dec_deg": null
+    },
+    "speed_km_s": 30,
+    "population_index_r": 3.0,
+    "zhr": 4,
+    "notes_fr": "Région étendue, non un essaim unique. Actif de décembre à septembre avec pics modérés mars–avril, fin mai et fin juin. ZHR ~2–5 selon période.",
+    "special_events": []
+  },
+  {
+    "iau_code": "010 QUA",
+    "name_en": "Quadrantids",
+    "name_fr": "Quadrantides",
+    "category": "visuel",
+    "activity": {
+      "start": "2024-12-28T00:00:00Z",
+      "end": "2025-01-12T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-01-03T15:00:00Z",
+      "solar_longitude_deg": 283.15,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 230,
+      "dec_deg": 49
+    },
+    "speed_km_s": 41,
+    "population_index_r": 2.1,
+    "zhr": 80,
+    "notes_fr": "Pointe brève (~4h). Cette année conditions quasi sans lune. Variabilité 60–200 signalée.",
+    "special_events": []
+  },
+  {
+    "iau_code": "404 GUM",
+    "name_en": "Gamma Ursae Minorids",
+    "name_fr": "Gamma de la Petite Ourse",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-01-10T00:00:00Z",
+      "end": "2025-01-22T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-01-18T00:00:00Z",
+      "solar_longitude_deg": 298.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 228,
+      "dec_deg": 67
+    },
+    "speed_km_s": 31,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "102 ACE",
+    "name_en": "Alpha Centaurids",
+    "name_fr": "Alpha du Centaure",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-01-31T00:00:00Z",
+      "end": "2025-02-20T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-02-08T00:00:00Z",
+      "solar_longitude_deg": 319.4,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 211,
+      "dec_deg": -58
+    },
+    "speed_km_s": 58,
+    "population_index_r": 2.0,
+    "zhr": 6,
+    "notes_fr": "Tendance à des sursauts brefs historiques; en moyenne ZHR ~6.",
+    "special_events": []
+  },
+  {
+    "iau_code": "006 LYR",
+    "name_en": "Lyrids",
+    "name_fr": "Lyrides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-04-14T00:00:00Z",
+      "end": "2025-04-30T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-04-22T13:30:00Z",
+      "solar_longitude_deg": 32.32,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 271,
+      "dec_deg": 34
+    },
+    "speed_km_s": 49,
+    "population_index_r": 2.1,
+    "zhr": 18,
+    "notes_fr": "Pic variable (10h30–18h UT). Cette année dernier quartier le 21 avril (lune gênante modérée).",
+    "special_events": []
+  },
+  {
+    "iau_code": "137 PPU",
+    "name_en": "Pi Puppids",
+    "name_fr": "Pi des Poupe",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-04-15T00:00:00Z",
+      "end": "2025-04-28T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-04-23T19:00:00Z",
+      "solar_longitude_deg": 33.5,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 110,
+      "dec_deg": -45
+    },
+    "speed_km_s": 18,
+    "population_index_r": 2.0,
+    "zhr": "variable",
+    "notes_fr": "Activité variable, ZHR jusqu’à ~40 lors de sursauts historiques; pas de prédiction particulière 2025.",
+    "special_events": []
+  },
+  {
+    "iau_code": "031 ETA",
+    "name_en": "Eta Aquariids",
+    "name_fr": "Eta Aquarides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-04-19T00:00:00Z",
+      "end": "2025-05-28T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-05-06T03:00:00Z",
+      "solar_longitude_deg": 45.5,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 338,
+      "dec_deg": -1
+    },
+    "speed_km_s": 66,
+    "population_index_r": 2.4,
+    "zhr": 50,
+    "notes_fr": "Associées à 1P/Halley. Très favorables pour hémisphère Sud; fenêtre avant l’aube.",
+    "special_events": []
+  },
+  {
+    "iau_code": "145 ELY",
+    "name_en": "Eta Lyrids",
+    "name_fr": "Eta Lyrides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-05-03T00:00:00Z",
+      "end": "2025-05-14T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-05-10T00:00:00Z",
+      "solar_longitude_deg": 50.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 291,
+      "dec_deg": 43
+    },
+    "speed_km_s": 43,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "170 JBO",
+    "name_en": "June Bootids",
+    "name_fr": "Bootides de juin",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-06-22T00:00:00Z",
+      "end": "2025-07-02T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-06-27T11:00:00Z",
+      "solar_longitude_deg": 95.7,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 224,
+      "dec_deg": 48
+    },
+    "speed_km_s": 18,
+    "population_index_r": 2.2,
+    "zhr": "variable",
+    "notes_fr": "Activité très variable (0–100+). Sursauts notables en 1998 et 2004.",
+    "special_events": []
+  },
+  {
+    "iau_code": "175 JPE",
+    "name_en": "July Pegasids",
+    "name_fr": "Pégasides de juillet",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-07-04T00:00:00Z",
+      "end": "2025-07-14T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-07-10T00:00:00Z",
+      "solar_longitude_deg": 108.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 347,
+      "dec_deg": 11
+    },
+    "speed_km_s": 63,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "184 GDR",
+    "name_en": "July Gamma Draconids",
+    "name_fr": "Gamma Draconides (juillet)",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-07-25T00:00:00Z",
+      "end": "2025-07-31T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-07-28T00:00:00Z",
+      "solar_longitude_deg": 125.132,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 280,
+      "dec_deg": 51
+    },
+    "speed_km_s": 27,
+    "population_index_r": 3.0,
+    "zhr": 5,
+    "notes_fr": "",
+    "special_events": [
+      {
+        "date": "2025-07-28T07:00:00Z",
+        "note": "Position de l’outburst 2016 réatteinte; vérifier activité."
+      }
+    ]
+  },
+  {
+    "iau_code": "005 SDA",
+    "name_en": "Southern Delta Aquariids",
+    "name_fr": "Delta Aquarides Sud",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-07-12T00:00:00Z",
+      "end": "2025-08-23T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-07-31T00:00:00Z",
+      "solar_longitude_deg": 128.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 340,
+      "dec_deg": -16
+    },
+    "speed_km_s": 41,
+    "population_index_r": 2.5,
+    "zhr": 25,
+    "notes_fr": "Bonnes conditions 2025; ZHR >20 durant ~2 jours autour du maximum.",
+    "special_events": []
+  },
+  {
+    "iau_code": "001 CAP",
+    "name_en": "Alpha Capricornids",
+    "name_fr": "Alpha Capricornides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-07-03T00:00:00Z",
+      "end": "2025-08-15T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-07-31T00:00:00Z",
+      "solar_longitude_deg": 128.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 307,
+      "dec_deg": -10
+    },
+    "speed_km_s": 23,
+    "population_index_r": 2.5,
+    "zhr": 5,
+    "notes_fr": "Souvent des bolides lents; maximum autour du 30/31 juillet.",
+    "special_events": []
+  },
+  {
+    "iau_code": "191 ERI",
+    "name_en": "Eta Eridanids",
+    "name_fr": "Eta Eridanides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-07-31T00:00:00Z",
+      "end": "2025-08-19T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-08-07T00:00:00Z",
+      "solar_longitude_deg": 135.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 41,
+      "dec_deg": -11
+    },
+    "speed_km_s": 64,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "007 PER",
+    "name_en": "Perseids",
+    "name_fr": "Perséides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-07-17T00:00:00Z",
+      "end": "2025-08-24T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-08-12T00:00:00Z",
+      "solar_longitude_deg": 140.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 48,
+      "dec_deg": 58
+    },
+    "speed_km_s": 59,
+    "population_index_r": 2.2,
+    "zhr": 100,
+    "notes_fr": "Pic proche de la pleine Lune en 2025; rencontres prévues avec des filaments anciens (voir événements spéciaux).",
+    "special_events": [
+      {
+        "date": "2025-08-12T13:15:00Z",
+        "note": "Rencontre possible trail 1079 (Vaubaillon)."
+      },
+      {
+        "date": "2025-08-12T04:00:00Z",
+        "note": "Filament listé (Jenniskens) après 04h UT; ZHR ≤ 50."
+      }
+    ]
+  },
+  {
+    "iau_code": "012 KCG",
+    "name_en": "Kappa Cygnids",
+    "name_fr": "Kappa du Cygne",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-08-03T00:00:00Z",
+      "end": "2025-08-28T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-08-16T00:00:00Z",
+      "solar_longitude_deg": 144.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 286,
+      "dec_deg": 59
+    },
+    "speed_km_s": 23,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "206 AUR",
+    "name_en": "Aurigids",
+    "name_fr": "Aurigides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-08-28T00:00:00Z",
+      "end": "2025-09-05T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-09-01T03:00:00Z",
+      "solar_longitude_deg": 158.6,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 91,
+      "dec_deg": 39
+    },
+    "speed_km_s": 66,
+    "population_index_r": 2.5,
+    "zhr": 6,
+    "notes_fr": "Possibles hausses ponctuelles; conditions 2025 favorables (sans lune significative).",
+    "special_events": []
+  },
+  {
+    "iau_code": "208 SPE",
+    "name_en": "September Epsilon Perseids",
+    "name_fr": "Epsilon Perséides de septembre",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-09-05T00:00:00Z",
+      "end": "2025-09-21T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-09-09T00:00:00Z",
+      "solar_longitude_deg": 166.7,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 48,
+      "dec_deg": 40
+    },
+    "speed_km_s": 64,
+    "population_index_r": 3.0,
+    "zhr": 8,
+    "notes_fr": "Conditions médiocres 2025 (pleine Lune ~2 jours avant).",
+    "special_events": []
+  },
+  {
+    "iau_code": "221 DSX",
+    "name_en": "Daytime Sextantids",
+    "name_fr": "Sextantides (jour)",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-09-09T00:00:00Z",
+      "end": "2025-10-09T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-09-27T00:00:00Z",
+      "solar_longitude_deg": 184.3,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 156,
+      "dec_deg": -2
+    },
+    "speed_km_s": 32,
+    "population_index_r": 2.5,
+    "zhr": 5,
+    "notes_fr": "Faible; surtout radio/forward scatter.",
+    "special_events": []
+  },
+  {
+    "iau_code": "281 OCT",
+    "name_en": "October Camelopardalids",
+    "name_fr": "Camelopardalides d’octobre",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-10-05T00:00:00Z",
+      "end": "2025-10-06T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-10-05T00:00:00Z",
+      "solar_longitude_deg": 192.58,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 164,
+      "dec_deg": 79
+    },
+    "speed_km_s": 47,
+    "population_index_r": 2.5,
+    "zhr": 5,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "009 DRA",
+    "name_en": "Draconids",
+    "name_fr": "Draconides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-10-06T00:00:00Z",
+      "end": "2025-10-10T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-10-08T19:00:00Z",
+      "solar_longitude_deg": 195.4,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 262,
+      "dec_deg": 54
+    },
+    "speed_km_s": 20,
+    "population_index_r": 2.6,
+    "zhr": 5,
+    "notes_fr": "Retour potentiellement bref en 2025 (rencontre trail 2012). Lune très gênante (plein+).",
+    "special_events": [
+      {
+        "date": "2025-10-08T15:07:00Z",
+        "note": "Rencontre trail 2012 (Maslov)."
+      },
+      {
+        "date": "2025-10-08T15:34:00Z",
+        "note": "Rencontre trail 2012 (Sato)."
+      },
+      {
+        "date": "2025-10-08T15:52:00Z",
+        "note": "Rencontre trail 2012 (Jenniskens)."
+      }
+    ]
+  },
+  {
+    "iau_code": "224 DAU",
+    "name_en": "Delta Aurigids",
+    "name_fr": "Delta Aurigides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-10-10T00:00:00Z",
+      "end": "2025-10-18T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-10-11T00:00:00Z",
+      "solar_longitude_deg": 198.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 84,
+      "dec_deg": 44
+    },
+    "speed_km_s": 64,
+    "population_index_r": 3.0,
+    "zhr": 2,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "023 EGE",
+    "name_en": "Epsilon Geminids",
+    "name_fr": "Epsilon Géminides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-10-14T00:00:00Z",
+      "end": "2025-10-27T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-10-18T00:00:00Z",
+      "solar_longitude_deg": 205.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 102,
+      "dec_deg": 27
+    },
+    "speed_km_s": 70,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "008 ORI",
+    "name_en": "Orionids",
+    "name_fr": "Orionides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-10-02T00:00:00Z",
+      "end": "2025-11-07T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-10-21T00:00:00Z",
+      "solar_longitude_deg": 208.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 95,
+      "dec_deg": 16
+    },
+    "speed_km_s": 66,
+    "population_index_r": 2.5,
+    "zhr": 20,
+    "notes_fr": "Associées à 1P/Halley. Nouvelle Lune le 21 octobre 2025 : conditions idéales.",
+    "special_events": []
+  },
+  {
+    "iau_code": "022 LMI",
+    "name_en": "Leonis Minorids",
+    "name_fr": "Léonides mineures",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-10-19T00:00:00Z",
+      "end": "2025-10-27T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-10-24T00:00:00Z",
+      "solar_longitude_deg": 211.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 162,
+      "dec_deg": 37
+    },
+    "speed_km_s": 62,
+    "population_index_r": 3.0,
+    "zhr": 2,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "002 STA",
+    "name_en": "Southern Taurids",
+    "name_fr": "Taurides Sud",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-09-20T00:00:00Z",
+      "end": "2025-11-20T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-11-05T00:00:00Z",
+      "solar_longitude_deg": 223.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 52,
+      "dec_deg": 15
+    },
+    "speed_km_s": 27,
+    "population_index_r": 2.3,
+    "zhr": 7,
+    "notes_fr": "Année 'swarm' 2025 potentielle : davantage de bolides début novembre.",
+    "special_events": []
+  },
+  {
+    "iau_code": "017 NTA",
+    "name_en": "Northern Taurids",
+    "name_fr": "Taurides Nord",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-10-20T00:00:00Z",
+      "end": "2025-12-10T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-11-12T00:00:00Z",
+      "solar_longitude_deg": 230.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 58,
+      "dec_deg": 22
+    },
+    "speed_km_s": 29,
+    "population_index_r": 2.3,
+    "zhr": 5,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "013 LEO",
+    "name_en": "Leonids",
+    "name_fr": "Léonides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-11-06T00:00:00Z",
+      "end": "2025-11-30T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-11-17T18:00:00Z",
+      "solar_longitude_deg": 235.27,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 152,
+      "dec_deg": 22
+    },
+    "speed_km_s": 71,
+    "population_index_r": 2.5,
+    "zhr": 10,
+    "notes_fr": "Plusieurs rencontres de traînées anciennes en 2025; surveiller le 17 nov (19h & 22h40 UT).",
+    "special_events": [
+      {
+        "date": "2025-11-09T22:00:00Z",
+        "note": "Rencontre trail 1167 (faible, à surveiller)."
+      },
+      {
+        "date": "2025-11-15T03:00:00Z",
+        "note": "Rencontre trail 1633 (faible, à surveiller)."
+      },
+      {
+        "date": "2025-11-17T10:00:00Z",
+        "note": "Maximum nodal (approx. λ☉=234.95)."
+      },
+      {
+        "date": "2025-11-17T18:00:00Z",
+        "note": "Maximum nodal (λ☉=235.27)."
+      },
+      {
+        "date": "2025-11-17T19:00:00Z",
+        "note": "Rencontre trail 1699 (segment 1)."
+      },
+      {
+        "date": "2025-11-17T22:40:00Z",
+        "note": "Rencontre trail 1699 (segment 2)."
+      }
+    ]
+  },
+  {
+    "iau_code": "246 AMO",
+    "name_en": "Alpha Monocerotids",
+    "name_fr": "Alpha Monocérotides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-11-15T00:00:00Z",
+      "end": "2025-11-25T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-11-21T23:30:00Z",
+      "solar_longitude_deg": 239.32,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 117,
+      "dec_deg": 1
+    },
+    "speed_km_s": 65,
+    "population_index_r": 2.4,
+    "zhr": "variable",
+    "notes_fr": "Sursauts très brefs possibles (historiques) mais improbables avant 2043.",
+    "special_events": []
+  },
+  {
+    "iau_code": "250 NOO",
+    "name_en": "November Orionids",
+    "name_fr": "Orionides de novembre",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-11-13T00:00:00Z",
+      "end": "2025-12-06T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-11-28T00:00:00Z",
+      "solar_longitude_deg": 246.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 91,
+      "dec_deg": 16
+    },
+    "speed_km_s": 44,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "254 PHO",
+    "name_en": "Phoenicids",
+    "name_fr": "Phénicides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-12-01T00:00:00Z",
+      "end": "2025-12-05T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-12-01T00:00:00Z",
+      "solar_longitude_deg": 249.5,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 8,
+      "dec_deg": -27
+    },
+    "speed_km_s": 15,
+    "population_index_r": 2.8,
+    "zhr": "variable",
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "301 PUP",
+    "name_en": "Puppid-Velids complex",
+    "name_fr": "Complexe Puppides–Velides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-12-01T00:00:00Z",
+      "end": "2025-12-15T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-12-07T00:00:00Z",
+      "solar_longitude_deg": 255.0,
+      "reference_only": true
+    },
+    "radiant": {
+      "ra_deg": 123,
+      "dec_deg": -45
+    },
+    "speed_km_s": 44,
+    "population_index_r": 2.9,
+    "zhr": 10,
+    "notes_fr": "Date du 7 déc = référence de radiant; maximum réel variable selon années.",
+    "special_events": []
+  },
+  {
+    "iau_code": "019 MON",
+    "name_en": "Monocerotids",
+    "name_fr": "Monocérotides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-12-05T00:00:00Z",
+      "end": "2025-12-20T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-12-09T00:00:00Z",
+      "solar_longitude_deg": 257.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 100,
+      "dec_deg": 8
+    },
+    "speed_km_s": 41,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "016 HYD",
+    "name_en": "Sigma Hydrids",
+    "name_fr": "Sigma Hydrides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-12-03T00:00:00Z",
+      "end": "2025-12-20T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-12-09T00:00:00Z",
+      "solar_longitude_deg": 257.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 125,
+      "dec_deg": 2
+    },
+    "speed_km_s": 58,
+    "population_index_r": 3.0,
+    "zhr": 7,
+    "notes_fr": "",
+    "special_events": []
+  },
+  {
+    "iau_code": "004 GEM",
+    "name_en": "Geminids",
+    "name_fr": "Géminides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-12-04T00:00:00Z",
+      "end": "2025-12-17T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-12-14T08:00:00Z",
+      "solar_longitude_deg": 262.2,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 112,
+      "dec_deg": 33
+    },
+    "speed_km_s": 35,
+    "population_index_r": 2.6,
+    "zhr": 150,
+    "notes_fr": "Maximum large sans lune significative en 2025; ZHR ~150, très fiable.",
+    "special_events": []
+  },
+  {
+    "iau_code": "020 COM",
+    "name_en": "Comae Berenicids",
+    "name_fr": "Chevelure de Bérénice",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-12-05T00:00:00Z",
+      "end": "2026-02-04T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-12-16T00:00:00Z",
+      "solar_longitude_deg": 264.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 158,
+      "dec_deg": 30
+    },
+    "speed_km_s": 64,
+    "population_index_r": 3.0,
+    "zhr": 3,
+    "notes_fr": "Région complexe COM/DLM; regrouper les détections sous 'COM'.",
+    "special_events": []
+  },
+  {
+    "iau_code": "015 URS",
+    "name_en": "Ursids",
+    "name_fr": "Ursides",
+    "category": "visuel",
+    "activity": {
+      "start": "2025-12-17T00:00:00Z",
+      "end": "2025-12-26T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-12-22T10:00:00Z",
+      "solar_longitude_deg": 270.7,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 217,
+      "dec_deg": 76
+    },
+    "speed_km_s": 33,
+    "population_index_r": 2.8,
+    "zhr": 10,
+    "notes_fr": "Possibles rehausses; radiant circumpolaire nord; 2025 sans lune au pic.",
+    "special_events": [
+      {
+        "date": "2025-12-22T05:39:00Z",
+        "note": "Filament (Jenniskens) — ZHR~25 suggéré historiquement."
+      },
+      {
+        "date": "2025-12-22T10:00:00Z",
+        "note": "Densité maximale vers 10h UT (Vaubaillon), pas de pic prononcé attendu."
+      }
+    ]
+  },
+  {
+    "iau_code": "144 APS",
+    "name_en": "April Piscids",
+    "name_fr": "Piscides d’avril (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-04-20T00:00:00Z",
+      "end": "2025-04-25T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-04-22T00:00:00Z",
+      "solar_longitude_deg": 32.6,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 5,
+      "dec_deg": 5
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "152 NOC",
+    "name_en": "Northern Omega Cetids",
+    "name_fr": "Oméga Céti Nord (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-05-01T00:00:00Z",
+      "end": "2025-05-17T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-05-06T00:00:00Z",
+      "solar_longitude_deg": 45.5,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 9,
+      "dec_deg": 17
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "153 OCE",
+    "name_en": "Southern Omega Cetids",
+    "name_fr": "Oméga Céti Sud (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-05-01T00:00:00Z",
+      "end": "2025-05-17T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-05-06T00:00:00Z",
+      "solar_longitude_deg": 45.5,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 20,
+      "dec_deg": -6
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "156 SMA",
+    "name_en": "Southern May Arietids",
+    "name_fr": "Ariétides de mai Sud (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-05-01T00:00:00Z",
+      "end": "2025-05-17T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-05-07T00:00:00Z",
+      "solar_longitude_deg": 47.1,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 28,
+      "dec_deg": 8
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "171 ARI",
+    "name_en": "Arietids",
+    "name_fr": "Ariétides (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-05-25T00:00:00Z",
+      "end": "2025-06-20T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-06-07T00:00:00Z",
+      "solar_longitude_deg": 77.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 43,
+      "dec_deg": 24
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "172 ZPE",
+    "name_en": "Zeta Perseids",
+    "name_fr": "Zêta Perséides (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-05-30T00:00:00Z",
+      "end": "2025-06-20T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-06-09T00:00:00Z",
+      "solar_longitude_deg": 78.6,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 67,
+      "dec_deg": 23
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "173 BTA",
+    "name_en": "Beta Taurids",
+    "name_fr": "Bêta Taurides (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-06-15T00:00:00Z",
+      "end": "2025-07-05T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-06-25T00:00:00Z",
+      "solar_longitude_deg": 94.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 82,
+      "dec_deg": 20
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "212 KLE",
+    "name_en": "Kappa Leonids",
+    "name_fr": "Kappa Léonides (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-09-20T00:00:00Z",
+      "end": "2025-09-30T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-09-25T00:00:00Z",
+      "solar_longitude_deg": 183.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 162,
+      "dec_deg": 15
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "221 DSX",
+    "name_en": "Sextantids",
+    "name_fr": "Sextantides (jour)",
+    "category": "radio_diurne",
+    "activity": {
+      "start": "2025-09-15T00:00:00Z",
+      "end": "2025-10-05T00:00:00Z"
+    },
+    "maximum": {
+      "date": "2025-10-01T00:00:00Z",
+      "solar_longitude_deg": 188.0,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 156,
+      "dec_deg": -2
+    },
+    "speed_km_s": null,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Émission surtout détectable en radio (forward scatter).",
+    "special_events": []
+  },
+  {
+    "iau_code": "793 KCA",
+    "name_en": "Kappa Cancrids",
+    "name_fr": "Kappa du Cancer",
+    "category": "visuel",
+    "activity": {
+      "start": null,
+      "end": null
+    },
+    "maximum": {
+      "date": "2025-01-09T16:00:00Z",
+      "solar_longitude_deg": 289.315,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 138,
+      "dec_deg": 9
+    },
+    "speed_km_s": 47,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Outburst radar/vidéo en 2015; surveillance 2025 recommandée.",
+    "special_events": [
+      {
+        "date": "2025-01-09T16:00:00Z",
+        "note": "Position de l’outburst 2015 réatteinte; vérifier éventuelle activité κ-Cancrides."
+      }
+    ]
+  },
+  {
+    "iau_code": "752 AAC",
+    "name_en": "April Alpha Capricornids",
+    "name_fr": "Alpha Capricornides d’avril",
+    "category": "visuel",
+    "activity": {
+      "start": null,
+      "end": null
+    },
+    "maximum": {
+      "date": "2025-04-07T13:35:00Z",
+      "solar_longitude_deg": 17.637,
+      "reference_only": false
+    },
+    "radiant": {
+      "ra_deg": 304,
+      "dec_deg": -13
+    },
+    "speed_km_s": 69,
+    "population_index_r": null,
+    "zhr": null,
+    "notes_fr": "Retour calculé 2025 (Sato).",
+    "special_events": [
+      {
+        "date": "2025-04-07T13:35:00Z",
+        "note": "Retour attendu (modèles) des April alpha Capricornids; vérifier activité."
+      }
+    ]
+  }
+]
