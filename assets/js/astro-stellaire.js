@@ -15,11 +15,11 @@ const NAKED_EYE = [
   { name: 'Saturne',  body: Astro.Body.Saturn  },
 ];
 
-// ———— Planètes nécessitant un instrument
+// ———— Planètes nécessitant un instrument (pour teaser)
 const SCOPE_ONLY = [
   { name: 'Uranus',   body: Astro.Body.Uranus  }, // limite œil nu
   { name: 'Neptune',  body: Astro.Body.Neptune }, // invisible à l’œil nu
-  { name: 'Pluton',   body: Astro.Body.Pluto   }, // pour le fun
+  { name: 'Pluton',   body: Astro.Body.Pluto   }, // fun
 ];
 
 function r1(x){ return Math.round(x*10)/10; }
@@ -39,7 +39,7 @@ async function getObserver(){
   return new Astro.Observer(lat, lon, 0);
 }
 
-// ————— Nuit simple: Soleil sous -6°  (FIX)
+// ————— Nuit simple: Soleil sous -6°  (FIX RA/Dec → Horizon)
 function isNightish(observer, date){
   const sunEq = Astro.Equator(Astro.Body.Sun, date, observer, true, true);
   const hrz   = Astro.Horizon(observer, date, sunEq.ra, sunEq.dec, 'normal');
@@ -72,6 +72,7 @@ async function computePlanets(now = new Date()){
     });
   }
 
+  // visibles d’abord puis magnitude croissante (plus brillant)
   out.sort((a,b)=>{
     if(a.visible!==b.visible) return a.visible?-1:1;
     return (a.mag??99)-(b.mag??99);
@@ -126,6 +127,17 @@ async function loadUpcomingPlanets(windowDays = 30, maxItems = 2){
   });
 }
 
+// ————— Util: parser de dates “souples” (ISO, " UT", espaces…)
+function parseISOish(s){
+  if(!s || typeof s !== 'string') return null;
+  const t = s.trim()
+    .replace(' UT','Z')
+    .replace('UTC','Z')
+    .replace(' ', 'T');
+  const d = new Date(t);
+  return isNaN(d) ? null : d;
+}
+
 // ————— Pluies de météores (format meteors-YYYY.json enrichi)
 async function loadMeteorShowers(){
   try{
@@ -138,6 +150,7 @@ async function loadMeteorShowers(){
     const t0 = new Date(today); t0.setHours(0,0,0,0);
     const t1 = new Date(today); t1.setHours(23,59,59,999);
 
+    // garde celles actives aujourd'hui (via activity.start/end)
     const todays = (Array.isArray(data) ? data : []).filter(ev=>{
       const start = ev?.activity?.start ? new Date(ev.activity.start) : null;
       const end   = ev?.activity?.end   ? new Date(ev.activity.end)   : null;
@@ -145,14 +158,15 @@ async function loadMeteorShowers(){
       return end >= t0 && start <= t1;
     });
 
+    // map -> format court attendu par le widget
     return todays.map(ev=>{
       const name = ev.name_fr || ev.name_en || ev.iau_code || 'Pluie';
-      const peakISO = ev?.maximum?.date || null;
-      const peak = peakISO
-        ? new Date(peakISO).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})
+      const peak = parseISOish(ev?.maximum?.date);
+      const peakStr = peak
+        ? peak.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})
         : 'bientôt';
       const zhr = (ev.zhr === 0 || ev.zhr) ? ev.zhr : '—';
-      return { name, peak, zhr };
+      return { name, peak: peakStr, zhr };
     });
   }catch{
     return [];
@@ -172,17 +186,15 @@ async function loadUpcomingShowers(windowDays = 30){
 
     const upcoming = (Array.isArray(data)?data:[])
       .filter(ev => ev?.maximum?.date)
+      .map(ev => ({ ev, peak: parseISOish(ev.maximum.date) }))
+      .filter(x => x.peak && x.peak >= now && x.peak <= maxDate)
       // Optionnel: ne garder que ZHR ≥ 5 :
-      // .filter(ev => (typeof ev.zhr === 'number' ? ev.zhr >= 5 : true))
-      .filter(ev => {
-        const peak = new Date(ev.maximum.date);
-        return peak >= now && peak <= maxDate;
-      })
-      .sort((a,b)=> new Date(a.maximum.date) - new Date(b.maximum.date))
+      // .filter(x => (typeof x.ev.zhr === 'number' ? x.ev.zhr >= 5 : true))
+      .sort((a,b)=> a.peak - b.peak)
       .slice(0, 3)
-      .map(ev => {
+      .map(x => {
+        const {ev, peak} = x;
         const name = ev.name_fr || ev.name_en || ev.iau_code || 'Pluie';
-        const peak = new Date(ev.maximum.date);
         const jour  = peak.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
         const heure = peak.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
         const zhr = (ev.zhr === 0 || ev.zhr) ? ev.zhr : '—';
@@ -204,6 +216,7 @@ function compactPlanetsLine(planets){
       .join(', ');
     return `🔭 Visibles : ${list}`;
   }
+  // sinon annonce la plus proche fenêtre
   const soon = planets
     .map(p=>({name:p.name, at:p.nextRise||p.nextSet, tag:p.nextRise?'lever':(p.nextSet?'coucher':null)}))
     .filter(x=>!!x.at)
@@ -223,16 +236,17 @@ export async function getStellarInfo(){
     const planets = await computePlanets(new Date());
     const lineP = compactPlanetsLine(planets);
 
+    // ☄️ aujourd'hui
     const meteors = await loadMeteorShowers();
     const lineM = compactMeteorsLine(meteors);
 
     let text = `${lineP}${lineM}`.trim();
-    if (text && !text.includes('Aucune')) return text;
+    if (text && !text.includes('Aucune')) return text; // on a de la matière, go
 
-    // 📅 Teaser du mois (planètes + showers)
+    // 📅 Teaser du mois (planètes + showers) si rien aujourd’hui
     const [soonPlanets, upcomingShowers] = await Promise.all([
-      loadUpcomingPlanets(30, 2),
-      loadUpcomingShowers(30)
+      loadUpcomingPlanets(30, 2),  // 1–2 planètes
+      loadUpcomingShowers(30)      // 1–3 showers
     ]);
 
     const parts = [];
