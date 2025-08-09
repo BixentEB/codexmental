@@ -38,7 +38,7 @@ function isNightish(observer, date){
   return hrz.altitude < -6;
 }
 
-// ————— Calcul des planètes
+// ————— Calcul des planètes (maintenant)
 async function computePlanets(now = new Date()){
   const observer = await getObserver();
   const night = isNightish(observer, now);
@@ -71,6 +71,51 @@ async function computePlanets(now = new Date()){
   });
 
   return out;
+}
+
+// ————— Prochaines planètes visibles dans X jours (lever/coucher le plus proche)
+async function loadUpcomingPlanets(windowDays = 30, maxItems = 2){
+  const observer = await getObserver();
+  const now = new Date();
+  const maxDate = new Date(now); maxDate.setDate(maxDate.getDate() + windowDays);
+
+  const items = [];
+
+  for (const p of NAKED_EYE) {
+    // on cherche l'événement (lever ou coucher) le plus proche après "now"
+    let nextRise = null, nextSet = null;
+    try { nextRise = Astro.SearchRiseSet(p.body, observer, +1, now, windowDays)?.date ?? null; } catch {}
+    try { nextSet  = Astro.SearchRiseSet(p.body, observer, -1, now, windowDays)?.date ?? null; } catch {}
+
+    // garde l'évènement le plus tôt > now
+    const candidates = [
+      nextRise ? {at: nextRise, tag: 'lever'} : null,
+      nextSet  ? {at: nextSet,  tag: 'coucher'} : null
+    ].filter(Boolean).filter(ev => ev.at > now && ev.at <= maxDate);
+
+    if (!candidates.length) continue;
+    const soonest = candidates.sort((a,b)=>a.at - b.at)[0];
+
+    // magnitude au moment de l’événement (pour contexte)
+    let mag = null;
+    try { const ill = Astro.Illumination(p.body, soonest.at); mag = ill?.mag ?? null; } catch {}
+
+    items.push({
+      name: p.name,
+      at: soonest.at,
+      tag: soonest.tag,
+      mag: mag
+    });
+  }
+
+  // ordonner par date, limiter
+  items.sort((a,b)=> a.at - b.at);
+  return items.slice(0, maxItems).map(ev=>{
+    const jour  = ev.at.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+    const heure = ev.at.toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+    const mag   = (ev.mag==null) ? '—' : Math.round(ev.mag*10)/10;
+    return `${ev.name} — ${ev.tag} ${jour} ${heure}${mag!==null?` • mag ${mag}`:''}`;
+  });
 }
 
 // ————— Pluies de météores (format meteors-YYYY.json enrichi)
@@ -127,6 +172,8 @@ async function loadUpcomingShowers(windowDays = 30){
         const peak = new Date(peakISO);
         return peak >= now && peak <= maxDate; // pic dans la fenêtre
       })
+      // Optionnel: garder seulement ZHR >= 5
+      // .filter(ev => (typeof ev.zhr === 'number' ? ev.zhr >= 5 : true))
       .sort((a,b)=> new Date(a.maximum.date) - new Date(b.maximum.date))
       .slice(0, 3) // 1 à 3 entrées max
       .map(ev => {
@@ -143,7 +190,6 @@ async function loadUpcomingShowers(windowDays = 30){
     return [];
   }
 }
-
 
 // ————— Helpers d’affichage courts
 function compactPlanetsLine(planets){
@@ -181,13 +227,19 @@ export async function getStellarInfo(){
   if (text && !text.includes('Aucune')) return text; // on a de la matière, go
 
   // 📅 Fallback: teaser du mois (si rien d’actif aujourd’hui)
-  const upcoming = await loadUpcomingShowers(30);
-  if (upcoming.length){
-    const teaser = upcoming.join(' • ');
-    return `📅 À surveiller ce mois-ci : ${teaser}`;
+  const [soonPlanets, upcomingShowers] = await Promise.all([
+    loadUpcomingPlanets(30, 2),  // 1–2 planètes
+    loadUpcomingShowers(30)      // 1–3 showers
+  ]);
+
+  const parts = [];
+  if (soonPlanets.length) parts.push(soonPlanets.join(' • '));
+  if (upcomingShowers.length) parts.push(upcomingShowers.join(' • '));
+
+  if (parts.length){
+    return `📅 À surveiller ce mois-ci : ${parts.join(' • ')}`;
   }
 
   // Toujours rien ? Message clean.
   return '🪐 Ciel calme pour l’instant — rien d’important à signaler.';
 }
-
