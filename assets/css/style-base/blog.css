@@ -173,15 +173,17 @@ body:not(.theme-lunaire) #article-viewer {
   position: relative; /* pour un éventuel positionnement absolu futur */
 }
 
+/* Pastille par défaut (lunaire / solaire) */
 .section-new-dot {
   display: inline-block;
   width: 8px;
   height: 8px;
   margin-left: 6px;
   border-radius: 50%;
-  background: var(--new-dot, var(--btn-color, #ffd700));
-  box-shadow: 0 0 6px color-mix(in oklab, var(--new-dot, var(--btn-color, #ffd700)) 60%, transparent);
+  background: var(--btn-color, #ffd700);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--btn-color, #ffd700) 60%, transparent);
   vertical-align: middle;
+  animation: dotPulse 2.5s ease-in-out infinite;
 }
 
 /* Option: rendre la pastille un peu plus visible au survol */
@@ -191,18 +193,28 @@ body:not(.theme-lunaire) #article-viewer {
 }
 
 /* Overrides doux pour lisibilité selon tes thèmes (si besoin) */
-body.theme-galactique .section-new-dot {
-  background: var(--new-dot, #e2b5ff);
-  box-shadow: 0 0 8px rgba(226, 181, 255, 0.45);
-}
-body.theme-lunaire .section-new-dot {
-  background: var(--new-dot, #cce6ff);
-}
+/* Solaire : reste lumineux et doré */
 body.theme-solaire .section-new-dot {
-  background: var(--new-dot, #ffaa00);
+  background: #ffb300;
+  box-shadow: 0 0 8px rgba(255, 179, 0, 0.8);
 }
+
+/* Lunaire : reste bleuté clair */
+body.theme-lunaire .section-new-dot {
+  background: #aee6ff;
+  box-shadow: 0 0 8px rgba(174, 230, 255, 0.8);
+}
+
+/* Stellaire : plus coloré pour se démarquer des étoiles */
 body.theme-stellaire .section-new-dot {
-  background: var(--new-dot, #aeeeff);
+  background: #4ee3ff; /* bleu cyan saturé */
+  box-shadow: 0 0 8px rgba(78, 227, 255, 0.8);
+}
+
+/* Galactique : ton plus foncé pour contraster avec étoiles claires */
+body.theme-galactique .section-new-dot {
+  background: #b06aff; /* violet plus profond */
+  box-shadow: 0 0 8px rgba(176, 106, 255, 0.8);
 }
 
 
@@ -214,18 +226,6 @@ body.theme-stellaire .section-new-dot {
   opacity: 0.95;
 }
 
-
-.section-new-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-left: 6px;
-  border-radius: 50%;
-  background: var(--new-dot, var(--btn-color, #ffd700));
-  box-shadow: 0 0 6px color-mix(in oklab, var(--new-dot, var(--btn-color, #ffd700)) 60%, transparent);
-  vertical-align: middle;
-  animation: dotPulse 2.5s ease-in-out infinite;
-}
 
 /* Animation douce */
 @keyframes dotPulse {
@@ -244,7 +244,7 @@ body.theme-stellaire .section-new-dot {
 
 
 
-
+/* RESPONSIVE MOBILE */
 
 @media screen and (max-width: 768px) {
   .blog-layout {
