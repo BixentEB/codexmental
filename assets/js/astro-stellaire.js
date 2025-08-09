@@ -34,7 +34,7 @@ async function getObserver(){
 
 // ————— Nuit simple: Soleil sous -6°
 function isNightish(observer, date){
-  // Need RA/Dec of the Sun first
+  // On récupère d’abord RA/Dec du Soleil
   const sunEq = Astro.Equator(Astro.Body.Sun, date, observer, true, true);
   const hrz = Astro.Horizon(observer, date, sunEq.ra, sunEq.dec, 'normal');
   return hrz.altitude < -6;
