@@ -116,6 +116,42 @@
   position: relative;
 }
 
+/* === HUD PANELS (rangées 3 colonnes) === */
+.hud-panels-block{
+display:grid; gap:14px;
+grid-template-columns:repeat(3,minmax(140px,1fr));
+margin-bottom:.5rem;
+}
+@media (max-width:880px){ .hud-panels-block{ grid-template-columns:repeat(3,minmax(110px,1fr)); } }
+@media (max-width:640px){ .hud-panels-block{ grid-template-columns:repeat(2,minmax(140px,1fr)); } }
+
+
+.hud-panel{
+--bg-img:none; --img-on:none; --img-off:none;
+position:relative; isolation:isolate; min-height:160px; border-radius:16px;
+padding:10px 12px 14px; border:1px solid rgba(0,180,255,.20);
+background: var(--bg-img) center/cover no-repeat, linear-gradient(#08192a,#061323);
+box-shadow: 0 0 0 1px rgba(0,80,120,.35), inset 0 0 0 2px rgba(0,240,255,.05);
+color:#bfe8ff; cursor:pointer; display:flex; align-items:flex-end; transition:transform .08s ease;
+width:100%; text-align:left;
+}
+.hud-panel:hover{ transform:translateY(-1px); }
+.hud-panel.is-on{ --bg-img: var(--img-on); }
+.hud-panel.is-off{ --bg-img: var(--img-off); }
+
+
+.hud-panel .hud-title{
+font:700 12px/1.1 Orbitron,system-ui,sans-serif;
+letter-spacing:.06em; text-shadow:0 1px 1px #0008;
+}
+.hud-panel .hud-led{
+position:absolute; right:10px; top:10px;
+width:12px; height:12px; border-radius:50%;
+background: radial-gradient(circle at 30% 30%, #7ff, #08f);
+opacity:.18; box-shadow:0 0 10px #0ff6; transition:opacity .2s, filter .2s;
+}
+.hud-panel.is-on .hud-led{ opacity:1; filter:drop-shadow(0 0 6px #3cf); }
+
 /* === Adaptation responsive === */
 @media (max-width: 900px) {
   .widget .hud-header {
