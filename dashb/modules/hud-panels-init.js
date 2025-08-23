@@ -1,4 +1,4 @@
-// /dashb/modules/hud-panels-init.js  (version robuste + insets par cadre)
+// /dashb/modules/hud-panels-init.js
 const R = (rel) => new URL(rel, import.meta.url).href;
 const BASE = './dashboard/assets/ui/';
 
@@ -7,30 +7,27 @@ const IMG = (set) => ({
   off: R(`${BASE}dashbblock_${set}b.png`)
 });
 
-// Insets par type de cadre (affine si besoin)
+// Insets par type de cadre (ajuste si besoin)
 const INSETS = {
   1: '9% 5% 12% 6%',
   3: '9% 6% 12% 7%',
   4: '8% 7% 13% 7%'
 };
 
-// Mapping (tu peux changer set/title/on/toggle/screenInset/keepSelectors)
 const MAP = [
   { sel: '#bloc-g1', title: 'Surface',                set: 1, on: true },
   { sel: '#bloc-g2', title: 'Données principales',    set: 3, on: true },
   { sel: '#bloc-g3', title: 'État de terraformation', set: 4, on: true },
   { sel: '#bloc-d1', title: 'Exploration',            set: 4, on: true },
   { sel: '#bloc-d2', title: 'Lunes',                  set: 3, on: true },
-  { sel: '#bloc-d3', title: '',                       set: 1, on: true, toggle: false } // viewer 2
+  { sel: '#bloc-d3', title: '',                       set: 1, on: true, toggle: false }
 ];
 
-// ——— Helpers idempotents
+// ——— helpers
 function ensureScreen(host, keepSelectors) {
-  // Si déjà présent -> OK
   let screen = host.querySelector(':scope > .hud-content');
   if (screen) return screen;
 
-  // Détermine les enfants à déplacer (on peut protéger certains sélecteurs)
   const toKeep = new Set();
   (keepSelectors || []).forEach(sel =>
     host.querySelectorAll(`:scope > ${sel}`).forEach(n => toKeep.add(n))
@@ -39,7 +36,6 @@ function ensureScreen(host, keepSelectors) {
   screen = document.createElement('div');
   screen.className = 'hud-content';
 
-  // Déplacer seulement ce qui n'est pas "kept"
   const moves = [];
   for (const node of Array.from(host.childNodes)) {
     if (!(node instanceof Element) && !(node instanceof Text)) continue;
@@ -58,7 +54,6 @@ function ensureLed(host) {
   }
 }
 function ensureTitle(host, text) {
-  // Autorise title vide -> pas d’élément
   if (typeof text !== 'string' || text.trim() === '') return;
   let t = host.querySelector(':scope > .hud-title');
   if (!t) {
@@ -80,12 +75,13 @@ function bindToggleOnce(host, id) {
   });
 }
 
-// ——— API utilitaires
+// ——— API (facultatif)
 export function updateHudPanel(selectorOrEl, opts = {}) {
   const el = typeof selectorOrEl === 'string' ? document.querySelector(selectorOrEl) : selectorOrEl;
   if (!el) return;
 
-  if (!el.classList.contains('hud-panel')) el.classList.add('hud-panel');
+  el.classList.remove('widget');         // retire l’ancien chrome
+  el.classList.add('hud-panel');
 
   if ('on' in opts) {
     el.classList.toggle('is-on',  !!opts.on);
@@ -101,54 +97,38 @@ export function updateHudPanel(selectorOrEl, opts = {}) {
     const inset = opts.screenInset || INSETS[opts.set];
     if (inset) el.style.setProperty('--screen-inset', inset);
   }
-  if ('screenInset' in opts && opts.screenInset) {
-    el.style.setProperty('--screen-inset', opts.screenInset);
-  }
+  if (opts.screenInset) el.style.setProperty('--screen-inset', opts.screenInset);
 
   if (opts.toggle === false) {
-    // pas de toggle
-  } else if (opts.toggle === true || typeof opts.toggle === 'undefined') {
+    // no-op
+  } else {
     bindToggleOnce(el, el.id || el.getAttribute('data-panel-id') || 'hud-panel');
   }
 
-  // Assure écran/led au besoin
   ensureScreen(el, opts.keepSelectors);
   ensureLed(el);
 }
 
-export function getHudState(selectorOrEl) {
-  const el = typeof selectorOrEl === 'string' ? document.querySelector(selectorOrEl) : selectorOrEl;
-  if (!el) return null;
-  return {
-    on: el.classList.contains('is-on'),
-    title: el.querySelector(':scope > .hud-title')?.textContent || '',
-    screenInset: getComputedStyle(el).getPropertyValue('--screen-inset').trim(),
-  };
-}
-
-// ——— Entrée principale
 export function applyHudToSixBlocks(customMap) {
   (customMap || MAP).forEach(cfg => {
     const el = document.querySelector(cfg.sel);
     if (!el) return;
 
-    // Images + inset + état + a11y
-    const { on, off } = IMG(cfg.set);
-    el.style.setProperty('--img-on',  `url("${on}")`);
-    el.style.setProperty('--img-off', `url("${off}")`);
-    el.style.setProperty('--screen-inset', cfg.screenInset || INSETS[cfg.set] || '9% 5% 12% 6%');
-
+    el.classList.remove('widget'); // <-- coupe l’ancien style
     el.classList.add('hud-panel');
     el.classList.toggle('is-on',  !!cfg.on);
     el.classList.toggle('is-off', !cfg.on);
     el.setAttribute('aria-pressed', cfg.on ? 'true' : 'false');
 
-    // Écran + LED + titre
+    const { on, off } = IMG(cfg.set);
+    el.style.setProperty('--img-on',  `url("${on}")`);
+    el.style.setProperty('--img-off', `url("${off}")`);
+    el.style.setProperty('--screen-inset', cfg.screenInset || INSETS[cfg.set] || '9% 5% 12% 6%');
+
     ensureScreen(el, cfg.keepSelectors);
     ensureLed(el);
     ensureTitle(el, cfg.title);
 
-    // Toggle si autorisé
     if (cfg.toggle !== false) bindToggleOnce(el, cfg.sel.replace('#',''));
   });
 }
