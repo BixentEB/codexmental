@@ -1,70 +1,89 @@
+// newmoon.js — FIX: mask userSpaceOnUse + orientation observateur (parallacticAngle)
 
-// newmoon.js
-/**
- * Charge SunCalc depuis CDN si non présent
- */
 function loadSunCalc(callback) {
-  if (window.SunCalc) {
-    callback();
-  } else {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js";
-    script.onload = callback;
-    document.head.appendChild(script);
+  if (window.SunCalc) callback();
+  else {
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js";
+    s.onload = callback;
+    document.head.appendChild(s);
   }
 }
+
+// Fallback position (Rome) — remplace si tu veux une orientation parfaite
+let OBS = { lat: 41.9, lon: 12.5 };
+
+function initObserverPosition() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      OBS.lat = pos.coords.latitude;
+      OBS.lon = pos.coords.longitude;
+      updateMoon(); // recalcul immédiat avec la bonne position
+    },
+    () => {},
+    { enableHighAccuracy: false, timeout: 2500 }
+  );
+}
+
+function arcDeg(x) { return x * 180 / Math.PI; }
+
+function safeClamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
 
 /**
  * Met à jour la lune SVG avec la vraie forme des phases
  */
 function updateMoon() {
+  if (!window.SunCalc) return;
+
   const now = new Date();
-  const { fraction, phase } = SunCalc.getMoonIllumination(now);
-  const shadowPath = document.getElementById("shadow-path");
-  if (!shadowPath) return;
+  const { fraction, phase, angle } = SunCalc.getMoonIllumination(now);
+  const path = document.getElementById("shadow-path");
+  if (!path) return;
 
-  // Conversion phase SunCalc vers angle plus intuitif
-  // phase 0 = nouvelle lune, 0.25 = premier quartier, 0.5 = pleine lune, 0.75 = dernier quartier
-  const angle = phase * 2 * Math.PI;
-  
-  // Calcul de la position de la terminaison (ligne jour/nuit)
-  let pathData;
-  
-  if (fraction < 0.01) {
-    // Nouvelle lune - tout sombre
-    pathData = "M 0,0 L 100,0 L 100,100 L 0,100 Z";
-  } else if (fraction > 0.99) {
-    // Pleine lune - tout éclairé
-    pathData = "M 0,0 L 0,0"; // Chemin vide
+  // Géométrie du disque
+  const cx = 50, cy = 50, r = 50;
+
+  // Garde-fous numérique pour éviter NaN à 0% / 100%
+  const f = safeClamp(fraction, 0.0001, 0.9999); // 0< f <1
+  const k = 2 * f - 1;                           // -1..+1
+  const ellA = Math.max(0.001, Math.sqrt(1 - k * k) * r); // demi-axe horizontal de l'ellipse
+  const waxing = angle < 0; // SunCalc: angle<0 => croissante
+
+  // Cas limites
+  if (fraction <= 0.001) {
+    // Nouvelle lune -> tout sombre (on « cache » toute la texture éclairée)
+    // Masque = blanc (visible) - noir (ombre) ; on peint l’ombre en noir partout
+    path.setAttribute("d", "M 0,0 L 100,0 L 100,100 L 0,100 Z");
+  } else if (fraction >= 0.999) {
+    // Pleine lune -> rien à masquer (chemin vide)
+    path.setAttribute("d", "M 0,0 L 0,0");
   } else {
-    // Phases intermédiaires - créer la terminaison elliptique
-    const centerX = 50;
-    const centerY = 50;
-    const radius = 50;
-    
-    // Calculer l'ellipse de la terminaison
-    const isWaxing = phase < 0.5;
-    let ellipseWidth;
-    
-    if (isWaxing) {
-      // Phase croissante : ombre à gauche (partie éclairée à droite)
-      ellipseWidth = radius * (1 - 2 * fraction);
-    } else {
-      // Phase décroissante : ombre à droite (partie éclairée à gauche)
-      ellipseWidth = radius * (2 * fraction - 1);
-    }
-    
-    const absWidth = Math.abs(ellipseWidth);
-    const sweepFlag = ellipseWidth > 0 ? 1 : 0;
+    // Phases intermédiaires : on dessine la ZONE D’OMBRE (noir) via un chemin evenodd
+    // Stratégie : un grand disque plein (ombre) « troué » par l’ellipse éclairée
+    // Pour garder ta logique, on construit l’ellipse centrée en ex,cy
+    const ex = waxing ? cx - ellA : cx + ellA; // l’ellipse éclairée est du côté du Soleil
 
-    pathData = `M ${centerX},${centerY - radius}
-                A ${absWidth},${radius} 0 0,${sweepFlag} ${centerX},${centerY + radius}
-                A ${radius},${radius} 0 0,${sweepFlag} ${centerX},${centerY - radius} Z`;
+    const d = `
+      M ${cx},${cy - r}
+      A ${r},${r} 0 1 1 ${cx},${cy + r}
+      A ${r},${r} 0 1 1 ${cx},${cy - r}
+      Z
+      M ${ex},${cy - r}
+      A ${ellA},${r} 0 0 ${waxing ? 1 : 0} ${ex},${cy + r}
+      A ${ellA},${r} 0 0 ${waxing ? 0 : 1} ${ex},${cy - r}
+      Z
+    `.trim();
+
+    path.setAttribute("d", d);
   }
-  
-  shadowPath.setAttribute("d", pathData);
-  
-  // Debug
+
+  // Orientation réaliste : angle d’illumination + angle parallactique de l’observateur
+  const pos = SunCalc.getMoonPosition(now, OBS.lat, OBS.lon);
+  const rotDeg = arcDeg(angle + pos.parallacticAngle);
+  path.setAttribute("transform", `rotate(${rotDeg}, ${cx}, ${cy})`);
+
+  // Debug console
   let phaseName = "";
   if (phase < 0.125) phaseName = "🌑 Nouvelle lune";
   else if (phase < 0.25) phaseName = "🌒 Croissant croissant";
@@ -74,8 +93,12 @@ function updateMoon() {
   else if (phase < 0.75) phaseName = "🌖 Gibbeuse décroissante";
   else if (phase < 0.875) phaseName = "🌗 Dernier quartier";
   else phaseName = "🌘 Croissant décroissant";
-  
-  console.log(`${phaseName} - Illumination=${(fraction * 100).toFixed(1)}% Phase=${phase.toFixed(3)}`);
+
+  console.log(
+    `${phaseName} | Illum=${(fraction*100).toFixed(1)}% | ` +
+    `phase=${phase.toFixed(3)} | angle=${arcDeg(angle).toFixed(1)}° | ` +
+    `parallax=${arcDeg(pos.parallacticAngle).toFixed(1)}° | rot=${rotDeg.toFixed(1)}° | waxing=${waxing}`
+  );
 }
 
 /**
@@ -85,61 +108,66 @@ export function updateNewMoonWidget() {
   // Supprimer l'existant si besoin
   const old = document.getElementById("svg-lune-widget");
   if (old) old.remove();
-  
+
   // Conteneur
   const container = document.createElement("div");
   container.id = "svg-lune-widget";
-  
-  // SVG avec masque basé sur path pour les vraies formes de phases
+
+  // SVG + masque en userSpaceOnUse (CRUCIAL)
   container.innerHTML = `
     <svg id="svg-lune" viewBox="0 0 100 100" width="100%" height="100%">
       <defs>
         <clipPath id="moon-clip">
           <circle cx="50" cy="50" r="50"/>
         </clipPath>
-        <mask id="moon-mask">
-          <rect width="100%" height="100%" fill="white"/>
-          <path id="shadow-path" fill="black"/>
+
+        <!-- FIX ICI: repère du masque = userSpaceOnUse + bbox explicite -->
+        <mask id="moon-mask"
+              maskUnits="userSpaceOnUse"
+              maskContentUnits="userSpaceOnUse"
+              x="0" y="0" width="100" height="100">
+          <!-- Blanc = visible (texture éclairée) -->
+          <rect x="0" y="0" width="100" height="100" fill="white"/>
+          <!-- Noir = ombre (on dessine l’ombre, ou un disque plein troué par la zone éclairée) -->
+          <path id="shadow-path" fill="black" fill-rule="evenodd"/>
         </mask>
       </defs>
-      
-      <!-- Lune de base (sombre) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
-             filter="brightness(0.4) opacity(0.15)" clip-path="url(#moon-clip)"/>
-      
-      <!-- Lune éclairée (masquée par les ombres) -->
-      <image href="/img/lune/lune-pleine.png" width="100%" height="100%" 
+
+      <!-- Disque fantôme (lune sombre) -->
+      <image href="/img/lune/lune-pleine.png" width="100%" height="100%"
+             clip-path="url(#moon-clip)"
+             style="filter:brightness(0.4);opacity:0.15"/>
+
+      <!-- Texture éclairée, découpée par le masque -->
+      <image id="moon-lit" href="/img/lune/lune-pleine.png" width="100%" height="100%"
              mask="url(#moon-mask)" clip-path="url(#moon-clip)"/>
     </svg>
   `;
-  
+
   document.body.appendChild(container);
-  
-  // Taille par défaut
+
+  // Taille cliquable (comme avant)
   const sizes = [
     { w: "150px", h: "150px", class: "" },
     { w: "250px", h: "250px", class: "" },
     { w: "500px", h: "500px", class: "super-lune" }
   ];
   let sizeIndex = 1;
-  
-  function applySize() {
+  const applySize = () => {
     container.style.width = sizes[sizeIndex].w;
     container.style.height = sizes[sizeIndex].h;
     container.className = sizes[sizeIndex].class;
-  }
-  
+  };
   applySize();
-  
-  container.addEventListener("click", (e) => {
+  container.addEventListener("click", e => {
     e.preventDefault();
     sizeIndex = (sizeIndex + 1) % sizes.length;
     applySize();
   });
-  
-  // Charger SunCalc et lancer les updates
+
   loadSunCalc(() => {
+    initObserverPosition();
     updateMoon();
-    setInterval(updateMoon, 3600000);
+    setInterval(updateMoon, 3600000); // maj horaire
   });
 }
