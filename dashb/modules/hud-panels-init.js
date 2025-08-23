@@ -92,4 +92,66 @@ export function updateHudPanel(selectorOrEl, opts = {}) {
     el.classList.toggle('is-off', !opts.on);
     el.setAttribute('aria-pressed', opts.on ? 'true' : 'false');
   }
-  if ('title' in opts)
+  if ('title' in opts) ensureTitle(el, opts.title);
+
+  if ('set' in opts && opts.set) {
+    const { on, off } = IMG(opts.set);
+    el.style.setProperty('--img-on',  `url("${on}")`);
+    el.style.setProperty('--img-off', `url("${off}")`);
+    const inset = opts.screenInset || INSETS[opts.set];
+    if (inset) el.style.setProperty('--screen-inset', inset);
+  }
+  if ('screenInset' in opts && opts.screenInset) {
+    el.style.setProperty('--screen-inset', opts.screenInset);
+  }
+
+  if (opts.toggle === false) {
+    // pas de toggle
+  } else if (opts.toggle === true || typeof opts.toggle === 'undefined') {
+    bindToggleOnce(el, el.id || el.getAttribute('data-panel-id') || 'hud-panel');
+  }
+
+  // Assure écran/led au besoin
+  ensureScreen(el, opts.keepSelectors);
+  ensureLed(el);
+}
+
+export function getHudState(selectorOrEl) {
+  const el = typeof selectorOrEl === 'string' ? document.querySelector(selectorOrEl) : selectorOrEl;
+  if (!el) return null;
+  return {
+    on: el.classList.contains('is-on'),
+    title: el.querySelector(':scope > .hud-title')?.textContent || '',
+    screenInset: getComputedStyle(el).getPropertyValue('--screen-inset').trim(),
+  };
+}
+
+// ——— Entrée principale
+export function applyHudToSixBlocks(customMap) {
+  (customMap || MAP).forEach(cfg => {
+    const el = document.querySelector(cfg.sel);
+    if (!el) return;
+
+    // Images + inset + état + a11y
+    const { on, off } = IMG(cfg.set);
+    el.style.setProperty('--img-on',  `url("${on}")`);
+    el.style.setProperty('--img-off', `url("${off}")`);
+    el.style.setProperty('--screen-inset', cfg.screenInset || INSETS[cfg.set] || '9% 5% 12% 6%');
+
+    el.classList.add('hud-panel');
+    el.classList.toggle('is-on',  !!cfg.on);
+    el.classList.toggle('is-off', !cfg.on);
+    el.setAttribute('aria-pressed', cfg.on ? 'true' : 'false');
+
+    // Écran + LED + titre
+    ensureScreen(el, cfg.keepSelectors);
+    ensureLed(el);
+    ensureTitle(el, cfg.title);
+
+    // Toggle si autorisé
+    if (cfg.toggle !== false) bindToggleOnce(el, cfg.sel.replace('#',''));
+  });
+}
+
+// Auto-run si importé
+applyHudToSixBlocks();
