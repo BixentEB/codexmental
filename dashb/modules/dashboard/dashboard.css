@@ -446,6 +446,70 @@ main.dashboard {
   box-shadow: 0 0 4px rgba(0, 255, 255, 0.05);
 }
 
+/* =======================================================
+   HUD sur blocs existants (2 colonnes × 3)
+   (extraits de la V2, consolidés dans dashboard.css)
+======================================================= */
+.hud-panel{
+  --img-on: none;              /* url(...) cadre ON  */
+  --img-off: none;             /* url(...) cadre OFF */
+  --bg-img: var(--img-off);    /* image active       */
+  --screen-inset: 9% 5% 12% 6%;/* fallback si le JS ne fournit pas de valeur */
+
+  position: relative;
+  isolation: isolate;
+  border-radius: 16px;
+
+  /* ① Cadre (fond) + ② verre (au-dessus) */
+  background:
+    var(--bg-img) center/contain no-repeat,
+    radial-gradient(120% 120% at 50% 40%, #0a2540 0%, #081c33 60%, #061628 100%);
+
+  box-shadow:
+    inset 0 0 30px rgba(0,200,255,.10),
+    inset 0 0 1px rgba(90,180,255,.35),
+    0 0 0 1px rgba(0,80,120,.25);
+  color: #cfe9ff;
+}
+.hud-panel.is-on  { --bg-img: var(--img-on); }
+.hud-panel.is-off { --bg-img: var(--img-off); }
+
+/* Zone “écran” dans laquelle on dépose ton contenu existant */
+.hud-content{
+  position: absolute;
+  inset: var(--screen-inset);
+  border-radius: 10px;
+  padding: 10px 14px;
+  overflow: auto;
+  z-index: 1;
+  background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 100% 3px;
+  background-blend-mode: overlay;
+}
+
+/* Petit label + LED */
+.hud-title{
+  position: absolute; top: 10px; left: 14px; z-index: 2;
+  font: 700 12px/1.1 Orbitron, system-ui, sans-serif;
+  letter-spacing: .06em; color: #bff2ff;
+  padding: 4px 10px; border-radius: 8px;
+  background: rgba(0,40,70,.65); border: 1px solid rgba(0,180,255,.6);
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+.hud-led{
+  position: absolute; right: 10px; top: 10px; z-index: 2;
+  width: 12px; height: 12px; border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0,255,255,.45);
+  background: radial-gradient(circle at 30% 30%, #7ff, #08f);
+  opacity: .18;
+}
+.hud-panel.is-on  .hud-led{ opacity: 1; filter: drop-shadow(0 0 6px #3cf); }
+
+/* Option : tailles par défaut pour remplacer visuellement l’ancien chrome */
+#bloc-g1.hud-panel, #bloc-g2.hud-panel, #bloc-g3.hud-panel,
+#bloc-d1.hud-panel, #bloc-d2.hud-panel, #bloc-d3.hud-panel{
+  min-height: 260px;
+}
 
 
 @media (max-width: 900px) {
