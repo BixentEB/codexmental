@@ -161,31 +161,6 @@
 
 </main>
 
-  <!-- SELECTEUR THEME TEMPORAIRE -->
-  <!-- 🔁 Toggle dashboard.css / dashboard-v2.css -->
-<button id="theme-toggle" style="
-  position: fixed; top: 100px; right: 20px;
-  z-index: 1000; background: rgba(0,255,255,0.1);
-  border: 1px solid cyan; padding: 6px 10px;
-  font-family: Orbitron, sans-serif; font-size: 0.6rem;
-  color: cyan; cursor: pointer;">
-HUD V1 / V2
-</button>
-
-<script>
-const themeToggleBtn = document.getElementById("theme-toggle");
-let usingV2 = false;
-const styleTag = document.getElementById("dashboard-style");
-
-themeToggleBtn.addEventListener("click", () => {
-  styleTag.href = usingV2
-    ? "/dashb/modules/dashboard/dashboard.css"
-    : "/dashb/modules/dashboard/dashboard-v2.css";
-  usingV2 = !usingV2;
-});
-</script>
-
-
   
   <!-- 🡸 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
