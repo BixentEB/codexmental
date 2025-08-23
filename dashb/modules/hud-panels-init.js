@@ -1,4 +1,4 @@
-// /dashb/modules/hud-panels-init.js  (version robuste)
+// /dashb/modules/hud-panels-init.js  (version robuste + insets par cadre)
 const R = (rel) => new URL(rel, import.meta.url).href;
 const BASE = './dashboard/assets/ui/';
 
@@ -7,7 +7,14 @@ const IMG = (set) => ({
   off: R(`${BASE}dashbblock_${set}b.png`)
 });
 
-// Mapping (tu peux changer les sets/titres ; toggle:false = pas de clic)
+// Insets par type de cadre (affine si besoin)
+const INSETS = {
+  1: '9% 5% 12% 6%',
+  3: '9% 6% 12% 7%',
+  4: '8% 7% 13% 7%'
+};
+
+// Mapping (tu peux changer set/title/on/toggle/screenInset/keepSelectors)
 const MAP = [
   { sel: '#bloc-g1', title: 'Surface',                set: 1, on: true },
   { sel: '#bloc-g2', title: 'Données principales',    set: 3, on: true },
@@ -18,25 +25,41 @@ const MAP = [
 ];
 
 // ——— Helpers idempotents
-function ensureScreen(host){
-  let content = host.querySelector(':scope > .hud-content');
-  if (!content) {
-    content = document.createElement('div');
-    content.className = 'hud-content';
-    while (host.firstChild) content.appendChild(host.firstChild);
-    host.appendChild(content);
+function ensureScreen(host, keepSelectors) {
+  // Si déjà présent -> OK
+  let screen = host.querySelector(':scope > .hud-content');
+  if (screen) return screen;
+
+  // Détermine les enfants à déplacer (on peut protéger certains sélecteurs)
+  const toKeep = new Set();
+  (keepSelectors || []).forEach(sel =>
+    host.querySelectorAll(`:scope > ${sel}`).forEach(n => toKeep.add(n))
+  );
+
+  screen = document.createElement('div');
+  screen.className = 'hud-content';
+
+  // Déplacer seulement ce qui n'est pas "kept"
+  const moves = [];
+  for (const node of Array.from(host.childNodes)) {
+    if (!(node instanceof Element) && !(node instanceof Text)) continue;
+    if (toKeep.has(node)) continue;
+    moves.push(node);
   }
-  return content;
+  moves.forEach(n => screen.appendChild(n));
+  host.appendChild(screen);
+  return screen;
 }
-function ensureLed(host){
+function ensureLed(host) {
   if (!host.querySelector(':scope > .hud-led')) {
     const led = document.createElement('span');
     led.className = 'hud-led'; led.setAttribute('aria-hidden', 'true');
     host.appendChild(led);
   }
 }
-function ensureTitle(host, text){
-  if (!text) return;
+function ensureTitle(host, text) {
+  // Autorise title vide -> pas d’élément
+  if (typeof text !== 'string' || text.trim() === '') return;
   let t = host.querySelector(':scope > .hud-title');
   if (!t) {
     t = document.createElement('span');
@@ -45,11 +68,11 @@ function ensureTitle(host, text){
   }
   t.textContent = text;
 }
-function bindToggleOnce(host, id){
+function bindToggleOnce(host, id) {
   if (host._hudBound) return;
   host._hudBound = true;
   host.addEventListener('click', (e) => {
-    if (e.target.closest('a,button,input,select,textarea')) return;
+    if (e.target.closest('a,button,input,select,textarea,label,[role="button"]')) return;
     const onState = host.classList.toggle('is-on');
     host.classList.toggle('is-off', !onState);
     host.setAttribute('aria-pressed', onState ? 'true' : 'false');
@@ -57,30 +80,16 @@ function bindToggleOnce(host, id){
   });
 }
 
-// ——— Entrée principale
-export function applyHudToSixBlocks(customMap){
-  (customMap || MAP).forEach(cfg => {
-    const el = document.querySelector(cfg.sel);
-    if (!el) return;
+// ——— API utilitaires
+export function updateHudPanel(selectorOrEl, opts = {}) {
+  const el = typeof selectorOrEl === 'string' ? document.querySelector(selectorOrEl) : selectorOrEl;
+  if (!el) return;
 
-    el.classList.add('hud-panel');
-    el.classList.toggle('is-on',  !!cfg.on);
-    el.classList.toggle('is-off', !cfg.on);
-    el.setAttribute('aria-pressed', cfg.on ? 'true' : 'false');
+  if (!el.classList.contains('hud-panel')) el.classList.add('hud-panel');
 
-    const { on, off } = IMG(cfg.set);
-    el.style.setProperty('--img-on',  `url("${on}")`);
-    el.style.setProperty('--img-off', `url("${off}")`);
-
-    ensureScreen(el);
-    ensureLed(el);
-    ensureTitle(el, cfg.title);
-
-    if (cfg.toggle !== false) {
-      bindToggleOnce(el, cfg.sel.replace('#',''));
-    }
-  });
-}
-
-// Auto-run si importé
-applyHudToSixBlocks();
+  if ('on' in opts) {
+    el.classList.toggle('is-on',  !!opts.on);
+    el.classList.toggle('is-off', !opts.on);
+    el.setAttribute('aria-pressed', opts.on ? 'true' : 'false');
+  }
+  if ('title' in opts)
