@@ -116,41 +116,74 @@
   position: relative;
 }
 
-/* === HUD PANELS (rangées 3 colonnes) === */
-.hud-panels-block{
-display:grid; gap:14px;
-grid-template-columns:repeat(3,minmax(140px,1fr));
-margin-bottom:.5rem;
-}
-@media (max-width:880px){ .hud-panels-block{ grid-template-columns:repeat(3,minmax(110px,1fr)); } }
-@media (max-width:640px){ .hud-panels-block{ grid-template-columns:repeat(2,minmax(140px,1fr)); } }
-
-
+/* === HUD sur blocs existants (2 colonnes × 3) === */
 .hud-panel{
---bg-img:none; --img-on:none; --img-off:none;
-position:relative; isolation:isolate; min-height:160px; border-radius:16px;
-padding:10px 12px 14px; border:1px solid rgba(0,180,255,.20);
-background: var(--bg-img) center/cover no-repeat, linear-gradient(#08192a,#061323);
-box-shadow: 0 0 0 1px rgba(0,80,120,.35), inset 0 0 0 2px rgba(0,240,255,.05);
-color:#bfe8ff; cursor:pointer; display:flex; align-items:flex-end; transition:transform .08s ease;
-width:100%; text-align:left;
-}
-.hud-panel:hover{ transform:translateY(-1px); }
-.hud-panel.is-on{ --bg-img: var(--img-on); }
-.hud-panel.is-off{ --bg-img: var(--img-off); }
+  /* variables injectées en JS */
+  --img-on: none; --img-off: none; --bg-img: var(--img-off);
 
+  position: relative;
+  isolation: isolate;
+  border-radius: 16px;
+  /* le “verre” de l'écran (sous le cadre) */
+  background: radial-gradient(120% 120% at 50% 40%, #0a2540 0%, #081c33 60%, #061628 100%);
+  box-shadow:
+    inset 0 0 30px rgba(0,200,255,.10),
+    inset 0 0 1px rgba(90,180,255,.35),
+    0 0 0 1px rgba(0,80,120,.25);
+  color: #cfe9ff;
+}
+.hud-panel.is-on  { --bg-img: var(--img-on); }
+.hud-panel.is-off { --bg-img: var(--img-off); }
 
-.hud-panel .hud-title{
-font:700 12px/1.1 Orbitron,system-ui,sans-serif;
-letter-spacing:.06em; text-shadow:0 1px 1px #0008;
+/* Le cadre visuel en overlay (ne bloque pas les clics) */
+.hud-panel::before{
+  content: "";
+  position: absolute; inset: 0;
+  background: var(--bg-img) center/contain no-repeat;
+  pointer-events: none;
+  z-index: 0;
 }
-.hud-panel .hud-led{
-position:absolute; right:10px; top:10px;
-width:12px; height:12px; border-radius:50%;
-background: radial-gradient(circle at 30% 30%, #7ff, #08f);
-opacity:.18; box-shadow:0 0 10px #0ff6; transition:opacity .2s, filter .2s;
+
+/* Zone “écran” où va ton contenu existant (injectée par JS) */
+.hud-content{
+  position: absolute;
+  /* Ajuste ces pourcentages pour caler la fenêtre utile à ton PNG */
+  inset: 9% 5% 12% 6%;
+  border-radius: 10px;
+  padding: 10px 14px;
+  overflow: auto;
+  z-index: 1;
+  /* option scanlines très légères */
+  background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 100% 3px;
+  background-blend-mode: overlay;
 }
-.hud-panel.is-on .hud-led{ opacity:1; filter:drop-shadow(0 0 6px #3cf); }
+
+/* Titre flottant (petit label turquoise) */
+.hud-title{
+  position: absolute;
+  top: 10px; left: 14px;
+  z-index: 2;
+  font: 700 12px/1.1 Orbitron, system-ui, sans-serif;
+  letter-spacing: .06em;
+  color: #bff2ff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(0,40,70,.65);
+  border: 1px solid rgba(0,180,255,.6);
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+/* LED état */
+.hud-led{
+  position: absolute; right: 10px; top: 10px;
+  width: 12px; height: 12px; border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0,255,255,.45);
+  background: radial-gradient(circle at 30% 30%, #7ff, #08f);
+  opacity: .18; z-index: 2;
+}
+.hud-panel.is-on  .hud-led{ opacity: 1; filter: drop-shadow(0 0 6px #3cf); }
+
 
 /* === Adaptation responsive === */
 @media (max-width: 900px) {
