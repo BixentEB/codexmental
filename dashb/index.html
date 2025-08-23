@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🔬 Laboratoire – Codex Mental</title>
+
+  <!-- 🌞 Favicon -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
+
+  <!-- 🌐 Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+  <!-- 🎨 Styles globaux -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+
+  <!-- 🎨 Styles modules du labo -->
+  <link rel="stylesheet" href="/dashb/modules/modules.css">
+  <link id="dashboard-style" rel="stylesheet" href="/lab/modules/dashboard/dashboard.css">
+
+
+  <!-- ⚙️ Script principal site -->
+  <script type="module" src="/assets/js/main.js"></script>
+
+  <!-- ⚙️ Script central des modules du labo -->
+  <script type="module" src="/dashb/modules/modules.js"></script>
+</head>
+<body class="theme-stellaire lab">
+  <!-- 🌌 Canvas de fond -->
+  <canvas id="theme-canvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+  <!-- 🧠 Menu injecté dynamiquement -->
+  <header id="menu-placeholder"></header>
+
+  <!-- 🔬 Contenu principal -->
+  
+  
+  <main class="dashboard">
+    
+  <!-- 🧭 Titres verticaux -->
+  <div id="dashboard-title-left">ORION INTERFACE</div>
+  <div id="dashboard-title-right">TACTICAL MODULE</div>
+
+  <!-- Ligne 1 : Alertes et Titre Planète -->
+  <div id="alert-left" class="widget"><h2>📡 Alerte G</h2></div>
+  <div id="planet-symbol" class="widget"></div>
+  <div id="planet-name" class="widget"></div>
+  <div id="planet-scientific-name" class="widget"></div>
+  <div id="alert-right" class="widget"><h2>🧬 Alerte D</h2></div>
+
+  <!-- Viewer Planète -->
+  <div id="bloc-g1" class="widget">
+  <div class="hud-title">Planète</div> <!-- ✅ Ajout décoratif -->
+
+  <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
+
+  <div style="margin-top: 0.5rem;">
+    <label for="layer-select">🛰️ Couche :</label>
+    <select id="layer-select" class="codex-select">
+      <option value="surface" selected>Surface</option>
+      <option value="cloud">Nuages</option>
+      <option value="infrared">Infrarouge</option>
+    </select>
+  </div>
+
+  <div class="hud-bar">
+    <span></span><span></span><span></span><span></span>
+  </div> <!-- ✅ Bande décorative -->
+</div>
+
+
+  <!-- Informations Principales -->
+  <div id="bloc-g2" class="widget">
+    <h3>
+      <select data-section="informations" class="codex-select">
+        <option value="basic" selected>Données principales</option>
+        <option value="composition">Composition</option>
+        <option value="climat">Climat</option>
+      </select>
+    </h3>
+    <div class="section-content"></div>
+  </div>
+
+  <!-- Terraformation -->
+  <div id="bloc-g3" class="widget">
+    <h3>
+      <select data-section="colony" class="codex-select">
+        <option value="colonization">État de terraformation</option>
+        <option value="potentials">Potentiels</option>
+        <option value="phases">Phases</option>
+        <option value="bases">Implantations</option>
+      </select>
+    </h3>
+    <div class="section-content"></div>
+  </div>
+
+  <!-- Exploration -->
+  <div id="bloc-d1" class="widget">
+    <h3>
+      <select data-section="missions" class="codex-select">
+        <option value="summary">Exploration</option>
+      </select>
+    </h3>
+    <div class="section-content"></div>
+  </div>
+
+  <!-- Lunes -->
+  <div id="bloc-d2" class="widget">
+    <h3>
+      <select data-section="moons" class="codex-select">
+        <option value="summary">Lunes</option>
+        <option value="details">Détails</option>
+      </select>
+    </h3>
+    <div class="section-content"></div>
+  </div>
+
+  <!-- Viewer secondaire -->
+  <div id="bloc-d3" class="widget">
+    <h3 id="moon-viewer-title"></h3>
+    <canvas id="moon-viewer" width="150" height="150"></canvas>
+  </div>
+
+  <!-- Radar central -->
+  <div id="widget-core-radar" class="widget">
+    <canvas id="simul-system" width="600" height="600"></canvas>
+  </div>
+
+  <!-- Ligne 5 : Infos Fusionnées -->
+  <div id="widget-infos" class="widget">
+    <div class="infos-grid">
+      
+      <div class="info-subwidget informations" id="info-data"></div>
+      <div class="info-subwidget" id="info-colony"></div>
+      <div class="info-subwidget" id="info-missions"></div>
+    </div>
+  </div>
+
+<!-- Ligne 6 : Note d'observation -->
+<div id="widget-note" class="widget">
+  <div class="codex-note-toggle">
+    <button id="toggle-note-btn"><span class="note-icon">▶</span> Données relatives à la position des planètes</button>
+  </div>
+  <div id="codex-note-content" class="codex-note-content hidden">
+  <p>
+  Les positions des planètes et objets lointains dans le radar sont calculées à partir de leur <strong>période sidérale réelle</strong> — le temps qu'ils mettent pour faire un tour complet autour du Soleil. Chaque corps suit ainsi un mouvement cohérent avec sa dynamique astronomique propre.
+</p>
+<p>
+  Toutefois, pour rendre le système lisible et observable en temps réel, <strong>la vitesse de rotation a été considérablement réduite</strong> par rapport à la réalité. À titre d'exemple, la Terre tourne à près de 30 km/s autour du Soleil, ce qui serait impossible à représenter visuellement sans que tout devienne flou ou illisible.
+</p>
+<p>
+  Ce compromis visuel permet de voir évoluer l’ensemble du système dans un rythme fluide, tout en conservant les proportions orbitales et les hiérarchies temporelles (les planètes lointaines tournent toujours plus lentement que les proches).
+</p>
+<p class="note-astuce">
+  Astuce : pour observer les véritables changements de position des planètes lointaines, il faudrait simuler plusieurs siècles d'évolution.
+</p>
+  </div>
+</div>
+
+
+</main>
+
+  <!-- SELECTEUR THEME TEMPORAIRE -->
+  <!-- 🔁 Toggle dashboard.css / dashboard-v2.css -->
+<button id="theme-toggle" style="
+  position: fixed; top: 100px; right: 20px;
+  z-index: 1000; background: rgba(0,255,255,0.1);
+  border: 1px solid cyan; padding: 6px 10px;
+  font-family: Orbitron, sans-serif; font-size: 0.6rem;
+  color: cyan; cursor: pointer;">
+HUD V1 / V2
+</button>
+
+<script>
+const themeToggleBtn = document.getElementById("theme-toggle");
+let usingV2 = false;
+const styleTag = document.getElementById("dashboard-style");
+
+themeToggleBtn.addEventListener("click", () => {
+  styleTag.href = usingV2
+    ? "/dashb/modules/dashboard/dashboard.css"
+    : "/dashb/modules/dashboard/dashboard-v2.css";
+  usingV2 = !usingV2;
+});
+</script>
+
+
+  
+  <!-- 🡸 Footer injecté dynamiquement -->
+  <div id="footer-placeholder"></div>
+</body>
+</html>
