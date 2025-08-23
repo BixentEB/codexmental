@@ -6,6 +6,9 @@ if (location.pathname === '/dashb/index.html') {
   localStorage.setItem('codex-theme', 'theme-stellaire');
 }
 
+// === HUD (habillage des 6 blocs autour du radar)
+import("/dashb/modules/hud-panels-init.js");
+
 // 📦 Chargement conditionnel si on est bien sur le dashboard du Lab
 if (window.location.pathname.endsWith("/dashb/index.html")) {
   // === 📚 BASES DE DONNÉES ===
