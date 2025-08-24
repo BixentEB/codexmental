@@ -1,0 +1,96 @@
+/* =======================================================
+   HUD – Reset minimal pour les 6 blocs autour du radar
+   (ne touche PAS au reste du site)
+======================================================= */
+
+/* 0) Neutraliser tout style legacy sur ces 6 conteneurs */
+#bloc-g1, #bloc-g2, #bloc-g3,
+#bloc-d1, #bloc-d2, #bloc-d3{
+  position: relative;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  overflow: visible;
+}
+
+/* 1) Base HUD — cadre seulement (le PNG) */
+.hud-panel{
+  --img-on: none;                  /* posés par hud-panels-init.js */
+  --img-off: none;
+  --bg-img: var(--img-off);
+  --screen-inset: 9% 5% 12% 6%;
+
+  position: relative;
+  isolation: isolate;
+  border-radius: 16px;
+  background: var(--bg-img) center/contain no-repeat; /* cadre seul */
+  box-shadow: none;
+  color: #cfe9ff;
+  cursor: default;
+}
+.hud-panel.is-on  { --bg-img: var(--img-on); }
+.hud-panel.is-off { --bg-img: var(--img-off); }
+
+/* Si un vieux .widget traîne encore, on le neutralise sur ces 6 blocs */
+.widget.hud-panel{
+  background: var(--bg-img) center/contain no-repeat !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2) Écran interne : TRANSPARENT (affiche seulement tes données) */
+.hud-content{
+  position: absolute;
+  inset: var(--screen-inset);
+  border-radius: 10px;
+  padding: 10px 14px;
+  overflow: auto;
+  z-index: 1;
+
+  background: transparent;       /* 👈 invisible */
+  box-shadow: none;
+  /* (facultatif) fines scanlines ; mets "none" si tu veux zéro décor */
+  background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 100% 3px;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,255,255,.35) transparent;
+}
+.hud-content::-webkit-scrollbar{ width: 8px; }
+.hud-content::-webkit-scrollbar-track{ background: transparent; }
+.hud-content::-webkit-scrollbar-thumb{ background: rgba(0,255,255,.35); border-radius: 6px; }
+
+/* 3) Petit label SF (puce turquoise) */
+.hud-title{
+  position: absolute;
+  top: 10px; left: 14px;
+  z-index: 2;
+  font: 700 12px/1.1 Orbitron, system-ui, sans-serif;
+  letter-spacing: .06em;
+  color: #bff2ff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(0,40,70,.65);
+  border: 1px solid rgba(0,180,255,.6);
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+  pointer-events: none;
+}
+
+/* 4) LED (désactivée par défaut pour un rendu "cadre seul") */
+.hud-led{ display: none; }
+
+/* 5) Taille par défaut alignée à la grille */
+#bloc-g1.hud-panel, #bloc-g2.hud-panel, #bloc-g3.hud-panel,
+#bloc-d1.hud-panel, #bloc-d2.hud-panel, #bloc-d3.hud-panel{
+  min-height: 260px;
+}
+
+/* 6) OFF = léger atténué (auto-géré par le JS) */
+.hud-panel.is-off .hud-content{
+  opacity: .55;
+  filter: saturate(.8);
+}
