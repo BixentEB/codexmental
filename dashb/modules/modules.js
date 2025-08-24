@@ -4,13 +4,13 @@
 document.body.classList.add('theme-stellaire', 'lab');
 try { localStorage.setItem('codex-theme', 'theme-stellaire'); } catch {}
 
-// Tout après que le DOM soit prêt (évite les wraps à vide du HUD)
+// Tout après que le DOM soit prêt (évite les wraps à vide des panneaux)
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    // === HUD (habillage des 6 blocs autour du radar)
-    await import('/dashb/modules/hud-panels-init.js');
+    // === HUD v3 (habillage des 6 blocs autour du radar, auto-état, écran transparent)
+    await import('/dashb/modules/ui-v3/panels-init.js');
   } catch (e) {
-    console.warn('HUD init failed:', e);
+    console.warn('UI v3 init failed:', e);
   }
 
   // === 📚 BASES DE DONNÉES ===
