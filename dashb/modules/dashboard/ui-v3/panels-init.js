@@ -1,6 +1,6 @@
 // /dashb/modules/ui-v3/panels-init.js
 const R = rel => new URL(rel, import.meta.url).href;
-const BASE = R('../dashboard/assets/ui/'); // adapte si besoin (chemin depuis ui-v3/)
+const BASE = R('/dashb/modules/dashboard/assets/ui/'); // adapte si besoin (chemin depuis ui-v3/)
 
 const IMG = set => ({
   on:  BASE + `dashbblock_${set}a.png`,
