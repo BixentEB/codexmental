@@ -50,12 +50,9 @@
   <div id="alert-right" class="widget"><h2>🧬 Alerte D</h2></div>
 
   <!-- Viewer Planète -->
-  <div id="bloc-g1" class="widget">
-  <div class="hud-title">Planète</div> <!-- ✅ Ajout décoratif -->
-
+<div id="bloc-g1">
   <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
-
-  <div style="margin-top: 0.5rem;">
+  <div style="margin-top: .5rem;">
     <label for="layer-select">🛰️ Couche :</label>
     <select id="layer-select" class="codex-select">
       <option value="surface" selected>Surface</option>
@@ -63,64 +60,57 @@
       <option value="infrared">Infrarouge</option>
     </select>
   </div>
-
-  <div class="hud-bar">
-    <span></span><span></span><span></span><span></span>
-  </div> <!-- ✅ Bande décorative -->
 </div>
 
 
   <!-- Informations Principales -->
-  <div id="bloc-g2" class="widget">
-    <h3>
-      <select data-section="informations" class="codex-select">
-        <option value="basic" selected>Données principales</option>
-        <option value="composition">Composition</option>
-        <option value="climat">Climat</option>
-      </select>
-    </h3>
-    <div class="section-content"></div>
-  </div>
+  <div id="bloc-g2">
+  <h3>
+    <select data-section="informations" class="codex-select">
+      <option value="basic" selected>Données principales</option>
+      <option value="composition">Composition</option>
+      <option value="climat">Climat</option>
+    </select>
+  </h3>
+  <div class="section-content"></div>
+</div>
 
   <!-- Terraformation -->
-  <div id="bloc-g3" class="widget">
-    <h3>
-      <select data-section="colony" class="codex-select">
-        <option value="colonization">État de terraformation</option>
-        <option value="potentials">Potentiels</option>
-        <option value="phases">Phases</option>
-        <option value="bases">Implantations</option>
-      </select>
-    </h3>
-    <div class="section-content"></div>
-  </div>
+  <div id="bloc-g3">
+  <h3>
+    <select data-section="colony" class="codex-select">
+      <option value="colonization">État de terraformation</option>
+      <option value="potentials">Potentiels</option>
+      <option value="phases">Phases</option>
+      <option value="bases">Implantations</option>
+    </select>
+  </h3>
+  <div class="section-content"></div>
+</div>
 
   <!-- Exploration -->
-  <div id="bloc-d1" class="widget">
-    <h3>
-      <select data-section="missions" class="codex-select">
-        <option value="summary">Exploration</option>
-      </select>
-    </h3>
-    <div class="section-content"></div>
-  </div>
+  <div id="bloc-d1">
+  <h3>
+    <select data-section="missions" class="codex-select">
+      <option value="summary">Exploration</option>
+    </select>
+  </h3>
+  <div class="section-content"></div>
+</div>
 
   <!-- Lunes -->
-  <div id="bloc-d2" class="widget">
-    <h3>
-      <select data-section="moons" class="codex-select">
-        <option value="summary">Lunes</option>
-        <option value="details">Détails</option>
-      </select>
-    </h3>
-    <div class="section-content"></div>
-  </div>
+  <div id="bloc-d2">
+  <h3>
+    <select data-section="moons" class="codex-select">
+      <option value="summary">Lunes</option>
+      <option value="details">Détails</option>
+    </select>
+  </h3>
+  <div class="section-content"></div>
+</div>
 
   <!-- Viewer secondaire -->
-  <div id="bloc-d3" class="widget">
-    <h3 id="moon-viewer-title"></h3>
-    <canvas id="moon-viewer" width="150" height="150"></canvas>
-  </div>
+  <div id="bloc-d3"><div class="section-content"></div></div>
 
   <!-- Radar central -->
   <div id="widget-core-radar" class="widget">
