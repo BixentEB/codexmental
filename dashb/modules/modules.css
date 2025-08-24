@@ -3,11 +3,10 @@
 @import url("/dashb/modules/simul-moon/simul-moon.css");
 
 /* layout unique */
-@import url("/dashb/modules/dashboard/dashboard-structure.css");
+@import url("/dashb/modules/ui-v3/layout.css");
 
-/* reset + cadres HUD (doit rester le dernier) */
-@import url("/dashb/modules/dashboard/hud.blocks.css");
-
+/* cadres HUD */
+@import url("/dashb/modules/ui-v3/panels.css");
 
 /* Autres modules à importer ici */
 /* @import url("/dashb/modules/widget-solaire/widget-solaire.css"); */
