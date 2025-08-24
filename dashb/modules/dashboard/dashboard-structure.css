@@ -7,7 +7,7 @@
 main.dashboard {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 70px 200px 200px 200px auto;
+  grid-template-rows: 70px repeat(3, minmax(260px, auto)) auto;
   grid-template-areas:
     "alert-left planet-symbol planet-name planet-scientific-name alert-right"
     "bloc-g1 radar radar radar bloc-d1"
