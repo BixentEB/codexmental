@@ -1,18 +1,29 @@
-// init.js — Auto ON/OFF panels + CHIPS, miroir #bloc-* → chips, pont d'événements sélection
+// init.js — Auto ON/OFF panels + CHIPS, compat containers, miroir #bloc-* → chips,
+//           et pont d'événements (sans modifier simul-system.js)
 
 const bus = window.__lab?.bus || document;
 
-// ---------- utils ----------
+/* ============= utils ============= */
+const ensureSectionContent = (host) => {
+  // certains modules écrivent dans .section-content — on le crée si absent
+  if (!host) return null;
+  let sc = host.querySelector(':scope > .section-content');
+  if (!sc) {
+    sc = document.createElement('div');
+    sc.className = 'section-content';
+    host.appendChild(sc);
+  }
+  return sc;
+};
+
 const cleanHTML = (node) => {
-  // clone + supprime tout .placeholder pour ne jamais les copier dans les chips
   const clone = node.cloneNode(true);
   clone.querySelectorAll('.placeholder').forEach(el => el.remove());
   return clone.innerHTML.trim();
 };
 
-const hasContent = el => {
+const hasContent = (el) => {
   if (!el) return false;
-  // ignore aussi tout texte issu d'un éventuel placeholder
   const tmp = el.cloneNode(true);
   tmp.querySelectorAll('.placeholder').forEach(n => n.remove());
   const text = (tmp.textContent || '').trim();
@@ -27,9 +38,12 @@ const setState = (el,on) => {
   if (ph) ph.style.display = on ? 'none' : 'flex';
 };
 
-// ---------- 1) PANELS (compat) ----------
+/* ============= 1) Panels (compat : #bloc-g1..d3) ============= */
 const panelIds = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'];
 const panels = panelIds.map(sel => document.querySelector(sel)).filter(Boolean);
+
+// Assure la présence de .section-content pour les modules existants
+panels.forEach(p => ensureSectionContent(p));
 
 const panelObs = new MutationObserver(() => panels.forEach(p => setState(p, hasContent(p))));
 panels.forEach(p => {
@@ -44,7 +58,7 @@ panels.forEach(p => {
   panelObs.observe(p, { childList:true, subtree:true, characterData:true });
 });
 
-// ---------- 2) CHIPS ----------
+/* ============= 2) Chips HUD ============= */
 const chips = {
   tutorial: document.querySelector('.chip.tutorial'),
   g1: document.querySelector('.chip.g1'),
@@ -57,9 +71,9 @@ const chips = {
 const chipList = Object.values(chips).filter(Boolean);
 const hudRoot = document.querySelector('.hud-chips') || document;
 
-// baseline : tout OFF sauf la tutoriel
+// Baseline: tout OFF sauf tutoriel
 chipList.forEach(ch => { if (ch && !ch.classList.contains('tutorial')) ch.classList.remove('on'); });
-if (chips.tutorial) chips.tutorial.classList.add('on');
+chips.tutorial?.classList.add('on');
 
 const evalChips = () => {
   chipList.forEach(ch => {
@@ -68,7 +82,7 @@ const evalChips = () => {
     setState(ch, hasContent(content));
   });
   const anyOn = chipList.some(ch => ch && !ch.classList.contains('tutorial') && ch.classList.contains('on'));
-  if (chips.tutorial) chips.tutorial.classList.toggle('on', !anyOn);
+  chips.tutorial?.classList.toggle('on', !anyOn);
 };
 evalChips();
 
@@ -80,7 +94,7 @@ chips.g2?.querySelector('.hud-close')?.addEventListener('click', () => {
   bus.dispatchEvent(new CustomEvent('object:cleared'));
 });
 
-// ---------- 3) MIROIR (#bloc-* → chips) ----------
+/* ============= 3) Miroir #bloc-* → chips (on copie le vrai contenu, sans placeholders) ============= */
 const mirrors = [
   { from:'#bloc-g1', to:'.chip.g1 .hud-text' },
   { from:'#bloc-g2', to:'.chip.g2 .hud-text' },
@@ -94,11 +108,12 @@ const applyMirror = (srcSel, dstSel) => {
   const src = document.querySelector(srcSel);
   const dst = document.querySelector(dstSel);
   if (!src || !dst) return;
-  dst.innerHTML = cleanHTML(src);
+  // copie prioritairement ce que les modules mettent dans .section-content s'il existe
+  const sc = src.querySelector(':scope > .section-content') || src;
+  dst.innerHTML = cleanHTML(sc);
   evalChips();
 };
 
-// observe chaque source
 const mirrorObs = new MutationObserver(muts => {
   muts.forEach(m => {
     const hit = mirrors.find(mi => m.target.closest(mi.from));
@@ -112,15 +127,41 @@ mirrors.forEach(mi => {
   mirrorObs.observe(src, { childList:true, subtree:true, characterData:true });
 });
 
-// ---------- 4) Pont d'événements de sélection ----------
-bus.addEventListener('planet:selected', (e) => {
-  const id = e?.detail?.id || e?.detail?.name;
-  bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id, type:'planet' } }));
-  chips.tutorial?.classList.remove('on');
-});
+/* ============= 4) Pont d’événements hérités → UI ============= */
+/*
+  On écoute un éventail de noms d’événements déjà utilisés possible
+  pour NE PAS modifier simul-system.js ni tes modules :
+*/
+const legacyEvents = [
+  'planet:selected',
+  'dashboard:planet:selected',
+  'dashboard:select:planet',
+  'planet:focus',
+  'object:selected'           // au cas où déjà émis par tes modules
+];
 
+legacyEvents.forEach(ev =>
+  bus.addEventListener(ev, (e) => {
+    // Quoi qu'il arrive, on cache la tuto
+    chips.tutorial?.classList.remove('on');
+    // On rebroadcast dans un format “canonique” si besoin (laissera tes modules actuels tranquilles)
+    if (ev !== 'object:selected') {
+      const id = e?.detail?.id || e?.detail?.name || e?.detail?.slug;
+      bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id, source:ev } }));
+    }
+  })
+);
+
+// Quand on clear, on vide au moins la chip “Objet”
 bus.addEventListener('object:cleared', () => {
   const g2Text = chips.g2?.querySelector('.hud-text');
   if (g2Text) g2Text.textContent = '';
   evalChips();
 });
+
+/* ============= 5) Secours : si un bloc se remplit “tout seul”, on considère qu’une sélection est active ============= */
+const anyContentObs = new MutationObserver(() => {
+  const anyFilled = panels.some(p => hasContent(p));
+  if (anyFilled) chips.tutorial?.classList.remove('on');
+});
+panels.forEach(p => anyContentObs.observe(p, { childList:true, subtree:true, characterData:true }));
