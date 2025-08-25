@@ -3,12 +3,23 @@
 const bus = window.__lab?.bus || document;
 
 // ---------- utils ----------
+const cleanHTML = (node) => {
+  // clone + supprime tout .placeholder pour ne jamais les copier dans les chips
+  const clone = node.cloneNode(true);
+  clone.querySelectorAll('.placeholder').forEach(el => el.remove());
+  return clone.innerHTML.trim();
+};
+
 const hasContent = el => {
   if (!el) return false;
-  const text = (el.textContent || '').trim();
-  const child = el.querySelector(':scope > *:not(.placeholder)');
+  // ignore aussi tout texte issu d'un éventuel placeholder
+  const tmp = el.cloneNode(true);
+  tmp.querySelectorAll('.placeholder').forEach(n => n.remove());
+  const text = (tmp.textContent || '').trim();
+  const child = tmp.querySelector(':scope > *:not(.placeholder)');
   return (text.length > 0) || !!child;
 };
+
 const setState = (el,on) => {
   if (!el) return;
   el.classList.toggle('on', !!on);
@@ -46,7 +57,10 @@ const chips = {
 const chipList = Object.values(chips).filter(Boolean);
 const hudRoot = document.querySelector('.hud-chips') || document;
 
-// Initial: seules les chips avec contenu doivent être ON; la tutoriel reste ON si aucune autre
+// baseline : tout OFF sauf la tutoriel
+chipList.forEach(ch => { if (ch && !ch.classList.contains('tutorial')) ch.classList.remove('on'); });
+if (chips.tutorial) chips.tutorial.classList.add('on');
+
 const evalChips = () => {
   chipList.forEach(ch => {
     if (!ch || ch.classList.contains('tutorial')) return;
@@ -80,10 +94,11 @@ const applyMirror = (srcSel, dstSel) => {
   const src = document.querySelector(srcSel);
   const dst = document.querySelector(dstSel);
   if (!src || !dst) return;
-  dst.innerHTML = src.innerHTML;
+  dst.innerHTML = cleanHTML(src);
   evalChips();
 };
 
+// observe chaque source
 const mirrorObs = new MutationObserver(muts => {
   muts.forEach(m => {
     const hit = mirrors.find(mi => m.target.closest(mi.from));
@@ -93,7 +108,7 @@ const mirrorObs = new MutationObserver(muts => {
 mirrors.forEach(mi => {
   const src = document.querySelector(mi.from);
   if (!src) return;
-  applyMirror(mi.from, mi.to);
+  applyMirror(mi.from, mi.to); // init
   mirrorObs.observe(src, { childList:true, subtree:true, characterData:true });
 });
 
