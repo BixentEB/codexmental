@@ -1,5 +1,27 @@
 /* modules.css – Feuille de styles centralisée pour les widgets du Lab Codex */
 
+/* 1) Le header (menu) doit passer au-dessus de tout le dashboard */
+body.lab header#menu-placeholder,
+body.lab #site-header {
+  position: relative;
+  z-index: 2000;
+}
+
+/* Le dashboard reste en dessous */
+body.lab main.dashboard { position: relative; z-index: 100; }
+
+/* 2) Désactive/mask le switcher de thèmes du site quand on est au labo */
+body.lab .theme-switcher,
+body.lab [data-theme-menu],
+body.lab .theme-chooser,
+body.lab .theme-panel,
+body.lab .theme-list { display: none !important; }
+
+/* 3) Si ton overlay de thème applique un blur global quand ouvert, neutralise-le au lab */
+body.lab.menu-open,
+body.lab .blur-container { filter: none !important; backdrop-filter: none !important; }
+
+
 /* layout unique */
 @import url("/dashb/modules/dashboard/ui/layout.css");
 
