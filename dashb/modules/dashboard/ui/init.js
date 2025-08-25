@@ -1,10 +1,10 @@
 // init.js — Auto ON/OFF des panneaux + chips, et gestion du “deselect”
 
-// 1) Panneaux (compat)
+// Panneaux (compat)
 const panelIds = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'];
 const panels = panelIds.map(sel => document.querySelector(sel)).filter(Boolean);
 
-// 2) Chips HUD
+// Chips HUD
 const chips = {
   tutorial: document.querySelector('.chip.tutorial'),
   g1: document.querySelector('.chip.g1'),
@@ -44,35 +44,41 @@ panels.forEach(p => {
   panelObs.observe(p, { childList:true, subtree:true, characterData:true });
 });
 
-// Chips: ON/OFF selon contenu de .hud-text ; tutoriel visible si aucune autre chip n’est “on”
+// Chips: ON/OFF selon contenu de .hud-text ; tutoriel visible si aucune chip n’est on
 const chipObs = new MutationObserver(() => {
   chipList.forEach(ch => {
-    const content = ch.classList.contains('tutorial') ? ch.querySelector('.hud-text') : ch.querySelector('.hud-text');
-    const on = ch.classList.contains('tutorial') ? hasContent(ch) : hasContent(content);
-    // on ne coupe pas la tutoriel ici, on la coupe après calcul global
-    if (!ch.classList.contains('tutorial')) setState(ch, on);
+    if (!ch) return;
+    if (ch.classList.contains('tutorial')) return; // tutoriel géré plus bas
+    const content = ch.querySelector('.hud-text');
+    setState(ch, hasContent(content));
   });
-  const anyChipOn = chipList.some(ch => !ch.classList.contains('tutorial') && ch.classList.contains('on'));
+  const anyChipOn = chipList.some(ch => ch && !ch.classList.contains('tutorial') && ch.classList.contains('on'));
   if (chips.tutorial) chips.tutorial.classList.toggle('on', !anyChipOn);
 });
-
-// Observer sur la zone chips
 const hudRoot = document.querySelector('.hud-chips') || document;
 chipObs.observe(hudRoot, { childList:true, subtree:true, characterData:true });
 
-// Bouton “×” sur la chip Objet → deselect
+// Close “×” → deselect
 const bus = window.__lab?.bus || document;
 chips.g2?.querySelector('.hud-close')?.addEventListener('click', () => {
   bus.dispatchEvent(new CustomEvent('object:cleared'));
 });
 
-// Si tes modules émettent object:selected → on masque la tutoriel
+// Quand une sélection arrive, on masque la tutoriel (elle se ré‑affichera si tout redevient vide)
 bus.addEventListener('object:selected', () => {
   if (chips.tutorial) chips.tutorial.classList.remove('on');
 });
 
-// Si object:cleared → on vide g2 (à toi de vider les autres dans tes modules) ; la tutoriel reviendra automatiquement
-bus.addEventListener('object:cleared', () => {
-  const g2Text = chips.g2?.querySelector('.hud-text');
-  if (g2Text) g2Text.textContent = '';
-});
+// Resize: si on veut que le canvas prenne toute la place dispo
+const radar = document.getElementById('radar');
+const canvas = document.getElementById('simul-system');
+if (radar && canvas) {
+  const ro = new ResizeObserver(() => {
+    // fit le canvas à la zone (CSS fait déjà l'essentiel, ceci ajuste l'attribut pixel pour un rendu net)
+    const rect = radar.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+    canvas.width  = Math.floor((rect.width  - 24) * ratio);
+    canvas.height = Math.floor((rect.height - 24) * ratio);
+  });
+  ro.observe(radar);
+}
