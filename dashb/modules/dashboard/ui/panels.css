@@ -1,3 +1,4 @@
+/* Panneaux “slots” (compat) */
 .panel{
   position:relative;
   border-radius:14px;
@@ -21,9 +22,10 @@
   color:rgba(191,239,255,.35); font-size:.9rem; letter-spacing:.08em; text-transform:uppercase;
 }
 
-/* chips flottants (option, si tu passes en mode-chips) */
+/* --- CHIPS HUD --- */
 .hud-chips{ position:absolute; inset:0; pointer-events:none }
-.chip{ position:absolute; min-width:200px; max-width:320px; min-height:96px;
+.chip{
+  position:absolute; min-width:200px; max-width:340px; min-height:96px;
   padding:10px 12px; border-radius:12px;
   background:linear-gradient(180deg, rgba(0,229,255,.06), rgba(0,229,255,.03));
   outline:1px solid rgba(0,229,255,.18);
@@ -32,9 +34,33 @@
   transition:opacity .22s, transform .22s; pointer-events:auto;
 }
 .chip.on{ opacity:1; transform:none }
-.chip.g1{left:12px; top:12px} .chip.g2{left:12px; top:calc(50% - 60px)} .chip.g3{left:12px; bottom:12px}
-.chip.d1{right:12px; top:12px} .chip.d2{right:12px; top:calc(50% - 60px)} .chip.d3{right:12px; bottom:12px}
+.hud-title{font-family:Orbitron,system-ui; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:.35rem}
+.hud-text{font-size:.92rem; line-height:1.35}
+.hud-close{ margin-left:.5rem; background:transparent; border:0; color:inherit; cursor:pointer; font-size:1rem; line-height:1 }
 
+/* Positions par défaut autour du radar */
+.chip.g1{left:12px; top:12px}
+.chip.g2{left:12px; top:calc(50% - 60px)}
+.chip.g3{left:12px; bottom:12px}
+.chip.d1{right:12px; top:12px}
+.chip.d2{right:12px; top:calc(50% - 60px)}
+.chip.d3{right:12px; bottom:12px}
+
+/* Mode global : slots vs chips */
 main.dashboard.mode-chips .left,
 main.dashboard.mode-chips .right { display:none }
 main.dashboard.mode-slots .hud-chips { display:none }
+
+/* Titres verticaux hérités */
+#dashboard-title-left{
+  position:absolute; top:4rem; left:.5rem; height:60%;
+  writing-mode:vertical-rl; transform:rotate(180deg);
+  font-family:Orbitron,system-ui; font-size:1.3rem; letter-spacing:.25rem;
+  color:rgba(0,229,255,.6); pointer-events:none; z-index:2;
+}
+#dashboard-title-right{
+  position:absolute; bottom:2rem; right:.5rem; height:50%;
+  writing-mode:vertical-rl; transform:rotate(180deg);
+  font-family:Orbitron,system-ui; font-size:1.2rem; letter-spacing:.22rem;
+  color:rgba(0,229,255,.6); pointer-events:none; z-index:2;
+}
