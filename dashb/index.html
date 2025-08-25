@@ -5,61 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🔬 Dashboard – Codex Mental</title>
 
-  <!-- Favicon (absolu depuis la racine du site) -->
   <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" type="image/png" />
 
   <!-- Fonts & global -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/main.css">
 
-  <!-- Styles dashboard centralisés (importe layout.css + panels.css et masque le menu thème) -->
-  <link rel="stylesheet" href="/dashb/modules/modules.css?v=3">
+  <!-- Styles dashboard centralisés -->
+  <link rel="stylesheet" href="/dashb/modules/modules.css?v=6" />
 
-    <!-- ⚙️ Script principal site -->
+  <!-- Script principal du site (menu, etc.) -->
   <script type="module" src="/assets/js/main.js"></script>
 
   <!-- Entrée unique du dashboard -->
   <script type="module" src="/dashb/modules/modules.js"></script>
 </head>
 <body class="theme-stellaire lab dashboard">
-  <!-- Header du site (injecté ailleurs) -->
   <header id="menu-placeholder"></header>
 
-  <!-- Canvas de fond optionnel -->
+  <!-- Fond optionnel -->
   <canvas id="theme-canvas" style="position:fixed; inset:0; z-index:-1;"></canvas>
 
-  <!-- DASHBOARD : mode full‑bleed + chips -->
+  <!-- DASHBOARD : full‑bleed + chips -->
   <main class="dashboard mode-chips">
     <div class="header" id="dash-header"></div>
 
-    <!-- Colonnes “slots” gardées pour compat mais masquées en mode‑chips -->
+    <!-- Slots conservés (compat) -->
     <section class="left">
       <div id="bloc-g1" class="panel"></div>
       <div id="bloc-g2" class="panel"></div>
       <div id="bloc-g3" class="panel"></div>
     </section>
 
-    <!-- Radar plein écran -->
     <section class="radar" id="radar">
       <!-- Titres verticaux -->
       <div id="dashboard-title-left">ORION INTERFACE</div>
       <div id="dashboard-title-right">TACTICAL MODULE</div>
 
-      <!-- Canvas attendu par le radar 2D existant -->
-      <canvas id="simul-system"></canvas>
+      <!-- Canvas attendu par le radar 2D (taille fixe pour éviter tout zoom parasite) -->
+      <canvas id="simul-system" width="1200" height="800"></canvas>
 
       <!-- CHIPS HUD -->
       <div class="hud-chips">
-        <div class="chip tutorial on" style="left:50%; top:16px; transform:translateX(-50%); min-width:320px">
+        <!-- Tutoriel ON au chargement -->
+        <div class="chip tutorial on">
           <div class="hud-title">Sélection requise</div>
-          <div class="hud-text">Sélectionnez un objet céleste pour afficher ses paramètres orbitaux, physiques et contextuels.</div>
+          <div class="hud-text">
+            Sélectionnez un objet céleste pour afficher ses paramètres orbitaux, physiques et contextuels.
+          </div>
         </div>
 
+        <!-- 6 emplacements (vides tant qu’aucune donnée) -->
         <div class="chip g1"><div class="hud-title">Télémétrie</div><div class="hud-text"></div></div>
-        <div class="chip g2">
-          <div class="hud-title">Objet <button class="hud-close" title="Fermer">×</button></div>
-          <div class="hud-text"></div>
-        </div>
+        <div class="chip g2"><div class="hud-title">Objet <button class="hud-close" title="Fermer">×</button></div><div class="hud-text"></div></div>
         <div class="chip g3"><div class="hud-title">Missions</div><div class="hud-text"></div></div>
         <div class="chip d1"><div class="hud-title">Vue</div><div class="hud-text"></div></div>
         <div class="chip d2"><div class="hud-title">Lunes</div><div class="hud-text"></div></div>
