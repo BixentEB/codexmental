@@ -1,26 +1,31 @@
 /* modules.css – Feuille centralisée du Dashboard */
 
-/* 0) IMPORTS D'ABORD (OBLIGATOIRE) */
+/* 0) IMPORTS D'ABORD */
 @import url("/dashb/modules/dashboard/ui/layout.css");
 @import url("/dashb/modules/dashboard/ui/panels.css");
 
-/* 1) Menu du site toujours au-dessus */
+/* 1) Menu du site au-dessus */
 body.dashboard header#menu-placeholder,
 body.dashboard #site-header { position: relative; z-index: 5000; }
 
-/* Le dashboard en dessous */
+/* Dashboard en dessous */
 body.dashboard main.dashboard { position: relative; z-index: 100; }
 
-/* 2) Masquer les contrôles de thème global UNIQUEMENT sur /dashb */
+/* 2) Masquer TOUT ce qui touche au thème sur /dashb */
 body.dashboard .theme-switcher,
 body.dashboard [data-theme-menu],
 body.dashboard .theme-chooser,
 body.dashboard .theme-panel,
 body.dashboard .theme-list,
-body.dashboard .theme-fab-container {             /* ← bouton flottant thème */
+body.dashboard .theme-fab-container {
   display: none !important;
 }
 
-/* Neutraliser tout blur/overlay éventuellement laissé par le site */
+/* 3) Neutraliser tout blur/overlay */
 body.dashboard.menu-open,
-body.dashboard .blur-container { filter: none !important; backdrop-filter: none !important; }
+body.dashboard .blur-container,
+body.dashboard .theme-overlay,
+body.dashboard .backdrop-blur {
+  filter: none !important;
+  backdrop-filter: none !important;
+}
