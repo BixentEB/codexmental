@@ -11,12 +11,15 @@ body.dashboard #site-header { position: relative; z-index: 5000; }
 /* Le dashboard en dessous */
 body.dashboard main.dashboard { position: relative; z-index: 100; }
 
-/* 2) Masquer le sélecteur de thème global sur /dashb (sinon conflit de styles) */
+/* 2) Masquer les contrôles de thème global UNIQUEMENT sur /dashb */
 body.dashboard .theme-switcher,
 body.dashboard [data-theme-menu],
 body.dashboard .theme-chooser,
 body.dashboard .theme-panel,
-body.dashboard .theme-list { display: none !important; }
+body.dashboard .theme-list,
+body.dashboard .theme-fab-container {             /* ← bouton flottant thème */
+  display: none !important;
+}
 
 /* Neutraliser tout blur/overlay éventuellement laissé par le site */
 body.dashboard.menu-open,
