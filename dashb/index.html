@@ -9,9 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/main.css">
 
-  <!-- Dashboard UI (grille + panneaux transparents) -->
-  <link rel="stylesheet" href="/dashb/ui/layout.css?v=3">
-  <link rel="stylesheet" href="/dashb/ui/panels.css?v=3">
+  <!-- Dashboard UI importés dans (grille + panneaux transparents) -->
+<link rel="stylesheet" href="/dashb/modules/modules.css?v=3">
 
   <!-- Entrée unique du dashboard -->
   <script type="module" src="/dashb/modules/modules.js"></script>
@@ -33,7 +32,12 @@
       <div id="bloc-g3" class="panel"></div>
     </section>
 
-    <section class="radar" id="radar"></section>
+    <section class="radar" id="radar">
+  <canvas id="simul-system" width="900" height="700"></canvas>
+</section>
+
+
+    </section>
 
     <section class="right">
       <div id="bloc-d1" class="panel"></div>
