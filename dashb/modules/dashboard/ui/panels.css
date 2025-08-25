@@ -1,13 +1,11 @@
-/* Panneaux “slots” (compat) */
+/* Panels “slots” (compat) */
 .panel{
   position:relative;
   border-radius:14px;
   outline:1px solid rgba(0,229,255,.05);
   background:transparent;
   box-shadow:none;
-  opacity:0;                           /* invisible tant que vide */
-  transform:translateY(4px) scale(.995);
-  filter:blur(.2px);
+  opacity:0; transform:translateY(4px) scale(.995); filter:blur(.2px);
   transition:opacity .25s, transform .25s, filter .25s, box-shadow .25s;
   pointer-events:none;
 }
@@ -17,28 +15,30 @@
   box-shadow:0 0 0 1px rgba(0,229,255,.05) inset, 0 0 24px rgba(0,229,255,.08);
 }
 .panel .placeholder{
-  position:absolute; inset:8px;
-  display:flex; align-items:center; justify-content:center;
+  position:absolute; inset:8px; display:flex; align-items:center; justify-content:center;
   color:rgba(191,239,255,.35); font-size:.9rem; letter-spacing:.08em; text-transform:uppercase;
 }
 
-/* --- CHIPS HUD --- */
+/* --- HUD CHIPS --- */
 .hud-chips{ position:absolute; inset:0; pointer-events:none }
+
 .chip{
-  position:absolute; min-width:200px; max-width:340px; min-height:96px;
+  position:absolute; display:none;   /* ← caché par défaut */
+  min-width:200px; max-width:340px; min-height:96px;
   padding:10px 12px; border-radius:12px;
   background:linear-gradient(180deg, rgba(0,229,255,.06), rgba(0,229,255,.03));
   outline:1px solid rgba(0,229,255,.18);
   box-shadow:0 6px 28px rgba(0,229,255,.08);
   color:#d9f9ff; opacity:0; transform:translateY(6px) scale(.98);
-  transition:opacity .22s, transform .22s; pointer-events:auto;
+  transition:opacity .22s, transform .22s;
+  pointer-events:auto;
 }
-.chip.on{ opacity:1; transform:none }
+.chip.on{ display:block; opacity:1; transform:none }
 .hud-title{font-family:Orbitron,system-ui; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:.35rem}
 .hud-text{font-size:.92rem; line-height:1.35}
 .hud-close{ margin-left:.5rem; background:transparent; border:0; color:inherit; cursor:pointer; font-size:1rem; line-height:1 }
 
-/* Positions par défaut autour du radar */
+/* Positions autour du radar */
 .chip.g1{left:12px; top:12px}
 .chip.g2{left:12px; top:calc(50% - 60px)}
 .chip.g3{left:12px; bottom:12px}
@@ -51,19 +51,7 @@ main.dashboard.mode-chips .left,
 main.dashboard.mode-chips .right { display:none }
 main.dashboard.mode-slots .hud-chips { display:none }
 
-/* --- overrides pour la chip tutoriel --- */
-.chip.tutorial{
-  left: 16px !important;
-  top: 16px !important;
-  transform: none !important;
-  min-width: 260px !important;
-  max-width: 300px !important;
-  padding: 8px 10px !important;
-}
-.chip.tutorial .hud-title{ font-size: .75rem; letter-spacing: .1em; }
-.chip.tutorial .hud-text{ font-size: .85rem; line-height: 1.25; }
-
-/* Titres verticaux hérités */
+/* Titres verticaux */
 #dashboard-title-left{
   position:absolute; top:4rem; left:.5rem; height:60%;
   writing-mode:vertical-rl; transform:rotate(180deg);
@@ -76,3 +64,11 @@ main.dashboard.mode-slots .hud-chips { display:none }
   font-family:Orbitron,system-ui; font-size:1rem; letter-spacing:.20rem;
   color:rgba(0,229,255,.6); pointer-events:none; z-index:2;
 }
+
+/* Chip tutoriel : petite, à gauche */
+.chip.tutorial{
+  left:16px; top:16px; transform:none;
+  min-width:260px; max-width:300px; padding:8px 10px;
+}
+.chip.tutorial .hud-title{ font-size:.75rem; letter-spacing:.1em }
+.chip.tutorial .hud-text{ font-size:.85rem; line-height:1.25 }
