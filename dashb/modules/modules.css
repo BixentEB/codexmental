@@ -1,12 +1,10 @@
 /* modules.css – Feuille de styles centralisée pour les widgets du Lab Codex */
 
-@import url("/dashb/modules/simul-moon/simul-moon.css");
-
 /* layout unique */
-@import url("/dashb/modules/ui-v3/layout.css");
+@import url("/dashb/modules/dashboard/ui/layout.css");
 
 /* cadres HUD */
-@import url("/dashb/modules/ui-v3/panels.css");
+@import url("/dashb/modules/dashboard/ui/panels.css");
 
 /* Autres modules à importer ici */
 /* @import url("/dashb/modules/widget-solaire/widget-solaire.css"); */
