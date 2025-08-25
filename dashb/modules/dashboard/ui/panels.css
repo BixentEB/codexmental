@@ -22,8 +22,9 @@
 /* --- HUD CHIPS --- */
 .hud-chips{ position:absolute; inset:0; pointer-events:none }
 
-.chip{
-  position:absolute; display:none;   /* ← caché par défaut */
+/* cachées par défaut, visibles seulement en .on (verrouillé) */
+.hud-chips .chip{ 
+  position:absolute; display:none !important;
   min-width:200px; max-width:340px; min-height:96px;
   padding:10px 12px; border-radius:12px;
   background:linear-gradient(180deg, rgba(0,229,255,.06), rgba(0,229,255,.03));
@@ -33,7 +34,8 @@
   transition:opacity .22s, transform .22s;
   pointer-events:auto;
 }
-.chip.on{ display:block; opacity:1; transform:none }
+.hud-chips .chip.on{ display:block !important; opacity:1; transform:none }
+
 .hud-title{font-family:Orbitron,system-ui; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:.35rem}
 .hud-text{font-size:.92rem; line-height:1.35}
 .hud-close{ margin-left:.5rem; background:transparent; border:0; color:inherit; cursor:pointer; font-size:1rem; line-height:1 }
