@@ -5,6 +5,7 @@
 html,body{height:100%}
 body{margin:0; background:var(--bg); color:#cfefff; font-family:Inter,system-ui}
 
+/* Grille de base (3 colonnes) */
 main.dashboard{
   display:grid;
   grid-template-columns: 380px minmax(820px,1fr) 380px;
@@ -19,18 +20,26 @@ main.dashboard{
   grid-column:2; grid-row:2;
   min-height:720px; position:relative; border-radius:16px;
   outline:1px solid rgba(0,229,255,.08);
-  display:flex; align-items:center; justify-content:center;  /* centre le canvas */
+  display:flex; align-items:center; justify-content:center;  /* centre le contenu */
+  z-index: 100;  /* le header reste au-dessus (5000) */
 }
+
+/* Le canvas est responsive et centré */
+.radar canvas{
+  display:block;
+  max-width:100%;
+  max-height:100%;
+  width: calc(100% - 24px);     /* garde une marge intérieure */
+  height: calc(100% - 24px);
+  object-fit: contain;
+}
+
 .left,.right{display:grid; gap:16px}
 .left{grid-column:1; grid-row:2; grid-auto-rows:minmax(140px,1fr)}
 .right{grid-column:3; grid-row:2; grid-auto-rows:minmax(140px,1fr)}
 .footer{grid-column:1/-1; min-height:56px; display:flex; align-items:center}
 
-/* header toujours cliquable */
-body.dashboard header#menu-placeholder{ position:relative; z-index:2000 }
-main.dashboard{ position:relative; z-index:100 }
-
-/* --- FULL‑BLEED : quand on bascule en mode-chips, on passe en grille 1 colonne --- */
+/* --- FULL‑BLEED : mode-chips = 1 colonne (radar large) --- */
 main.dashboard.mode-chips{
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr auto;
@@ -41,6 +50,10 @@ main.dashboard.mode-chips .radar{
 }
 main.dashboard.mode-chips .left,
 main.dashboard.mode-chips .right{ display:none }
+
+/* header toujours cliquable */
+body.dashboard header#menu-placeholder{ position:relative; z-index:5000 }
+main.dashboard{ position:relative; z-index:100 }
 
 /* responsive */
 @media (max-width:1280px){
