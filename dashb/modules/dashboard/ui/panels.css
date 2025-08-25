@@ -51,6 +51,18 @@ main.dashboard.mode-chips .left,
 main.dashboard.mode-chips .right { display:none }
 main.dashboard.mode-slots .hud-chips { display:none }
 
+/* --- overrides pour la chip tutoriel --- */
+.chip.tutorial{
+  left: 16px !important;
+  top: 16px !important;
+  transform: none !important;
+  min-width: 260px !important;
+  max-width: 300px !important;
+  padding: 8px 10px !important;
+}
+.chip.tutorial .hud-title{ font-size: .75rem; letter-spacing: .1em; }
+.chip.tutorial .hud-text{ font-size: .85rem; line-height: 1.25; }
+
 /* Titres verticaux hérités */
 #dashboard-title-left{
   position:absolute; top:4rem; left:.5rem; height:60%;
