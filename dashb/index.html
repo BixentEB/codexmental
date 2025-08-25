@@ -2,76 +2,49 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard – Codex Mental</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🔬 Dashboard – Codex Mental</title>
 
-  <!-- 🌞 Favicon -->
-  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96">
-
-  <!-- 🌐 Fonts -->
+  <!-- Fonts & global -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-
-  <!-- 🎨 Styles globaux -->
   <link rel="stylesheet" href="/assets/css/main.css">
 
-  <!-- 🎨 Styles globaux -->
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <!-- Dashboard UI (grille + panneaux transparents) -->
+  <link rel="stylesheet" href="/dashb/ui/layout.css?v=3">
+  <link rel="stylesheet" href="/dashb/ui/panels.css?v=3">
 
-  <!-- 🎨 Styles modules du labo (importe déjà layout.css + panels.css) -->
-  <link rel="stylesheet" href="/dashb/modules/modules.css?v=3">
-
-  <!-- ⚙️ Script principal du site -->
-  <script type="module" src="/assets/js/main.js"></script>
-
-  <!-- ⚙️ Entrée unique du labo (centralise tous les imports) -->
+  <!-- Entrée unique du dashboard -->
   <script type="module" src="/dashb/modules/modules.js"></script>
 </head>
-<body class="theme-stellaire dashboard">
-  <!-- 🌌 Canvas de fond -->
-  <canvas id="theme-canvas" style="position:fixed; inset:0; z-index:-1;"></canvas>
-
-  <!-- 🧠 Menu injecté dynamiquement -->
+<body class="theme-stellaire lab dashboard">
+  <!-- Header du site (injecté ailleurs) -->
   <header id="menu-placeholder"></header>
 
-  <!-- 🔬 Dashboard -->
+  <!-- Canvas de fond optionnel -->
+  <canvas id="theme-canvas" style="position:fixed; inset:0; z-index:-1;"></canvas>
+
+  <!-- DASHBOARD -->
   <main class="dashboard mode-slots">
-    <!-- Bandeau haut (peut rester vide si non utilisé) -->
     <div class="header" id="dash-header"></div>
 
-    <!-- Colonne gauche : 3 slots fantômes (deviennent .on si data) -->
     <section class="left">
       <div id="bloc-g1" class="panel"></div>
       <div id="bloc-g2" class="panel"></div>
       <div id="bloc-g3" class="panel"></div>
     </section>
 
-    <!-- Radar central (Three.js / canvas rendu par modules) -->
-    <section class="radar" id="radar">
-      <!-- Si tu passes en mode chips, ils apparaîtront ici -->
-      <div class="hud-chips">
-        <div class="chip g1"><div class="hud-title">Télémétrie</div><div class="hud-text"></div></div>
-        <div class="chip g2"><div class="hud-title">Objet</div><div class="hud-text"></div></div>
-        <div class="chip g3"><div class="hud-title">Missions</div><div class="hud-text"></div></div>
-        <div class="chip d1"><div class="hud-title">Vue</div><div class="hud-text"></div></div>
-        <div class="chip d2"><div class="hud-title">Lunes</div><div class="hud-text"></div></div>
-        <div class="chip d3"><div class="hud-title">Logs</div><div class="hud-text"></div></div>
-      </div>
-    </section>
+    <section class="radar" id="radar"></section>
 
-    <!-- Colonne droite : 3 slots fantômes -->
     <section class="right">
       <div id="bloc-d1" class="panel"></div>
       <div id="bloc-d2" class="panel"></div>
       <div id="bloc-d3" class="panel"></div>
     </section>
 
-    <!-- Bandeau bas / logs -->
     <div class="footer" id="dash-footer"></div>
   </main>
 
-  <!-- 🡸 Footer injecté dynamiquement -->
   <div id="footer-placeholder"></div>
-
-  <noscript>Active JavaScript pour le tableau de bord.</noscript>
+  <noscript>Active JavaScript pour le dashboard.</noscript>
 </body>
 </html>
