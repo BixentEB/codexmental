@@ -22,11 +22,14 @@
 /* --- HUD CHIPS --- */
 .hud-chips{ position:absolute; inset:0; pointer-events:none }
 
-/* cachées par défaut, visibles seulement en .on (verrouillé) */
-.hud-chips .chip{ 
+/* Cachées par défaut, visibles seulement en .on */
+.hud-chips .chip{
   position:absolute; display:none !important;
-  min-width:200px; max-width:340px; min-height:96px;
-  padding:10px 12px; border-radius:12px;
+  min-width:230px;         /* ← ajuste la taille mini des cartes */
+  max-width:360px;         /* ← et la taille max */
+  min-height:96px;
+  padding:10px 12px;
+  border-radius:12px;
   background:linear-gradient(180deg, rgba(0,229,255,.06), rgba(0,229,255,.03));
   outline:1px solid rgba(0,229,255,.18);
   box-shadow:0 6px 28px rgba(0,229,255,.08);
@@ -40,13 +43,13 @@
 .hud-text{font-size:.92rem; line-height:1.35}
 .hud-close{ margin-left:.5rem; background:transparent; border:0; color:inherit; cursor:pointer; font-size:1rem; line-height:1 }
 
-/* Positions autour du radar */
-.chip.g1{left:12px; top:12px}
-.chip.g2{left:12px; top:calc(50% - 60px)}
-.chip.g3{left:12px; bottom:12px}
-.chip.d1{right:12px; top:12px}
-.chip.d2{right:12px; top:calc(50% - 60px)}
-.chip.d3{right:12px; bottom:12px}
+/* Positions autour du radar — AJUSTE ICI LES EMPLACEMENTS */
+.chip.g1{left:24px; top:72px}                 /* télémétrie (haut-gauche) */
+.chip.g2{left:24px; top:calc(50% - 60px)}     /* objet (milieu-gauche) */
+.chip.g3{left:24px; bottom:24px}              /* missions (bas-gauche) */
+.chip.d1{right:24px; top:72px}                /* vue (haut-droite) */
+.chip.d2{right:24px; top:calc(50% - 60px)}    /* lunes (milieu-droite) */
+.chip.d3{right:24px; bottom:24px}             /* logs (bas-droite) */
 
 /* Mode global : slots vs chips */
 main.dashboard.mode-chips .left,
@@ -69,7 +72,7 @@ main.dashboard.mode-slots .hud-chips { display:none }
 
 /* Chip tutoriel : petite, à gauche */
 .chip.tutorial{
-  left:16px; top:16px; transform:none;
+  left:24px; top:16px;
   min-width:260px; max-width:300px; padding:8px 10px;
 }
 .chip.tutorial .hud-title{ font-size:.75rem; letter-spacing:.1em }
