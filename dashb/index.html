@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🔬 Dashboard – Codex Mental</title>
 
+  <!-- Favicon (absolu depuis la racine du site) -->
+  <link rel="icon" href="/img/logo/favicon-96x96.png" sizes="96x96" type="image/png" />
+
   <!-- Fonts & global -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/main.css">
@@ -26,7 +29,7 @@
   <main class="dashboard mode-chips">
     <div class="header" id="dash-header"></div>
 
-    <!-- Colonnes “slots” gardées mais masquées en mode-chips (pratique si on re-switch un jour) -->
+    <!-- Colonnes “slots” gardées pour compat mais masquées en mode‑chips -->
     <section class="left">
       <div id="bloc-g1" class="panel"></div>
       <div id="bloc-g2" class="panel"></div>
@@ -35,55 +38,29 @@
 
     <!-- Radar plein écran -->
     <section class="radar" id="radar">
-      <!-- Titres verticaux (hérités de l’ancien design) -->
+      <!-- Titres verticaux -->
       <div id="dashboard-title-left">ORION INTERFACE</div>
       <div id="dashboard-title-right">TACTICAL MODULE</div>
 
       <!-- Canvas attendu par le radar 2D existant -->
-      <canvas id="simul-system" width="1200" height="800"></canvas>
+      <canvas id="simul-system"></canvas>
 
-      <!-- CHIPS HUD (vides par défaut, auto ON/OFF via init.js) -->
+      <!-- CHIPS HUD -->
       <div class="hud-chips">
-        <!-- Tutoriel scientifique — visible tant qu’aucune autre chip n’est “on” -->
         <div class="chip tutorial on" style="left:50%; top:16px; transform:translateX(-50%); min-width:320px">
           <div class="hud-title">Sélection requise</div>
-          <div class="hud-text">
-            Sélectionnez un objet céleste pour afficher ses paramètres orbitaux, physiques et contextuels.
-          </div>
+          <div class="hud-text">Sélectionnez un objet céleste pour afficher ses paramètres orbitaux, physiques et contextuels.</div>
         </div>
 
-        <div class="chip g1">
-          <div class="hud-title">Télémétrie</div>
-          <div class="hud-text"></div>
-        </div>
-
+        <div class="chip g1"><div class="hud-title">Télémétrie</div><div class="hud-text"></div></div>
         <div class="chip g2">
-          <div class="hud-title">
-            Objet
-            <button class="hud-close" title="Fermer">×</button>
-          </div>
+          <div class="hud-title">Objet <button class="hud-close" title="Fermer">×</button></div>
           <div class="hud-text"></div>
         </div>
-
-        <div class="chip g3">
-          <div class="hud-title">Missions</div>
-          <div class="hud-text"></div>
-        </div>
-
-        <div class="chip d1">
-          <div class="hud-title">Vue</div>
-          <div class="hud-text"></div>
-        </div>
-
-        <div class="chip d2">
-          <div class="hud-title">Lunes</div>
-          <div class="hud-text"></div>
-        </div>
-
-        <div class="chip d3">
-          <div class="hud-title">Logs</div>
-          <div class="hud-text"></div>
-        </div>
+        <div class="chip g3"><div class="hud-title">Missions</div><div class="hud-text"></div></div>
+        <div class="chip d1"><div class="hud-title">Vue</div><div class="hud-text"></div></div>
+        <div class="chip d2"><div class="hud-title">Lunes</div><div class="hud-text"></div></div>
+        <div class="chip d3"><div class="hud-title">Logs</div><div class="hud-text"></div></div>
       </div>
     </section>
 
