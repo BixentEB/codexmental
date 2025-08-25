@@ -1,26 +1,33 @@
 :root{
-  --bg:#0a0f1a; --cyan:#00e5ff; --glass:rgba(255,255,255,.02);
+  --bg:#0a0f1a; --cyan:#00e5ff;
 }
+
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:#bfefff;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{margin:0; background:var(--bg); color:#cfefff; font-family:Inter,system-ui}
+
 main.dashboard{
-  display:grid; 
+  display:grid;
   grid-template-columns: 380px minmax(820px,1fr) 380px;
   grid-template-rows: auto 1fr auto;
-  gap: 16px;
+  gap:16px;
   min-height:100vh;
   padding:16px;
 }
-.header{grid-column:1/-1; min-height:56px; display:flex; align-items:center; gap:12px}
-.radar{grid-column:2; grid-row:2; position:relative; min-height:720px; border-radius:16px; outline:1px solid rgba(0,229,255,.08);}
-.left, .right{display:grid; gap:16px}
+
+.header{grid-column:1/-1; min-height:56px; display:flex; align-items:center}
+.radar{grid-column:2; grid-row:2; min-height:720px; position:relative; border-radius:16px; outline:1px solid rgba(0,229,255,.08)}
+.left,.right{display:grid; gap:16px}
 .left{grid-column:1; grid-row:2; grid-auto-rows:minmax(140px,1fr)}
 .right{grid-column:3; grid-row:2; grid-auto-rows:minmax(140px,1fr)}
-.footer{grid-column:1/-1; min-height:72px; display:flex; align-items:center}
+.footer{grid-column:1/-1; min-height:56px; display:flex; align-items:center}
 
-/* Responsive: empile les “slots” sous le radar < 1280px */
+/* header toujours cliquable */
+body.dashboard header#menu-placeholder{ position:relative; z-index:2000 }
+main.dashboard{ position:relative; z-index:100 }
+
+/* responsive */
 @media (max-width:1280px){
-  main.dashboard{grid-template-columns: 1fr; grid-template-rows:auto auto auto auto}
-  .radar{grid-column:1}
-  .left,.right{grid-column:1; grid-auto-rows:minmax(120px,1fr)}
+  main.dashboard{ grid-template-columns:1fr; grid-template-rows:auto auto auto auto }
+  .radar{ grid-column:1 }
+  .left,.right{ grid-column:1; grid-auto-rows:minmax(120px,1fr) }
 }
