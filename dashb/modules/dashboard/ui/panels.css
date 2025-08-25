@@ -1,0 +1,71 @@
+/* ——— SLOTS FANTÔMES ——— */
+.panel{
+  position:relative;
+  border-radius:14px;
+  outline:1px solid rgba(0,229,255,.05);
+  background: transparent;                 /* centre 100% transparent */
+  box-shadow:none;
+  opacity:0;                               /* invisible par défaut */
+  transform:translateY(4px) scale(.995);
+  filter:blur(.2px);
+  transition:opacity .25s ease, transform .25s ease, filter .25s ease, box-shadow .25s ease;
+  pointer-events:none;                     /* n’attrape pas la souris quand vide */
+}
+.panel.on{
+  opacity:1;
+  transform:none;
+  filter:none;
+  pointer-events:auto;
+  outline:1px solid rgba(0,229,255,.15);
+  box-shadow: 0 0 0 1px rgba(0,229,255,.05) inset, 
+              0 0 24px rgba(0,229,255,.08);
+}
+.panel .placeholder{
+  position:absolute; inset:8px; display:flex; align-items:center; justify-content:center;
+  color:rgba(191,239,255,.35); font-size:.9rem; letter-spacing:.08em; text-transform:uppercase;
+}
+
+/* mini en-tête optionnel */
+.panel.on::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:14px;
+  pointer-events:none;
+  background:
+    radial-gradient(120% 80% at 50% -20%, rgba(0,229,255,.10), transparent 55%) /* lueur douce haut */,
+    linear-gradient(transparent 85%, rgba(0,229,255,.06));                      /* léger gloss bas */
+}
+
+/* ——— CHIPS FLOTTANTS ——— */
+.hud-chips{
+  position:absolute; inset:0; pointer-events:none;
+}
+.chip{
+  position:absolute; min-width:200px; max-width:320px; min-height:96px;
+  padding:10px 12px; border-radius:12px;
+  background: linear-gradient(180deg, rgba(0,229,255,.06), rgba(0,229,255,.03));
+  outline:1px solid rgba(0,229,255,.18);
+  box-shadow:0 6px 28px rgba(0,229,255,.08);
+  color:#d9f9ff;
+  opacity:0; transform:translateY(6px) scale(.98);
+  transition:opacity .22s ease, transform .22s ease;
+  pointer-events:auto;
+}
+.chip.on{opacity:1; transform:none}
+
+/* Positions de base autour du radar */
+.chip.g1{left:12px; top:12px}
+.chip.g2{left:12px; top:calc(50% - 60px)}
+.chip.g3{left:12px; bottom:12px}
+.chip.d1{right:12px; top:12px}
+.chip.d2{right:12px; top:calc(50% - 60px)}
+.chip.d3{right:12px; bottom:12px}
+
+/* Mode global : slots vs chips */
+main.dashboard.mode-chips .left,
+main.dashboard.mode-chips .right { display:none }        /* on cache les colonnes */
+main.dashboard.mode-slots .hud-chips { display:none }    /* ou inversement */
+
+/* Typo utilitaire */
+.hud-title{font-family:Orbitron,system-ui; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:.35rem}
+.hud-text{font-size:.92rem; line-height:1.35}
