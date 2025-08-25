@@ -1,4 +1,4 @@
-/* modules.css – Feuille de styles centralisée pour les widgets du Lab Codex */
+/* modules.css – Feuille de styles centralisée pour le Dashboard */
 
 /* Header au-dessus du dashboard */
 body.dashboard header#menu-placeholder,
@@ -18,17 +18,9 @@ body.dashboard .theme-list { display: none !important; }
 body.dashboard.menu-open,
 body.dashboard .blur-container { filter: none !important; backdrop-filter: none !important; }
 
-
-/* layout unique */
+/* layout unique + cadres HUD */
 @import url("/dashb/modules/dashboard/ui/layout.css");
-
-/* cadres HUD */
 @import url("/dashb/modules/dashboard/ui/panels.css");
 
-/* Autres modules à importer ici */
-/* @import url("/dashb/modules/widget-solaire/widget-solaire.css"); */
-/* @import url("/dashb/modules/widget-astro/widget-astro.css"); */
-
-
-/* Anciens css, en cas de problème technique on les réimplante */
-/* @import url("/dashb/modules/dashboard/dashboard.css"); */
+/* (option) anciens css si besoin de debug
+   @import url("/dashb/modules/dashboard/dashboard.css"); */
