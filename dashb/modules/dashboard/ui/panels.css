@@ -3,7 +3,7 @@
   position:relative;
   border-radius:14px;
   outline:1px solid rgba(0,229,255,.05);
-  background:transparent;              /* centre 100% transparent */
+  background:transparent;
   box-shadow:none;
   opacity:0;                           /* invisible tant que vide */
   transform:translateY(4px) scale(.995);
@@ -55,12 +55,12 @@ main.dashboard.mode-slots .hud-chips { display:none }
 #dashboard-title-left{
   position:absolute; top:4rem; left:.5rem; height:60%;
   writing-mode:vertical-rl; transform:rotate(180deg);
-  font-family:Orbitron,system-ui; font-size:1.3rem; letter-spacing:.25rem;
+  font-family:Orbitron,system-ui; font-size:1.1rem; letter-spacing:.22rem;
   color:rgba(0,229,255,.6); pointer-events:none; z-index:2;
 }
 #dashboard-title-right{
   position:absolute; bottom:2rem; right:.5rem; height:50%;
   writing-mode:vertical-rl; transform:rotate(180deg);
-  font-family:Orbitron,system-ui; font-size:1.2rem; letter-spacing:.22rem;
+  font-family:Orbitron,system-ui; font-size:1rem; letter-spacing:.20rem;
   color:rgba(0,229,255,.6); pointer-events:none; z-index:2;
 }
