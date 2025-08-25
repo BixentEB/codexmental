@@ -1,4 +1,4 @@
-// init.js — Auto ON/OFF des panneaux + chips, et gestion du “deselect”
+// init.js — Auto ON/OFF des panneaux + chips, et gestion du “deselect” -
 
 // Panneaux (compat)
 const panelIds = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'];
