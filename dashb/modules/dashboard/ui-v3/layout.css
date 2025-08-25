@@ -1,56 +1,26 @@
-/* /dashb/modules/ui-v3/layout.css */
+:root{
+  --bg:#0a0f1a; --cyan:#00e5ff; --glass:rgba(255,255,255,.02);
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:#bfefff;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
 main.dashboard{
-  display:grid;
-  grid-template-columns: 320px 1fr 320px;             /* gauche / radar / droite */
-  grid-template-rows: 70px repeat(3, minmax(260px,auto)) auto; /* alert + 3 lignes + infos */
-  grid-template-areas:
-    "alert-left  alert-center  alert-right"
-    "bloc-g1     radar         bloc-d1"
-    "bloc-g2     radar         bloc-d2"
-    "bloc-g3     radar         bloc-d3"
-    "infos       infos         infos";
-  gap: 1.25rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 6rem 2rem 2rem;
-  padding-inline: 4rem;
-  box-sizing: border-box;
+  display:grid; 
+  grid-template-columns: 380px minmax(820px,1fr) 380px;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  min-height:100vh;
+  padding:16px;
 }
+.header{grid-column:1/-1; min-height:56px; display:flex; align-items:center; gap:12px}
+.radar{grid-column:2; grid-row:2; position:relative; min-height:720px; border-radius:16px; outline:1px solid rgba(0,229,255,.08);}
+.left, .right{display:grid; gap:16px}
+.left{grid-column:1; grid-row:2; grid-auto-rows:minmax(140px,1fr)}
+.right{grid-column:3; grid-row:2; grid-auto-rows:minmax(140px,1fr)}
+.footer{grid-column:1/-1; min-height:72px; display:flex; align-items:center}
 
-/* zones nommées */
-#alert-left{grid-area:alert-left;height:70px;}
-#alert-center{grid-area:alert-center;height:70px;}
-#alert-right{grid-area:alert-right;height:70px;}
-#bloc-g1{grid-area:bloc-g1;} #bloc-g2{grid-area:bloc-g2;} #bloc-g3{grid-area:bloc-g3;}
-#bloc-d1{grid-area:bloc-d1;} #bloc-d2{grid-area:bloc-d2;} #bloc-d3{grid-area:bloc-d3;}
-#widget-infos{grid-area:infos;}
-
-#widget-core-radar{
-  grid-area:radar; display:flex; align-items:center; justify-content:center;
-  aspect-ratio:1/1; width:100%; max-width:100%; max-height:100%;
-  border-radius:50%; overflow:hidden; margin:0 auto; padding:1rem;
-}
-#widget-core-radar canvas{
-  width:100%; height:auto; max-width:100%; max-height:100%;
-  aspect-ratio:1/1; object-fit:contain; border-radius:50%;
-}
-
-/* debug (optionnel): activer via <html class="debug-panels"> */
-html.debug-panels #bloc-g1,html.debug-panels #bloc-g2,html.debug-panels #bloc-g3,
-html.debug-panels #bloc-d1,html.debug-panels #bloc-d2,html.debug-panels #bloc-d3{
-  outline:1px dashed rgba(0,255,255,.35);
-}
-
-@media (max-width:1200px){
-  main.dashboard{
-    grid-template-columns:1fr;
-    grid-template-rows:auto;
-    grid-template-areas:
-      "alert-left" "alert-center" "alert-right"
-      "radar"
-      "bloc-g1" "bloc-g2" "bloc-g3"
-      "bloc-d1" "bloc-d2" "bloc-d3"
-      "infos";
-    padding:4rem 1rem;
-  }
+/* Responsive: empile les “slots” sous le radar < 1280px */
+@media (max-width:1280px){
+  main.dashboard{grid-template-columns: 1fr; grid-template-rows:auto auto auto auto}
+  .radar{grid-column:1}
+  .left,.right{grid-column:1; grid-auto-rows:minmax(120px,1fr)}
 }
