@@ -1,7 +1,8 @@
-// init.js — Auto ON/OFF des panneaux + CHIPS, pont d'événements, et miroir des anciens blocs vers les chips
+// init.js — Auto ON/OFF panels + CHIPS, miroir #bloc-* → chips, pont d'événements sélection
+
+const bus = window.__lab?.bus || document;
 
 // ---------- utils ----------
-const bus = window.__lab?.bus || document;
 const hasContent = el => {
   if (!el) return false;
   const text = (el.textContent || '').trim();
@@ -15,7 +16,7 @@ const setState = (el,on) => {
   if (ph) ph.style.display = on ? 'none' : 'flex';
 };
 
-// ---------- 1) PANELS (compat : #bloc-g1..d3) ----------
+// ---------- 1) PANELS (compat) ----------
 const panelIds = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'];
 const panels = panelIds.map(sel => document.querySelector(sel)).filter(Boolean);
 
@@ -32,7 +33,7 @@ panels.forEach(p => {
   panelObs.observe(p, { childList:true, subtree:true, characterData:true });
 });
 
-// ---------- 2) CHIPS HUD ----------
+// ---------- 2) CHIPS ----------
 const chips = {
   tutorial: document.querySelector('.chip.tutorial'),
   g1: document.querySelector('.chip.g1'),
@@ -45,25 +46,27 @@ const chips = {
 const chipList = Object.values(chips).filter(Boolean);
 const hudRoot = document.querySelector('.hud-chips') || document;
 
-const chipObs = new MutationObserver(() => {
-  // ON/OFF par contenu
+// Initial: seules les chips avec contenu doivent être ON; la tutoriel reste ON si aucune autre
+const evalChips = () => {
   chipList.forEach(ch => {
     if (!ch || ch.classList.contains('tutorial')) return;
     const content = ch.querySelector('.hud-text');
     setState(ch, hasContent(content));
   });
-  // Tutoriel visible si aucune autre chip n'est ON
   const anyOn = chipList.some(ch => ch && !ch.classList.contains('tutorial') && ch.classList.contains('on'));
   if (chips.tutorial) chips.tutorial.classList.toggle('on', !anyOn);
-});
+};
+evalChips();
+
+const chipObs = new MutationObserver(evalChips);
 chipObs.observe(hudRoot, { childList:true, subtree:true, characterData:true });
 
-// Close “×” sur la chip Objet → deselect
+// Close “×” → deselect
 chips.g2?.querySelector('.hud-close')?.addEventListener('click', () => {
   bus.dispatchEvent(new CustomEvent('object:cleared'));
 });
 
-// ---------- 3) MIROIR (#bloc-* → chips) : tes modules continuent d'injecter comme avant ----------
+// ---------- 3) MIROIR (#bloc-* → chips) ----------
 const mirrors = [
   { from:'#bloc-g1', to:'.chip.g1 .hud-text' },
   { from:'#bloc-g2', to:'.chip.g2 .hud-text' },
@@ -78,6 +81,7 @@ const applyMirror = (srcSel, dstSel) => {
   const dst = document.querySelector(dstSel);
   if (!src || !dst) return;
   dst.innerHTML = src.innerHTML;
+  evalChips();
 };
 
 const mirrorObs = new MutationObserver(muts => {
@@ -86,30 +90,22 @@ const mirrorObs = new MutationObserver(muts => {
     if (hit) applyMirror(hit.from, hit.to);
   });
 });
-
-// observe chaque source
 mirrors.forEach(mi => {
   const src = document.querySelector(mi.from);
   if (!src) return;
-  applyMirror(mi.from, mi.to); // init
+  applyMirror(mi.from, mi.to);
   mirrorObs.observe(src, { childList:true, subtree:true, characterData:true });
 });
 
 // ---------- 4) Pont d'événements de sélection ----------
-/*
-  Si ton radar émet déjà un événement (ex. 'planet:selected' ou autre),
-  on le relaye en 'object:selected' pour uniformiser l'UI.
-  Adapte si ton nom d'événement diffère.
-*/
 bus.addEventListener('planet:selected', (e) => {
   const id = e?.detail?.id || e?.detail?.name;
   bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id, type:'planet' } }));
-  // on masque la tuto si présente (le chipObs gère aussi automatiquement)
   chips.tutorial?.classList.remove('on');
 });
 
-// Quand on clear, on vide au moins la chip “Objet” (tes modules peuvent vider les autres)
 bus.addEventListener('object:cleared', () => {
   const g2Text = chips.g2?.querySelector('.hud-text');
   if (g2Text) g2Text.textContent = '';
+  evalChips();
 });
