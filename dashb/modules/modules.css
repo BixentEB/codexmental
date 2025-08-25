@@ -8,11 +8,11 @@ body.dashboard #site-header { position: relative; z-index: 2000; }
 body.dashboard main.dashboard { position: relative; z-index: 100; }
 
 /* Masquer tout menu/sélecteur de thème global sur la page dashboard */
-/* body.dashboard .theme-switcher,
+body.dashboard .theme-switcher,
 body.dashboard [data-theme-menu],
 body.dashboard .theme-chooser,
 body.dashboard .theme-panel,
-body.dashboard .theme-list { display: none !important; } */
+body.dashboard .theme-list { display: none !important; }
 
 /* Neutralise tout flou/overlay potentiellement laissé par un menu global */
 body.dashboard.menu-open,
