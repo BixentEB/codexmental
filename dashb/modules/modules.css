@@ -1,26 +1,23 @@
-/* modules.css – Feuille de styles centralisée pour le Dashboard */
+/* modules.css – Feuille centralisée du Dashboard */
 
-/* Header au-dessus du dashboard */
+/* 1) Menu du site toujours au-dessus */
 body.dashboard header#menu-placeholder,
-body.dashboard #site-header { position: relative; z-index: 2000; }
+body.dashboard #site-header { position: relative; z-index: 5000; }
 
 /* Le dashboard en dessous */
 body.dashboard main.dashboard { position: relative; z-index: 100; }
 
-/* Masquer tout menu/sélecteur de thème global sur la page dashboard */
+/* 2) Masquer le sélecteur de thème global sur /dashb (sinon conflit de styles) */
 body.dashboard .theme-switcher,
 body.dashboard [data-theme-menu],
 body.dashboard .theme-chooser,
 body.dashboard .theme-panel,
 body.dashboard .theme-list { display: none !important; }
 
-/* Neutralise tout flou/overlay potentiellement laissé par un menu global */
+/* Neutraliser tout blur/overlay éventuellement laissé par le site */
 body.dashboard.menu-open,
 body.dashboard .blur-container { filter: none !important; backdrop-filter: none !important; }
 
-/* layout unique + cadres HUD */
+/* 3) Import layout + panels du dashboard (chemins réels) */
 @import url("/dashb/modules/dashboard/ui/layout.css");
 @import url("/dashb/modules/dashboard/ui/panels.css");
-
-/* (option) anciens css si besoin de debug
-   @import url("/dashb/modules/dashboard/dashboard.css"); */
