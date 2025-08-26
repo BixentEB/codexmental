@@ -1,24 +1,19 @@
-// init.js — HUD glue: compat DOM (#info-*), style HUD (injection),
-// miroir blocs→chips, tuto (ne disparaît qu’après sélection), close-all global (caché tant qu’il n’y a pas de sélection),
-// mini-console vaisseau discrète (intégrée) + purge des lignes Missions,
-// pont d’événements (normalisation + rebroadcast) → modules + viewer.
+// init.js — CÂBLAGE STRICT SANS MODIFIER L'AFFICHAGE
+// - Ne change pas le layout ni les couleurs
+// - Observes #bloc-g1..d3, synchro chips, tuto, croix (intégrée .radar)
+// - Déplace le ship log hors de "Missions" vers une console discrète intégrée
+// - Bridge d'événements ULTRA-ROBUSTE : intercepte tout CustomEvent et rebroadcast
+// - Prépare #planet-main-viewer / #moon-viewer seulement s'ils manquent
 
 const bus = window.__lab?.bus || document;
 
-/* ============== 0) Patch CSS HUD (injection, non destructif) ============== */
-/* ⚠️ Minimaliste : on NE change rien du layout global, ni couleurs, ni tailles.
-   Seulement :
-   - croix intégrée dans .radar (sans cadre ni fond),
-   - ship log discret intégré bas-droite,
-   - placeholders totalement invisibles. */
+/* ============== 0) Patch CSS minimal (pas de layout global) ============== */
 (() => {
   if (document.getElementById('hud-style-patch')) return;
   const css = `
-  :root{
-    --hud-text:#d9f3ff;--hud-muted:#89a3b5;
-  }
+  :root{ --hud-text:#d9f3ff; --hud-muted:#89a3b5; }
 
-  /* Close-all global : intégré AU CADRE PRINCIPAL (.radar), sans cadre/fond, caché par défaut */
+  /* Croix globale intégrée au cadre principal (.radar), sans cadre/fond */
   main.dashboard .radar{ position:relative; }
   #dash-closeall{
     position:absolute; top:10px; right:10px; z-index:1200;
@@ -29,25 +24,27 @@ const bus = window.__lab?.bus || document;
   #dash-closeall.show{ display:block; }
   #dash-closeall:hover{ opacity:1; }
 
-  /* Mini-console vaisseau (intégrée au cadre principal, fond transparent, discrète) */
+  /* Ship log discret intégré en bas-droite du cadre principal */
   #ship-console{
     position:absolute; right:14px; bottom:12px; width:300px; max-height:24vh;
     font:12px/1.32 ui-monospace,Menlo,Consolas,monospace;
-    color:var(--hud-muted);
-    background:transparent !important; border:0 !important; box-shadow:none !important;
+    color:var(--hud-muted); background:transparent !important;
+    border:0 !important; box-shadow:none !important;
     border-radius:0 !important; padding:0; margin:0;
     overflow:auto; opacity:.58; pointer-events:none; z-index:1100;
   }
-  #ship-console .hdr{ display:none; } /* pas d’en-tête visible */
 
-  /* Placeholders purement techniques : jamais visibles à l’utilisateur */
+  /* Placeholders purement techniques : jamais visibles */
   .placeholder{ display:none !important; }
   `;
-  const style=document.createElement('style');
-  style.id='hud-style-patch'; style.textContent=css; document.head.appendChild(style);
+  const style = document.createElement('style');
+  style.id = 'hud-style-patch';
+  style.textContent = css;
+  document.head.appendChild(style);
 })();
 
-/* =================== 1) utilitaires =================== */
+/* =================== 1) Utils =================== */
+const q = (sel) => document.querySelector(sel);
 const ensure = (host, sel, mk) => { let el = host?.querySelector(sel); if (!el && host) { el = mk(); host.appendChild(el); } return el; };
 const ensureSectionContent = (host) => ensure(host, ':scope > .section-content', () => { const sc=document.createElement('div'); sc.className='section-content'; return sc; });
 
@@ -55,20 +52,15 @@ const hasMeaning = (host) => {
   if (!host) return false;
   const sc = host.querySelector(':scope > .section-content') || host;
   const t = (sc.textContent||'').trim();
-  // Considère vide s'il n'y a que des tirets ou rien
-  if (!t || /^—+$/.test(t)) return false;
-  return t !== '— vide —';
+  if (!t || /^—+$/.test(t) || t === '— vide —') return false;
+  return true;
 };
-const setOn = (el,on) => {
-  if (!el) return;
-  el.classList.toggle('on', !!on);
-  const ph = el.querySelector('.placeholder'); if (ph) ph.style.display = 'none'; // toujours caché
-};
+const setOn = (el, on) => { if (!el) return; el.classList.toggle('on', !!on); };
 
 /* =================== 2) Compat DOM attendu par tes modules =================== */
-/* G1 : viewer + couches (crée seulement si manquant — pas de doublon) */
+/* G1 : viewer + couches (ajout SEULEMENT si manquant) */
 {
-  const g1 = document.querySelector('#bloc-g1');
+  const g1 = q('#bloc-g1');
   if (g1 && !g1.querySelector('#planet-main-viewer')) {
     g1.insertAdjacentHTML('afterbegin', `
       <canvas id="planet-main-viewer" width="300" height="220" data-planet=""></canvas>
@@ -86,8 +78,7 @@ const setOn = (el,on) => {
 
 /* #info-* (select + .section-content) — avec les VRAIES clés data-section */
 const mountInfo = (blocSel, infoId, dataSection, selectOptions) => {
-  const host = document.querySelector(blocSel);
-  if (!host) return null;
+  const host = q(blocSel); if (!host) return null;
 
   let info = host.querySelector(`#${infoId}`);
   if (!info) { info = document.createElement('div'); info.id = infoId; host.appendChild(info); }
@@ -96,7 +87,7 @@ const mountInfo = (blocSel, infoId, dataSection, selectOptions) => {
   if (!select) {
     select = document.createElement('select');
     select.className = 'codex-select';
-    select.setAttribute('data-section', dataSection); // << clé attendue par section-switcher.js
+    select.setAttribute('data-section', dataSection); // clé attendue par section-switcher.js
     select.innerHTML = selectOptions.map(o => `<option value="${o.value}" ${o.selected?'selected':''}>${o.label}</option>`).join('');
     const h3 = document.createElement('h3'); h3.appendChild(select); info.appendChild(h3);
   }
@@ -114,7 +105,6 @@ const mountInfo = (blocSel, infoId, dataSection, selectOptions) => {
   return { host, info, select, target };
 };
 
-/* Installe les 4 conteneurs aux bons IDs/valeurs + CLEFS */
 mountInfo('#bloc-g2','info-data','informations',[
   {value:'basic',label:'Données principales',selected:true},
   {value:'composition',label:'Composition'},
@@ -131,29 +121,25 @@ mountInfo('#bloc-d2','info-moons','moons',[
   {value:'summary',label:'Résumé',selected:true},
   {value:'details',label:'Détails'}
 ]);
-ensureSectionContent(document.querySelector('#bloc-d3')); // viewer Lune
+ensureSectionContent(q('#bloc-d3')); // viewer Lune
 
-/* Placeholders niveau blocs (techniques, invisibles) */
+/* Placeholders niv. blocs (techniques, invisibles) */
 ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
-  const p=document.querySelector(sel); if(!p) return;
+  const p=q(sel); if(!p) return;
   if(!p.querySelector(':scope > .placeholder')){
     const ph=document.createElement('div'); ph.className='placeholder'; ph.textContent='— vide —'; p.appendChild(ph);
   }
 });
 
-/* =================== 3) ON/OFF panels + miroir chips + tuto =================== */
-const panels = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].map(s=>document.querySelector(s)).filter(Boolean);
+/* =================== 3) ON/OFF panels + miroirs + tuto =================== */
+const panels = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].map(s=>q(s)).filter(Boolean);
 const panelObs = new MutationObserver(()=>panels.forEach(p=>setOn(p,hasMeaning(p))));
 panels.forEach(p=>{ setOn(p,hasMeaning(p)); panelObs.observe(p,{childList:true,subtree:true,characterData:true}); });
 
 const chips = {
-  tutorial: document.querySelector('.chip.tutorial'),
-  g1: document.querySelector('.chip.g1'),
-  g2: document.querySelector('.chip.g2'),
-  g3: document.querySelector('.chip.g3'),
-  d1: document.querySelector('.chip.d1'),
-  d2: document.querySelector('.chip.d2'),
-  d3: document.querySelector('.chip.d3'),
+  tutorial: q('.chip.tutorial'),
+  g1: q('.chip.g1'), g2: q('.chip.g2'), g3: q('.chip.g3'),
+  d1: q('.chip.d1'), d2: q('.chip.d2'), d3: q('.chip.d3'),
 };
 let hasUserSelection = false;
 chips.tutorial?.classList.add('on');
@@ -172,7 +158,7 @@ const mirrors = [
   {from:'#bloc-d3',to:'.chip.d3 .hud-text'},
 ];
 const applyMirror=(srcSel,dstSel)=>{
-  const src=document.querySelector(srcSel),dst=document.querySelector(dstSel); if(!src||!dst)return;
+  const src=q(srcSel),dst=q(dstSel); if(!src||!dst)return;
   const sc=src.querySelector(':scope > .section-content')||src;
   dst.innerHTML=cleanCloneHTML(sc);
   const chip=dst.closest('.chip');
@@ -180,24 +166,21 @@ const applyMirror=(srcSel,dstSel)=>{
   if (chips.tutorial) chips.tutorial.classList.toggle('on',!hasUserSelection);
 };
 const mirrorObs=new MutationObserver(m=>m.forEach(x=>{const hit=mirrors.find(mi=>x.target.closest(mi.from)); if(hit) applyMirror(hit.from,hit.to);}));
-mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return; applyMirror(mi.from,mi.to); mirrorObs.observe(src,{childList:true,subtree:true,characterData:true});});
+mirrors.forEach(mi=>{const src=q(mi.from); if(!src) return; applyMirror(mi.from,mi.to); mirrorObs.observe(src,{childList:true,subtree:true,characterData:true});});
 
-/* =================== 4) Close-all global (une seule croix, visible après sélection) =================== */
+/* =================== 4) Croix globale (RESET) =================== */
 (() => {
-  if (document.getElementById('dash-closeall')) return;
-
-  // 👇 On ajoute la croix à l’intérieur du cadre principal (.radar)
-  const host = document.querySelector('main.dashboard .radar') || document.body;
+  if (q('#dash-closeall')) return;
+  const host = q('main.dashboard .radar') || document.body;
   const btn=document.createElement('button');
-  btn.id='dash-closeall'; btn.title='Fermer toutes les informations (Reset)';
-  btn.textContent='×';
+  btn.id='dash-closeall'; btn.title='Fermer toutes les informations (Reset)'; btn.textContent='×';
   host.appendChild(btn);
 
   const setCloseVisible = (show) => btn.classList.toggle('show', !!show);
 
   const resetPanels=()=>{
     ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
-      const host=document.querySelector(sel); if(!host) return;
+      const host=q(sel); if(!host) return;
       const sc=host.querySelector(':scope > .section-content')||host;
       sc.innerHTML='<div class="placeholder">— vide —</div>';
     });
@@ -209,51 +192,32 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
     bus.dispatchEvent(new CustomEvent('object:cleared'));
   };
 
-  // Expose helpers pour d’autres modules si besoin
   window.DASH = window.DASH || {};
   window.DASH.resetDashboard = resetPanels;
   window.DASH.setCloseVisible = setCloseVisible;
-
   btn.addEventListener('click', resetPanels);
 })();
 
-/* =================== 5) Mini-console vaisseau (intégrée) + purge Missions =================== */
+/* =================== 5) Ship log intégré + purge Missions =================== */
 (() => {
-  if (document.getElementById('ship-console')) return;
+  if (q('#ship-console')) return;
+  const host = q('main.dashboard .radar') || q('main.dashboard') || document.body;
+  const box=document.createElement('div'); box.id='ship-console'; host.appendChild(box);
 
-  // 👇 Ship log dans le CADRE PRINCIPAL (bas-droite)
-  const dash = document.querySelector('main.dashboard .radar') || document.querySelector('main.dashboard') || document.body;
-  const box=document.createElement('div'); box.id='ship-console';
-  // pas de header visible
-  box.innerHTML='';
-  dash.appendChild(box);
-
-  const moved = new Set(); // éviter doublons
-
-  const push=(msg)=>{
-    const key = msg.trim();
-    if (!key || moved.has(key)) return;
-    moved.add(key);
-    const row=document.createElement('div'); row.textContent=msg;
-    box.appendChild(row);
-    while(box.children.length>160) box.removeChild(box.children[0]); // cap
-    box.scrollTop=box.scrollHeight;
+  const moved = new Set();
+  const push=(txt)=>{ const key=(txt||'').trim(); if(!key||moved.has(key)) return; moved.add(key);
+    const row=document.createElement('div'); row.textContent=key; box.appendChild(row);
+    while(box.childElementCount>160) box.removeChild(box.firstElementChild);
+    box.scrollTop = box.scrollHeight;
   };
 
-  const isShipLine = (txt) => {
-    const t = (txt||'').trim();
-    return (
-      /^\[\d{1,2}:\d{2}:\d{2}\]/.test(t) ||                // [HH:MM:SS]
-      /^→\s/.test(t) ||                                    // → ...
-      /STANDBY|Gyroscope|Évitement|Evitement|Vaisseau/i.test(t)
-    );
-  };
+  const isShipLine = (txt='') =>
+    /^\s*\[\d{1,2}:\d{2}:\d{2}\]/.test(txt) || /^→\s/.test(txt) || /STANDBY|Gyroscope|Évitement|Evitement|Vaisseau/i.test(txt);
 
-  // source principale
   const missionsSC =
-    document.querySelector('#info-missions .section-content') ||
-    document.querySelector('#bloc-d1 .section-content') ||
-    document.querySelector('#bloc-d1');
+    q('#info-missions .section-content') ||
+    q('#bloc-d1 .section-content') ||
+    q('#bloc-d1');
 
   if (!missionsSC) return;
 
@@ -262,105 +226,98 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
     const toRemove = [];
     while (walker.nextNode()) {
       const n = walker.currentNode;
-      const text = (n.nodeType === 3) ? n.nodeValue : n.textContent;
-      if (!text) continue;
-      if (isShipLine(text)) {
-        push((n.innerText||n.textContent||'').trim());
-        toRemove.push(n);
-
-        // S'il y a une ligne suivante type "→ ..."
-        const sib = n.nextSibling;
-        if (sib && (sib.textContent||'').trim().startsWith('→')) {
-          push(sib.textContent.trim());
-          toRemove.push(sib);
-        }
-      }
+      const t = (n.nodeType === 3 ? n.nodeValue : n.textContent) || '';
+      if (isShipLine(t)) { push((n.innerText||n.textContent||'').trim()); toRemove.push(n); }
     }
     toRemove.forEach(n => n.parentNode && n.parentNode.removeChild(n));
   };
 
   sweep();
-  const mo=new MutationObserver(() => sweep());
-  mo.observe(missionsSC,{childList:true,subtree:true,characterData:true});
+  new MutationObserver(sweep).observe(missionsSC,{childList:true,subtree:true,characterData:true});
 })();
 
-/* =================== 6) Pont d’évènements — NORMALISATION + REBROADCAST =================== */
+/* =================== 6) Pont d’évènements — interception globale =================== */
+/* Ici on NE DEVINE PLUS le nom du bon event.
+   On intercepte TOUTES les dispatches de CustomEvent dans la page,
+   on reconnait celles qui ressemblent à une sélection, et on rebroadcast
+   vers tous les noms attendus (compat maximale). */
 (() => {
-  const CANDIDATES = [
-    'object:selected','planet:selected','dashboard:select:planet',
-    'simul:planet:click','radar:object:selected','system:body:clicked',
-    'body:selected','celestial:selected'
-  ];
+  const ORIG = EventTarget.prototype.dispatchEvent;
+  const seen = new WeakSet();
+
+  const looksLikeSelection = (type, detail) => {
+    const tn = String(type||'');
+    const hasKey = detail && (detail.id || detail.name || detail.key || detail.planet || detail.body);
+    return (
+      /planet|body|object|celestial|selected/i.test(tn) ||
+      (hasKey && /select|click|picked/i.test(tn))
+    );
+  };
 
   const normalize = (detail) => {
     const id = detail?.id || detail?.name || detail?.key || detail?.planet || detail?.body || null;
-    const type = (detail?.type || 'planet').toLowerCase();
+    const type = (detail?.type || (/moon/i.test(String(detail?.name||'')) ? 'moon' : 'planet')).toLowerCase();
     return { id: id ? String(id).toLowerCase() : null, type, raw: detail || null, ts: Date.now() };
   };
 
-  const rebroadcast = (evtName, detail) => {
-    const ev = new CustomEvent(evtName, { detail, bubbles: true });
-    document.dispatchEvent(ev);
-    window.dispatchEvent(new CustomEvent(evtName, { detail }));
+  const rebroadcastAll = (norm) => {
+    const names = [
+      'object:selected','planet:selected','dashboard:select:planet',
+      'simul:planet:click','radar:object:selected','system:body:clicked',
+      'body:selected','celestial:selected'
+    ];
+    names.forEach(n => {
+      const ev = new CustomEvent(n, { detail: norm });
+      document.dispatchEvent(ev);
+      window.dispatchEvent(new CustomEvent(n, { detail: norm }));
+    });
   };
 
-  const onAnySelect = (srcName) => (e) => {
-    const norm = normalize(e.detail);
-    if (!norm.id) return; // rien d’exploitable
-    hasUserSelection = true;
-
-    // Afficher la croix globale
-    window.DASH?.setCloseVisible?.(true);
-
-    // Rebroadcast pour compat modules “métier”
-    if (srcName !== 'object:selected') rebroadcast('object:selected', norm);
-    if (norm.type === 'planet') rebroadcast('planet:selected', norm);
-
-    // Piloter le viewer si dispo
-    const layer = document.getElementById('layer-select')?.value || 'surface';
-    if (norm.type === 'planet') window.OrbViewer?.showPlanet?.(norm.id, layer);
-    if (norm.type === 'moon' || /moon/i.test(srcName)) window.OrbViewer?.showMoon?.(norm.id);
-
-    // Mettre à jour chips/tuto
-    mirrors.forEach(mi => applyMirror(mi.from, mi.to));
+  EventTarget.prototype.dispatchEvent = function(ev){
+    try{
+      if (ev && ev instanceof CustomEvent && !seen.has(ev) && looksLikeSelection(ev.type, ev.detail)) {
+        const norm = normalize(ev.detail);
+        if (norm.id) {
+          hasUserSelection = true;
+          window.DASH?.setCloseVisible?.(true);
+          rebroadcastAll(norm);
+          // Piloter viewers si exposés
+          const layer = document.getElementById('layer-select')?.value || 'surface';
+          if (norm.type === 'planet') window.OrbViewer?.showPlanet?.(norm.id, layer);
+          if (norm.type === 'moon')   window.OrbViewer?.showMoon?.(norm.id);
+          mirrors.forEach(mi => applyMirror(mi.from, mi.to));
+        }
+      }
+    } catch(e) { /* silencieux */ }
+    return ORIG.call(this, ev);
   };
 
-  CANDIDATES.forEach(n => {
-    document.addEventListener(n, onAnySelect(n), { passive:true });
-    window.addEventListener(n, onAnySelect(n), { passive:true });
+  // Fallback : écoute aussi les noms "classiques"
+  ['object:selected','planet:selected','dashboard:select:planet',
+   'simul:planet:click','radar:object:selected','system:body:clicked',
+   'body:selected','celestial:selected'
+  ].forEach(n=>{
+     const on=(e)=>{
+       hasUserSelection = true;
+       window.DASH?.setCloseVisible?.(true);
+       mirrors.forEach(mi => applyMirror(mi.from, mi.to));
+     };
+     document.addEventListener(n,on,{passive:true});
+     window.addEventListener(n,on,{passive:true});
   });
 
-  // Changement de couche
+  // Couche
   document.getElementById('layer-select')?.addEventListener('change',(e)=>{
     window.OrbViewer?.setLayer?.(e.target.value);
   });
-
-  // Heuristique Lunes: si le bloc change et expose un data-moon / ou texte “Lune …”
-  const moonsSC = document.querySelector('#info-moons .section-content');
-  if (moonsSC) {
-    const mo = new MutationObserver(() => {
-      const attr = moonsSC.querySelector('[data-moon]')?.getAttribute('data-moon');
-      let id = (attr||'').toLowerCase();
-      if (!id) {
-        const t = (moonsSC.textContent||'').toLowerCase();
-        if (/\blune\b/.test(t)) id = 'moon';
-      }
-      if (id) {
-        hasUserSelection = true;
-        window.DASH?.setCloseVisible?.(true);
-        window.OrbViewer?.showMoon?.(id);
-        mirrors.forEach(mi => applyMirror(mi.from, mi.to));
-      }
-    });
-    mo.observe(moonsSC,{childList:true,subtree:true,characterData:true});
-  }
 })();
 
-/* =================== 7) Prépare le viewer Lune (bloc D3) =================== */
+/* =================== 7) Viewer Lune (bloc D3) =================== */
 (() => {
-  const d3=document.querySelector('#bloc-d3');
+  const d3 = q('#bloc-d3');
   if(d3 && !d3.querySelector('#moon-viewer')){
     const wrap = ensureSectionContent(d3);
-    const canvas=document.createElement('canvas'); canvas.id='moon-viewer'; canvas.width=300; canvas.height=220; wrap.prepend(canvas);
+    const canvas=document.createElement('canvas');
+    canvas.id='moon-viewer'; canvas.width=300; canvas.height=220; wrap.prepend(canvas);
   }
 })();
