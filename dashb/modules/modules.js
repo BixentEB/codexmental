@@ -1,4 +1,4 @@
-// /dashb/modules/modules.js — point d’entrée unique du dashboard (corrigé)
+// /dashb/modules/modules.js — point d’entrée unique du dashboard
 
 (() => {
   const root = document.documentElement;
@@ -25,14 +25,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   const header = document.getElementById('menu-placeholder') || document.getElementById('site-header');
   if (header) { header.style.position = 'relative'; header.style.zIndex = '5000'; }
 
-  // 1) UI / compat (#info-*) + miroir + pont d’événements
+  // 1) UI / compat (#info-*) + miroir + pont d’événements + close-all
   try {
     await import('/dashb/modules/dashboard/ui/init.js');
   } catch (e) {
     console.warn('⚠️ UI init failed:', e);
   }
 
-  // 2) Radar (charge aussi planet-data, sections, etc. via ses imports)
+  // 2) Viewer 3D (planète + lune)
+  try {
+    await import('/dashb/modules/dashboard/ui/viewer-orb.js');
+  } catch (e) {
+    console.warn('⚠️ Viewer 3D indisponible:', e);
+  }
+
+  // 3) Radar (charge aussi tes modules métiers via ses imports)
   try {
     await import('/dashb/modules/dashboard/simul-system.js');
   } catch (e) {
