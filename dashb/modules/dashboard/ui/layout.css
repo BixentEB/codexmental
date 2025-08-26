@@ -4,14 +4,15 @@
 html,body{ height:100% }
 body{ margin:0; background:var(--bg); color:#cfefff; font-family:Inter,system-ui; }
 
-main.dashboard{
-  position:relative;
-  display:grid;
-  grid-template-columns: 380px minmax(820px,1fr) 380px;
-  grid-template-rows: auto 1fr auto;
-  gap:16px;
-  min-height:100vh;
-  padding:16px;
+/* Zone radar plein écran central */
+main.dashboard .radar {
+  grid-column: 1 / -1 !important;
+  margin: 0 auto;
+  width: 100%;
+  max-width: none;            /* enlève la limite */
+  min-height: calc(100vh - 80px);
+  background: transparent !important;  /* supprime le gris */
+  box-shadow: none !important;
 }
 
 .header{grid-column:1/-1; min-height:0}
@@ -21,15 +22,14 @@ main.dashboard{
 .footer{grid-column:1/-1; min-height:0}
 
 /* Radar canvas */
-#simul-system{
+/* Supprimer le fond et contour parasite du canvas */
+#simul-system {
   display:block;
-  margin:0 auto;
-  width:95%;             /* ≠ plein écran : centré */
-  max-width:1400px;      /* limite pour pas zoomer */
+  width:100%;
   height:auto;
-  border-radius:12px;
-  outline:1px solid rgba(0,229,255,.08);
-  background:rgba(255,255,255,.02);
+  background: transparent !important;  /* pas de gris */
+  border:none !important;              /* pas de cadre */
+  outline:none !important;
 }
 
 /* Croix globale */
