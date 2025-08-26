@@ -1,3 +1,66 @@
+/* layout.css – grille et placements de la page dashboard */
+:root{ --bg:#0a0f1a; --hud-cyan:rgba(111,255,255,.18); }
+
+html,body{ height:100% }
+body{ margin:0; background:var(--bg); color:#cfefff; font-family:Inter,system-ui; }
+
+main.dashboard{
+  position:relative;
+  display:grid;
+  grid-template-columns: 380px minmax(820px,1fr) 380px;
+  grid-template-rows: auto 1fr auto;
+  gap:16px;
+  min-height:100vh;
+  padding:16px;
+}
+
+.header{grid-column:1/-1; min-height:0}
+.left{grid-column:1}
+.radar{grid-column:2; position:relative; min-height:560px}
+.right{grid-column:3}
+.footer{grid-column:1/-1; min-height:0}
+
+/* Radar canvas */
+#simul-system{
+  display:block; width:100%; height:auto;
+  border-radius:12px; outline:1px solid rgba(0,229,255,.08);
+  background:rgba(255,255,255,.02);
+}
+
+/* Mode CHIPS par défaut : colonnes masquées */
+main.dashboard.mode-chips .left,
+main.dashboard.mode-chips .right{ display:none }
+
+/* CHIPS HUD container (déjà dans ton index) */
+.hud-chips{ position:absolute; inset:0; pointer-events:none }
+
+/* --------- éléments intégrés au cadre principal --------- */
+
+/* Croix globale : intégrée en haut-droite du cadre principal (.radar) */
+#dash-closeall{
+  position:absolute; top:10px; right:10px; z-index:1200;
+  background:none; border:0; padding:0;
+  color:#cfefff; font:700 22px/1 system-ui; opacity:.65; cursor:pointer;
+  display:none; /* visible seulement après sélection */
+}
+#dash-closeall:hover{ opacity:1 }
+
+/* Ship Log intégré bas-droite, discret */
+#ship-console{
+  position:absolute; right:14px; bottom:12px; z-index:1100;
+  width:320px; max-height:24vh; overflow:auto;
+  background:transparent; border:0; box-shadow:none;
+  font:12px/1.32 ui-monospace,Menlo,Consolas,monospace;
+  color:#8aa7bd; opacity:.58; pointer-events:none;
+}
+
+/* Responsive */
+@media (max-width:1280px){
+  main.dashboard{ grid-template-columns:1fr; grid-template-rows:auto auto auto auto }
+  .left,.right{ grid-column:1 }
+  .radar{ grid-column:1 }
+}
+
 /* ============ DASHBOARD LAYOUT (mode-chips) ============ */
 
 /* On n'altère PAS tes styles existants ; on force juste les overrides nécessaires. */
