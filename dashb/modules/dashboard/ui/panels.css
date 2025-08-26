@@ -1,33 +1,25 @@
-/* Panels “slots” (compat) */
+/* panels.css – rendu des blocs + chips, sans rien afficher tant qu'il n'y a pas de données */
+
+/* Blocs compat (g1..d3) : invisibles tant qu'ils n'ont pas de contenu réel */
 .panel{
+  display:none;
   position:relative;
   border-radius:14px;
   outline:1px solid rgba(0,229,255,.05);
   background:transparent;
   box-shadow:none;
-  opacity:0; transform:translateY(4px) scale(.995); filter:blur(.2px);
-  transition:opacity .25s, transform .25s, filter .25s, box-shadow .25s;
-  pointer-events:none;
+  margin-bottom:12px;
 }
 .panel.on{
-  opacity:1; transform:none; filter:none; pointer-events:auto;
+  display:block;
   outline:1px solid rgba(0,229,255,.15);
   box-shadow:0 0 0 1px rgba(0,229,255,.05) inset, 0 0 24px rgba(0,229,255,.08);
 }
-.panel .placeholder{
-  position:absolute; inset:8px; display:flex; align-items:center; justify-content:center;
-  color:rgba(191,239,255,.35); font-size:.9rem; letter-spacing:.08em; text-transform:uppercase;
-}
 
-/* --- HUD CHIPS --- */
-.hud-chips{ position:absolute; inset:0; pointer-events:none }
-
-/* Cachées par défaut, visibles seulement en .on */
+/* HUD chips (miroirs) – invisibles par défaut, ON seulement si données */
 .hud-chips .chip{
   position:absolute; display:none !important;
-  min-width:230px;         /* ← ajuste la taille mini des cartes */
-  max-width:360px;         /* ← et la taille max */
-  min-height:96px;
+  min-width:220px; max-width:360px; min-height:88px;
   padding:10px 12px;
   border-radius:12px;
   background:linear-gradient(180deg, rgba(0,229,255,.06), rgba(0,229,255,.03));
@@ -39,41 +31,18 @@
 }
 .hud-chips .chip.on{ display:block !important; opacity:1; transform:none }
 
-.hud-title{font-family:Orbitron,system-ui; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:.35rem}
-.hud-text{font-size:.92rem; line-height:1.35}
-.hud-close{ margin-left:.5rem; background:transparent; border:0; color:inherit; cursor:pointer; font-size:1rem; line-height:1 }
+.hud-title{font-family:Orbitron,system-ui; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; opacity:.9; margin-bottom:.35rem}
+.hud-text{font-size:.9rem; line-height:1.35}
 
-/* Positions autour du radar — AJUSTE ICI LES EMPLACEMENTS */
-.chip.g1{left:24px; top:72px}                 /* télémétrie (haut-gauche) */
-.chip.g2{left:24px; top:calc(50% - 60px)}     /* objet (milieu-gauche) */
-.chip.g3{left:24px; bottom:24px}              /* missions (bas-gauche) */
-.chip.d1{right:24px; top:72px}                /* vue (haut-droite) */
-.chip.d2{right:24px; top:calc(50% - 60px)}    /* lunes (milieu-droite) */
-.chip.d3{right:24px; bottom:24px}             /* logs (bas-droite) */
+/* positions (à ajuster si besoin) */
+.chip.g1{left:24px; top:72px}
+.chip.g2{left:24px; top:calc(50% - 60px)}
+.chip.g3{left:24px; bottom:24px}
+.chip.d1{right:24px; top:72px}
+.chip.d2{right:24px; top:calc(50% - 60px)}
+.chip.d3{right:24px; bottom:24px}
 
-/* Mode global : slots vs chips */
-main.dashboard.mode-chips .left,
-main.dashboard.mode-chips .right { display:none }
-main.dashboard.mode-slots .hud-chips { display:none }
-
-/* Titres verticaux */
-#dashboard-title-left{
-  position:absolute; top:4rem; left:.5rem; height:60%;
-  writing-mode:vertical-rl; transform:rotate(180deg);
-  font-family:Orbitron,system-ui; font-size:1.1rem; letter-spacing:.22rem;
-  color:rgba(0,229,255,.6); pointer-events:none; z-index:2;
-}
-#dashboard-title-right{
-  position:absolute; bottom:2rem; right:.5rem; height:50%;
-  writing-mode:vertical-rl; transform:rotate(180deg);
-  font-family:Orbitron,system-ui; font-size:1rem; letter-spacing:.20rem;
-  color:rgba(0,229,255,.6); pointer-events:none; z-index:2;
-}
-
-/* Chip tutoriel : petite, à gauche */
-.chip.tutorial{
-  left:24px; top:16px;
-  min-width:260px; max-width:300px; padding:8px 10px;
-}
-.chip.tutorial .hud-title{ font-size:.75rem; letter-spacing:.1em }
-.chip.tutorial .hud-text{ font-size:.85rem; line-height:1.25 }
+/* tuto compact */
+.chip.tutorial{ left:24px; top:16px; min-width:260px; max-width:300px; padding:8px 10px }
+.chip.tutorial .hud-title{ font-size:.72rem; letter-spacing:.1em }
+.chip.tutorial .hud-text{ font-size:.84rem; line-height:1.25 }
