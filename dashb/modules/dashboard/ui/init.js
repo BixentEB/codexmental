@@ -1,6 +1,7 @@
 // init.js — HUD glue: compat DOM (#info-*), style HUD (injection),
 // miroir blocs→chips, tuto (ne disparaît qu’après clic), close-all global,
-// mini-console vaisseau discrète, pont d’événements → viewer 3D.
+// mini-console vaisseau discrète (intégrée au dashboard) + purge des lignes Missions,
+// pont d’événements → viewer 3D.
 
 const bus = window.__lab?.bus || document;
 
@@ -30,15 +31,19 @@ const bus = window.__lab?.bus || document;
     cursor:pointer;opacity:.7;transition:.15s; backdrop-filter: blur(2px);
   }
   #dash-closeall:hover{opacity:1;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
-  /* Mini-console vaisseau (discrète) */
+
+  /* Mini-console vaisseau (intégrée au dashboard, sans cadre) */
+  .dashboard{ position:relative; }
   #ship-console{
-    position:fixed;right:16px;bottom:14px;width:320px;max-height:28vh;
-    font:12px/1.3 ui-monospace,Menlo,Consolas,monospace;color:var(--hud-muted);
-    background:rgba(5,20,35,.25);border:1px solid var(--hud-border);
-    border-radius:12px;padding:.4rem .55rem;backdrop-filter:blur(2px);
-    overflow:auto;opacity:.78;pointer-events:none;z-index:4200;
+    position:absolute; right:16px; bottom:14px; width:300px; max-height:24vh;
+    font:12px/1.32 ui-monospace,Menlo,Consolas,monospace;
+    color:var(--hud-muted);
+    background:transparent !important; border:0 !important; box-shadow:none !important;
+    border-radius:0 !important; padding:0; margin:0;
+    overflow:auto; opacity:.58; pointer-events:none; z-index:1200;
   }
-  #ship-console h4{margin:.15rem 0 .35rem;font:600 12px/1.2 system-ui;color:var(--hud-text);opacity:.85}
+  #ship-console .hdr{ font:600 11px/1.2 system-ui; letter-spacing:.04em; color:var(--hud-text); opacity:.55; margin:0 0 .25rem 0; }
+  #ship-console .row{ white-space:pre-wrap; }
   #planet-main-viewer,#moon-viewer{
     display:block;width:100%;height:220px;background:rgba(255,255,255,.02);
     border-radius:.6rem;
@@ -155,7 +160,6 @@ const chips = {
   d2: document.querySelector('.chip.d2'),
   d3: document.querySelector('.chip.d3'),
 };
-const chipList = Object.values(chips).filter(Boolean);
 let hasUserSelection = false;
 chips.tutorial?.classList.add('on');
 
@@ -177,8 +181,8 @@ const applyMirror=(srcSel,dstSel)=>{
   const sc=src.querySelector(':scope > .section-content')||src;
   dst.innerHTML=cleanCloneHTML(sc);
   const chip=dst.closest('.chip');
-  if(chip) chip.classList.toggle('on',hasUserSelection&&hasMeaning(src));
-  if(chips.tutorial) chips.tutorial.classList.toggle('on',!hasUserSelection);
+  if (chip) chip.classList.toggle('on',hasUserSelection&&hasMeaning(src));
+  if (chips.tutorial) chips.tutorial.classList.toggle('on',!hasUserSelection);
 };
 const mirrorObs=new MutationObserver(m=>m.forEach(x=>{const hit=mirrors.find(mi=>x.target.closest(mi.from)); if(hit) applyMirror(hit.from,hit.to);}));
 mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return; applyMirror(mi.from,mi.to); mirrorObs.observe(src,{childList:true,subtree:true,characterData:true});});
@@ -208,16 +212,69 @@ document.getElementById('simul-system')?.addEventListener('click',()=>{ hasUserS
   btn.addEventListener('click', resetPanels);
 })();
 
-/* =================== 5) Mini-console vaisseau (déport logs) =================== */
+/* =================== 5) Mini-console vaisseau (intégrée) + purge Missions =================== */
 (() => {
   if (document.getElementById('ship-console')) return;
-  const box=document.createElement('div'); box.id='ship-console'; box.innerHTML='<h4>SHIP LOG</h4>';
-  document.body.appendChild(box);
-  const push=(msg)=>{const row=document.createElement('div');row.className='row';row.textContent=msg;box.appendChild(row);while(box.children.length>1+60)box.removeChild(box.children[1]);box.scrollTop=box.scrollHeight;};
-  const isShipLog=(text)=>/^\s*\[\d{1,2}:\d{2}:\d{2}\]/.test(text)||/Vaisseau|STANDBY|Gyroscope|évitem/i.test(text);
-  const missions=document.querySelector('#info-missions .section-content'); if(!missions) return;
-  const moveExisting=()=>{[...missions.childNodes].forEach(n=>{const t=(n.textContent||'').trim(); if(t&&isShipLog(t)){n.remove();push(t);}});};
-  moveExisting(); const mo=new MutationObserver(moveExisting); mo.observe(missions,{childList:true,subtree:true,characterData:true});
+
+  const dash = document.querySelector('main.dashboard') || document.querySelector('.dashboard') || document.body;
+  const box=document.createElement('div'); box.id='ship-console';
+  box.innerHTML='<div class="hdr">SHIP LOG</div>';
+  dash.appendChild(box);
+
+  const moved = new Set(); // éviter doublons
+
+  const push=(msg)=>{
+    const key = msg.trim();
+    if (moved.has(key)) return;
+    moved.add(key);
+    const row=document.createElement('div'); row.className='row'; row.textContent=msg;
+    box.appendChild(row);
+    while(box.children.length>1+120) box.removeChild(box.children[1]); // cap
+    box.scrollTop=box.scrollHeight;
+  };
+
+  const isShipLine = (txt) => {
+    const t = txt.trim();
+    return (
+      /^\[\d{1,2}:\d{2}:\d{2}\]/.test(t) ||                // [HH:MM:SS]
+      /^→\s/.test(t) ||                                    // → ...
+      /STANDBY|Gyroscope|Évitement|Evitement|Vaisseau/i.test(t)
+    );
+  };
+
+  const missionsSC = document.querySelector('#info-missions .section-content');
+  if (!missionsSC) return;
+
+  const sweep = () => {
+    // 1) parcourir enfants (éléments + textes)
+    const walker = document.createTreeWalker(missionsSC, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
+    const toRemove = [];
+    while (walker.nextNode()) {
+      const n = walker.currentNode;
+      const text = (n.nodeType === 3) ? n.nodeValue : n.textContent;
+      if (!text) continue;
+      if (isShipLine(text)) {
+        // capturer aussi un éventuel "→ ..." juste après
+        if (n.nodeType === 1) {
+          push(n.innerText || n.textContent);
+        } else {
+          push(text);
+        }
+        toRemove.push(n);
+        // voisin suivant pour les paires “timestamp” + “→ …”
+        const sibling = n.nextSibling;
+        if (sibling && (sibling.textContent || '').trim().startsWith('→')) {
+          push(sibling.textContent);
+          toRemove.push(sibling);
+        }
+      }
+    }
+    toRemove.forEach(n => n.parentNode && n.parentNode.removeChild(n));
+  };
+
+  sweep();
+  const mo=new MutationObserver(() => sweep());
+  mo.observe(missionsSC,{childList:true,subtree:true,characterData:true});
 })();
 
 /* =================== 6) Pont d’évènements → viewer 3D =================== */
