@@ -46,3 +46,19 @@
     setLayer(){}, showPlanet(){}, showMoon(){}, clearPlanet(){}, clearMoon(){}
   };
 })();
+
+// glue.viewers.js – assure la présence des canvas viewers
+(function(){
+  const ensure = (sel, id, w=300, h=220) => {
+    const host = document.querySelector(sel);
+    if (!host) return;
+    if (!host.querySelector('#'+id)) {
+      const canvas=document.createElement('canvas');
+      canvas.id=id; canvas.width=w; canvas.height=h;
+      host.appendChild(canvas);
+    }
+  };
+  ensure('#bloc-g1','#planet-main-viewer',420,280);
+  ensure('#bloc-d3','#moon-viewer',360,260);
+})();
+
