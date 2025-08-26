@@ -8,6 +8,7 @@
   --frame-radius: 14px;
   --frame-border: 1px;
   position: relative;
+  margin-top: 80px; /* ajuste la valeur à ton goût (20px, 40px, etc.) */
   margin-inline: clamp(8px, 2vw, 24px);
   margin-block: clamp(8px, 1.5vh, 18px);
   padding: var(--frame-pad);
