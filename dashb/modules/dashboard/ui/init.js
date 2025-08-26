@@ -6,22 +6,17 @@
 const bus = window.__lab?.bus || document;
 
 /* ============== 0) Patch CSS HUD (injection, non destructif) ============== */
+/* ⚠️ Minimaliste : on NE change rien du layout global, ni couleurs, ni tailles.
+   Seulement :
+   - croix intégrée dans .radar (sans cadre ni fond),
+   - ship log discret intégré bas-droite,
+   - placeholders totalement invisibles. */
 (() => {
   if (document.getElementById('hud-style-patch')) return;
   const css = `
   :root{
-    --hud-cyan:#6fffff;--hud-cyan-soft:rgba(111,255,255,.25);
-    --hud-bg:rgba(5,20,35,.42);--hud-border:rgba(111,255,255,.18);
     --hud-text:#d9f3ff;--hud-muted:#89a3b5;
   }
-  .codex-select{
-    appearance:none;-webkit-appearance:none;-moz-appearance:none;
-    background:var(--hud-bg);border:1px solid var(--hud-border);
-    color:var(--hud-text);padding:.35rem 1.75rem .35rem .55rem;
-    border-radius:.6rem;font-size:.92rem;line-height:1.2;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
-  }
-  .codex-select:focus{outline:none;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
 
   /* Close-all global : intégré AU CADRE PRINCIPAL (.radar), sans cadre/fond, caché par défaut */
   main.dashboard .radar{ position:relative; }
@@ -34,7 +29,7 @@ const bus = window.__lab?.bus || document;
   #dash-closeall.show{ display:block; }
   #dash-closeall:hover{ opacity:1; }
 
-  /* Mini-console vaisseau (intégrée au dashboard, fond transparent, discrète) */
+  /* Mini-console vaisseau (intégrée au cadre principal, fond transparent, discrète) */
   #ship-console{
     position:absolute; right:14px; bottom:12px; width:300px; max-height:24vh;
     font:12px/1.32 ui-monospace,Menlo,Consolas,monospace;
@@ -45,14 +40,8 @@ const bus = window.__lab?.bus || document;
   }
   #ship-console .hdr{ display:none; } /* pas d’en-tête visible */
 
-  /* Viewers si présents */
-  #planet-main-viewer,#moon-viewer{
-    display:block;width:100%;height:220px;background:rgba(255,255,255,.02);
-    border-radius:.6rem;
-  }
-
-  /* Placeholders purement techniques : jamais visibles */
-  .placeholder{ display:none !important; color:var(--hud-muted); opacity:.0 }
+  /* Placeholders purement techniques : jamais visibles à l’utilisateur */
+  .placeholder{ display:none !important; }
   `;
   const style=document.createElement('style');
   style.id='hud-style-patch'; style.textContent=css; document.head.appendChild(style);
@@ -77,7 +66,7 @@ const setOn = (el,on) => {
 };
 
 /* =================== 2) Compat DOM attendu par tes modules =================== */
-/* G1 : viewer + couches */
+/* G1 : viewer + couches (crée seulement si manquant — pas de doublon) */
 {
   const g1 = document.querySelector('#bloc-g1');
   if (g1 && !g1.querySelector('#planet-main-viewer')) {
@@ -144,7 +133,7 @@ mountInfo('#bloc-d2','info-moons','moons',[
 ]);
 ensureSectionContent(document.querySelector('#bloc-d3')); // viewer Lune
 
-/* Placeholders niveau blocs */
+/* Placeholders niveau blocs (techniques, invisibles) */
 ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
   const p=document.querySelector(sel); if(!p) return;
   if(!p.querySelector(':scope > .placeholder')){
@@ -243,7 +232,7 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
 
   const push=(msg)=>{
     const key = msg.trim();
-    if (moved.has(key)) return;
+    if (!key || moved.has(key)) return;
     moved.add(key);
     const row=document.createElement('div'); row.textContent=msg;
     box.appendChild(row);
@@ -252,7 +241,7 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
   };
 
   const isShipLine = (txt) => {
-    const t = txt.trim();
+    const t = (txt||'').trim();
     return (
       /^\[\d{1,2}:\d{2}:\d{2}\]/.test(t) ||                // [HH:MM:SS]
       /^→\s/.test(t) ||                                    // → ...
@@ -260,7 +249,12 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
     );
   };
 
-  const missionsSC = document.querySelector('#info-missions .section-content');
+  // source principale
+  const missionsSC =
+    document.querySelector('#info-missions .section-content') ||
+    document.querySelector('#bloc-d1 .section-content') ||
+    document.querySelector('#bloc-d1');
+
   if (!missionsSC) return;
 
   const sweep = () => {
@@ -273,6 +267,8 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
       if (isShipLine(text)) {
         push((n.innerText||n.textContent||'').trim());
         toRemove.push(n);
+
+        // S'il y a une ligne suivante type "→ ..."
         const sib = n.nextSibling;
         if (sib && (sib.textContent||'').trim().startsWith('→')) {
           push(sib.textContent.trim());
