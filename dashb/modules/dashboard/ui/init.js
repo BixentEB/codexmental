@@ -1,11 +1,15 @@
-// init.js — Auto ON/OFF panels + CHIPS, compat containers, miroir #bloc-* → chips,
-//           et pont d'événements (sans modifier simul-system.js)
+// init.js — Compat DOM (anciens blocs), miroir #bloc-* → chips, pont d’événements.
+// AUCUNE modif de tes scripts métier. On reconstruit juste le markup attendu.
 
 const bus = window.__lab?.bus || document;
 
 /* ============= utils ============= */
+const ensure = (host, html) => {
+  if (!host) return null;
+  if (!host.firstElementChild) host.insertAdjacentHTML('beforeend', html);
+  return host;
+};
 const ensureSectionContent = (host) => {
-  // certains modules écrivent dans .section-content — on le crée si absent
   if (!host) return null;
   let sc = host.querySelector(':scope > .section-content');
   if (!sc) {
@@ -15,13 +19,11 @@ const ensureSectionContent = (host) => {
   }
   return sc;
 };
-
 const cleanHTML = (node) => {
   const clone = node.cloneNode(true);
   clone.querySelectorAll('.placeholder').forEach(el => el.remove());
   return clone.innerHTML.trim();
 };
-
 const hasContent = (el) => {
   if (!el) return false;
   const tmp = el.cloneNode(true);
@@ -30,7 +32,6 @@ const hasContent = (el) => {
   const child = tmp.querySelector(':scope > *:not(.placeholder)');
   return (text.length > 0) || !!child;
 };
-
 const setState = (el,on) => {
   if (!el) return;
   el.classList.toggle('on', !!on);
@@ -38,15 +39,65 @@ const setState = (el,on) => {
   if (ph) ph.style.display = on ? 'none' : 'flex';
 };
 
-/* ============= 1) Panels (compat : #bloc-g1..d3) ============= */
-const panelIds = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'];
-const panels = panelIds.map(sel => document.querySelector(sel)).filter(Boolean);
+/* ============= 0) Reconstruire le DOM “ancien” si besoin ============= */
+// G1 : viewer + couche
+{
+  const g1 = document.querySelector('#bloc-g1');
+  if (g1 && !g1.querySelector('#planet-main-viewer')) {
+    g1.insertAdjacentHTML('beforeend', `
+      <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
+      <div class="viewer-controls" style="margin-top:.5rem">
+        <label for="layer-select">🛰️ Couche :</label>
+        <select id="layer-select" class="codex-select">
+          <option value="surface" selected>Surface</option>
+          <option value="cloud">Nuages</option>
+          <option value="infrared">Infrarouge</option>
+        </select>
+      </div>
+    `);
+  }
+}
+// G2..D3 : selects + section-content (suivant l’index historique)
+const ensureBlock = (sel, title, dataSection, options) => {
+  const host = document.querySelector(sel);
+  if (!host) return;
+  let hasSelect = host.querySelector('select[data-section]');
+  if (!hasSelect) {
+    const opts = options.map(o => `<option value="${o.value}" ${o.selected?'selected':''}>${o.label}</option>`).join('');
+    host.insertAdjacentHTML('afterbegin', `
+      <h3>
+        <select data-section="${dataSection}" class="codex-select">
+          ${opts}
+        </select>
+      </h3>
+    `);
+  }
+  ensureSectionContent(host);
+};
+ensureBlock('#bloc-g2', 'Informations', 'informations', [
+  {value:'basic', label:'Données principales', selected:true},
+  {value:'composition', label:'Composition'},
+  {value:'climat', label:'Climat'},
+]);
+ensureBlock('#bloc-g3', 'Terraformation', 'colony', [
+  {value:'colonization', label:'État de terraformation', selected:true},
+  {value:'potentials', label:'Potentiels'},
+  {value:'phases', label:'Phases'},
+  {value:'bases', label:'Implantations'},
+]);
+ensureBlock('#bloc-d1', 'Missions', 'missions', [
+  {value:'summary', label:'Exploration', selected:true},
+]);
+ensureBlock('#bloc-d2', 'Lunes', 'moons', [
+  {value:'summary', label:'Lunes', selected:true},
+  {value:'details', label:'Détails'},
+]);
+// D3 : viewer secondaire/logs → au moins une section-content
+ensureSectionContent(document.querySelector('#bloc-d3'));
 
-// Assure la présence de .section-content pour les modules existants
-panels.forEach(p => ensureSectionContent(p));
-
-const panelObs = new MutationObserver(() => panels.forEach(p => setState(p, hasContent(p))));
-panels.forEach(p => {
+/* Ajoute des placeholders “— vide —” pour l’état OFF */
+['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
+  const p = document.querySelector(sel);
   if (!p) return;
   if (!p.querySelector('.placeholder')){
     const ph = document.createElement('div');
@@ -54,11 +105,19 @@ panels.forEach(p => {
     ph.textContent = '— vide —';
     p.appendChild(ph);
   }
+});
+
+/* ============= 1) Panels ON/OFF ============= */
+const panels = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3']
+  .map(sel => document.querySelector(sel)).filter(Boolean);
+
+const panelObs = new MutationObserver(() => panels.forEach(p => setState(p, hasContent(p))));
+panels.forEach(p => {
   setState(p, hasContent(p));
   panelObs.observe(p, { childList:true, subtree:true, characterData:true });
 });
 
-/* ============= 2) Chips HUD ============= */
+/* ============= 2) CHIPS HUD (miroir #bloc-* → chips) ============= */
 const chips = {
   tutorial: document.querySelector('.chip.tutorial'),
   g1: document.querySelector('.chip.g1'),
@@ -71,7 +130,7 @@ const chips = {
 const chipList = Object.values(chips).filter(Boolean);
 const hudRoot = document.querySelector('.hud-chips') || document;
 
-// Baseline: tout OFF sauf tutoriel
+// baseline : OFF (sauf tuto)
 chipList.forEach(ch => { if (ch && !ch.classList.contains('tutorial')) ch.classList.remove('on'); });
 chips.tutorial?.classList.add('on');
 
@@ -84,17 +143,7 @@ const evalChips = () => {
   const anyOn = chipList.some(ch => ch && !ch.classList.contains('tutorial') && ch.classList.contains('on'));
   chips.tutorial?.classList.toggle('on', !anyOn);
 };
-evalChips();
 
-const chipObs = new MutationObserver(evalChips);
-chipObs.observe(hudRoot, { childList:true, subtree:true, characterData:true });
-
-// Close “×” → deselect
-chips.g2?.querySelector('.hud-close')?.addEventListener('click', () => {
-  bus.dispatchEvent(new CustomEvent('object:cleared'));
-});
-
-/* ============= 3) Miroir #bloc-* → chips (on copie le vrai contenu, sans placeholders) ============= */
 const mirrors = [
   { from:'#bloc-g1', to:'.chip.g1 .hud-text' },
   { from:'#bloc-g2', to:'.chip.g2 .hud-text' },
@@ -103,17 +152,14 @@ const mirrors = [
   { from:'#bloc-d2', to:'.chip.d2 .hud-text' },
   { from:'#bloc-d3', to:'.chip.d3 .hud-text' },
 ];
-
 const applyMirror = (srcSel, dstSel) => {
   const src = document.querySelector(srcSel);
   const dst = document.querySelector(dstSel);
   if (!src || !dst) return;
-  // copie prioritairement ce que les modules mettent dans .section-content s'il existe
   const sc = src.querySelector(':scope > .section-content') || src;
   dst.innerHTML = cleanHTML(sc);
   evalChips();
 };
-
 const mirrorObs = new MutationObserver(muts => {
   muts.forEach(m => {
     const hit = mirrors.find(mi => m.target.closest(mi.from));
@@ -123,45 +169,55 @@ const mirrorObs = new MutationObserver(muts => {
 mirrors.forEach(mi => {
   const src = document.querySelector(mi.from);
   if (!src) return;
-  applyMirror(mi.from, mi.to); // init
+  applyMirror(mi.from, mi.to);
   mirrorObs.observe(src, { childList:true, subtree:true, characterData:true });
 });
 
-/* ============= 4) Pont d’événements hérités → UI ============= */
-/*
-  On écoute un éventail de noms d’événements déjà utilisés possible
-  pour NE PAS modifier simul-system.js ni tes modules :
-*/
-const legacyEvents = [
-  'planet:selected',
-  'dashboard:planet:selected',
-  'dashboard:select:planet',
-  'planet:focus',
-  'object:selected'           // au cas où déjà émis par tes modules
-];
-
-legacyEvents.forEach(ev =>
-  bus.addEventListener(ev, (e) => {
-    // Quoi qu'il arrive, on cache la tuto
-    chips.tutorial?.classList.remove('on');
-    // On rebroadcast dans un format “canonique” si besoin (laissera tes modules actuels tranquilles)
-    if (ev !== 'object:selected') {
-      const id = e?.detail?.id || e?.detail?.name || e?.detail?.slug;
-      bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id, source:ev } }));
-    }
-  })
-);
-
-// Quand on clear, on vide au moins la chip “Objet”
+// bouton fermer sur “Informations”
+chips.g2?.querySelector('.hud-close')?.addEventListener('click', () => {
+  bus.dispatchEvent(new CustomEvent('object:cleared'));
+});
 bus.addEventListener('object:cleared', () => {
   const g2Text = chips.g2?.querySelector('.hud-text');
   if (g2Text) g2Text.textContent = '';
   evalChips();
 });
 
-/* ============= 5) Secours : si un bloc se remplit “tout seul”, on considère qu’une sélection est active ============= */
+/* ============= 3) Pont d’événements hérités ============= */
+// On écoute à la fois document ET window pour tout capter,
+// puis on rebroadcast sur bus en “object:selected”.
+const legacyEvents = [
+  'planet:selected',
+  'dashboard:planet:selected',
+  'dashboard:select:planet',
+  'planet:focus',
+  'object:selected'
+];
+
+const rebroadcast = (srcName) => (e) => {
+  chips.tutorial?.classList.remove('on');
+  // log léger pour debug
+  if (window.console) console.info('[BUS]', srcName, e?.detail);
+  if (srcName !== 'object:selected') {
+    const id = e?.detail?.id || e?.detail?.name || e?.detail?.slug;
+    bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id, source:srcName } }));
+  }
+};
+legacyEvents.forEach(n => {
+  window.addEventListener(n, rebroadcast(n));
+  document.addEventListener(n, rebroadcast(n));
+});
+
+/* ============= 4) Secours : si un bloc se remplit, on cache la tuto ============= */
 const anyContentObs = new MutationObserver(() => {
   const anyFilled = panels.some(p => hasContent(p));
   if (anyFilled) chips.tutorial?.classList.remove('on');
 });
 panels.forEach(p => anyContentObs.observe(p, { childList:true, subtree:true, characterData:true }));
+
+/* ============= 5) Raccourci debug : 'E' → simuler Terre ============= */
+document.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'e') {
+    bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id:'earth', source:'debug' } }));
+  }
+});
