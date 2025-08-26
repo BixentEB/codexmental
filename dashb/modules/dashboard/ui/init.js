@@ -1,50 +1,62 @@
-// init.js — CÂBLAGE STRICT SANS MODIFIER L'AFFICHAGE
-// - Ne change pas le layout ni les couleurs
-// - Observes #bloc-g1..d3, synchro chips, tuto, croix (intégrée .radar)
-// - Déplace le ship log hors de "Missions" vers une console discrète intégrée
-// - Bridge d'événements ULTRA-ROBUSTE : intercepte tout CustomEvent et rebroadcast
-// - Prépare #planet-main-viewer / #moon-viewer seulement s'ils manquent
+// init.js — HUD glue: compat DOM (#info-*), style HUD (injection),
+// miroir blocs→chips, tuto (ne disparaît qu’après sélection), close-all global (caché tant qu’il n’y a pas de sélection),
+// mini-console vaisseau discrète (intégrée) + purge des lignes Missions,
+// pont d’événements (normalisation + rebroadcast) → modules + viewer.
 
 const bus = window.__lab?.bus || document;
 
-/* ============== 0) Patch CSS minimal (pas de layout global) ============== */
+/* ============== 0) Patch CSS HUD (injection, non destructif) ============== */
 (() => {
   if (document.getElementById('hud-style-patch')) return;
   const css = `
-  :root{ --hud-text:#d9f3ff; --hud-muted:#89a3b5; }
-
-  /* Croix globale intégrée au cadre principal (.radar), sans cadre/fond */
-  main.dashboard .radar{ position:relative; }
+  :root{
+    --hud-cyan:#6fffff;--hud-cyan-soft:rgba(111,255,255,.25);
+    --hud-bg:rgba(5,20,35,.42);--hud-border:rgba(111,255,255,.18);
+    --hud-text:#d9f3ff;--hud-muted:#89a3b5;
+  }
+  .codex-select{
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    background:var(--hud-bg);border:1px solid var(--hud-border);
+    color:var(--hud-text);padding:.35rem 1.75rem .35rem .55rem;
+    border-radius:.6rem;font-size:.92rem;line-height:1.2;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+  }
+  .codex-select:focus{outline:none;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
+  /* Close-all global (caché par défaut, visible après sélection) */
   #dash-closeall{
-    position:absolute; top:10px; right:10px; z-index:1200;
-    background:none; border:0; padding:0;
-    color:var(--hud-text); font-weight:800; font-size:22px; line-height:1;
-    cursor:pointer; opacity:.65; display:none;
+    position:fixed;top:82px;right:22px;z-index:4500;
+    width:40px;height:40px;border:1px solid var(--hud-border);
+    border-radius:10px;background:rgba(255,255,255,.06);
+    color:var(--hud-text);font-weight:800;line-height:38px;text-align:center;
+    cursor:pointer;opacity:.7;transition:.15s; backdrop-filter: blur(2px);
+    display:none;
   }
   #dash-closeall.show{ display:block; }
-  #dash-closeall:hover{ opacity:1; }
+  #dash-closeall:hover{opacity:1;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
 
-  /* Ship log discret intégré en bas-droite du cadre principal */
+  /* Mini-console vaisseau (intégrée au dashboard, sans cadre) */
+  .dashboard{ position:relative; }
   #ship-console{
-    position:absolute; right:14px; bottom:12px; width:300px; max-height:24vh;
+    position:absolute; right:16px; bottom:14px; width:300px; max-height:24vh;
     font:12px/1.32 ui-monospace,Menlo,Consolas,monospace;
-    color:var(--hud-muted); background:transparent !important;
-    border:0 !important; box-shadow:none !important;
+    color:var(--hud-muted);
+    background:transparent !important; border:0 !important; box-shadow:none !important;
     border-radius:0 !important; padding:0; margin:0;
-    overflow:auto; opacity:.58; pointer-events:none; z-index:1100;
+    overflow:auto; opacity:.58; pointer-events:none; z-index:1200;
   }
-
-  /* Placeholders purement techniques : jamais visibles */
-  .placeholder{ display:none !important; }
+  #ship-console .hdr{ font:600 11px/1.2 system-ui; letter-spacing:.04em; color:var(--hud-text); opacity:.55; margin:0 0 .25rem 0; }
+  #ship-console .row{ white-space:pre-wrap; }
+  #planet-main-viewer,#moon-viewer{
+    display:block;width:100%;height:220px;background:rgba(255,255,255,.02);
+    border-radius:.6rem;
+  }
+  .placeholder{color:var(--hud-muted);opacity:.7}
   `;
-  const style = document.createElement('style');
-  style.id = 'hud-style-patch';
-  style.textContent = css;
-  document.head.appendChild(style);
+  const style=document.createElement('style');
+  style.id='hud-style-patch'; style.textContent=css; document.head.appendChild(style);
 })();
 
-/* =================== 1) Utils =================== */
-const q = (sel) => document.querySelector(sel);
+/* =================== 1) utilitaires =================== */
 const ensure = (host, sel, mk) => { let el = host?.querySelector(sel); if (!el && host) { el = mk(); host.appendChild(el); } return el; };
 const ensureSectionContent = (host) => ensure(host, ':scope > .section-content', () => { const sc=document.createElement('div'); sc.className='section-content'; return sc; });
 
@@ -52,15 +64,18 @@ const hasMeaning = (host) => {
   if (!host) return false;
   const sc = host.querySelector(':scope > .section-content') || host;
   const t = (sc.textContent||'').trim();
-  if (!t || /^—+$/.test(t) || t === '— vide —') return false;
-  return true;
+  return !!t && t !== '— vide —';
 };
-const setOn = (el, on) => { if (!el) return; el.classList.toggle('on', !!on); };
+const setOn = (el,on) => {
+  if (!el) return;
+  el.classList.toggle('on', !!on);
+  const ph = el.querySelector('.placeholder'); if (ph) ph.style.display = on ? 'none' : 'flex';
+};
 
 /* =================== 2) Compat DOM attendu par tes modules =================== */
-/* G1 : viewer + couches (ajout SEULEMENT si manquant) */
+/* G1 : viewer + couches */
 {
-  const g1 = q('#bloc-g1');
+  const g1 = document.querySelector('#bloc-g1');
   if (g1 && !g1.querySelector('#planet-main-viewer')) {
     g1.insertAdjacentHTML('afterbegin', `
       <canvas id="planet-main-viewer" width="300" height="220" data-planet=""></canvas>
@@ -78,7 +93,8 @@ const setOn = (el, on) => { if (!el) return; el.classList.toggle('on', !!on); };
 
 /* #info-* (select + .section-content) — avec les VRAIES clés data-section */
 const mountInfo = (blocSel, infoId, dataSection, selectOptions) => {
-  const host = q(blocSel); if (!host) return null;
+  const host = document.querySelector(blocSel);
+  if (!host) return null;
 
   let info = host.querySelector(`#${infoId}`);
   if (!info) { info = document.createElement('div'); info.id = infoId; host.appendChild(info); }
@@ -87,7 +103,7 @@ const mountInfo = (blocSel, infoId, dataSection, selectOptions) => {
   if (!select) {
     select = document.createElement('select');
     select.className = 'codex-select';
-    select.setAttribute('data-section', dataSection); // clé attendue par section-switcher.js
+    select.setAttribute('data-section', dataSection); // << clé attendue par section-switcher.js
     select.innerHTML = selectOptions.map(o => `<option value="${o.value}" ${o.selected?'selected':''}>${o.label}</option>`).join('');
     const h3 = document.createElement('h3'); h3.appendChild(select); info.appendChild(h3);
   }
@@ -105,6 +121,7 @@ const mountInfo = (blocSel, infoId, dataSection, selectOptions) => {
   return { host, info, select, target };
 };
 
+/* Installe les 4 conteneurs aux bons IDs/valeurs + CLEFS */
 mountInfo('#bloc-g2','info-data','informations',[
   {value:'basic',label:'Données principales',selected:true},
   {value:'composition',label:'Composition'},
@@ -121,25 +138,29 @@ mountInfo('#bloc-d2','info-moons','moons',[
   {value:'summary',label:'Résumé',selected:true},
   {value:'details',label:'Détails'}
 ]);
-ensureSectionContent(q('#bloc-d3')); // viewer Lune
+ensureSectionContent(document.querySelector('#bloc-d3')); // viewer Lune
 
-/* Placeholders niv. blocs (techniques, invisibles) */
+/* Placeholders niveau blocs */
 ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
-  const p=q(sel); if(!p) return;
+  const p=document.querySelector(sel); if(!p) return;
   if(!p.querySelector(':scope > .placeholder')){
     const ph=document.createElement('div'); ph.className='placeholder'; ph.textContent='— vide —'; p.appendChild(ph);
   }
 });
 
-/* =================== 3) ON/OFF panels + miroirs + tuto =================== */
-const panels = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].map(s=>q(s)).filter(Boolean);
+/* =================== 3) ON/OFF panels + miroir chips + tuto =================== */
+const panels = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].map(s=>document.querySelector(s)).filter(Boolean);
 const panelObs = new MutationObserver(()=>panels.forEach(p=>setOn(p,hasMeaning(p))));
 panels.forEach(p=>{ setOn(p,hasMeaning(p)); panelObs.observe(p,{childList:true,subtree:true,characterData:true}); });
 
 const chips = {
-  tutorial: q('.chip.tutorial'),
-  g1: q('.chip.g1'), g2: q('.chip.g2'), g3: q('.chip.g3'),
-  d1: q('.chip.d1'), d2: q('.chip.d2'), d3: q('.chip.d3'),
+  tutorial: document.querySelector('.chip.tutorial'),
+  g1: document.querySelector('.chip.g1'),
+  g2: document.querySelector('.chip.g2'),
+  g3: document.querySelector('.chip.g3'),
+  d1: document.querySelector('.chip.d1'),
+  d2: document.querySelector('.chip.d2'),
+  d3: document.querySelector('.chip.d3'),
 };
 let hasUserSelection = false;
 chips.tutorial?.classList.add('on');
@@ -158,7 +179,7 @@ const mirrors = [
   {from:'#bloc-d3',to:'.chip.d3 .hud-text'},
 ];
 const applyMirror=(srcSel,dstSel)=>{
-  const src=q(srcSel),dst=q(dstSel); if(!src||!dst)return;
+  const src=document.querySelector(srcSel),dst=document.querySelector(dstSel); if(!src||!dst)return;
   const sc=src.querySelector(':scope > .section-content')||src;
   dst.innerHTML=cleanCloneHTML(sc);
   const chip=dst.closest('.chip');
@@ -166,21 +187,21 @@ const applyMirror=(srcSel,dstSel)=>{
   if (chips.tutorial) chips.tutorial.classList.toggle('on',!hasUserSelection);
 };
 const mirrorObs=new MutationObserver(m=>m.forEach(x=>{const hit=mirrors.find(mi=>x.target.closest(mi.from)); if(hit) applyMirror(hit.from,hit.to);}));
-mirrors.forEach(mi=>{const src=q(mi.from); if(!src) return; applyMirror(mi.from,mi.to); mirrorObs.observe(src,{childList:true,subtree:true,characterData:true});});
+mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return; applyMirror(mi.from,mi.to); mirrorObs.observe(src,{childList:true,subtree:true,characterData:true});});
 
-/* =================== 4) Croix globale (RESET) =================== */
+/* =================== 4) Close-all global (une seule croix, visible après sélection) =================== */
 (() => {
-  if (q('#dash-closeall')) return;
-  const host = q('main.dashboard .radar') || document.body;
+  if (document.getElementById('dash-closeall')) return;
   const btn=document.createElement('button');
-  btn.id='dash-closeall'; btn.title='Fermer toutes les informations (Reset)'; btn.textContent='×';
-  host.appendChild(btn);
+  btn.id='dash-closeall'; btn.title='Fermer toutes les informations (Reset)';
+  btn.textContent='×';
+  document.body.appendChild(btn);
 
   const setCloseVisible = (show) => btn.classList.toggle('show', !!show);
 
   const resetPanels=()=>{
     ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
-      const host=q(sel); if(!host) return;
+      const host=document.querySelector(sel); if(!host) return;
       const sc=host.querySelector(':scope > .section-content')||host;
       sc.innerHTML='<div class="placeholder">— vide —</div>';
     });
@@ -192,33 +213,45 @@ mirrors.forEach(mi=>{const src=q(mi.from); if(!src) return; applyMirror(mi.from,
     bus.dispatchEvent(new CustomEvent('object:cleared'));
   };
 
+  // Expose helpers pour d’autres modules si besoin
   window.DASH = window.DASH || {};
   window.DASH.resetDashboard = resetPanels;
   window.DASH.setCloseVisible = setCloseVisible;
+
   btn.addEventListener('click', resetPanels);
 })();
 
-/* =================== 5) Ship log intégré + purge Missions =================== */
+/* =================== 5) Mini-console vaisseau (intégrée) + purge Missions =================== */
 (() => {
-  if (q('#ship-console')) return;
-  const host = q('main.dashboard .radar') || q('main.dashboard') || document.body;
-  const box=document.createElement('div'); box.id='ship-console'; host.appendChild(box);
+  if (document.getElementById('ship-console')) return;
 
-  const moved = new Set();
-  const push=(txt)=>{ const key=(txt||'').trim(); if(!key||moved.has(key)) return; moved.add(key);
-    const row=document.createElement('div'); row.textContent=key; box.appendChild(row);
-    while(box.childElementCount>160) box.removeChild(box.firstElementChild);
-    box.scrollTop = box.scrollHeight;
+  const dash = document.querySelector('main.dashboard') || document.querySelector('.dashboard') || document.body;
+  const box=document.createElement('div'); box.id='ship-console';
+  box.innerHTML='<div class="hdr">SHIP LOG</div>';
+  dash.appendChild(box);
+
+  const moved = new Set(); // éviter doublons
+
+  const push=(msg)=>{
+    const key = msg.trim();
+    if (moved.has(key)) return;
+    moved.add(key);
+    const row=document.createElement('div'); row.className='row'; row.textContent=msg;
+    box.appendChild(row);
+    while(box.children.length>1+120) box.removeChild(box.children[1]); // cap
+    box.scrollTop=box.scrollHeight;
   };
 
-  const isShipLine = (txt='') =>
-    /^\s*\[\d{1,2}:\d{2}:\d{2}\]/.test(txt) || /^→\s/.test(txt) || /STANDBY|Gyroscope|Évitement|Evitement|Vaisseau/i.test(txt);
+  const isShipLine = (txt) => {
+    const t = txt.trim();
+    return (
+      /^\[\d{1,2}:\d{2}:\d{2}\]/.test(t) ||                // [HH:MM:SS]
+      /^→\s/.test(t) ||                                    // → ...
+      /STANDBY|Gyroscope|Évitement|Evitement|Vaisseau/i.test(t)
+    );
+  };
 
-  const missionsSC =
-    q('#info-missions .section-content') ||
-    q('#bloc-d1 .section-content') ||
-    q('#bloc-d1');
-
+  const missionsSC = document.querySelector('#info-missions .section-content');
   if (!missionsSC) return;
 
   const sweep = () => {
@@ -226,98 +259,103 @@ mirrors.forEach(mi=>{const src=q(mi.from); if(!src) return; applyMirror(mi.from,
     const toRemove = [];
     while (walker.nextNode()) {
       const n = walker.currentNode;
-      const t = (n.nodeType === 3 ? n.nodeValue : n.textContent) || '';
-      if (isShipLine(t)) { push((n.innerText||n.textContent||'').trim()); toRemove.push(n); }
+      const text = (n.nodeType === 3) ? n.nodeValue : n.textContent;
+      if (!text) continue;
+      if (isShipLine(text)) {
+        push((n.innerText||n.textContent||'').trim());
+        toRemove.push(n);
+        const sib = n.nextSibling;
+        if (sib && (sib.textContent||'').trim().startsWith('→')) {
+          push(sib.textContent.trim());
+          toRemove.push(sib);
+        }
+      }
     }
     toRemove.forEach(n => n.parentNode && n.parentNode.removeChild(n));
   };
 
   sweep();
-  new MutationObserver(sweep).observe(missionsSC,{childList:true,subtree:true,characterData:true});
+  const mo=new MutationObserver(() => sweep());
+  mo.observe(missionsSC,{childList:true,subtree:true,characterData:true});
 })();
 
-/* =================== 6) Pont d’évènements — interception globale =================== */
-/* Ici on NE DEVINE PLUS le nom du bon event.
-   On intercepte TOUTES les dispatches de CustomEvent dans la page,
-   on reconnait celles qui ressemblent à une sélection, et on rebroadcast
-   vers tous les noms attendus (compat maximale). */
+/* =================== 6) Pont d’évènements — NORMALISATION + REBROADCAST =================== */
 (() => {
-  const ORIG = EventTarget.prototype.dispatchEvent;
-  const seen = new WeakSet();
-
-  const looksLikeSelection = (type, detail) => {
-    const tn = String(type||'');
-    const hasKey = detail && (detail.id || detail.name || detail.key || detail.planet || detail.body);
-    return (
-      /planet|body|object|celestial|selected/i.test(tn) ||
-      (hasKey && /select|click|picked/i.test(tn))
-    );
-  };
+  const CANDIDATES = [
+    'object:selected','planet:selected','dashboard:select:planet',
+    'simul:planet:click','radar:object:selected','system:body:clicked',
+    'body:selected','celestial:selected'
+  ];
 
   const normalize = (detail) => {
     const id = detail?.id || detail?.name || detail?.key || detail?.planet || detail?.body || null;
-    const type = (detail?.type || (/moon/i.test(String(detail?.name||'')) ? 'moon' : 'planet')).toLowerCase();
+    const type = (detail?.type || 'planet').toLowerCase();
     return { id: id ? String(id).toLowerCase() : null, type, raw: detail || null, ts: Date.now() };
   };
 
-  const rebroadcastAll = (norm) => {
-    const names = [
-      'object:selected','planet:selected','dashboard:select:planet',
-      'simul:planet:click','radar:object:selected','system:body:clicked',
-      'body:selected','celestial:selected'
-    ];
-    names.forEach(n => {
-      const ev = new CustomEvent(n, { detail: norm });
-      document.dispatchEvent(ev);
-      window.dispatchEvent(new CustomEvent(n, { detail: norm }));
-    });
+  const rebroadcast = (evtName, detail) => {
+    const ev = new CustomEvent(evtName, { detail, bubbles: true });
+    document.dispatchEvent(ev);
+    window.dispatchEvent(new CustomEvent(evtName, { detail }));
   };
 
-  EventTarget.prototype.dispatchEvent = function(ev){
-    try{
-      if (ev && ev instanceof CustomEvent && !seen.has(ev) && looksLikeSelection(ev.type, ev.detail)) {
-        const norm = normalize(ev.detail);
-        if (norm.id) {
-          hasUserSelection = true;
-          window.DASH?.setCloseVisible?.(true);
-          rebroadcastAll(norm);
-          // Piloter viewers si exposés
-          const layer = document.getElementById('layer-select')?.value || 'surface';
-          if (norm.type === 'planet') window.OrbViewer?.showPlanet?.(norm.id, layer);
-          if (norm.type === 'moon')   window.OrbViewer?.showMoon?.(norm.id);
-          mirrors.forEach(mi => applyMirror(mi.from, mi.to));
-        }
-      }
-    } catch(e) { /* silencieux */ }
-    return ORIG.call(this, ev);
+  const onAnySelect = (srcName) => (e) => {
+    const norm = normalize(e.detail);
+    if (!norm.id) return; // rien d’exploitable
+    hasUserSelection = true;
+
+    // Afficher la croix globale
+    window.DASH?.setCloseVisible?.(true);
+
+    // Rebroadcast pour compat modules “métier”
+    if (srcName !== 'object:selected') rebroadcast('object:selected', norm);
+    if (norm.type === 'planet') rebroadcast('planet:selected', norm);
+
+    // Piloter le viewer si dispo
+    const layer = document.getElementById('layer-select')?.value || 'surface';
+    if (norm.type === 'planet') window.OrbViewer?.showPlanet?.(norm.id, layer);
+    if (norm.type === 'moon' || /moon/i.test(srcName)) window.OrbViewer?.showMoon?.(norm.id);
+
+    // Mettre à jour chips/tuto
+    mirrors.forEach(mi => applyMirror(mi.from, mi.to));
   };
 
-  // Fallback : écoute aussi les noms "classiques"
-  ['object:selected','planet:selected','dashboard:select:planet',
-   'simul:planet:click','radar:object:selected','system:body:clicked',
-   'body:selected','celestial:selected'
-  ].forEach(n=>{
-     const on=(e)=>{
-       hasUserSelection = true;
-       window.DASH?.setCloseVisible?.(true);
-       mirrors.forEach(mi => applyMirror(mi.from, mi.to));
-     };
-     document.addEventListener(n,on,{passive:true});
-     window.addEventListener(n,on,{passive:true});
+  CANDIDATES.forEach(n => {
+    document.addEventListener(n, onAnySelect(n), { passive:true });
+    window.addEventListener(n, onAnySelect(n), { passive:true });
   });
 
-  // Couche
+  // Changement de couche
   document.getElementById('layer-select')?.addEventListener('change',(e)=>{
     window.OrbViewer?.setLayer?.(e.target.value);
   });
+
+  // Heuristique Lunes: si le bloc change et expose un data-moon / ou texte “Lune …”
+  const moonsSC = document.querySelector('#info-moons .section-content');
+  if (moonsSC) {
+    const mo = new MutationObserver(() => {
+      const attr = moonsSC.querySelector('[data-moon]')?.getAttribute('data-moon');
+      let id = (attr||'').toLowerCase();
+      if (!id) {
+        const t = (moonsSC.textContent||'').toLowerCase();
+        if (/\blune\b/.test(t)) id = 'moon';
+      }
+      if (id) {
+        hasUserSelection = true;
+        window.DASH?.setCloseVisible?.(true);
+        window.OrbViewer?.showMoon?.(id);
+        mirrors.forEach(mi => applyMirror(mi.from, mi.to));
+      }
+    });
+    mo.observe(moonsSC,{childList:true,subtree:true,characterData:true});
+  }
 })();
 
-/* =================== 7) Viewer Lune (bloc D3) =================== */
+/* =================== 7) Prépare le viewer Lune (bloc D3) =================== */
 (() => {
-  const d3 = q('#bloc-d3');
+  const d3=document.querySelector('#bloc-d3');
   if(d3 && !d3.querySelector('#moon-viewer')){
     const wrap = ensureSectionContent(d3);
-    const canvas=document.createElement('canvas');
-    canvas.id='moon-viewer'; canvas.width=300; canvas.height=220; wrap.prepend(canvas);
+    const canvas=document.createElement('canvas'); canvas.id='moon-viewer'; canvas.width=300; canvas.height=220; wrap.prepend(canvas);
   }
 })();
