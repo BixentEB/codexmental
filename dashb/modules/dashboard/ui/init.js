@@ -1,7 +1,7 @@
 // init.js — HUD glue: compat DOM (#info-*), style HUD (injection),
-// miroir blocs→chips, tuto (ne disparaît qu’après clic), close-all global,
-// mini-console vaisseau discrète (intégrée au dashboard) + purge des lignes Missions,
-// pont d’événements → viewer 3D.
+// miroir blocs→chips, tuto (ne disparaît qu’après sélection), close-all global (caché tant qu’il n’y a pas de sélection),
+// mini-console vaisseau discrète (intégrée) + purge des lignes Missions,
+// pont d’événements (normalisation + rebroadcast) → modules + viewer.
 
 const bus = window.__lab?.bus || document;
 
@@ -22,14 +22,16 @@ const bus = window.__lab?.bus || document;
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
   }
   .codex-select:focus{outline:none;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
-  /* Close-all global */
+  /* Close-all global (caché par défaut, visible après sélection) */
   #dash-closeall{
     position:fixed;top:82px;right:22px;z-index:4500;
     width:40px;height:40px;border:1px solid var(--hud-border);
     border-radius:10px;background:rgba(255,255,255,.06);
     color:var(--hud-text);font-weight:800;line-height:38px;text-align:center;
     cursor:pointer;opacity:.7;transition:.15s; backdrop-filter: blur(2px);
+    display:none;
   }
+  #dash-closeall.show{ display:block; }
   #dash-closeall:hover{opacity:1;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
 
   /* Mini-console vaisseau (intégrée au dashboard, sans cadre) */
@@ -89,8 +91,8 @@ const setOn = (el,on) => {
   }
 }
 
-/* #info-* (select + .section-content) */
-const mountInfo = (blocSel, infoId, selectOptions) => {
+/* #info-* (select + .section-content) — avec les VRAIES clés data-section */
+const mountInfo = (blocSel, infoId, dataSection, selectOptions) => {
   const host = document.querySelector(blocSel);
   if (!host) return null;
 
@@ -101,7 +103,7 @@ const mountInfo = (blocSel, infoId, selectOptions) => {
   if (!select) {
     select = document.createElement('select');
     select.className = 'codex-select';
-    select.setAttribute('data-section', infoId);
+    select.setAttribute('data-section', dataSection); // << clé attendue par section-switcher.js
     select.innerHTML = selectOptions.map(o => `<option value="${o.value}" ${o.selected?'selected':''}>${o.label}</option>`).join('');
     const h3 = document.createElement('h3'); h3.appendChild(select); info.appendChild(h3);
   }
@@ -119,20 +121,20 @@ const mountInfo = (blocSel, infoId, selectOptions) => {
   return { host, info, select, target };
 };
 
-/* Installe les 4 conteneurs aux bons IDs/valeurs */
-mountInfo('#bloc-g2','info-data',[
+/* Installe les 4 conteneurs aux bons IDs/valeurs + CLEFS */
+mountInfo('#bloc-g2','info-data','informations',[
   {value:'basic',label:'Données principales',selected:true},
   {value:'composition',label:'Composition'},
   {value:'climat',label:'Climat'}
 ]);
-mountInfo('#bloc-g3','info-colony',[
+mountInfo('#bloc-g3','info-colony','colony',[
   {value:'summary',label:'Résumé',selected:true},
   {value:'explanation',label:'Explications'}
 ]);
-mountInfo('#bloc-d1','info-missions',[
+mountInfo('#bloc-d1','info-missions','missions',[
   {value:'summary',label:'Exploration',selected:true}
 ]);
-mountInfo('#bloc-d2','info-moons',[
+mountInfo('#bloc-d2','info-moons','moons',[
   {value:'summary',label:'Résumé',selected:true},
   {value:'details',label:'Détails'}
 ]);
@@ -187,15 +189,15 @@ const applyMirror=(srcSel,dstSel)=>{
 const mirrorObs=new MutationObserver(m=>m.forEach(x=>{const hit=mirrors.find(mi=>x.target.closest(mi.from)); if(hit) applyMirror(hit.from,hit.to);}));
 mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return; applyMirror(mi.from,mi.to); mirrorObs.observe(src,{childList:true,subtree:true,characterData:true});});
 
-document.getElementById('simul-system')?.addEventListener('click',()=>{ hasUserSelection=true; mirrors.forEach(mi=>applyMirror(mi.from,mi.to)); });
-
-/* =================== 4) Close-all global (une seule croix) =================== */
+/* =================== 4) Close-all global (une seule croix, visible après sélection) =================== */
 (() => {
   if (document.getElementById('dash-closeall')) return;
   const btn=document.createElement('button');
   btn.id='dash-closeall'; btn.title='Fermer toutes les informations (Reset)';
   btn.textContent='×';
   document.body.appendChild(btn);
+
+  const setCloseVisible = (show) => btn.classList.toggle('show', !!show);
 
   const resetPanels=()=>{
     ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
@@ -206,9 +208,16 @@ document.getElementById('simul-system')?.addEventListener('click',()=>{ hasUserS
     hasUserSelection=false;
     window.OrbViewer?.clearPlanet?.(); window.OrbViewer?.clearMoon?.();
     chips.tutorial?.classList.add('on');
+    setCloseVisible(false);
     mirrors.forEach(mi=>applyMirror(mi.from,mi.to));
     bus.dispatchEvent(new CustomEvent('object:cleared'));
   };
+
+  // Expose helpers pour d’autres modules si besoin
+  window.DASH = window.DASH || {};
+  window.DASH.resetDashboard = resetPanels;
+  window.DASH.setCloseVisible = setCloseVisible;
+
   btn.addEventListener('click', resetPanels);
 })();
 
@@ -246,7 +255,6 @@ document.getElementById('simul-system')?.addEventListener('click',()=>{ hasUserS
   if (!missionsSC) return;
 
   const sweep = () => {
-    // 1) parcourir enfants (éléments + textes)
     const walker = document.createTreeWalker(missionsSC, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
     const toRemove = [];
     while (walker.nextNode()) {
@@ -254,18 +262,12 @@ document.getElementById('simul-system')?.addEventListener('click',()=>{ hasUserS
       const text = (n.nodeType === 3) ? n.nodeValue : n.textContent;
       if (!text) continue;
       if (isShipLine(text)) {
-        // capturer aussi un éventuel "→ ..." juste après
-        if (n.nodeType === 1) {
-          push(n.innerText || n.textContent);
-        } else {
-          push(text);
-        }
+        push((n.innerText||n.textContent||'').trim());
         toRemove.push(n);
-        // voisin suivant pour les paires “timestamp” + “→ …”
-        const sibling = n.nextSibling;
-        if (sibling && (sibling.textContent || '').trim().startsWith('→')) {
-          push(sibling.textContent);
-          toRemove.push(sibling);
+        const sib = n.nextSibling;
+        if (sib && (sib.textContent||'').trim().startsWith('→')) {
+          push(sib.textContent.trim());
+          toRemove.push(sib);
         }
       }
     }
@@ -277,26 +279,73 @@ document.getElementById('simul-system')?.addEventListener('click',()=>{ hasUserS
   mo.observe(missionsSC,{childList:true,subtree:true,characterData:true});
 })();
 
-/* =================== 6) Pont d’évènements → viewer 3D =================== */
+/* =================== 6) Pont d’évènements — NORMALISATION + REBROADCAST =================== */
 (() => {
-  const CANDIDATES=[
+  const CANDIDATES = [
     'object:selected','planet:selected','dashboard:select:planet',
     'simul:planet:click','radar:object:selected','system:body:clicked',
     'body:selected','celestial:selected'
   ];
-  const normalize=(d)=>{const id=d?.id||d?.name||d?.key||d?.planet||d?.body||null; const type=(d?.type||'planet').toLowerCase(); return { id:(id||'').toLowerCase(), type };};
-  const onPick=(name)=>(e)=>{ hasUserSelection=true; const {id,type}=normalize(e.detail||{}); const layer=document.getElementById('layer-select')?.value||'surface';
-    if(type==='planet'||!type){ window.OrbViewer?.showPlanet?.(id,layer); }
-    if(type==='moon'||name.includes('moon')){ window.OrbViewer?.showMoon?.(id); }
-    mirrors.forEach(mi=>applyMirror(mi.from,mi.to));
+
+  const normalize = (detail) => {
+    const id = detail?.id || detail?.name || detail?.key || detail?.planet || detail?.body || null;
+    const type = (detail?.type || 'planet').toLowerCase();
+    return { id: id ? String(id).toLowerCase() : null, type, raw: detail || null, ts: Date.now() };
   };
-  CANDIDATES.forEach(n=>{ document.addEventListener(n,onPick(n),{passive:true}); window.addEventListener(n,onPick(n),{passive:true}); });
-  document.getElementById('layer-select')?.addEventListener('change',(e)=>{ window.OrbViewer?.setLayer?.(e.target.value); });
-  const moonsSC=document.querySelector('#info-moons .section-content');
-  if(moonsSC){
-    const mo=new MutationObserver(()=>{ const attr=moonsSC.querySelector('[data-moon]')?.getAttribute('data-moon'); let id=(attr||'').toLowerCase();
-      if(!id){ const t=(moonsSC.textContent||'').toLowerCase(); if(/\blune\b/.test(t)) id='moon'; }
-      if(id){ hasUserSelection=true; window.OrbViewer?.showMoon?.(id); mirrors.forEach(mi=>applyMirror(mi.from,mi.to)); }
+
+  const rebroadcast = (evtName, detail) => {
+    const ev = new CustomEvent(evtName, { detail, bubbles: true });
+    document.dispatchEvent(ev);
+    window.dispatchEvent(new CustomEvent(evtName, { detail }));
+  };
+
+  const onAnySelect = (srcName) => (e) => {
+    const norm = normalize(e.detail);
+    if (!norm.id) return; // rien d’exploitable
+    hasUserSelection = true;
+
+    // Afficher la croix globale
+    window.DASH?.setCloseVisible?.(true);
+
+    // Rebroadcast pour compat modules “métier”
+    if (srcName !== 'object:selected') rebroadcast('object:selected', norm);
+    if (norm.type === 'planet') rebroadcast('planet:selected', norm);
+
+    // Piloter le viewer si dispo
+    const layer = document.getElementById('layer-select')?.value || 'surface';
+    if (norm.type === 'planet') window.OrbViewer?.showPlanet?.(norm.id, layer);
+    if (norm.type === 'moon' || /moon/i.test(srcName)) window.OrbViewer?.showMoon?.(norm.id);
+
+    // Mettre à jour chips/tuto
+    mirrors.forEach(mi => applyMirror(mi.from, mi.to));
+  };
+
+  CANDIDATES.forEach(n => {
+    document.addEventListener(n, onAnySelect(n), { passive:true });
+    window.addEventListener(n, onAnySelect(n), { passive:true });
+  });
+
+  // Changement de couche
+  document.getElementById('layer-select')?.addEventListener('change',(e)=>{
+    window.OrbViewer?.setLayer?.(e.target.value);
+  });
+
+  // Heuristique Lunes: si le bloc change et expose un data-moon / ou texte “Lune …”
+  const moonsSC = document.querySelector('#info-moons .section-content');
+  if (moonsSC) {
+    const mo = new MutationObserver(() => {
+      const attr = moonsSC.querySelector('[data-moon]')?.getAttribute('data-moon');
+      let id = (attr||'').toLowerCase();
+      if (!id) {
+        const t = (moonsSC.textContent||'').toLowerCase();
+        if (/\blune\b/.test(t)) id = 'moon';
+      }
+      if (id) {
+        hasUserSelection = true;
+        window.DASH?.setCloseVisible?.(true);
+        window.OrbViewer?.showMoon?.(id);
+        mirrors.forEach(mi => applyMirror(mi.from, mi.to));
+      }
     });
     mo.observe(moonsSC,{childList:true,subtree:true,characterData:true});
   }
