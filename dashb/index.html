@@ -26,45 +26,53 @@
   <!-- Fond optionnel -->
   <canvas id="theme-canvas" style="position:fixed; inset:0; z-index:-1;"></canvas>
 
-  <!-- DASHBOARD : full‑bleed + chips -->
+  <!-- DASHBOARD : full-bleed + chips -->
   <main class="dashboard mode-chips">
     <div class="header" id="dash-header"></div>
 
-    <!-- Slots conservés (compat) -->
+    <!-- Colonne gauche : blocs compat (G1..G3) -->
     <section class="left">
       <div id="bloc-g1" class="panel"></div>
       <div id="bloc-g2" class="panel"></div>
       <div id="bloc-g3" class="panel"></div>
     </section>
 
+    <!-- Radar central + HUD -->
     <section class="radar" id="radar">
       <!-- Titres verticaux -->
       <div id="dashboard-title-left">ORION INTERFACE</div>
       <div id="dashboard-title-right">TACTICAL MODULE</div>
 
-      <!-- Canvas attendu par le radar 2D (taille fixe pour éviter tout zoom parasite) -->
+      <!-- Canvas attendu par le radar 2D -->
       <canvas id="simul-system" width="1200" height="800"></canvas>
 
       <!-- CHIPS HUD -->
       <div class="hud-chips">
-      <!-- Tutoriel ON au chargement -->
-  <div class="chip tutorial on">
-    <div class="hud-title">Sélection requise</div>
-    <div class="hud-text">
-      Sélectionnez un objet céleste pour afficher ses paramètres orbitaux, physiques et contextuels.
-    </div>
-  </div>
+        <!-- Tutoriel ON au chargement -->
+        <div class="chip tutorial on">
+          <div class="hud-title">Sélection requise</div>
+          <div class="hud-text">
+            Sélectionnez un objet céleste pour afficher ses paramètres orbitaux, physiques et contextuels.
+          </div>
+        </div>
 
-     <!-- GAUCHE (g1..g3) -->
-  <div class="chip g1"><div class="hud-title">Planète</div><div class="hud-text"></div></div>
-  <div class="chip g2"><div class="hud-title">Informations <button class="hud-close" title="Fermer">×</button></div><div class="hud-text"></div></div>
-  <div class="chip g3"><div class="hud-title">Terraformation</div><div class="hud-text"></div></div>
+        <!-- GAUCHE (miroir des blocs g1..g3) -->
+        <div class="chip g1"><div class="hud-title">Planète</div><div class="hud-text"></div></div>
+        <div class="chip g2"><div class="hud-title">Informations <button class="hud-close" title="Fermer">×</button></div><div class="hud-text"></div></div>
+        <div class="chip g3"><div class="hud-title">Terraformation</div><div class="hud-text"></div></div>
 
-    <!-- DROITE (d1..d3) -->
-  <div class="chip d1"><div class="hud-title">Missions</div><div class="hud-text"></div></div>
-  <div class="chip d2"><div class="hud-title">Lunes</div><div class="hud-text"></div></div>
-  <div class="chip d3"><div class="hud-title">Viewer secondaire</div><div class="hud-text"></div></div>
-</div>
+        <!-- DROITE (miroir des blocs d1..d3) -->
+        <div class="chip d1"><div class="hud-title">Missions</div><div class="hud-text"></div></div>
+        <div class="chip d2"><div class="hud-title">Lunes</div><div class="hud-text"></div></div>
+        <div class="chip d3"><div class="hud-title">Viewer secondaire</div><div class="hud-text"></div></div>
+      </div>
+    </section>
+
+    <!-- Colonne droite : blocs compat (D1..D3) -->
+    <section class="right">
+      <div id="bloc-d1" class="panel"></div>
+      <div id="bloc-d2" class="panel"></div>
+      <div id="bloc-d3" class="panel"></div>
     </section>
 
     <div class="footer" id="dash-footer"></div>
