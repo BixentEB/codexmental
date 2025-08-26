@@ -100,3 +100,26 @@
   window.__DASH__ = window.__DASH__ || {};
   window.__DASH__.forceUpdateHUD = onAnyChange;
 })();
+
+// glue.blocks.js – évite de polluer les titres décoratifs
+(function(){
+  const hasMeaning = (el)=>{
+    if (!el) return false;
+    const sc = el.querySelector('.section-content')||el;
+    const txt=(sc.textContent||'').trim();
+    return !!txt && txt!=='— vide —';
+  };
+
+  const panels = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3']
+    .map(s=>document.querySelector(s)).filter(Boolean);
+
+  const obs = new MutationObserver(()=>{
+    panels.forEach(p=>{
+      p.classList.toggle('on', hasMeaning(p));
+    });
+  });
+  panels.forEach(p=>obs.observe(p,{childList:true,subtree:true,characterData:true}));
+
+  // pas de création de <h3> ou titres → on respecte index.html
+})();
+
