@@ -22,35 +22,37 @@ const bus = window.__lab?.bus || document;
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
   }
   .codex-select:focus{outline:none;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
-  /* Close-all global (caché par défaut, visible après sélection) */
+
+  /* Close-all global : intégré AU CADRE PRINCIPAL (.radar), sans cadre/fond, caché par défaut */
+  main.dashboard .radar{ position:relative; }
   #dash-closeall{
-    position:fixed;top:82px;right:22px;z-index:4500;
-    width:40px;height:40px;border:1px solid var(--hud-border);
-    border-radius:10px;background:rgba(255,255,255,.06);
-    color:var(--hud-text);font-weight:800;line-height:38px;text-align:center;
-    cursor:pointer;opacity:.7;transition:.15s; backdrop-filter: blur(2px);
-    display:none;
+    position:absolute; top:10px; right:10px; z-index:1200;
+    background:none; border:0; padding:0;
+    color:var(--hud-text); font-weight:800; font-size:22px; line-height:1;
+    cursor:pointer; opacity:.65; display:none;
   }
   #dash-closeall.show{ display:block; }
-  #dash-closeall:hover{opacity:1;box-shadow:0 0 0 2px var(--hud-cyan-soft);}
+  #dash-closeall:hover{ opacity:1; }
 
-  /* Mini-console vaisseau (intégrée au dashboard, sans cadre) */
-  .dashboard{ position:relative; }
+  /* Mini-console vaisseau (intégrée au dashboard, fond transparent, discrète) */
   #ship-console{
-    position:absolute; right:16px; bottom:14px; width:300px; max-height:24vh;
+    position:absolute; right:14px; bottom:12px; width:300px; max-height:24vh;
     font:12px/1.32 ui-monospace,Menlo,Consolas,monospace;
     color:var(--hud-muted);
     background:transparent !important; border:0 !important; box-shadow:none !important;
     border-radius:0 !important; padding:0; margin:0;
-    overflow:auto; opacity:.58; pointer-events:none; z-index:1200;
+    overflow:auto; opacity:.58; pointer-events:none; z-index:1100;
   }
-  #ship-console .hdr{ font:600 11px/1.2 system-ui; letter-spacing:.04em; color:var(--hud-text); opacity:.55; margin:0 0 .25rem 0; }
-  #ship-console .row{ white-space:pre-wrap; }
+  #ship-console .hdr{ display:none; } /* pas d’en-tête visible */
+
+  /* Viewers si présents */
   #planet-main-viewer,#moon-viewer{
     display:block;width:100%;height:220px;background:rgba(255,255,255,.02);
     border-radius:.6rem;
   }
-  .placeholder{color:var(--hud-muted);opacity:.7}
+
+  /* Placeholders purement techniques : jamais visibles */
+  .placeholder{ display:none !important; color:var(--hud-muted); opacity:.0 }
   `;
   const style=document.createElement('style');
   style.id='hud-style-patch'; style.textContent=css; document.head.appendChild(style);
@@ -64,12 +66,14 @@ const hasMeaning = (host) => {
   if (!host) return false;
   const sc = host.querySelector(':scope > .section-content') || host;
   const t = (sc.textContent||'').trim();
-  return !!t && t !== '— vide —';
+  // Considère vide s'il n'y a que des tirets ou rien
+  if (!t || /^—+$/.test(t)) return false;
+  return t !== '— vide —';
 };
 const setOn = (el,on) => {
   if (!el) return;
   el.classList.toggle('on', !!on);
-  const ph = el.querySelector('.placeholder'); if (ph) ph.style.display = on ? 'none' : 'flex';
+  const ph = el.querySelector('.placeholder'); if (ph) ph.style.display = 'none'; // toujours caché
 };
 
 /* =================== 2) Compat DOM attendu par tes modules =================== */
@@ -192,10 +196,13 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
 /* =================== 4) Close-all global (une seule croix, visible après sélection) =================== */
 (() => {
   if (document.getElementById('dash-closeall')) return;
+
+  // 👇 On ajoute la croix à l’intérieur du cadre principal (.radar)
+  const host = document.querySelector('main.dashboard .radar') || document.body;
   const btn=document.createElement('button');
   btn.id='dash-closeall'; btn.title='Fermer toutes les informations (Reset)';
   btn.textContent='×';
-  document.body.appendChild(btn);
+  host.appendChild(btn);
 
   const setCloseVisible = (show) => btn.classList.toggle('show', !!show);
 
@@ -225,9 +232,11 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
 (() => {
   if (document.getElementById('ship-console')) return;
 
-  const dash = document.querySelector('main.dashboard') || document.querySelector('.dashboard') || document.body;
+  // 👇 Ship log dans le CADRE PRINCIPAL (bas-droite)
+  const dash = document.querySelector('main.dashboard .radar') || document.querySelector('main.dashboard') || document.body;
   const box=document.createElement('div'); box.id='ship-console';
-  box.innerHTML='<div class="hdr">SHIP LOG</div>';
+  // pas de header visible
+  box.innerHTML='';
   dash.appendChild(box);
 
   const moved = new Set(); // éviter doublons
@@ -236,9 +245,9 @@ mirrors.forEach(mi=>{const src=document.querySelector(mi.from); if(!src) return;
     const key = msg.trim();
     if (moved.has(key)) return;
     moved.add(key);
-    const row=document.createElement('div'); row.className='row'; row.textContent=msg;
+    const row=document.createElement('div'); row.textContent=msg;
     box.appendChild(row);
-    while(box.children.length>1+120) box.removeChild(box.children[1]); // cap
+    while(box.children.length>160) box.removeChild(box.children[0]); // cap
     box.scrollTop=box.scrollHeight;
   };
 
