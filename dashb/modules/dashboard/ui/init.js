@@ -1,14 +1,9 @@
-// init.js — Compat DOM (anciens blocs), miroir #bloc-* → chips, pont d’événements.
-// AUCUNE modif de tes scripts métier. On reconstruit juste le markup attendu.
+// init.js — Compat DOM (anciens blocs), miroir #bloc-* → chips, pont d’événements,
+// et logique correcte: tuto ON tant qu'il n'y a pas de sélection.
 
 const bus = window.__lab?.bus || document;
 
-/* ============= utils ============= */
-const ensure = (host, html) => {
-  if (!host) return null;
-  if (!host.firstElementChild) host.insertAdjacentHTML('beforeend', html);
-  return host;
-};
+/* ============= helpers ============= */
 const ensureSectionContent = (host) => {
   if (!host) return null;
   let sc = host.querySelector(':scope > .section-content');
@@ -19,19 +14,24 @@ const ensureSectionContent = (host) => {
   }
   return sc;
 };
+
+// retire du HTML tout ce qui est auxiliaire (placeholders, viewer controls, canvas)
+const STRIP_SELECTORS = '.placeholder, .viewer-controls, #planet-main-viewer';
 const cleanHTML = (node) => {
   const clone = node.cloneNode(true);
-  clone.querySelectorAll('.placeholder').forEach(el => el.remove());
+  clone.querySelectorAll(STRIP_SELECTORS).forEach(el => el.remove());
   return clone.innerHTML.trim();
 };
+
 const hasContent = (el) => {
   if (!el) return false;
   const tmp = el.cloneNode(true);
-  tmp.querySelectorAll('.placeholder').forEach(n => n.remove());
+  tmp.querySelectorAll(STRIP_SELECTORS).forEach(n => n.remove());
   const text = (tmp.textContent || '').trim();
-  const child = tmp.querySelector(':scope > *:not(.placeholder)');
+  const child = tmp.querySelector(':scope > *');
   return (text.length > 0) || !!child;
 };
+
 const setState = (el,on) => {
   if (!el) return;
   el.classList.toggle('on', !!on);
@@ -39,14 +39,14 @@ const setState = (el,on) => {
   if (ph) ph.style.display = on ? 'none' : 'flex';
 };
 
-/* ============= 0) Reconstruire le DOM “ancien” si besoin ============= */
-// G1 : viewer + couche
+/* ============= 0) compat DOM attendu par tes modules ============= */
+// G1 : viewer + couche (uniquement si absent)
 {
   const g1 = document.querySelector('#bloc-g1');
   if (g1 && !g1.querySelector('#planet-main-viewer')) {
     g1.insertAdjacentHTML('beforeend', `
       <canvas id="planet-main-viewer" width="150" height="150" data-planet=""></canvas>
-      <div class="viewer-controls" style="margin-top:.5rem">
+      <div class="viewer-controls">
         <label for="layer-select">🛰️ Couche :</label>
         <select id="layer-select" class="codex-select">
           <option value="surface" selected>Surface</option>
@@ -57,49 +57,45 @@ const setState = (el,on) => {
     `);
   }
 }
-// G2..D3 : selects + section-content (suivant l’index historique)
-const ensureBlock = (sel, title, dataSection, options) => {
+
+// G2..D3 : selects + section-content si manquants
+const ensureBlock = (sel, dataSection, options) => {
   const host = document.querySelector(sel);
   if (!host) return;
-  let hasSelect = host.querySelector('select[data-section]');
-  if (!hasSelect) {
+  if (!host.querySelector('select[data-section]')) {
     const opts = options.map(o => `<option value="${o.value}" ${o.selected?'selected':''}>${o.label}</option>`).join('');
     host.insertAdjacentHTML('afterbegin', `
       <h3>
-        <select data-section="${dataSection}" class="codex-select">
-          ${opts}
-        </select>
+        <select data-section="${dataSection}" class="codex-select">${opts}</select>
       </h3>
     `);
   }
   ensureSectionContent(host);
 };
-ensureBlock('#bloc-g2', 'Informations', 'informations', [
+ensureBlock('#bloc-g2', 'informations', [
   {value:'basic', label:'Données principales', selected:true},
   {value:'composition', label:'Composition'},
   {value:'climat', label:'Climat'},
 ]);
-ensureBlock('#bloc-g3', 'Terraformation', 'colony', [
+ensureBlock('#bloc-g3', 'colony', [
   {value:'colonization', label:'État de terraformation', selected:true},
   {value:'potentials', label:'Potentiels'},
   {value:'phases', label:'Phases'},
   {value:'bases', label:'Implantations'},
 ]);
-ensureBlock('#bloc-d1', 'Missions', 'missions', [
+ensureBlock('#bloc-d1', 'missions', [
   {value:'summary', label:'Exploration', selected:true},
 ]);
-ensureBlock('#bloc-d2', 'Lunes', 'moons', [
+ensureBlock('#bloc-d2', 'moons', [
   {value:'summary', label:'Lunes', selected:true},
   {value:'details', label:'Détails'},
 ]);
-// D3 : viewer secondaire/logs → au moins une section-content
 ensureSectionContent(document.querySelector('#bloc-d3'));
 
-/* Ajoute des placeholders “— vide —” pour l’état OFF */
+// Placeholders pour l'état OFF
 ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3'].forEach(sel=>{
   const p = document.querySelector(sel);
-  if (!p) return;
-  if (!p.querySelector('.placeholder')){
+  if (p && !p.querySelector('.placeholder')) {
     const ph = document.createElement('div');
     ph.className = 'placeholder';
     ph.textContent = '— vide —';
@@ -107,42 +103,51 @@ ensureSectionContent(document.querySelector('#bloc-d3'));
   }
 });
 
-/* ============= 1) Panels ON/OFF ============= */
-const panels = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3']
+/* ============= 1) panels ON/OFF (compat) ============= */
+const panelEls = ['#bloc-g1','#bloc-g2','#bloc-g3','#bloc-d1','#bloc-d2','#bloc-d3']
   .map(sel => document.querySelector(sel)).filter(Boolean);
 
-const panelObs = new MutationObserver(() => panels.forEach(p => setState(p, hasContent(p))));
-panels.forEach(p => {
+const panelObs = new MutationObserver(() =>
+  panelEls.forEach(p => setState(p, hasContent(p)))
+);
+panelEls.forEach(p => {
   setState(p, hasContent(p));
   panelObs.observe(p, { childList:true, subtree:true, characterData:true });
 });
 
-/* ============= 2) CHIPS HUD (miroir #bloc-* → chips) ============= */
+/* ============= 2) chips + miroir (#bloc-* → chips) ============= */
 const chips = {
   tutorial: document.querySelector('.chip.tutorial'),
-  g1: document.querySelector('.chip.g1'),
-  g2: document.querySelector('.chip.g2'),
-  g3: document.querySelector('.chip.g3'),
-  d1: document.querySelector('.chip.d1'),
-  d2: document.querySelector('.chip.d2'),
-  d3: document.querySelector('.chip.d3'),
+  g1: document.querySelector('.chip.g1'),  // Planète
+  g2: document.querySelector('.chip.g2'),  // Informations
+  g3: document.querySelector('.chip.g3'),  // Terraformation
+  d1: document.querySelector('.chip.d1'),  // Missions
+  d2: document.querySelector('.chip.d2'),  // Lunes
+  d3: document.querySelector('.chip.d3'),  // Viewer secondaire/Logs
 };
 const chipList = Object.values(chips).filter(Boolean);
 const hudRoot = document.querySelector('.hud-chips') || document;
 
-// baseline : OFF (sauf tuto)
+// baseline: tout OFF sauf tuto
 chipList.forEach(ch => { if (ch && !ch.classList.contains('tutorial')) ch.classList.remove('on'); });
 chips.tutorial?.classList.add('on');
+
+// Flag "une sélection est active"
+let hasSelection = false;
 
 const evalChips = () => {
   chipList.forEach(ch => {
     if (!ch || ch.classList.contains('tutorial')) return;
     const content = ch.querySelector('.hud-text');
-    setState(ch, hasContent(content));
+    let on = hasContent(content);
+    // Garde la chip "Planète" (g1) éteinte tant qu'il n'y a pas de sélection
+    if (ch === chips.g1 && !hasSelection) on = false;
+    setState(ch, on);
   });
   const anyOn = chipList.some(ch => ch && !ch.classList.contains('tutorial') && ch.classList.contains('on'));
   chips.tutorial?.classList.toggle('on', !anyOn);
 };
+evalChips();
 
 const mirrors = [
   { from:'#bloc-g1', to:'.chip.g1 .hud-text' },
@@ -178,14 +183,14 @@ chips.g2?.querySelector('.hud-close')?.addEventListener('click', () => {
   bus.dispatchEvent(new CustomEvent('object:cleared'));
 });
 bus.addEventListener('object:cleared', () => {
+  hasSelection = false;
   const g2Text = chips.g2?.querySelector('.hud-text');
   if (g2Text) g2Text.textContent = '';
   evalChips();
 });
 
-/* ============= 3) Pont d’événements hérités ============= */
-// On écoute à la fois document ET window pour tout capter,
-// puis on rebroadcast sur bus en “object:selected”.
+/* ============= 3) Pont d’événements hérités → sélection active ============= */
+// on écoute LARGEMENT (window + document) puis on rebroadcast si besoin
 const legacyEvents = [
   'planet:selected',
   'dashboard:planet:selected',
@@ -193,31 +198,33 @@ const legacyEvents = [
   'planet:focus',
   'object:selected'
 ];
-
-const rebroadcast = (srcName) => (e) => {
+const onSelectEvent = (srcName) => (e) => {
+  hasSelection = true;
   chips.tutorial?.classList.remove('on');
-  // log léger pour debug
-  if (window.console) console.info('[BUS]', srcName, e?.detail);
   if (srcName !== 'object:selected') {
     const id = e?.detail?.id || e?.detail?.name || e?.detail?.slug;
     bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id, source:srcName } }));
   }
+  evalChips();
 };
 legacyEvents.forEach(n => {
-  window.addEventListener(n, rebroadcast(n));
-  document.addEventListener(n, rebroadcast(n));
+  window.addEventListener(n, onSelectEvent(n));
+  document.addEventListener(n, onSelectEvent(n));
 });
 
-/* ============= 4) Secours : si un bloc se remplit, on cache la tuto ============= */
+/* ============= 4) Si un bloc se remplit de lui-même, on cache la tuto ============= */
 const anyContentObs = new MutationObserver(() => {
-  const anyFilled = panels.some(p => hasContent(p));
-  if (anyFilled) chips.tutorial?.classList.remove('on');
+  const anyFilled = panelEls.some(p => hasContent(p));
+  if (anyFilled) { hasSelection = true; chips.tutorial?.classList.remove('on'); evalChips(); }
 });
-panels.forEach(p => anyContentObs.observe(p, { childList:true, subtree:true, characterData:true }));
+panelEls.forEach(p => anyContentObs.observe(p, { childList:true, subtree:true, characterData:true }));
 
-/* ============= 5) Raccourci debug : 'E' → simuler Terre ============= */
+/* (Optionnel) raccourci debug : E = simuler Terre
 document.addEventListener('keydown', (e) => {
   if (e.key.toLowerCase() === 'e') {
+    hasSelection = true;
     bus.dispatchEvent(new CustomEvent('object:selected', { detail:{ id:'earth', source:'debug' } }));
+    evalChips();
   }
 });
+*/
