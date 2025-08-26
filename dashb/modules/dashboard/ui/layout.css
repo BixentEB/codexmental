@@ -1,19 +1,30 @@
 /* layout.css – grille et placements de la page dashboard */
-:root{ --bg:#0a0f1a; --hud-cyan:rgba(111,255,255,.18); }
+:root{
+  --bg:#0a0f1a;
+  --hud-cyan:rgba(111,255,255,.18);
+}
 
+/* hauteur du header pour éviter que le système passe dessous */
 html,body{ height:100% }
 body{ margin:0; background:var(--bg); color:#cfefff; font-family:Inter,system-ui; }
 
 main.dashboard{
+  /* adapte si ton header est un peu plus grand/petit */
+  --header-h: 96px;
+
   position:relative;
   display:grid;
   grid-template-columns: 380px minmax(820px,1fr) 380px;
   grid-template-rows: auto 1fr auto;
   gap:16px;
   min-height:100vh;
+
+  /* espace sous le menu */
   padding:16px;
+  padding-top: calc(var(--header-h) + 16px);
 }
 
+/* zones de la grille */
 .header{grid-column:1/-1; min-height:0}
 .left{grid-column:1}
 .radar{grid-column:2; position:relative; min-height:560px}
@@ -22,17 +33,14 @@ main.dashboard{
 
 /* Radar canvas */
 #simul-system{
-  display:block; width:100%; height:auto;
-  border-radius:12px; outline:1px solid rgba(0,229,255,.08);
-  background:rgba(255,255,255,.02);
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:12px;
+  outline:1px solid rgba(0,229,255,.08);
+  /* plus de fond gris */
+  background:transparent !important;
 }
-
-/* Mode CHIPS par défaut : colonnes masquées */
-main.dashboard.mode-chips .left,
-main.dashboard.mode-chips .right{ display:none }
-
-/* CHIPS HUD container (déjà dans ton index) */
-.hud-chips{ position:absolute; inset:0; pointer-events:none }
 
 /* --------- éléments intégrés au cadre principal --------- */
 
@@ -40,9 +48,10 @@ main.dashboard.mode-chips .right{ display:none }
 #dash-closeall{
   position:absolute; top:10px; right:10px; z-index:1200;
   background:none; border:0; padding:0;
-  color:#cfefff; font:700 22px/1 system-ui; opacity:.65; cursor:pointer;
+  color:#cfefff; font:700 22px/1 system-ui; opacity:.75; cursor:pointer;
   display:none; /* visible seulement après sélection */
 }
+#dash-closeall.show{ display:inline }
 #dash-closeall:hover{ opacity:1 }
 
 /* Ship Log intégré bas-droite, discret */
@@ -54,54 +63,61 @@ main.dashboard.mode-chips .right{ display:none }
   color:#8aa7bd; opacity:.58; pointer-events:none;
 }
 
-/* Responsive */
-@media (max-width:1280px){
-  main.dashboard{ grid-template-columns:1fr; grid-template-rows:auto auto auto auto }
-  .left,.right{ grid-column:1 }
-  .radar{ grid-column:1 }
-}
+/* CHIPS HUD container (déjà dans ton index) */
+.hud-chips{ position:absolute; inset:0; pointer-events:none }
 
-/* ============ DASHBOARD LAYOUT (mode-chips) ============ */
+/* ------------------- MODE CHIPS (par défaut) ------------------- */
 
-/* On n'altère PAS tes styles existants ; on force juste les overrides nécessaires. */
-main.dashboard { 
-  /* espace sous le header pour que le système ne passe pas dessous */
-  --header-h: 80px;
-  padding-top: var(--header-h);
-}
+/* Colonnes latérales masquées */
+main.dashboard.mode-chips .left,
+main.dashboard.mode-chips .right{ display:none }
 
-/* En mode-chips : 1 seule colonne -> la zone radar prend toute la largeur */
-main.dashboard.mode-chips {
-  display: grid;
-  grid-template-columns: 1fr !important;               /* plus de colonnes fantômes */
+/* En mode-chips, une seule colonne… */
+main.dashboard.mode-chips{
+  grid-template-columns: 1fr !important; /* on évite les colonnes "fantômes" */
   grid-auto-rows: min-content;
   gap: 0;
 }
 
-/* La zone radar occupe toute la largeur et toute la hauteur visible */
-main.dashboard .radar {
+/* …mais on contraint visuellement la largeur pour éviter l'effet "zoom" sur grands écrans */
+main.dashboard.mode-chips .radar{
   grid-column: 1 / -1 !important;
-  margin: 0 auto;
-  width: 100%;
+
+  /* largeur adaptative : mini 1024px, généralement 86vw, max 1480px */
+  width: clamp(1024px, 86vw, 1480px);
   max-width: 100%;
-  /* plein écran sous le header */
-  min-height: calc(100vh - var(--header-h));
-  /* pas de "cadre gris" */
+  margin: 0 auto;
+
+  /* hauteur adaptative sous le header (sans exagérer) */
+  min-height: clamp(720px, calc(100vh - var(--header-h) - 24px), 1200px);
+
+  /* pas d'ombre ni de fond parasite sur le conteneur */
   background: transparent !important;
   box-shadow: none !important;
+  position: relative;
 }
 
-/* Titres verticaux décoratifs : toujours visibles */
+/* Titres verticaux décoratifs :
+   on ne change PAS leur positionnement d'origine (vertical-rl, etc.),
+   on garantit juste qu'ils restent visibles au-dessus de la radar. */
 #dashboard-title-left,
-#dashboard-title-right {
-  position: absolute;
-  top: calc(var(--header-h) + 12px);
-  z-index: 5;                   /* au-dessus de .radar */
+#dashboard-title-right{
+  z-index: 6;
   opacity: 1 !important;
-  display: block !important;
   pointer-events: none;
 }
-#dashboard-title-left  { left: 8px;  }
-#dashboard-title-right { right: 8px; }
 
-/* Les chips et panneaux gardent leur style actuel ; rien d'autre n'est forcé ici */
+/* ------------------------ Responsive ------------------------ */
+@media (max-width:1280px){
+  main.dashboard{
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+  }
+  .left,.right{ grid-column:1 }
+  .radar{ grid-column:1 }
+  /* en petit écran on autorise la radar à s'ajuster plus librement */
+  main.dashboard.mode-chips .radar{
+    width: min(96vw, 1200px);
+    min-height: clamp(620px, calc(100vh - var(--header-h) - 20px), 1100px);
+  }
+}
