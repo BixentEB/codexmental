@@ -1,5 +1,5 @@
 /* =========================================================
-   LAYOUT DASHBOARD (corrigé)
+   LAYOUT DASHBOARD (full, CSS-only)
    =========================================================*/
 
 /* ---------- Cadre global : fond transparent + contour fin ---------- */
@@ -10,21 +10,20 @@
 
   position: relative;
   /* espace sous le bandeau noir */
-  margin-top: 80px;                    /* ⇦ ajuste si besoin */
+  margin-top: 80px;                                   /* ajuste au besoin */
   margin-inline: clamp(8px, 2vw, 24px);
-  margin-bottom: clamp(8px, 1.5vh, 18px);
-
+  margin-bottom: clamp(8px, 1.5vh, 18px);             /* attention: pas de margin-block pour ne pas écraser le top */
   padding: var(--frame-pad);
   border-radius: var(--frame-radius);
   outline: var(--frame-border) solid rgba(160,220,255,.12);
-  background: transparent;             /* pas de fond gris */
+  background: transparent;                            /* pas de fond gris */
 }
 
 /* ---------- Grille : gouttières fixes + centre fluide ---------- */
 main.dashboard{
   min-height: min(calc(100vh - 90px), 100svh);
   display: grid;
-  grid-template-columns: 360px 1fr 360px;  /* blocs à gauche/droite, centre fluide */
+  grid-template-columns: 360px 1fr 360px;             /* blocs à gauche/droite, centre fluide */
   grid-template-rows: auto 1fr auto;
   gap: clamp(10px, 1.2vw, 16px);
   align-items: stretch;
@@ -46,8 +45,7 @@ main.dashboard{
   pointer-events: auto;
 }
 
-/* Bloc D3 (console vaisseau) collé en bas naturellement via l’ordre HTML.
-   Si besoin de forcer : on peut faire align-self:end; sur #bloc-d3. */
+/* D3 (console vaisseau) en bas naturellement ; forcer si besoin */
 #bloc-d3{ align-self: end; }
 
 /* ---------- Zone radar centrale ---------- */
@@ -60,71 +58,80 @@ main.dashboard{
   border-radius: 12px;
 }
 
-/* Canvas : centré, ratio respecté (1200×800), taille “juste” */
+/* Canvas : centré, ratio respecté, petit offset pour équilibrer visuellement */
 #simul-system{
-  transform: translateY(10px);  /* ⇦ essaye 8–14px selon ton œil *//* Offset vertical doux du canvas pour équilibrer haut/bas */
   display: block;
   width: min(100%, 1200px);
   height: auto;
   margin-inline: auto;
+  transform: translateY(16px);                        /* ⇦ équilibre haut/bas sans toucher au JS */
   filter: none;
 }
 
-/* ---------- Titres verticaux : sur les bords de l’écran ---------- */
-/* On utilise position:fixed pour les sortir du cadre et éviter qu’ils soient cachés. */
+/* ---------- Titres verticaux sur les bords de l’écran (hors cadre) ---------- */
 #dashboard-title-left,
 #dashboard-title-right{
-  position: fixed;                     /* ⇦ bords de l’écran */
-  z-index: 120;                        /* au-dessus des panels, sous le menu */
+  position: fixed;                                    /* bords écran, jamais masqués par les blocs */
+  z-index: 120;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   font-family: "Orbitron", system-ui, sans-serif;
+
+  /* look renforcé */
+  font-size: clamp(14px, 1.9vw, 22px);
+  letter-spacing: .20em;
+  font-weight: 700;
+  color: rgba(170,240,255,.92);
+  text-shadow:
+    0 0 8px rgba(70,180,220,.35),
+    0 0 22px rgba(70,180,220,.22);
+
   user-select: none;
   pointer-events: none;
 }
 
-/* Style renforcé */
-#dashboard-title-left,
-#dashboard-title-right{
-  font-size: clamp(12px, 1.6vw, 18px);     /* ⇧ */
-  letter-spacing: .14em;                    /* ⇧ */
-  color: rgba(160, 235, 255, .85);
-  text-shadow:
-    0 0 6px rgba(90,180,220,.35),
-    0 0 16px rgba(90,180,220,.25);
-}
-
-/* Crochets décoratifs (haut/bas) */
-#dashboard-title-left::before,
-#dashboard-title-left::after,
-#dashboard-title-right::before,
-#dashboard-title-right::after{
-  content:"";
-  display:block;
-  width: 2px;
-  height: 18px;
-  margin-inline:auto;
-  background: linear-gradient(to bottom,
-    rgba(160,235,255,.0) 0%,
-    rgba(160,235,255,.6) 55%,
-    rgba(160,235,255,.0) 100%);
-}
-
 /* ORION INTERFACE : du haut jusqu’au milieu gauche */
 #dashboard-title-left{
-  left: 10px;                           /* bord écran gauche */
-  top: 90px;                           /* légèrement sous le bandeau */
-  height: 48vh;                        /* s’arrête vers le milieu */
-  transform: translateY(0);            /* pas de centrage vertical */
+  left: 10px;                                         /* bord gauche écran */
+  top: 90px;                                          /* juste sous le bandeau */
+  height: 48vh;                                       /* s’arrête vers le milieu */
 }
 
 /* TACTICAL MODULE : du milieu jusqu’en bas à droite */
 #dashboard-title-right{
-  right: 10px;                          /* bord écran droit */
-  top: 50vh;                           /* démarre au milieu */
-  height: calc(50vh - 16px);           /* descend jusqu’en bas */
-  transform: translateY(0);
+  right: 10px;                                        /* bord droit écran */
+  top: 50vh;                                          /* démarre au milieu */
+  height: calc(50vh - 16px);                          /* descend jusqu’en bas */
 }
+
+/* Trait vertical “guide” discret à côté du texte */
+#dashboard-title-left::before,
+#dashboard-title-right::before{
+  content:"";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  left: -6px;                                         /* écarte légèrement du texte */
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(150,230,255,.35) 12%,
+    rgba(150,230,255,.18) 88%,
+    transparent 100%);
+}
+
+/* “Bords prolongés” (repères) en haut/bas */
+#dashboard-title-left::after,
+#dashboard-title-right::after{
+  content:"";
+  position: absolute;
+  left: 50%;
+  width: 18px; height: 2px;
+  background: rgba(150,230,255,.55);
+  box-shadow: 0 0 10px rgba(90,180,220,.35);
+  transform: translateX(-50%);
+}
+#dashboard-title-left::after{  top: -6px; }
+#dashboard-title-right::after{ bottom: -6px; }
 
 /* ---------- Croix unique (affichée seulement quand sélection) ---------- */
 #dash-close{
@@ -136,28 +143,28 @@ main.dashboard{
   background: rgba(5,10,20,.35);
   color: rgba(220,245,255,.9);
   font-size: 22px; line-height: 1;
-  display: none;                       /* cachée par défaut */
+  display: none;                                       /* cachée par défaut */
   place-items: center;
   backdrop-filter: blur(2px);
 }
 .dashboard.has-selection #dash-close{ display: grid; }
 
-/* ---------- HUD / Tutoriel ---------- */
+/* ---------- HUD / Tutoriel (coin haut-gauche du cadre, compact) ---------- */
 .hud-chips{ position: absolute; inset: 0; pointer-events: none; }
 .hud-chips .chip{ display: none; }
-/* Tuto : angle haut-gauche du grand cadre (déport dans la gouttière) */
+
 .hud-chips .chip.tutorial.on{
   position: absolute;
-  top: 14px;                 /* haut-gauche du cadre */
-  left: -320px;     /* ⇦ pousse vers la gauche (valeur à peaufiner : -260…-360px) */
-  max-width: 340px; /* un peu plus large puisque dans la gouttière */
+  top: 12px;
+  left: -300px;                                       /* déport dans la gouttière gauche ; ajuste -260…-340 */
+  max-width: 300px;
   display: block;
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
   border: 1px solid rgba(150,230,255,.25);
   background: rgba(5,10,20,.35);
   color: rgba(220,245,255,.92);
-  font-size: 12px;
+  font-size: 11px;
   pointer-events: auto;
 }
 
@@ -168,7 +175,7 @@ main.dashboard{
   border-radius: 12px;
   min-height: 140px;
   padding: 8px;
-  display: none;                       /* invisibles par défaut */
+  display: none;                                       /* invisibles par défaut */
 }
 .dashboard.has-selection .panel{ display: block; }
 
@@ -176,11 +183,16 @@ main.dashboard{
 @media (max-width: 1200px){
   main.dashboard{ grid-template-columns: 300px 1fr 300px; }
 }
+
 @media (max-width: 980px){
   /* mode compact : on cache les colonnes pour garder tout visible sans scroll */
   main.dashboard{ grid-template-columns: 1fr; grid-auto-rows: auto; }
   .left, .right{ display: none !important; }
-  /* Titres : on garde le principe bord écran */
-  #dashboard-title-left{ left: 6px; top: 86px; height: 46vh; }
-  #dashboard-title-right{ right: 6px; top: 50vh; height: calc(50vh - 14px); }
+
+  /* Titres : on conserve le principe bord écran */
+  #dashboard-title-left{  left: 8px; top: 86px; height: 46vh; }
+  #dashboard-title-right{ right: 8px; top: 50vh; height: calc(50vh - 14px); }
+
+  /* Tuto moins déporté pour petits écrans */
+  .hud-chips .chip.tutorial.on{ left: 8px; max-width: 260px; }
 }
