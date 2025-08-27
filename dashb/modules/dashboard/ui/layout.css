@@ -1,37 +1,40 @@
 /* =========================================================
-   LAYOUT DASHBOARD
+   LAYOUT DASHBOARD (corrigé)
    =========================================================*/
 
-/* Cadre global : fond transparent + contour fin */
+/* ---------- Cadre global : fond transparent + contour fin ---------- */
 .dashboard-frame{
   --frame-pad: clamp(8px, 1.2vw, 14px);
   --frame-radius: 14px;
   --frame-border: 1px;
+
   position: relative;
-  margin-top: 200px; /* ajuste la valeur à ton goût (20px, 40px, etc.) */
+  /* espace sous le bandeau noir */
+  margin-top: 80px;                    /* ⇦ ajuste si besoin */
   margin-inline: clamp(8px, 2vw, 24px);
-  margin-block: clamp(8px, 1.5vh, 18px);
+  margin-bottom: clamp(8px, 1.5vh, 18px);
+
   padding: var(--frame-pad);
   border-radius: var(--frame-radius);
-  outline: var(--frame-border) solid rgba(160, 220, 255, 0.12);
-  background: transparent; /* ← pas de gris */
+  outline: var(--frame-border) solid rgba(160,220,255,.12);
+  background: transparent;             /* pas de fond gris */
 }
 
-/* Le dashboard occupe tout le viewport utile (hors header) */
+/* ---------- Grille : gouttières fixes + centre fluide ---------- */
 main.dashboard{
-  min-height: min( calc(100vh - 90px), 100svh );
+  min-height: min(calc(100vh - 90px), 100svh);
   display: grid;
-  grid-template-columns: 360px 1fr 360px; /* gouttières fixes + centre fluide */
+  grid-template-columns: 360px 1fr 360px;  /* blocs à gauche/droite, centre fluide */
   grid-template-rows: auto 1fr auto;
   gap: clamp(10px, 1.2vw, 16px);
   align-items: stretch;
-  background: transparent; /* ← pas de gris */
+  background: transparent;
 }
 
-/* Colonnes gauche/droite (invisibles tant qu’aucune sélection) */
+/* ---------- Colonnes d’infos (cachées tant qu’aucune sélection) ---------- */
 .left, .right{
   display: grid;
-  grid-auto-rows: minmax(120px, 1fr);
+  grid-auto-rows: minmax(140px, 1fr);
   gap: clamp(10px, 1.2vw, 16px);
   opacity: 0;
   pointer-events: none;
@@ -43,44 +46,62 @@ main.dashboard{
   pointer-events: auto;
 }
 
-/* Zone radar centrale */
+/* Bloc D3 (console vaisseau) collé en bas naturellement via l’ordre HTML.
+   Si besoin de forcer : on peut faire align-self:end; sur #bloc-d3. */
+#bloc-d3{ align-self: end; }
+
+/* ---------- Zone radar centrale ---------- */
 .radar{
   position: relative;
   display: grid;
   place-items: center;
   overflow: visible;
-  background: transparent; /* ← pas de gris */
+  background: transparent;
   border-radius: 12px;
 }
 
-/* Canvas : centré, ratio respecté (1200×800), jamais compressé */
+/* Canvas : centré, ratio respecté (1200×800), taille “juste” */
 #simul-system{
   display: block;
-  width: min(100%, 1200px); /* taille juste, pas d’excès */
+  width: min(100%, 1200px);
   height: auto;
   margin-inline: auto;
   filter: none;
 }
 
-/* Titres verticaux toujours visibles */
+/* ---------- Titres verticaux : sur les bords de l’écran ---------- */
+/* On utilise position:fixed pour les sortir du cadre et éviter qu’ils soient cachés. */
 #dashboard-title-left,
 #dashboard-title-right{
-  position: absolute;
-  top: 50%;
-  translate: 0 -50%;
+  position: fixed;                     /* ⇦ bords de l’écran */
+  z-index: 120;                        /* au-dessus des panels, sous le menu */
   writing-mode: vertical-rl;
   text-orientation: mixed;
   letter-spacing: .08em;
   font-family: "Orbitron", system-ui, sans-serif;
   font-size: clamp(10px, .95vw, 12px);
-  color: rgba(150, 230, 255, .5);
+  color: rgba(150,230,255,.5);
   user-select: none;
   pointer-events: none;
 }
-#dashboard-title-left { left: -42px; }
-#dashboard-title-right{ right: -42px; }
 
-/* Croix unique (cachée tant qu’il n’y a pas de sélection) */
+/* ORION INTERFACE : du haut jusqu’au milieu gauche */
+#dashboard-title-left{
+  left: 8px;                           /* bord écran gauche */
+  top: 90px;                           /* légèrement sous le bandeau */
+  height: 48vh;                        /* s’arrête vers le milieu */
+  transform: translateY(0);            /* pas de centrage vertical */
+}
+
+/* TACTICAL MODULE : du milieu jusqu’en bas à droite */
+#dashboard-title-right{
+  right: 8px;                          /* bord écran droit */
+  top: 50vh;                           /* démarre au milieu */
+  height: calc(50vh - 16px);           /* descend jusqu’en bas */
+  transform: translateY(0);
+}
+
+/* ---------- Croix unique (affichée seulement quand sélection) ---------- */
 #dash-close{
   position: absolute;
   top: 8px; right: 8px;
@@ -90,18 +111,18 @@ main.dashboard{
   background: rgba(5,10,20,.35);
   color: rgba(220,245,255,.9);
   font-size: 22px; line-height: 1;
-  display: none; /* ← caché par défaut */
+  display: none;                       /* cachée par défaut */
   place-items: center;
   backdrop-filter: blur(2px);
 }
 .dashboard.has-selection #dash-close{ display: grid; }
 
-/* HUD chips : uniquement tutoriel au démarrage */
+/* ---------- HUD / Tutoriel ---------- */
 .hud-chips{ position: absolute; inset: 0; pointer-events: none; }
 .hud-chips .chip{ display: none; }
 .hud-chips .chip.tutorial.on{
   position: absolute;
-  top: 8px; left: 8px;
+  top: 8px; left: 8px;                 /* haut-gauche du cadre */
   max-width: min(28ch, 40%);
   display: block;
   padding: 10px 12px;
@@ -113,26 +134,26 @@ main.dashboard{
   pointer-events: auto;
 }
 
-/* Panels visuels – neutres tant qu’aucune donnée */
+/* ---------- Panels visuels ---------- */
 .panel{
   background: transparent;
   border: 1px solid rgba(150,230,255,.12);
   border-radius: 12px;
-  min-height: 120px;
+  min-height: 140px;
   padding: 8px;
-  display: none;
+  display: none;                       /* invisibles par défaut */
 }
 .dashboard.has-selection .panel{ display: block; }
 
-/* Responsive */
+/* ---------- Responsive ---------- */
 @media (max-width: 1200px){
   main.dashboard{ grid-template-columns: 300px 1fr 300px; }
-  #dashboard-title-left{ left: -36px; }
-  #dashboard-title-right{ right: -36px; }
 }
 @media (max-width: 980px){
+  /* mode compact : on cache les colonnes pour garder tout visible sans scroll */
   main.dashboard{ grid-template-columns: 1fr; grid-auto-rows: auto; }
   .left, .right{ display: none !important; }
-  #dashboard-title-left{ left: -28px; }
-  #dashboard-title-right{ right: -28px; }
+  /* Titres : on garde le principe bord écran */
+  #dashboard-title-left{ left: 6px; top: 86px; height: 46vh; }
+  #dashboard-title-right{ right: 6px; top: 50vh; height: calc(50vh - 14px); }
 }
