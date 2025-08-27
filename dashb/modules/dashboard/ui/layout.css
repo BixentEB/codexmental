@@ -1,5 +1,5 @@
 /* =========================================================
-   LAYOUT DASHBOARD (CSS only) — 2025-08-27
+   LAYOUT DASHBOARD (CSS only) — update
    =========================================================*/
 
 /* ---------- Cadre global : fond transparent + contour fin ---------- */
@@ -11,19 +11,18 @@
   position: relative;
   margin-top: 80px;                                   /* sous le bandeau noir */
   margin-inline: clamp(8px, 2vw, 24px);
-  margin-bottom: 10px;                                /* ↓ moins d’air en bas */
+  margin-bottom: 10px;                                /* moins d’air en bas */
   padding: var(--frame-pad);
   border-radius: var(--frame-radius);
   outline: var(--frame-border) solid rgba(160,220,255,.12);
-  background: transparent;                            /* pas de fond gris */
+  background: transparent;
 }
 
 /* ---------- Grille : gouttières fixes + centre fluide ---------- */
 main.dashboard{
-  /* un peu moins haut => moins de vide sous le système */
   min-height: calc(100vh - 130px);
   display: grid;
-  grid-template-columns: 360px 1fr 360px;             /* blocs à gauche/droite, centre fluide */
+  grid-template-columns: 360px 1fr 360px;             /* blocs latéraux + centre */
   grid-template-rows: auto 1fr auto;
   gap: clamp(10px, 1.2vw, 16px);
   align-items: stretch;
@@ -50,7 +49,7 @@ main.dashboard{
 
 /* ---------- Zone radar centrale ---------- */
 .radar{
-  position: relative;
+  position: static;                                   /* ⇦ titres ancrés au cadre */
   display: grid;
   place-items: center;
   overflow: visible;
@@ -58,27 +57,25 @@ main.dashboard{
   border-radius: 12px;
 }
 
-/* Canvas : centré, ratio respecté, léger décalage pour rééquilibrer */
+/* Canvas : centré, ratio respecté, léger décalage vers le bas */
 #simul-system{
   display: block;
   width: min(100%, 1200px);
   height: auto;
   margin-inline: auto;
-  margin-top: 14px;                                   /* ⇦ descend visuellement le système */
+  margin-top: 18px;                                   /* ↓ équilibre visuel haut/bas */
   filter: none;
 }
 
-/* ---------- Titres verticaux (dans le cadre, sans “I” parasite) ---------- */
-/* On positionne par rapport AU CADRE, et on enlève tout trait latéral. */
+/* ---------- Titres verticaux (dans le cadre, au bord, ligne continue) ---------- */
 #dashboard-title-left,
 #dashboard-title-right{
-  position: absolute;                                 /* ⇦ dans .dashboard-frame */
+  position: absolute;                                 /* ancrés au .dashboard-frame */
   z-index: 80;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   font-family: "Orbitron", system-ui, sans-serif;
 
-  /* look renforcé + fond discret flouté */
   font-size: clamp(14px, 1.9vw, 22px);
   letter-spacing: .20em;
   font-weight: 700;
@@ -86,52 +83,45 @@ main.dashboard{
   text-shadow:
     0 0 8px rgba(70,180,220,.35),
     0 0 22px rgba(70,180,220,.22);
+
   padding: 6px 4px;
   border-radius: 10px;
-  background: linear-gradient(
-    to right,
-    rgba(12,22,34,.28),
-    rgba(12,22,34,.12)
-  );
+  background: linear-gradient(to right, rgba(12,22,34,.28), rgba(12,22,34,.12));
   backdrop-filter: blur(2px);
 
   user-select: none;
   pointer-events: none;
 }
 
-/* ORION INTERFACE : du haut jusqu’au milieu gauche */
+/* Gauche : du haut vers le milieu, bord interne du cadre */
 #dashboard-title-left{
-  left: 6px;                                          /* à l’intérieur du cadre */
-  top: 6px;
+  left: 22px;                                         /* ⇦ bien au bord dans le cadre */
+  top: 10px;
   height: 46vh;
 }
-
-/* TACTICAL MODULE : du milieu jusqu’en bas à droite */
+/* Droite : du milieu vers le bas, bord interne du cadre */
 #dashboard-title-right{
-  right: 6px;                                         /* à l’intérieur du cadre */
+  right: 22px;                                        /* ⇦ bien au bord dans le cadre */
   top: 50%;
-  height: calc(50% - 12px);
-  transform: translateY(0);
+  height: calc(50% - 16px);
 }
 
-/* Marqueurs “dessus/dessous” (courts traits verticaux centrés) */
+/* Ligne verticale CONTINUE le long du titre (pas de “I” isolé) */
 #dashboard-title-left::before,
-#dashboard-title-left::after,
-#dashboard-title-right::before,
-#dashboard-title-right::after{
-  content:"";
+#dashboard-title-right::before{
+  content: "";
   position: absolute;
-  left: 50%;
+  top: -6px; bottom: -6px;
   width: 2px;
-  height: 18px;
-  transform: translateX(-50%);
-  background: rgba(150,230,255,.55);
-  box-shadow: 0 0 10px rgba(90,180,220,.32);
+  background: linear-gradient(to bottom,
+    rgba(150,230,255,.0) 0%,
+    rgba(150,230,255,.55) 12%,
+    rgba(150,230,255,.28) 88%,
+    rgba(150,230,255,.0) 100%);
+  box-shadow: 0 0 10px rgba(90,180,220,.28);
 }
-#dashboard-title-left::before  { top: -8px; }
-#dashboard-title-left::after   { bottom: -8px; }
-#dashboard-title-right::before { top: -8px; }
-#dashboard-title-right::after  { bottom: -8px; }
+#dashboard-title-left::before  { left: -10px; }       /* ligne à l’extérieur du texte */
+#dashboard-title-right::before { right: -10px; }
 
 /* ---------- Croix unique (affichée seulement quand sélection) ---------- */
 #dash-close{
@@ -152,12 +142,11 @@ main.dashboard{
 /* ---------- HUD / Tutoriel (coin haut-gauche du cadre, compact) ---------- */
 .hud-chips{ position: absolute; inset: 0; pointer-events: none; }
 .hud-chips .chip{ display: none; }
-
 .hud-chips .chip.tutorial.on{
   position: absolute;
-  top: 10px;
-  left: -280px;                                       /* déport dans la gouttière ; ajuste -240…-320 */
-  max-width: 280px;                                   /* ↓ plus compact */
+  top: 12px;
+  left: 22px;                                         /* dans le cadre */
+  max-width: 280px;
   display: block;
   padding: 7px 9px;
   border-radius: 8px;
@@ -188,16 +177,12 @@ main.dashboard{
   main.dashboard{ grid-template-columns: 1fr; grid-auto-rows: auto; }
   .left, .right{ display: none !important; }
 
-  /* Titres : on réduit un peu mais on garde le style */
   #dashboard-title-left{
-    left: 6px; top: 6px; height: 44vh;
+    left: 16px; top: 10px; height: 44vh;
     font-size: clamp(13px, 1.6vw, 18px);
   }
   #dashboard-title-right{
-    right: 6px; top: 50%; height: calc(50% - 10px);
+    right: 16px; top: 50%; height: calc(50% - 14px);
     font-size: clamp(13px, 1.6vw, 18px);
   }
-
-  /* Tuto moins déporté pour petits écrans */
-  .hud-chips .chip.tutorial.on{ left: 8px; max-width: 240px; }
 }
