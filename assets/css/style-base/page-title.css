@@ -1,49 +1,107 @@
-/* CSS DEDIE AUX TITRES PRINCIPAUX */
-
-/* --- Cadre animé de titre de page --- */
-.page-title-frame {
-  position: relative;
-  margin: clamp(40px, 8vh, 120px) auto clamp(16px, 4vh, 48px);
+/* --- Title Chip (clair + reflet animé) --- */
+.title-chip{
+  /* espacements */
+  margin: clamp(48px, 8vh, 120px) auto clamp(20px, 5vh, 60px);
+  padding: .9rem 1.4rem;
+  border-radius: 16px;
+  /* couleurs par défaut (surclassées par les thèmes) */
+  --chip-bg1: color-mix(in oklab, var(--accent-primary, #8fd3ff) 18%, transparent);
+  --chip-bg2: color-mix(in oklab, var(--link-color, #b38cff) 12%, transparent);
+  --chip-border: color-mix(in oklab, var(--accent-primary, #8fd3ff) 45%, #000 55%);
+  --chip-text: var(--text-color, #dfeaff);
+  --chip-sheen: color-mix(in oklab, var(--accent-primary, #9fdcff) 70%, white 30%);
+  --chip-shadow: color-mix(in oklab, var(--accent-primary, #9fdcff) 30%, transparent);
+  /* fond clair + contour */
+  background: linear-gradient(180deg, var(--chip-bg1), var(--chip-bg2));
+  border: 1px solid var(--chip-border);
+  box-shadow: 0 6px 22px -8px var(--chip-shadow), 0 0 0 1px rgba(255,255,255,.04) inset;
+  color: var(--chip-text);
+  font-size: clamp(1.2rem, 2.2vw + .6rem, 2rem);
+  font-weight: 700;
+  letter-spacing: .5px;
   text-align: center;
-  padding: 1.2em 1.5em;
-  display: inline-block;
-  border-radius: 12px;
-  overflow: hidden;
+  width: fit-content;
+  position: relative; overflow: hidden;
+  backdrop-filter: saturate(120%) blur(2px);
 }
 
-/* Effet dégradé animé en fond, lié aux couleurs du thème */
-.page-title-frame::before {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(120deg, var(--accent-primary), var(--link-color), var(--accent-primary));
-  background-size: 200% 100%;
-  animation: frameFlow 12s linear infinite;
-  z-index: -2;
+/* reflet qui balaye de gauche à droite (visible sur fonds clairs) */
+.title-chip::before{
+  content:"";
+  position:absolute; top:0; left:-40%; height:100%; width:40%;
+  background: linear-gradient(120deg,
+              transparent 0%,
+              color-mix(in oklab, var(--chip-sheen) 55%, transparent) 45%,
+              transparent 90%);
+  transform: skewX(-20deg);
+  animation: chipSheen 4.8s ease-in-out infinite;
+  pointer-events:none;
+  mix-blend-mode: screen;
 }
 
-/* Flou lumineux derrière (halo thème) */
-.page-title-frame::after {
-  content: "";
-  position: absolute; inset: -20%;
-  background: radial-gradient(circle at 50% 50%, var(--accent-primary)40%, transparent 70%);
-  filter: blur(40px);
-  opacity: 0.35;
-  z-index: -3;
+/* liseré doux à l'intérieur */
+.title-chip::after{
+  content:"";
+  position:absolute; inset: 1px;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+  pointer-events:none;
 }
 
-/* Pour que l'intérieur soit lisible */
-.page-title-frame h1 {
-  position: relative;
-  margin: 0;
-  padding: 0.2em 0.6em;
-  color: var(--text-color, #fff);
-  text-shadow: 0 0 12px color-mix(in oklab, var(--accent-primary) 40%, black 60%);
-  z-index: 1;
+@keyframes chipSheen{
+  0%   { left:-40%; }
+  55%  { left:140%; }
+  100% { left:140%; }
 }
 
-/* Animation du fond */
-@keyframes frameFlow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce){
+  .title-chip::before{ animation:none; }
+}
+
+/* -------- Thèmes : variables dédiées -------- */
+
+/* STELLAIRE (bleu/magenta, fond plus visible) */
+body.theme-stellaire .title-chip{
+  --chip-bg1: rgba(126,227,255,.22);
+  --chip-bg2: rgba(179,140,255,.16);
+  --chip-border: rgba(160,200,255,.55);
+  --chip-text: #d9eaff;
+  --chip-sheen: #cfe8ff;
+}
+
+/* LUNAIRE (argent/turquoise) */
+body.theme-lunaire .title-chip{
+  --chip-bg1: rgba(207,232,255,.28);
+  --chip-bg2: rgba(87,224,217,.14);
+  --chip-border: rgba(120,220,220,.55);
+  --chip-text: #e9feff;
+  --chip-sheen: #aef6f1;
+}
+
+/* SOLAIRE (or/ambre) */
+body.theme-solaire .title-chip{
+  --chip-bg1: rgba(255,215,128,.26);
+  --chip-bg2: rgba(255,170,80,.14);
+  --chip-border: rgba(255,205,120,.55);
+  --chip-text: #fff7df;
+  --chip-sheen: #ffe8b3;
+}
+
+/* GALACTIQUE (violet profond) */
+body.theme-galactique .title-chip{
+  --chip-bg1: rgba(211,179,255,.22);
+  --chip-bg2: rgba(147,108,255,.16);
+  --chip-border: rgba(179,140,255,.55);
+  --chip-text: #efe6ff;
+  --chip-sheen: #e3d1ff;
+}
+
+/* (option) OCÉANIQUE si tu l’actives plus tard */
+body.theme-oceanique .title-chip{
+  --chip-bg1: rgba(118,228,255,.26);
+  --chip-bg2: rgba(77,240,167,.14);
+  --chip-border: rgba(120,245,210,.55);
+  --chip-text: #e9fffb;
+  --chip-sheen: #bff7ef;
 }
