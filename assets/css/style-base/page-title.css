@@ -1,0 +1,71 @@
+/* CSS DEDIE AUX TITRES PRINCIPAUX */
+
+/* --- Espacement réglable --- */
+:root{
+  --title-top-gap: clamp(40px, 8vh, 120px);
+  --title-bottom-gap: clamp(16px, 4vh, 48px);
+
+  /* Couleurs par défaut, branchées sur tes variables de thème */
+  --title-accent-1: var(--accent-primary, #8fd3ff);
+  --title-accent-2: var(--link-color, #b38cff);
+  --title-underline: color-mix(in oklab, var(--accent-primary, #9fdcff) 85%, white 15%);
+  --title-glow: color-mix(in oklab, var(--accent-primary, #9fdcff) 30%, transparent);
+}
+
+.page-title{
+  position: relative;
+  margin: var(--title-top-gap) auto var(--title-bottom-gap);
+  line-height: 1.1;
+  padding: .2em .4em;
+  font-size: clamp(1.8rem, 3.2vw + 1rem, 3.2rem);
+  letter-spacing: .5px;
+  text-wrap: balance;
+}
+
+.page-title > span{
+  background: linear-gradient(90deg, var(--title-accent-1), var(--title-accent-2), var(--title-accent-1));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  animation: titleShine 14s ease-in-out infinite;
+  text-shadow: 0 0 12px var(--title-glow);
+}
+
+/* Halo adaptatif (couleurs de thème) */
+.page-title::before{
+  content:"";
+  position:absolute; inset:-40% -10% -30%;
+  z-index:-1;
+  background:
+    radial-gradient(120% 60% at 50% 25%, color-mix(in oklab, var(--title-accent-1) 35%, transparent), transparent 60%),
+    conic-gradient(from 0deg at 50% 50%, color-mix(in oklab, var(--title-accent-1) 35%, transparent), color-mix(in oklab, var(--title-accent-2) 25%, transparent), color-mix(in oklab, var(--title-accent-1) 35%, transparent));
+  filter: blur(28px);
+  opacity:.55;
+  animation: haloSpin 32s linear infinite;
+  mix-blend-mode: screen;
+}
+
+/* Soulignement lumineux adaptatif */
+.page-title::after{
+  content:"";
+  position:absolute; left:50%; bottom:-12px; transform:translateX(-50%);
+  width:min(560px, 60vw); height:2px;
+  background: linear-gradient(90deg, transparent, var(--title-underline), transparent);
+  box-shadow:
+    0 0 20px color-mix(in oklab, var(--title-underline) 70%, transparent),
+    0 0 36px color-mix(in oklab, var(--title-underline) 40%, transparent);
+}
+
+/* Animations */
+@keyframes titleShine { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+@keyframes haloSpin { from{transform:rotate(0) scale(1.02)} to{transform:rotate(360deg) scale(1.02)} }
+
+/* Variante sobre (sans halo) */
+.title--clean::before{ display:none; }
+.title--clean > span{ animation:none; }
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce){
+  .page-title > span, .page-title::before{ animation:none; }
+}
