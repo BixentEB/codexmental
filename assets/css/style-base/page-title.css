@@ -1,7 +1,7 @@
 /* --- Title Chip (clair + reflet animé) --- */
 .title-chip{
   /* espacements */
-  margin: clamp(48px, 8vh, 120px) auto clamp(20px, 5vh, 60px);
+  margin: clamp(80px, 12vh, 160px) auto clamp(20px, 5vh, 60px);
   padding: .9rem 1.4rem;
   border-radius: 16px;
   /* couleurs par défaut (surclassées par les thèmes) */
