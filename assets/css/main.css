@@ -11,6 +11,7 @@
 @import url('/assets/css/style-base/images.css');
 @import url('/assets/css/style-base/onglets.css');
 @import url('/assets/css/style-base/ascii.css');
+@import url('/assets/css/style-base/page-title.css');
 
 /* === 🧩 Composants UI (blocs, boutons, menus) === */
 @import url('/assets/css/style-base/components.css');
