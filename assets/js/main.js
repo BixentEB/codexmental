@@ -4,8 +4,10 @@
 
 // === 📦 Modules à effets de bord ===
 import '/assets/js/canvas.js';
-import '/assets/js/theme-hours.js';
-import '/assets/js/theme-special.js';
+
+/*import '/assets/js/theme-hours.js';
+import '/assets/js/theme-special.js';*/ /*supprimés car vides*/
+
 import '/assets/js/theme-cards.js';
 import '/assets/js/anti-copy.js';
 import '/assets/js/viewer.js';
@@ -78,5 +80,6 @@ window.setTheme = (theme) => {
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
+
 
 
