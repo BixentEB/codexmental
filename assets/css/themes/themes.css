@@ -15,6 +15,9 @@
 /* 💫 Thème Galactique */
 @import url('/assets/css/themes/theme-galactique.css');
 
+/* 💫 Thème Ciel (intro) */
+@import url('/assets/css/themes/theme-sky.css');
+
 /* 🧩 Ajouter ici les futurs thèmes spéciaux :
 @import url('/assets/css/themes/theme-samain.css');      // 🎃 Thème Samain
 @import url('/assets/css/themes/theme-yule.css');        // ❄️ Thème Yule
