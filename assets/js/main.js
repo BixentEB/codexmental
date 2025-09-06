@@ -30,7 +30,7 @@ import { resolveInitialTheme, resolveAlias } from '/assets/js/theme-alias.js';
 
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
-  if (location.pathname === '/lab/index.html') return; // 🧪 Cas spécial : dashboard impose son propre thème
+  if (location.pathname === '/dashb/index.html') return; // 🧪 Cas spécial : dashboard impose son propre thème
 
   // 1) Choix visiteur (localStorage) sinon 'theme-main'
   const initial = resolveInitialTheme();            // ex: 'theme-main' si aucun choix visiteur
@@ -105,3 +105,4 @@ window.setTheme = (theme) => {
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
+
