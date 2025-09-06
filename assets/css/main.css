@@ -37,7 +37,11 @@
 @import url('/assets/css/themes/theme-cards.css');
 
 /* === 🎨 Effets dynamiques === */
-@import url('/assets/css/effects/effects-tabs.css');
+@import url("/assets/css/effects/effects-tabs.css");
+@import url("/assets/css/effects/effects-buttons.css");
+@import url("/assets/css/effects/effects-cards.css");
+@import url("/assets/css/effects/effects-headings.css");
+
 
 /* === 🛡️ Utilitaires divers === */
 @import url('/assets/css/helpers.css');
