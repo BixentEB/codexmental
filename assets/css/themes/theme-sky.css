@@ -108,3 +108,133 @@ body.theme-sky header nav a[aria-current="page"] {
   background: rgba(80,140,255,0.22);
   color: #ffffff;
 }
+
+/* =========================================================
+   SKY — lisibilité contenus, menus, profil, bouton DL
+   (patchs haute spécificité)
+   ========================================================= */
+
+/* 0) Variables supplémentaires utilisées par viewer.css */
+body.theme-sky {
+  --bg-subtle: rgba(255, 255, 255, 0.60);
+  --color-accent: #3a86ff;
+}
+
+/* 1) Viewer (blog/atelier) — fond plus lisible + textes sombres */
+body.theme-sky #article-viewer,
+body.theme-sky #viewer {
+  background: rgba(255,255,255,0.88) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(0,30,80,0.12) !important;
+  box-shadow: 0 8px 24px rgba(0,30,80,0.10) !important;
+}
+
+body.theme-sky #article-viewer .placeholder,
+body.theme-sky #viewer .placeholder {
+  color: #40608a !important;
+  opacity: .8;
+}
+
+body.theme-sky #article-viewer figcaption,
+body.theme-sky #viewer figcaption {
+  color: #5a7aa6 !important;
+}
+
+body.theme-sky #article-viewer blockquote,
+body.theme-sky #viewer blockquote {
+  background: rgba(255,255,255,0.70) !important;
+  color: #2c4a72 !important;
+  border-left-color: rgba(50,90,160,0.35) !important;
+}
+
+/* 2) Menu latéral du blog (liens non sélectionnés plus visibles) */
+body.theme-sky #viewer-menu a {
+  color: #11345a;
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(0,30,80,0.14);
+}
+body.theme-sky #viewer-menu a:hover,
+body.theme-sky #viewer-menu a.active {
+  background: rgba(80,140,255,0.22);
+  color: #081d33;
+}
+
+/* 3) Topbar (liens inactifs plus clairs sur header sombre) */
+body.theme-sky header nav a { color: #a7c8ff; }
+body.theme-sky header nav a:hover { color: #fff; background: rgba(80,140,255,0.15); }
+body.theme-sky header nav a.active,
+body.theme-sky header nav a[aria-current="page"] {
+  background: rgba(80,140,255,0.22);
+  color: #fff;
+}
+
+/* 4) Cartes/blocs génériques (home, blog, etc.) */
+body.theme-sky .bloc,
+body.theme-sky .panel,
+body.theme-sky .card,
+body.theme-sky .article,
+body.theme-sky .tabs-section {
+  background: rgba(255,255,255,0.86);
+  color: var(--text-primary);
+  border: 1px solid rgba(0,30,80,0.12);
+  box-shadow: 0 8px 24px rgba(0,30,80,0.10);
+}
+
+/* 5) Titres plus contrastés */
+body.theme-sky h1, 
+body.theme-sky h2, 
+body.theme-sky h3 { color: #11345a; }
+
+/* 6) Liens dans les contenus */
+body.theme-sky .bloc a,
+body.theme-sky .panel a,
+body.theme-sky .viewer a,
+body.theme-sky .article a { color: var(--link-color); }
+body.theme-sky .bloc a:hover,
+body.theme-sky .panel a:hover,
+body.theme-sky .viewer a:hover,
+body.theme-sky .article a:hover {
+  color: var(--accent-hover); text-decoration: underline;
+}
+
+/* 7) Sélecteur de thèmes — bouton “Ciel” (quand tu es en sky) */
+body.theme-sky .theme-fab-options button[onclick*="theme-sky"],
+body.theme-sky #mobile-menu button[onclick*="theme-sky"] {
+  background: rgba(255,255,255,0.35);
+  color: #0f2540;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+/* (tu as déjà la variante spéciale sous Solaire ; garde ton #8a97a6 si tu préfères) */
+
+/* 8) Profil — sous-menu & icônes */
+body.theme-sky .sous-menu button {
+  --accent-color: #2b6bff;
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+  background: rgba(255,255,255,0.55);
+}
+body.theme-sky .sous-menu button:hover,
+body.theme-sky .sous-menu button.active {
+  background: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(43,107,255,0.45);
+}
+body.theme-sky .icon-btn {
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(0,40,90,0.10);
+}
+
+/* 9) Bouton “Télécharger” (profil) */
+body.theme-sky .cv-download .btn {
+  display: inline-block;
+  background: linear-gradient(180deg, #6a88ff, #3a63ff);
+  color: #fff; border: 0; border-radius: 10px;
+  padding: .9rem 1.3rem; font-weight: 600;
+  box-shadow: 0 6px 16px rgba(58,99,255,.35);
+  transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
+}
+body.theme-sky .cv-download .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(58,99,255,.42);
+  filter: saturate(1.05);
+}
