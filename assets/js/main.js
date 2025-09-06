@@ -17,7 +17,6 @@ import '/assets/js/table.js';
 import '/assets/js/new-badge.js'; // Module ajoutant un badge "new" aux articles récemment ajoutés avec mention data-date
 import '/assets/js/openmenu.js'; // Module pour ouvrir et fermer auto les menus <details> blogs et atelier
 
-
 // === 🔧 Modules à fonctions exportées ===
 import { setTheme } from '/assets/js/theme-engine.js';
 import { injectPartial } from '/assets/js/partials.js';
@@ -26,30 +25,44 @@ import { activerBadgeAstro } from '/assets/js/badge-astro.js';
 import { initEtoileFilante } from '/assets/js/etoile-filante.js';
 import { initThemeObserver } from '/assets/js/theme-observer.js';
 
+// === 🧭 Alias de thème (main -> favori admin), tout en respectant le choix visiteur
+import { resolveInitialTheme, resolveAlias } from '/assets/js/theme-alias.js';
+
 // === 🌠 Initialiser le thème visuel dès le chargement
 (function initTheme() {
   if (location.pathname === '/lab/index.html') return; // 🧪 Cas spécial : dashboard impose son propre thème
 
-  const savedTheme = localStorage.getItem('codexTheme') || 'theme-stellaire';
-  document.body.className = savedTheme;
-  setTheme(savedTheme);
-})();
+  // 1) Choix visiteur (localStorage) sinon 'theme-main'
+  const initial = resolveInitialTheme();            // ex: 'theme-main' si aucun choix visiteur
+  document.body.className = initial;                // on pose la classe telle quelle (utile pour le preload CSS)
 
+  // 2) Résolution d'alias (si 'theme-main' -> thème favori admin)
+  const effective = resolveAlias(initial);          // ex: 'theme-stellaire' selon ta config admin
+
+  // 3) Application des effets via theme-engine (gère canvas/particles/soleil…)
+  setTheme(effective);
+
+  // 4) Mémoriser sur le DOM le thème effectif (pratique pour d'autres modules)
+  document.body.dataset.effectiveTheme = effective;
+})();
 
 // === DOM Ready
 window.addEventListener("DOMContentLoaded", () => {
-  const currentTheme = document.body.className;
+  // Utilise le thème effectif (après alias) pour déclencher les effets optionnels
+  const currentEffective =
+    document.body.dataset.effectiveTheme || resolveAlias(document.body.className);
 
   injectPartial('menu-placeholder', '/menu.html');
   injectPartial('footer-placeholder', '/footer.html');
   activerBadgeAstro();
   setupScrollButton();
 
-  if (currentTheme === "theme-stellaire") {
+  if (currentEffective === "theme-stellaire") {
+    // étoile filante uniquement pour stellaire (comme avant)
     initEtoileFilante();
   }
 
-  if (currentTheme === "theme-lunaire") {
+  if (currentEffective === "theme-lunaire") {
     import('/assets/js/newmoon.js')
       .then(module => module.updateNewMoonWidget())
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
@@ -66,20 +79,29 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 
 // === 🌐 Fonction de changement de thème
 window.setTheme = (theme) => {
+  // 1) Sauvegarder le choix explicite de l'utilisateur
   localStorage.setItem('codexTheme', theme);
-  document.body.className = theme;
-  setTheme(theme);
 
-  if (theme === "theme-stellaire") {
+  // 2) Afficher immédiatement la classe demandée (utile pour CSS)
+  document.body.className = theme;
+
+  // 3) Résoudre l'alias si l'utilisateur passe 'theme-main'
+  const effective = resolveAlias(theme);
+
+  // 4) Appliquer via theme-engine
+  setTheme(effective);
+
+  // 5) Mettre à jour le dataset pour les autres modules
+  document.body.dataset.effectiveTheme = effective;
+
+  // 6) Déclencher effets optionnels selon le thème effectif
+  if (effective === "theme-stellaire") {
     initEtoileFilante();
   }
 
-  if (theme === "theme-lunaire") {
+  if (effective === "theme-lunaire") {
     import('/assets/js/newmoon.js')
       .then(module => module.updateNewMoonWidget())
       .catch(err => console.error("❌ Failed to load newmoon.js:", err));
   }
 };
-
-
-
