@@ -1,181 +1,52 @@
 /* =========================================================
-   ☁️ THÈME SKY — clair, inspiré du landing
-   (variables + layout hotfix consolidés)
+   ☁️ THÈME SKY — version minimale (couleurs + canvas)
+   Pas d'override layout/nav/sidebar.
    ========================================================= */
 
-body.theme-sky{
-  --bg-primary:#e8f2ff;
-  --text-primary:#0f2540;
-  --text-secondary:#2c4a72;
-  --accent-primary:#3a86ff;
-  --accent-hover:#5aa0ff;
-  --link-color:#2b6bff;
+body.theme-sky {
+  /* Couleurs globales */
+  --bg-primary: #e8f2ff;
+  --text-primary: #0f2540;
+  --text-secondary: #2c4a72;
+  --accent-primary: #3a86ff;
+  --accent-hover: #5aa0ff;
+  --link-color: #2b6bff;
 
-  --bloc-bg:rgba(255,255,255,.75);
-  --bloc-border:rgba(0,30,80,.15);
-  --bloc-shadow:rgba(0,30,80,.08);
-  --bloc-shadow-hover:rgba(0,30,80,.18);
+  /* Blocs / cartes (si ton système lit ces variables) */
+  --bloc-bg: rgba(255,255,255,0.75);
+  --bloc-border: rgba(0,30,80,0.15);
+  --bloc-shadow: rgba(0,30,80,0.08);
+  --bloc-shadow-hover: rgba(0,30,80,0.18);
 
-  --logo-color:#2b6bff;
-  --nav-bg:rgba(240,247,255,.65);
-  --nav-link-color:#244a80;
-  --nav-link-active-bg:rgba(58,134,255,.14);
-  --nav-link-active-color:#0e2238;
+  /* Menus & boutons (couleurs seulement, pas de layout) */
+  --logo-color: #2b6bff;
+  --nav-link-color: #244a80;
+  --nav-link-active-bg: rgba(58,134,255,0.14);
+  --nav-link-active-color: #0e2238;
 
-  --btn-bg:#3a86ff; --btn-text:#fff; --btn-hover:#5aa0ff;
+  --btn-bg: #3a86ff;
+  --btn-text: #ffffff;
+  --btn-hover: #5aa0ff;
 
-  --share-bg:rgba(250,252,255,.96);
-  --share-color:#173556;
-  --share-border:rgba(30,90,170,.18);
-  --share-hover:rgba(58,134,255,.08);
-
-  --topbar-h:56px;
+  /* Popups / viewer */
+  --share-bg: rgba(250,252,255,0.96);
+  --share-color: #173556;
+  --share-border: rgba(30,90,170,0.18);
+  --share-hover: rgba(58,134,255,0.08);
 }
 
-/* Canvas fond */
-body.theme-sky #theme-canvas{
-  position:fixed; inset:0; z-index:-1;
-  opacity:0; transition:opacity .6s ease; pointer-events:none;
+/* Canvas fond (anim gérée par canvas-sky.js via theme-engine) */
+body.theme-sky #theme-canvas {
+  position: fixed; inset: 0; z-index: -1;
+  opacity: 0;                 /* init -> 1 en JS */
+  transition: opacity .6s ease;
+  pointer-events: none;
 }
 
-/* ================= TOPBAR (header uniquement) ================= */
-body.theme-sky header,
-body.theme-sky header .topbar,
-body.theme-sky header nav{
-  position:sticky; top:0; z-index:50;
-  min-height:var(--topbar-h);
-  display:flex; align-items:center; gap:12px;
-  padding:8px 16px;
-  background:linear-gradient(to bottom,
-    rgba(238,246,255,.85) 0%,
-    rgba(238,246,255,.70) 70%,
-    rgba(238,246,255,.40) 100%);
-  box-shadow:0 2px 12px rgba(0,30,80,.12);
-  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
-}
-
-/* Nav du HEADER uniquement */
-body.theme-sky header nav ul{ gap:18px; }
-body.theme-sky header nav a{
-  display:inline-flex; align-items:center;
-  padding:8px 10px; border-radius:8px;
-  color:var(--nav-link-color);
-}
-body.theme-sky header nav a.active,
-body.theme-sky header nav a[aria-current="page"]{
-  background:var(--nav-link-active-bg); color:var(--nav-link-active-color);
-}
-
-/* ================= SIDEBAR (reset fort) ================= */
-/* Ajoute les sélecteurs que tu utilises à droite (garde les 6 génériques) */
-body.theme-sky aside,
-body.theme-sky .sidebar,
-body.theme-sky .sidepanel,
-body.theme-sky .right-rail,
-body.theme-sky .floating-menu,
-body.theme-sky [data-role="sidebar"]{
-  position:static; top:auto; min-height:0;
-  background:transparent; box-shadow:none;
-  -webkit-backdrop-filter:none; backdrop-filter:none; border:0; padding:0;
-}
-body.theme-sky aside nav a,
-body.theme-sky .sidebar nav a,
-body.theme-sky .sidepanel nav a,
-body.theme-sky .right-rail nav a,
-body.theme-sky .floating-menu nav a,
-body.theme-sky [data-role="sidebar"] nav a{
-  background:transparent; border-radius:8px; padding:6px 10px;
-  color:var(--nav-link-color);
-}
-body.theme-sky aside nav a.active,
-body.theme-sky .sidebar nav a.active,
-body.theme-sky .sidepanel nav a.active,
-body.theme-sky .right-rail nav a.active,
-body.theme-sky .floating-menu nav a.active,
-body.theme-sky [data-role="sidebar"] nav a.active{
-  background:rgba(58,134,255,.14); color:var(--nav-link-active-color);
-}
-
-/* Colonne d’icônes flottantes (si présente) */
-body.theme-sky .theme-buttons,
-body.theme-sky .floating-icons{ position:sticky; top:calc(var(--topbar-h) + 16px); }
-
-/* ================= BLOCS / CARTES ================= */
-body.theme-sky .bloc,
-body.theme-sky .card,
-body.theme-sky .tabs-section,
-body.theme-sky .viewer,
-body.theme-sky .panel,
-body.theme-sky .theme-cards .card-back{
-  background:var(--bloc-bg);
-  border:1px solid var(--bloc-border);
-  box-shadow:0 8px 24px var(--bloc-shadow);
-  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
-}
-body.theme-sky .bloc:hover,
-body.theme-sky .card:hover{ box-shadow:0 10px 28px var(--bloc-shadow-hover); }
-
-/* Texte emphase / viewer */
-body.theme-sky #article-viewer .placeholder{ color:#3d5f90; }
-body.theme-sky #article-viewer em,
-body.theme-sky #article-viewer i{ color:#244a80; }
-
-/* Menu collapsible blog */
-body.theme-sky .blog-menu details summary{ color:#2c4a72; }
-body.theme-sky .blog-menu details[open] summary{ color:#0f2540; }
-
-/* Onglets (pills) */
-body.theme-sky .tabs, body.theme-sky .pills{ gap:8px; }
-body.theme-sky .tabs .tab,
-body.theme-sky .pills .pill{
-  background:rgba(255,255,255,.7);
-  color:var(--text-secondary);
-  border:1px solid rgba(0,30,80,.12);
-}
-body.theme-sky .tabs .tab.active,
-body.theme-sky .pills .pill[aria-current="true"]{
-  background:var(--accent-primary); color:#fff; border-color:transparent;
-}
-
-/* Boutons généraux */
-body.theme-sky .codex-btn,
-body.theme-sky button,
-body.theme-sky .theme-electron{ background:var(--btn-bg); color:var(--btn-text); }
-body.theme-sky .codex-btn:hover,
-body.theme-sky button:hover{ background:var(--btn-hover); }
-
-/* Logo */
-body.theme-sky .site-logo, body.theme-sky .logo{ color:var(--logo-color); }
-
-/* Utilitaires vitreux */
-body.theme-sky .glass{
-  background:rgba(255,255,255,.55);
-  border:1px solid rgba(0,30,80,.12);
-  box-shadow:0 10px 24px rgba(0,30,80,.12);
-  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
-}
-
-/* Divers lisibilité */
-body.theme-sky hr{ border-top:1px solid rgba(0,30,80,.18); }
-body.theme-sky blockquote{
-  background:rgba(255,255,255,.6);
-  border-left:3px solid var(--accent-primary);
-  color:var(--text-secondary);
-}
-
-/* ================= Alignements / largeur de lecture ================= */
-body.theme-sky .title-chip,
-body.theme-sky .welcome-banner,
-body.theme-sky .home-title{
-  margin:clamp(80px,12vh,160px) auto 32px;
-  max-width:min(980px,92vw);
-}
-body.theme-sky main .container,
-body.theme-sky #article-viewer,
-body.theme-sky .content-wrapper{
-  max-width:980px; margin-inline:auto;
-}
-
-@media (prefers-reduced-motion:reduce){
-  body.theme-sky #theme-canvas{ transition:none; }
+/* Lisibilité générique, sans toucher la structure */
+body.theme-sky hr { border-top: 1px solid rgba(0,30,80,0.18); }
+body.theme-sky blockquote {
+  background: rgba(255,255,255,0.6);
+  border-left: 3px solid var(--accent-primary);
+  color: var(--text-secondary);
 }
