@@ -1,6 +1,5 @@
 /* =========================================================
-   ☁️ THÈME SKY — version minimale (couleurs + canvas)
-   Pas d'override layout/nav/sidebar.
+   ☁️ THÈME SKY — version sûre (couleurs + canvas)
    ========================================================= */
 
 body.theme-sky {
@@ -12,18 +11,19 @@ body.theme-sky {
   --accent-hover: #5aa0ff;
   --link-color: #2b6bff;
 
-  /* Blocs / cartes (si ton système lit ces variables) */
+  /* Blocs / cartes */
   --bloc-bg: rgba(255,255,255,0.75);
   --bloc-border: rgba(0,30,80,0.15);
   --bloc-shadow: rgba(0,30,80,0.08);
   --bloc-shadow-hover: rgba(0,30,80,0.18);
 
-  /* Menus & boutons (couleurs seulement, pas de layout) */
+  /* Navigation */
   --logo-color: #2b6bff;
-  --nav-link-color: #244a80;
-  --nav-link-active-bg: rgba(58,134,255,0.14);
-  --nav-link-active-color: #0e2238;
+  --nav-link-color: #a7c8ff;                /* liens inactifs plus clairs sur header sombre */
+  --nav-link-active-bg: rgba(80,140,255,0.22);
+  --nav-link-active-color: #ffffff;
 
+  /* Boutons */
   --btn-bg: #3a86ff;
   --btn-text: #ffffff;
   --btn-hover: #5aa0ff;
@@ -33,292 +33,164 @@ body.theme-sky {
   --share-color: #173556;
   --share-border: rgba(30,90,170,0.18);
   --share-hover: rgba(58,134,255,0.08);
+
+  /* Variables utilisées par certains modules */
+  --bg-subtle: rgba(255,255,255,0.60);
+  --color-accent: #3a86ff;
 }
 
-/* Canvas fond (anim gérée par canvas-sky.js via theme-engine) */
+/* Canvas (anim gérée par canvas-sky.js) */
 body.theme-sky #theme-canvas {
   position: fixed; inset: 0; z-index: -1;
-  opacity: 0;                 /* init -> 1 en JS */
-  transition: opacity .6s ease;
+  opacity: 0; transition: opacity .6s ease;
   pointer-events: none;
 }
 
-/* Lisibilité générique, sans toucher la structure */
+/* Divers lisibilité */
 body.theme-sky hr { border-top: 1px solid rgba(0,30,80,0.18); }
-body.theme-sky blockquote {
+body.theme-sky blockquote{
   background: rgba(255,255,255,0.6);
   border-left: 3px solid var(--accent-primary);
   color: var(--text-secondary);
 }
 
-/* Cartes / blocs plus lisibles en sky */
+/* ============================
+   NAV (juste couleurs)
+   ============================ */
+body.theme-sky header nav a{
+  color: var(--nav-link-color);
+}
+body.theme-sky header nav a:hover{
+  color:#fff; background: rgba(80,140,255,0.15);
+}
+body.theme-sky header nav a.active,
+body.theme-sky header nav a[aria-current="page"]{
+  background: var(--nav-link-active-bg);
+  color: var(--nav-link-active-color);
+}
+
+/* ============================
+   Cartes / blocs / viewer (fond clair lisible)
+   ============================ */
 body.theme-sky .bloc,
 body.theme-sky .panel,
 body.theme-sky .card,
 body.theme-sky .viewer,
-body.theme-sky .article,
-body.theme-sky .tabs-section {
-  background: rgba(255,255,255,0.84);
-  color: var(--text-primary);
-  border: 1px solid rgba(0,30,80,0.12);
-  box-shadow: 0 8px 24px rgba(0,30,80,0.10);
-}
-
-/* Texte interne (hérite bien la couleur) */
-body.theme-sky .bloc p,
-body.theme-sky .panel p,
-body.theme-sky .viewer p,
-body.theme-sky .article p {
-  color: var(--text-primary);
-}
-
-/* Titres plus contrastés */
-body.theme-sky h1, 
-body.theme-sky h2, 
-body.theme-sky h3 {
-  color: #11345a; /* un peu plus sombre pour claquer sur fond clair */
-}
-
-/* Liens dans les contenus */
-body.theme-sky .bloc a,
-body.theme-sky .panel a,
-body.theme-sky .viewer a,
-body.theme-sky .article a {
-  color: var(--link-color);
-}
-body.theme-sky .bloc a:hover,
-body.theme-sky .panel a:hover,
-body.theme-sky .viewer a:hover,
-body.theme-sky .article a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
-}
-
-/* Liens du header : non sélectionnés plus visibles */
-body.theme-sky header nav a {
-  color: #a7c8ff;                  /* clair lisible sur header sombre */
-  background: transparent;
-}
-body.theme-sky header nav a:hover {
-  color: #ffffff;
-  background: rgba(80,140,255,0.15);
-}
-body.theme-sky header nav a.active,
-body.theme-sky header nav a[aria-current="page"] {
-  background: rgba(80,140,255,0.22);
-  color: #ffffff;
-}
-
-/* =========================================================
-   SKY — lisibilité contenus, menus, profil, bouton DL
-   (patchs haute spécificité)
-   ========================================================= */
-
-/* 0) Variables supplémentaires utilisées par viewer.css */
-body.theme-sky {
-  --bg-subtle: rgba(255, 255, 255, 0.60);
-  --color-accent: #3a86ff;
-}
-
-/* 1) Viewer (blog/atelier) — fond plus lisible + textes sombres */
-body.theme-sky #article-viewer,
-body.theme-sky #viewer {
-  background: rgba(255,255,255,0.88) !important;
-  color: var(--text-primary) !important;
-  border-color: rgba(0,30,80,0.12) !important;
-  box-shadow: 0 8px 24px rgba(0,30,80,0.10) !important;
-}
-
-body.theme-sky #article-viewer .placeholder,
-body.theme-sky #viewer .placeholder {
-  color: #40608a !important;
-  opacity: .8;
-}
-
-body.theme-sky #article-viewer figcaption,
-body.theme-sky #viewer figcaption {
-  color: #5a7aa6 !important;
-}
-
-body.theme-sky #article-viewer blockquote,
-body.theme-sky #viewer blockquote {
-  background: rgba(255,255,255,0.70) !important;
-  color: #2c4a72 !important;
-  border-left-color: rgba(50,90,160,0.35) !important;
-}
-
-/* 2) Menu latéral du blog (liens non sélectionnés plus visibles) */
-body.theme-sky #viewer-menu a {
-  color: #11345a;
-  background: rgba(255,255,255,0.22);
-  border: 1px solid rgba(0,30,80,0.14);
-}
-body.theme-sky #viewer-menu a:hover,
-body.theme-sky #viewer-menu a.active {
-  background: rgba(80,140,255,0.22);
-  color: #081d33;
-}
-
-/* 3) Topbar (liens inactifs plus clairs sur header sombre) */
-body.theme-sky header nav a { color: #a7c8ff; }
-body.theme-sky header nav a:hover { color: #fff; background: rgba(80,140,255,0.15); }
-body.theme-sky header nav a.active,
-body.theme-sky header nav a[aria-current="page"] {
-  background: rgba(80,140,255,0.22);
-  color: #fff;
-}
-
-/* 4) Cartes/blocs génériques (home, blog, etc.) */
-body.theme-sky .bloc,
-body.theme-sky .panel,
-body.theme-sky .card,
-body.theme-sky .article,
-body.theme-sky .tabs-section {
+body.theme-sky .article{
   background: rgba(255,255,255,0.86);
   color: var(--text-primary);
   border: 1px solid rgba(0,30,80,0.12);
   box-shadow: 0 8px 24px rgba(0,30,80,0.10);
 }
-
-/* 5) Titres plus contrastés */
-body.theme-sky h1, 
-body.theme-sky h2, 
-body.theme-sky h3 { color: #11345a; }
-
-/* 6) Liens dans les contenus */
+body.theme-sky h1, body.theme-sky h2, body.theme-sky h3{ color:#11345a; }
 body.theme-sky .bloc a,
 body.theme-sky .panel a,
 body.theme-sky .viewer a,
-body.theme-sky .article a { color: var(--link-color); }
+body.theme-sky .article a{ color: var(--link-color); }
 body.theme-sky .bloc a:hover,
 body.theme-sky .panel a:hover,
 body.theme-sky .viewer a:hover,
-body.theme-sky .article a:hover {
-  color: var(--accent-hover); text-decoration: underline;
+body.theme-sky .article a:hover{ color:var(--accent-hover); text-decoration:underline; }
+
+/* Viewer (blog/atelier) : peaufine captions & quotes */
+body.theme-sky #article-viewer,
+body.theme-sky #viewer{
+  background: rgba(255,255,255,0.88);
+  color: var(--text-primary);
+  border-color: rgba(0,30,80,0.12);
+  box-shadow: 0 8px 24px rgba(0,30,80,0.10);
+}
+body.theme-sky #article-viewer .placeholder,
+body.theme-sky #viewer .placeholder{ color:#40608a; opacity:.8; }
+body.theme-sky #article-viewer figcaption,
+body.theme-sky #viewer figcaption{ color:#5a7aa6; }
+body.theme-sky #article-viewer blockquote,
+body.theme-sky #viewer blockquote{
+  background: rgba(255,255,255,0.70);
+  color:#2c4a72;
+  border-left-color: rgba(50,90,160,0.35);
 }
 
-/* 7) Sélecteur de thèmes — bouton “Ciel” (quand tu es en sky) */
-body.theme-sky .theme-fab-options button[onclick*="theme-sky"],
-body.theme-sky #mobile-menu button[onclick*="theme-sky"] {
-  background: rgba(255,255,255,0.35);
-  color: #0f2540;
-  border: 1px solid rgba(0,0,0,0.08);
-}
-/* (tu as déjà la variante spéciale sous Solaire ; garde ton #8a97a6 si tu préfères) */
-
-/* 8) Profil — sous-menu & icônes */
-body.theme-sky .sous-menu button {
-  --accent-color: #2b6bff;
-  color: var(--accent-color);
-  border-color: var(--accent-color);
+/* ============================
+   Profil — boutons & icônes
+   ============================ */
+body.theme-sky .sous-menu button{
+  --accent-color:#2b6bff;
+  color:var(--accent-color);
+  border-color:var(--accent-color);
   background: rgba(255,255,255,0.55);
 }
 body.theme-sky .sous-menu button:hover,
-body.theme-sky .sous-menu button.active {
+body.theme-sky .sous-menu button.active{
   background: var(--accent-color);
-  color: #fff;
-  box-shadow: 0 0 8px rgba(43,107,255,0.45);
+  color:#fff;
+  box-shadow:0 0 8px rgba(43,107,255,.45);
 }
-body.theme-sky .icon-btn {
+body.theme-sky .icon-btn{
   background: rgba(255,255,255,0.25);
-  border: 1px solid rgba(0,40,90,0.10);
+  border:1px solid rgba(0,40,90,0.10);
 }
 
-/* 9) Bouton “Télécharger” (profil) */
-body.theme-sky .cv-download .btn {
-  display: inline-block;
-  background: linear-gradient(180deg, #6a88ff, #3a63ff);
-  color: #fff; border: 0; border-radius: 10px;
-  padding: .9rem 1.3rem; font-weight: 600;
-  box-shadow: 0 6px 16px rgba(58,99,255,.35);
+/* Bouton “Télécharger” (profil) */
+body.theme-sky .cv-download .btn{
+  display:inline-block;
+  background: linear-gradient(180deg,#6a88ff,#3a63ff);
+  color:#fff; border:0; border-radius:10px;
+  padding:.9rem 1.3rem; font-weight:600;
+  box-shadow:0 6px 16px rgba(58,99,255,.35);
   transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
 }
-body.theme-sky .cv-download .btn:hover {
+body.theme-sky .cv-download .btn:hover{
   transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(58,99,255,.42);
-  filter: saturate(1.05);
+  box-shadow:0 10px 22px rgba(58,99,255,.42);
+  filter:saturate(1.05);
 }
 
-/* =========================================================
-   SKY — Tabs/onglets (contraste + accessibilité)
-   ========================================================= */
-body.theme-sky {
-  --tab-bg: rgba(255,255,255,0.65);
-  --tab-text: #16365b;
-  --tab-border: rgba(0,40,90,0.18);
+/* ============================
+   ONGlets — version douce (aucun layout changé)
+   ============================ */
 
-  --tab-hover-bg: rgba(255,255,255,0.85);
-  --tab-hover-text: #0f2540;
-
-  --tab-active-bg: #3582ff;        /* bleu accent */
-  --tab-active-text: #ffffff;
-  --tab-active-glow: 0 4px 12px rgba(53,130,255,.35);
+/* Couleurs seulement pour l’onglet (texte + fond au survol) */
+body.theme-sky .tabs .tab{
+  color:#16365b;                         /* lisible au repos */
+  text-shadow:none;
+}
+body.theme-sky .tabs .tab:hover{
+  color:#0f2540;
+  background-color: rgba(255,255,255,0.75); /* sans toucher bordures/rayons */
 }
 
-/* Barre d’onglets */
-body.theme-sky .tabs {
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-/* Pilules */
-body.theme-sky .tabs .tab {
-  background: var(--tab-bg) !important;
-  color: var(--tab-text) !important;
-  border: 1px solid var(--tab-border) !important;
-  border-radius: 10px !important;
-  padding: 10px 14px !important;
-  font-weight: 600 !important;
-  letter-spacing: .2px;
-  line-height: 1 !important;
-  box-shadow: 0 2px 8px rgba(0,30,80,.08);
-  text-shadow: none !important;
-  transition: background .15s ease, color .15s ease, box-shadow .2s ease, transform .05s ease;
-}
-
-body.theme-sky .tabs .tab:hover {
-  background: var(--tab-hover-bg) !important;
-  color: var(--tab-hover-text) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,30,80,.12);
-}
-
-/* Actif */
+/* Actif : fond bleu + petit reflet animé discret */
 body.theme-sky .tabs .tab.active,
 body.theme-sky .tabs .tab[aria-selected="true"],
-body.theme-sky .tabs .tab[aria-current="page"] {
-  background: var(--tab-active-bg) !important;
-  color: var(--tab-active-text) !important;
-  border-color: transparent !important;
-  box-shadow: var(--tab-active-glow) !important;
+body.theme-sky .tabs .tab[aria-current="page"]{
+  color:#fff;
+  background-color:#3582ff;              /* accent */
+  position:relative; overflow:hidden;    /* pour le reflet */
 }
 
-/* Focus clavier (a11y) */
-body.theme-sky .tabs .tab:focus-visible {
-  outline: 3px solid rgba(53,130,255,.55);
-  outline-offset: 2px;
+/* Reflet animé (ne modifie pas la forme existante) */
+body.theme-sky .tabs .tab.active::after,
+body.theme-sky .tabs .tab[aria-selected="true"]::after,
+body.theme-sky .tabs .tab[aria-current="page"]::after{
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(120deg,
+     transparent 0%,
+     rgba(255,255,255,.30) 18%,
+     transparent 36%);
+  background-size: 250% 100%;
+  animation: skyShine 3.2s linear infinite;
+  pointer-events:none;
+  mix-blend-mode: screen;                 /* évite d’écraser la couleur */
+}
+@keyframes skyShine{
+  0%{ background-position:-200% 0; }
+  100%{ background-position:200% 0; }
 }
 
-/* Désactivé si utilisé */
-body.theme-sky .tabs .tab[disabled],
-body.theme-sky .tabs .tab[aria-disabled="true"] {
-  opacity: .55; cursor: not-allowed;
-}
-
-/* Contenu des onglets : fond plus lisible */
-body.theme-sky .tabs-section,
-body.theme-sky .tab-panel,
-body.theme-sky .tab-content {
-  background: rgba(255,255,255,0.86) !important;
-  border: 1px solid rgba(0,30,80,0.12) !important;
-  box-shadow: 0 8px 24px rgba(0,30,80,0.10) !important;
-  color: var(--text-primary);
-}
-
-/* Petits écrans : onglets sur deux lignes, touch target + grand */
-@media (max-width: 700px) {
-  body.theme-sky .tabs .tab {
-    padding: 12px 14px !important;
-    font-size: .95rem;
-  }
+/* (optionnel) accessibilité : focus clavier */
+body.theme-sky .tabs .tab:focus-visible{
+  outline:3px solid rgba(53,130,255,.45);
+  outline-offset:2px;
 }
