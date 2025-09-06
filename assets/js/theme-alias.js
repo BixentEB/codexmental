@@ -7,8 +7,8 @@
  * - Si le visiteur a déjà choisi un thème (localStorage), on le respecte.
  * - Sinon on renvoie ton favori (configurable ci-dessous).
  */
-const ADMIN_FAVORITE = 'theme-stellaire'; 
-// Change ici quand tu veux: 'theme-stellaire' | 'theme-galactique' | 'theme-solaire' | 'theme-lunaire' | 'theme-ciel' (si tu en crées un), etc.
+const ADMIN_FAVORITE = 'theme-sky'; 
+// Change ici quand tu veux: 'theme-stellaire' | 'theme-galactique' | 'theme-solaire' | 'theme-lunaire' | 'theme-sky' (si tu en crées un), etc.
 
 export function resolveInitialTheme() {
   const userChoice = localStorage.getItem('codexTheme'); // choix visiteur, s'il existe
