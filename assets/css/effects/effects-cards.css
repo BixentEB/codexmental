@@ -1,0 +1,4 @@
+/* Flip horizontal (au hover) */
+.card-effect-flip:hover .card-inner {
+  transform: rotateY(180deg);
+}
