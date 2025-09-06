@@ -1,0 +1,16 @@
+/* Reflet glissant sur titres */
+.heading-effect-shine {
+  position: relative;
+  overflow: hidden;
+}
+.heading-effect-shine::after {
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);
+  transform:translateX(-100%);
+  animation: shineTitle 3s infinite;
+}
+@keyframes shineTitle {
+  0% { transform:translateX(-100%); }
+  100% { transform:translateX(100%); }
+}
