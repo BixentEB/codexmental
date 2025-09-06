@@ -171,7 +171,7 @@ body.theme-solaire {
 body.theme-solaire .theme-fab-options button[onclick*="theme-sky"],
 body.theme-solaire #mobile-menu button[onclick*="theme-sky"] {
   background: rgba(255,255,255,0.35);
-  color: #3b5a7d;                   /* bleu-gris lisible sur solaire */
+  color: #8a97a6;                   /* bleu-gris lisible sur solaire */
   border: 1px solid rgba(0,0,0,0.08);
   text-shadow: none;                 /* évite l'orange "glow" solaire */
   filter: none;                      /* au cas où un filter hérité traîne */
@@ -181,4 +181,5 @@ body.theme-solaire #mobile-menu button[onclick*="theme-sky"]:hover {
   background: rgba(255,255,255,0.55);
   color: #1f3752;
 }
+
 
