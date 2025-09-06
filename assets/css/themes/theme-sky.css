@@ -50,10 +50,12 @@ body.theme-sky #theme-canvas {
   pointer-events: none;
 }
 
-/* 🌐 Barre du haut : même gabarit que stellaire */
+/* =========================================================
+   🧭 TOPBAR (scope corrigé : header uniquement)
+   ========================================================= */
 body.theme-sky header,
-body.theme-sky .topbar,
-body.theme-sky nav {
+body.theme-sky header .topbar,
+body.theme-sky header nav {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -73,38 +75,63 @@ body.theme-sky nav {
   -webkit-backdrop-filter: blur(6px);
 }
 
-/* Liens de nav */
-body.theme-sky nav ul { gap: 18px; }
-body.theme-sky nav a {
+/* Liens du nav du HEADER seulement */
+body.theme-sky header nav ul { gap: 18px; }
+body.theme-sky header nav a {
   display: inline-flex;
   align-items: center;
   padding: 8px 10px;
   border-radius: 8px;
   color: var(--nav-link-color);
 }
-body.theme-sky nav a.active,
-body.theme-sky nav a[aria-current="page"] {
+body.theme-sky header nav a.active,
+body.theme-sky header nav a[aria-current="page"] {
   background: var(--nav-link-active-bg);
   color: var(--nav-link-active-color);
 }
 
-/* 🌠 Thème mobile – boutons */
-body.theme-sky .mobile-nav .theme-buttons button {
-  color: var(--nav-link-color);
-  text-shadow: 0 0 0 transparent;
+/* =========================================================
+   📎 SIDEBAR (réinitialisation — n’hérite plus de la topbar)
+   ========================================================= */
+/* adapte les sélecteurs aux tiens si nécessaire */
+body.theme-sky .sidepanel,
+body.theme-sky .sidebar,
+body.theme-sky .floating-menu {
+  position: static;
+  top: auto;
+  min-height: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0;
+  padding: 0;
 }
-body.theme-sky .mobile-nav .theme-buttons button:hover {
-  color: var(--text-primary);
+body.theme-sky .sidepanel nav a,
+body.theme-sky .sidebar nav a,
+body.theme-sky .floating-menu nav a {
+  background: transparent;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--nav-link-color);
+}
+body.theme-sky .sidepanel nav a.active,
+body.theme-sky .sidebar nav a.active,
+body.theme-sky .floating-menu nav a.active {
+  background: rgba(58,134,255,.14);
+  color: var(--nav-link-active-color);
 }
 
-/* 🧷 Colonne d’icônes flottantes (sélecteur à adapter si besoin) */
+/* Colonne d’icônes flottantes (si présente) */
 body.theme-sky .theme-buttons,
 body.theme-sky .floating-icons {
   position: sticky;
   top: calc(var(--topbar-h) + 16px);
 }
 
-/* ✨ Blocs / cartes / viewer */
+/* =========================================================
+   ✨ BLOCS / CARTES / VIEWER
+   ========================================================= */
 body.theme-sky .bloc,
 body.theme-sky .card,
 body.theme-sky .tabs-section,
@@ -177,7 +204,9 @@ body.theme-sky blockquote {
   color: var(--text-secondary);
 }
 
-/* 📐 Alignements (bandeau + contenu central) */
+/* =========================================================
+   📐 ALIGNEMENTS (bandeau + contenu central)
+   ========================================================= */
 body.theme-sky .title-chip,
 body.theme-sky .welcome-banner,
 body.theme-sky .home-title {
@@ -189,4 +218,9 @@ body.theme-sky #article-viewer,
 body.theme-sky .content-wrapper {
   max-width: 980px;
   margin-inline: auto;
+}
+
+/* Option A11Y : calmer les transitions si l’utilisateur préfère moins d’animations */
+@media (prefers-reduced-motion: reduce) {
+  body.theme-sky #theme-canvas { transition: none; }
 }
