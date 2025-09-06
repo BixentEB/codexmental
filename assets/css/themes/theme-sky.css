@@ -50,3 +50,61 @@ body.theme-sky blockquote {
   border-left: 3px solid var(--accent-primary);
   color: var(--text-secondary);
 }
+
+/* Cartes / blocs plus lisibles en sky */
+body.theme-sky .bloc,
+body.theme-sky .panel,
+body.theme-sky .card,
+body.theme-sky .viewer,
+body.theme-sky .article,
+body.theme-sky .tabs-section {
+  background: rgba(255,255,255,0.84);
+  color: var(--text-primary);
+  border: 1px solid rgba(0,30,80,0.12);
+  box-shadow: 0 8px 24px rgba(0,30,80,0.10);
+}
+
+/* Texte interne (hérite bien la couleur) */
+body.theme-sky .bloc p,
+body.theme-sky .panel p,
+body.theme-sky .viewer p,
+body.theme-sky .article p {
+  color: var(--text-primary);
+}
+
+/* Titres plus contrastés */
+body.theme-sky h1, 
+body.theme-sky h2, 
+body.theme-sky h3 {
+  color: #11345a; /* un peu plus sombre pour claquer sur fond clair */
+}
+
+/* Liens dans les contenus */
+body.theme-sky .bloc a,
+body.theme-sky .panel a,
+body.theme-sky .viewer a,
+body.theme-sky .article a {
+  color: var(--link-color);
+}
+body.theme-sky .bloc a:hover,
+body.theme-sky .panel a:hover,
+body.theme-sky .viewer a:hover,
+body.theme-sky .article a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* Liens du header : non sélectionnés plus visibles */
+body.theme-sky header nav a {
+  color: #a7c8ff;                  /* clair lisible sur header sombre */
+  background: transparent;
+}
+body.theme-sky header nav a:hover {
+  color: #ffffff;
+  background: rgba(80,140,255,0.15);
+}
+body.theme-sky header nav a.active,
+body.theme-sky header nav a[aria-current="page"] {
+  background: rgba(80,140,255,0.22);
+  color: #ffffff;
+}
