@@ -81,12 +81,12 @@ body.theme-lunaire .title-chip{
 
 /* SOLAIRE (or/ambre) */
 body.theme-solaire .title-chip{
-  --chip-bg1: rgba(255, 185, 64, 0.32);   /* ambre clair */
-  --chip-bg2: rgba(255, 130, 40, 0.18);   /* orange doux */
-  --chip-border: rgba(255, 170, 60, 0.65);
-  --chip-text: #fff8e6;                   /* crème lisible */
-  --chip-sheen: #ffd480;                  /* reflet doré */
-  --chip-shadow: rgba(255, 150, 40, 0.35);
+  --chip-bg1: rgba(255,185,64,.32);
+  --chip-bg2: rgba(255,130,40,.18);
+  --chip-border: rgba(255,170,60,.65);
+  --chip-text: #5a3300;            /* texte doré-brun lisible sur clair */
+  --chip-sheen: #ffd480;
+  --chip-shadow: rgba(255,150,40,.28);
 }
 
 
