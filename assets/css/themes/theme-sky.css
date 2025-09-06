@@ -238,3 +238,87 @@ body.theme-sky .cv-download .btn:hover {
   box-shadow: 0 10px 22px rgba(58,99,255,.42);
   filter: saturate(1.05);
 }
+
+/* =========================================================
+   SKY — Tabs/onglets (contraste + accessibilité)
+   ========================================================= */
+body.theme-sky {
+  --tab-bg: rgba(255,255,255,0.65);
+  --tab-text: #16365b;
+  --tab-border: rgba(0,40,90,0.18);
+
+  --tab-hover-bg: rgba(255,255,255,0.85);
+  --tab-hover-text: #0f2540;
+
+  --tab-active-bg: #3582ff;        /* bleu accent */
+  --tab-active-text: #ffffff;
+  --tab-active-glow: 0 4px 12px rgba(53,130,255,.35);
+}
+
+/* Barre d’onglets */
+body.theme-sky .tabs {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Pilules */
+body.theme-sky .tabs .tab {
+  background: var(--tab-bg) !important;
+  color: var(--tab-text) !important;
+  border: 1px solid var(--tab-border) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: .2px;
+  line-height: 1 !important;
+  box-shadow: 0 2px 8px rgba(0,30,80,.08);
+  text-shadow: none !important;
+  transition: background .15s ease, color .15s ease, box-shadow .2s ease, transform .05s ease;
+}
+
+body.theme-sky .tabs .tab:hover {
+  background: var(--tab-hover-bg) !important;
+  color: var(--tab-hover-text) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,30,80,.12);
+}
+
+/* Actif */
+body.theme-sky .tabs .tab.active,
+body.theme-sky .tabs .tab[aria-selected="true"],
+body.theme-sky .tabs .tab[aria-current="page"] {
+  background: var(--tab-active-bg) !important;
+  color: var(--tab-active-text) !important;
+  border-color: transparent !important;
+  box-shadow: var(--tab-active-glow) !important;
+}
+
+/* Focus clavier (a11y) */
+body.theme-sky .tabs .tab:focus-visible {
+  outline: 3px solid rgba(53,130,255,.55);
+  outline-offset: 2px;
+}
+
+/* Désactivé si utilisé */
+body.theme-sky .tabs .tab[disabled],
+body.theme-sky .tabs .tab[aria-disabled="true"] {
+  opacity: .55; cursor: not-allowed;
+}
+
+/* Contenu des onglets : fond plus lisible */
+body.theme-sky .tabs-section,
+body.theme-sky .tab-panel,
+body.theme-sky .tab-content {
+  background: rgba(255,255,255,0.86) !important;
+  border: 1px solid rgba(0,30,80,0.12) !important;
+  box-shadow: 0 8px 24px rgba(0,30,80,0.10) !important;
+  color: var(--text-primary);
+}
+
+/* Petits écrans : onglets sur deux lignes, touch target + grand */
+@media (max-width: 700px) {
+  body.theme-sky .tabs .tab {
+    padding: 12px 14px !important;
+    font-size: .95rem;
+  }
+}
