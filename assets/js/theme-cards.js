@@ -1,23 +1,46 @@
-document.querySelectorAll('.theme-card').forEach(card => {
-  card.addEventListener('click', () => {
-    const theme = card.dataset.theme;
+// Cartes thèmes — gestion par délégation (fonctionne même si le HTML est injecté après coup)
 
-    // Met à jour le localStorage
-    localStorage.setItem('codexTheme', `theme-${theme}`);
+function getCardsContainer(start) {
+  // On remonte jusqu'au container si possible, sinon document
+  return (start && start.closest?.('.theme-cards-container')) || document;
+}
 
-    // Change visuellement la carte active
-    document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
-    card.classList.add('active');
+function setActiveCard(clickedCard) {
+  const container = getCardsContainer(clickedCard);
+  container.querySelectorAll('.theme-card.active').forEach(c => c.classList.remove('active'));
+  clickedCard.classList.add('active');
+}
 
-    // Change le <link> vers la feuille de style
-    const themeLink = document.getElementById('theme-style');
-    if (themeLink) {
-      themeLink.href = `/assets/css/themes/theme-${theme}.css`;
-    }
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('.theme-card');
+  if (!card) return;
 
-    // Applique les effets visuels si setTheme est défini
-    if (typeof setTheme === 'function') {
-      setTheme(`theme-${theme}`);
-    }
-  });
+  const themeKey = card.dataset.theme;           // ex: "solaire", "lunaire", "galactique", "stellaire", "sky"
+  if (!themeKey) return;
+
+  const themeClass = `theme-${themeKey}`;
+
+  // 1) Mémorise le choix visiteur
+  try { localStorage.setItem('codexTheme', themeClass); } catch {}
+
+  // 2) Active visuellement la carte cliquée (dans SON container)
+  setActiveCard(card);
+
+  // 3) Applique le thème via l’API centrale (theme-engine + canvas)
+  if (typeof window.setTheme === 'function') {
+    window.setTheme(themeClass);
+  } else {
+    // Fallback minimal si setTheme n'est pas dispo (rare)
+    document.body.className = themeClass;
+  }
+});
+
+// Bonus: si le thème actuel est connu, on marque la carte correspondante comme active
+window.addEventListener('DOMContentLoaded', () => {
+  const effective = document.body.dataset?.effectiveTheme || '';
+  const key = effective.replace(/^theme-/, ''); // "solaire" etc.
+  if (!key) return;
+
+  const card = document.querySelector(`.theme-card[data-theme="${key}"]`);
+  if (card) setActiveCard(card);
 });
