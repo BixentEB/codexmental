@@ -379,7 +379,21 @@ Alors si un visiteur pense “c’est un cinglé”, rappelle-toi qu’il y a de
     <section id="theme-cards-placeholder" class="theme-cards-container"></section>
 
 
-     <!-- Bloc contenu ajouté -->
+
+ <!-- AMELIORATIONS LISTES -->
+        <section class="bloc tabs-section">
+  <h2>Améliorations</h2>
+
+  <ul class="tabs">
+    <li class="tab active" data-tab="recent">Ajoutés récemment</li>
+    <li class="tab" data-tab="lunaire">Lunaire</li>
+    <li class="tab" data-tab="technique">Technique</li>
+    <li class="tab" data-tab="effets">Animations & effets</li>
+    <li class="tab" data-tab="avenir">A venir</li>
+    <li class="tab" data-tab="bugs">Bugs connus</li>
+  </ul>
+
+  <div class="tab-content active" id="recent">
     <section class="bloc">
       <h2>🗂️ Contenus ajoutés récemment</h2>
       <ul>
@@ -406,13 +420,9 @@ Alors si un visiteur pense “c’est un cinglé”, rappelle-toi qu’il y a de
         <li>📄 Mise à jour du Profil en ligne</li>
       </ul>
     </section>
+  </div>
 
-    <!-- Bloc structuré en 2 colonnes avec sous-sections -->
-    <section class="section-2cols">
-
-      <!-- Bloc structure & fonction -->
-<div class="bloc-half">
-<small> 
+  <div class="tab-content" id="lunaire">
   <h2>🌙 Améliorations lunaires</h2>
  
    <p>Sur Mobile (vrai smartphone)</p>
@@ -435,9 +445,10 @@ Alors si un visiteur pense “c’est un cinglé”, rappelle-toi qu’il y a de
 <li>🌕 Toutes les tailles disponibles (dont super-lune)</li>
 <li>🎨 Le CSS gère librement les styles</li>
 </ul>
+  </div>
 
-   
-  <h2>🔧 Améliorations techniques</h2>
+  <div class="tab-content" id="technique">
+<h2>🔧 Améliorations techniques</h2>
   <ul>    
     <li><strong>Partage</strong> : Création d’un menu de partage contextuel (popup)</li>
     <li><strong>Blog</strong> : Amélioration du système d’articles dans le blog</li>
@@ -448,11 +459,9 @@ Alors si un visiteur pense “c’est un cinglé”, rappelle-toi qu’il y a de
     <li><strong>Menu sticky intelligent</strong> + icônes de thème</li>
     <li><strong>Typographie</strong> harmonisée : Orbitron + Roboto</li>
   </ul>
-  </small>
-</div>
+  </div>          
 
-<!-- Bloc effets visuels & roadmap -->
-<div class="bloc-half">
+   <div class="tab-content" id="effets">
   <h2>✨ Animation & effets</h2>
   <ul>
     <li><strong>CSS</strong> : Refonte complète des thèmes</li>
@@ -462,7 +471,9 @@ Alors si un visiteur pense “c’est un cinglé”, rappelle-toi qu’il y a de
     <li><strong>Effets visuels</strong> selon événement céleste</li>
     <li><strong>Animation machine à écrire</strong> aléatoire</li>
   </ul>
+</div>
 
+   <div class="tab-content" id="avenir">     
   <h2>🔮 À venir</h2>
   <ul>
     <li>🌟 Badge astro animé selon la page</li>
@@ -473,24 +484,16 @@ Alors si un visiteur pense “c’est un cinglé”, rappelle-toi qu’il y a de
   </ul>
   <br>
   <a href="/checklist.html" class="codex-btn">Voir les mises à jour à venir</a>
-
 </div>
 
-     <!-- BUGS CONNUS -->
-        <section class="bloc tabs-section">
-  <h2>Bugs connus et petites bizarreries</h2>
-
-  <ul class="tabs">
-    <li class="tab active" data-tab="visuels">🌠 Visuels</li>
-    <li class="tab" data-tab="mobile">📱 Mobile</li>
-  </ul>
-
-  <div class="tab-content active" id="visuels">
+   <div class="tab-content" id="bugs">     
+  <h2>🐞 Bugs et petites bizarreries</h2>
+   <div class="tab-content active" id="visuels">
       <h3>✨ L’étoile filante visible en plein jour.</h3>
        <p>Certaines étoiles filantes apparaissent même en plein jour. Ce n’est pas un bug, c’est une liberté artistique involontaire… <br>ou une volonté céleste.</p>
       <blockquote>« Je ne suis pas codeur, je suis… un observateur du cosmos. Et qui suis-je pour décider de la trajectoire d’un objet céleste ? <br>Si une étoile filante veut traverser un thème solaire ou lunaire, je lui laisse sa liberté. »</blockquote>
 
-    <hr style="width:40%; margin:2rem auto; border:none; border-top:1px solid rgba(255,255,255,0.2);">
+       <hr style="width:40%; margin:2rem auto; border:none; border-top:1px solid rgba(255,255,255,0.2);">
     
 <h3>Autres caprices cosmiques</h3>
     <ul>
@@ -499,62 +502,16 @@ Alors si un visiteur pense “c’est un cinglé”, rappelle-toi qu’il y a de
     </ul>
   </div>
 
-  <div class="tab-content" id="mobile">
+    <hr style="width:40%; margin:2rem auto; border:none; border-top:1px solid rgba(255,255,255,0.2);">
+
+<h3>Responsive mobile</h3>
     <ul>
       <li>📱 Onglets qui débordent ou se compactent mal.</li>
       <li>📊 Tableaux responsives instables selon les thèmes.</li>
       <li>🍔 Menu mobile qui superpose les sous-menus.</li>
     </ul>
   </div>
-
-</section>
-
- <!-- BUGS CONNUS -->
-        <section class="bloc tabs-section">
-  <h2>Améliorations</h2>
-
-  <ul class="tabs">
-    <li class="tab active" data-tab="recent">Ajoutés récemment</li>
-    <li class="tab" data-tab="mobile">📱 Mobile</li>
-  </ul>
-
-  <div class="tab-content active" id="recent">
-       <!-- Bloc contenu ajouté -->
-    <section class="bloc">
-      <h2>🗂️ Contenus ajoutés récemment</h2>
-      <ul>
-        <li>📰 Ajout d'articles BLOG
-        <ul>
-          <li>Et si installer une IA locale pouvait réduire notre empreinte numérique ? </li>
-          <li>Introduction des Miroirs</li>
-          <li>Miroir de l'humanité, tome 1</li>
-        </li>
-      </ul>
-      <li>📰 Ajout d'articles ATELIER
-        <ul>
-          <li>Codex Mental</li>
-          <li>Cryodynamique</li>
-          <li>Polaris</li>
-          <li>Solunar</li>
-        </li>
-      </ul>
-        <li>🤖 Fiche projet B-12 ajoutée dans l'Atelier</li>
-        <li>🕰️ Fiche application <em>Heures Sacrées</em> dans l'Atelier</li>        
-        <li>🌀 Fichier <code>events.json</code> pour les événements célestes</li>
-        <li>📘 Article « Origines du Codex »</li>
-        <li>🌌 Pages projets ajoutées dans mon Atelier</li>
-        <li>📄 Mise à jour du Profil en ligne</li>
-      </ul>
-    </section>
-  </div>
-
-  <div class="tab-content" id="mobile">
-    <ul>
-      <li>📱 Onglets qui débordent ou se compactent mal.</li>
-      <li>📊 Tableaux responsives instables selon les thèmes.</li>
-      <li>🍔 Menu mobile qui superpose les sous-menus.</li>
-    </ul>
-  </div>
+   </div>
 
 </section>
       
