@@ -36,10 +36,14 @@
 @import url('/assets/css/themes/themes.css');
 @import url('/assets/css/themes/theme-cards.css');
 
+/* === 🎨 Effets dynamiques === */
+@import url('/assets/css/effects/effects-tabs.css');
+
 /* === 🛡️ Utilitaires divers === */
 @import url('/assets/css/helpers.css');
 @import url('/assets/css/anti-copy.css');
 @import url('/assets/css/cookie.css');
+
 
 /* === 📱 Responsive mobile global === */
 @import url('/assets/css/style-base/mobile.css');
