@@ -1,0 +1,148 @@
+/* === ☁️ THÈME SKY — clair, inspiré du landing === */
+body.theme-sky {
+  /* Couleurs globales (fort contraste sur fond clair) */
+  --bg-primary: #e8f2ff;                  /* fond cartes/blocs */
+  --text-primary: #0f2540;                /* texte principal */
+  --text-secondary: #2c4a72;              /* sous-texte */
+  --accent-primary: #3a86ff;              /* boutons/accents */
+  --accent-hover: #5aa0ff;
+  --link-color: #2b6bff;
+
+  /* Blocs d’articles */
+  --bloc-bg: rgba(255,255,255,0.75);
+  --bloc-border: rgba(0,30,80,0.15);
+  --bloc-shadow: rgba(0, 30, 80, 0.08);
+  --bloc-shadow-hover: rgba(0, 30, 80, 0.18);
+
+  /* Navigation */
+  --logo-color: #2b6bff;
+  --nav-bg: rgba(240,247,255,0.65);       /* barre translucide claire */
+  --nav-link-color: #244a80;
+  --nav-link-active-bg: rgba(58,134,255,0.14);
+  --nav-link-active-color: #0e2238;
+
+  /* Boutons standard */
+  --btn-bg: #3a86ff;
+  --btn-text: #ffffff;
+  --btn-hover: #5aa0ff;
+
+  /* Popup partage */
+  --share-bg: rgba(250,252,255,0.96);
+  --share-color: #173556;
+  --share-border: rgba(30,90,170,0.18);
+  --share-hover: rgba(58,134,255,0.08);
+}
+
+/* Canvas fond (géré par canvas-sky.js) */
+body.theme-sky #theme-canvas {
+  position: fixed; inset: 0; z-index: -1;
+  opacity: 0; transition: opacity .6s ease;
+  pointer-events: none;
+}
+
+/* 🌐 Menu desktop */
+body.theme-sky header,
+body.theme-sky .topbar,
+body.theme-sky nav {
+  background: var(--nav-bg);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 12px rgba(0,30,80,0.12);
+}
+
+/* Liens de nav */
+body.theme-sky nav a {
+  color: var(--nav-link-color);
+}
+body.theme-sky nav a.active,
+body.theme-sky nav a[aria-current="page"] {
+  background: var(--nav-link-active-bg);
+  color: var(--nav-link-active-color);
+  border-radius: 8px;
+}
+
+/* 🌠 Thème mobile – boutons */
+body.theme-sky .mobile-nav .theme-buttons button {
+  color: var(--nav-link-color);
+  text-shadow: 0 0 0 transparent;
+}
+body.theme-sky .mobile-nav .theme-buttons button:hover {
+  color: var(--text-primary);
+}
+
+/* ✨ Blocs / cartes */
+body.theme-sky .bloc,
+body.theme-sky .card,
+body.theme-sky .tabs-section,
+body.theme-sky .theme-cards .card-back {
+  background: var(--bloc-bg);
+  border: 1px solid var(--bloc-border);
+  box-shadow: 0 8px 24px var(--bloc-shadow);
+}
+body.theme-sky .bloc:hover,
+body.theme-sky .card:hover {
+  box-shadow: 0 10px 28px var(--bloc-shadow-hover);
+}
+
+/* 🧾 Viewer / placeholders / emphase */
+body.theme-sky #article-viewer .placeholder { color: #3d5f90; }
+body.theme-sky #article-viewer em,
+body.theme-sky #article-viewer i { color: #244a80; }
+
+/* 💫 Menu collapsible blog */
+body.theme-sky .blog-menu details summary {
+  color: #2c4a72;
+}
+body.theme-sky .blog-menu details[open] summary {
+  color: #0f2540;
+}
+
+/* 🟨 Onglets */
+body.theme-sky .tabs .tab {
+  background: rgba(255,255,255,0.7);
+  color: var(--text-secondary);
+  border: 1px solid rgba(0,30,80,0.12);
+}
+body.theme-sky .tabs .tab.active {
+  background: var(--accent-primary);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* 🔘 Boutons généraux */
+body.theme-sky .codex-btn,
+body.theme-sky button,
+body.theme-sky .theme-electron {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+}
+body.theme-sky .codex-btn:hover,
+body.theme-sky button:hover {
+  background: var(--btn-hover);
+}
+
+/* 🧿 Icône/logo */
+body.theme-sky .site-logo,
+body.theme-sky .logo { color: var(--logo-color); }
+
+/* 🧊 Cartes de thème (revers) */
+body.theme-sky .theme-cards .card-back .description {
+  color: #0f2540;
+}
+
+/* 🪟 Cards vitreuses (si utilisées) */
+body.theme-sky .glass {
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,30,80,0.12);
+  box-shadow: 0 10px 24px rgba(0,30,80,0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* 🔖 Petites utilités lisibilité */
+body.theme-sky hr { border-top: 1px solid rgba(0,30,80,0.18); }
+body.theme-sky blockquote {
+  background: rgba(255,255,255,0.6);
+  border-left: 3px solid var(--accent-primary);
+  color: var(--text-secondary);
+}
