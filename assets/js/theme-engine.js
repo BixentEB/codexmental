@@ -1,93 +1,146 @@
-// /assets/js/theme-engine.js
+// ========================================================
+// Theme engine — applique classes + canvas + effets UI
+// ========================================================
+
 import { setupCanvas, initParticles, stopParticles } from '/assets/js/canvas.js';
+import { applyTabEffect, switchTabEffect } from '/assets/js/effects-tabs.js';
 
 let soleilActif = false;
 let currentTheme = null; // mémorise le dernier thème appliqué
 
+// ---- Catalogue d'effets disponibles pour les onglets (utile pour clean/reset)
+const TAB_EFFECTS = [
+  'tab-effect-underline',
+  'tab-effect-glow',
+  'tab-effect-zoom',
+  'tab-effect-aurora',
+  'tab-effect-shine',
+  'tab-effect-wave'
+];
+
+/**
+ * Sélecteur racine de tes onglets (classeur).
+ * Si tu en as plusieurs types, tu peux multiplier les appels dans applyUiEffects().
+ */
+const TABS_SELECTOR = '.tabs'; // ex: ".tabs" ou ".pills", etc.
+
 /**
  * Applique un thème visuel au <body> :
  * - Mémorise le thème dans localStorage
- * - Active les effets visuels (canvas uniquement)
- * @param {string} theme - Nom de la classe (ex: 'theme-lunaire', 'theme-stellaire', etc.)
+ * - Active les effets visuels (canvas)
+ * - Met à jour les petits effets UI (tabs, etc.)
+ * @param {string} theme - ex: 'theme-lunaire', 'theme-stellaire', 'theme-sky', ...
  */
 export async function setTheme(theme) {
-  // Appliquer la classe de thème au body (utile pour le preload CSS)
+  // 1) Classe sur le body (utile pour le preload CSS)
   document.body.className = theme;
 
-  // Si on vient d'activer le thème lunaire, adapter la lune responsive
+  // 2) Responsive Lune (si besoin)
   if (theme === 'theme-lunaire') {
     adaptLuneResponsive();
   }
 
-  // Sauvegarder le thème choisi (préférence visiteur)
+  // 3) Sauvegarder la préférence visiteur
   localStorage.setItem('codexTheme', theme);
 
-  // --- Arrêter l’animation spécifique du thème précédent si besoin ---
+  // 4) Arrêt des animations spécifiques du thème précédent (ex: sky)
   if (currentTheme === 'theme-sky') {
     try {
       const { stopSky } = await import('/assets/js/canvas-sky.js');
       stopSky();
-    } catch (e) {
-      // ok si le module n'a jamais été chargé
-      console.warn('stopSky non disponible (normal si non chargé)', e);
+    } catch {
+      /* ok si le module n'a jamais été chargé */
     }
   }
 
-  // Nettoyer les effets visuels précédents (particules standard)
+  // 5) Nettoyage particules/canvas standard
   stopParticles();
-
-  // Nettoyage du canvas pour éviter les artefacts visuels
   const canvas = document.getElementById('theme-canvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  // === Effets visuels par thème ===
+  // 6) Effets visuels par thème (canvas)
   if (theme === 'theme-sky') {
-    // thème clair "ciel + étoiles tombantes" (module séparé, safe)
     setupCanvas();
     document.getElementById('theme-canvas').style.opacity = '1';
     const { initSky } = await import('/assets/js/canvas-sky.js');
     initSky();
     soleilActif = false;
   }
-
   else if (theme === 'theme-stellaire') {
-    // ciel étoilé sombre (particules stars)
     setupCanvas();
     initParticles('stars', 120);
     document.getElementById('theme-canvas').style.opacity = '1';
     soleilActif = false;
   }
-
   else if (theme === 'theme-galactique') {
-    // poussière cosmique (particules dust)
     setupCanvas();
     initParticles('dust', 100);
     document.getElementById('theme-canvas').style.opacity = '1';
     soleilActif = false;
   }
-
   else if (theme === 'theme-solaire') {
-    // soleil flottant (module séparé)
     setupCanvas();
     document.getElementById('theme-canvas').style.opacity = '1';
-
     if (!soleilActif) {
       const { initSoleilFlottant } = await import('/assets/js/canvas-solaire.js');
       initSoleilFlottant();
       soleilActif = true;
     }
-  }
-
-  else {
-    // autre thème : pas d'effet canvas dédié
+  } else {
     soleilActif = false;
   }
 
-  // mémoriser le thème courant (utile pour stopper proprement au prochain switch)
+  // 7) Effets UI (onglets, boutons, etc.)
+  applyUiEffects(theme);
+
+  // 8) Mémoriser le thème courant
   currentTheme = theme;
+}
+
+/**
+ * Applique les effets UI "catalogue" selon le thème
+ * (ici uniquement les onglets; tu peux rajouter boutons, headings, cartes, etc.)
+ */
+function applyUiEffects(theme) {
+  // ---- Exemple d’affectation d’effets différents par thème
+  //   switchTabEffect(selector, effectToApply, allEffectsToRemoveFirst)
+  //   -> n’altère pas le layout, ajoute juste une classe d’effet
+
+  if (theme === 'theme-sky') {
+    switchTabEffect(TABS_SELECTOR, 'tab-effect-shine', TAB_EFFECTS);
+    // Exemples à garder en mémoire (désactivés) :
+    // switchTabEffect(TABS_SELECTOR, 'tab-effect-underline', TAB_EFFECTS);
+    // switchTabEffect(TABS_SELECTOR, 'tab-effect-zoom', TAB_EFFECTS);
+  }
+
+  else if (theme === 'theme-solaire') {
+    switchTabEffect(TABS_SELECTOR, 'tab-effect-aurora', TAB_EFFECTS);
+    // Idées :
+    // switchTabEffect(TABS_SELECTOR, 'tab-effect-glow', TAB_EFFECTS);
+  }
+
+  else if (theme === 'theme-lunaire') {
+    switchTabEffect(TABS_SELECTOR, 'tab-effect-underline', TAB_EFFECTS);
+    // Idées :
+    // switchTabEffect(TABS_SELECTOR, 'tab-effect-wave', TAB_EFFECTS);
+  }
+
+  else if (theme === 'theme-galactique') {
+    switchTabEffect(TABS_SELECTOR, 'tab-effect-aurora', TAB_EFFECTS);
+  }
+
+  else if (theme === 'theme-stellaire') {
+    // Sobre : pas d’effet (on enlève tout)
+    switchTabEffect(TABS_SELECTOR, '', TAB_EFFECTS);
+  }
+
+  else {
+    // Thème non listé → on nettoie
+    switchTabEffect(TABS_SELECTOR, '', TAB_EFFECTS);
+  }
 }
 
 /**
@@ -100,12 +153,8 @@ export function adaptLuneResponsive() {
   const width = window.innerWidth;
   const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-  // ===== MOBILE (petit écran OU appareil tactile) =====
   if (width <= 568 || isTouchDevice) {
-    // Reset complet de l'état
     lune.classList.remove('super-lune');
-
-    // Application des styles forcés
     lune.style.cssText = `
       width: 180px !important;
       height: 180px !important;
@@ -117,13 +166,10 @@ export function adaptLuneResponsive() {
       cursor: default !important;
       transition: none !important;
     `;
-
-    // Désactivation totale des interactions
     lune.onclick = null;
     lune.ontouchstart = null;
     lune.ontouchend = null;
 
-    // Blocage des events sur le SVG et ses enfants
     const svg = lune.querySelector('svg');
     if (svg) {
       svg.style.cssText = `
@@ -132,12 +178,8 @@ export function adaptLuneResponsive() {
       `;
     }
   }
-
-  // ===== TABLETTE (568px - 768px) =====
   else if (width <= 768) {
-    // On force la taille moyenne (pas de super-lune)
     lune.classList.remove('super-lune');
-
     lune.style.cssText = `
       width: 250px !important;
       height: 250px !important;
@@ -149,10 +191,7 @@ export function adaptLuneResponsive() {
       transform: none !important;
     `;
   }
-
-  // ===== DESKTOP (>768px) =====
   else {
-    // Reset complet pour laisser le CSS gérer
     lune.style.cssText = '';
     lune.removeAttribute('style');
   }
