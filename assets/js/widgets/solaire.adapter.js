@@ -10,8 +10,8 @@ export default {
     const txt = getSunInfo(new Date(), 48.8566, 2.3522);
     if (!txt) return false;
     const lines = txt.split('\n');
-    const alt = (lines[0].match(/à ([\d.,-]+)° d'altitude/)||[])[1] || '—';
-    const azi = (lines[0].match(/et ([\d.,-]+)° d'azimut/)||[])[1] || '—';
+    const alt = (lines[0].match(/à ([\\d.,-]+)° d'altitude/)||[])[1] || '—';
+    const azi = (lines[0].match(/et ([\\d.,-]+)° d'azimut/)||[])[1] || '—';
     const lever = (lines.find(l=>l.includes('Lever'))||'').replace('🌅 ','').replace('Prochain ','') || '—';
     const coucher = (lines.find(l=>l.includes('Coucher'))||'').replace('🌇 ','').replace('Prochain ','') || '—';
 
