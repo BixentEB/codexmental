@@ -7,11 +7,29 @@ const RENDERERS = new Map();
 
 // ===== Utilitaires =====
 const isHome = () => document.body.classList.contains('home');
+// Retourne le thème "effectif" pour le hub, sans casser ta logique globale
 const themeName = () => {
   const cls = [...document.body.classList];
-  // attend des classes comme "theme-sky", "theme-solaire", etc.
-  return cls.find(c => c.startsWith('theme-')) || null;
+  // 1) Si une classe theme-* explicite est présente, on la prend
+  const explicit = cls.find(c => c.startsWith('theme-') && c !== 'theme-main');
+  if (explicit) return explicit;
+
+  // 2) Si on est en "theme-main", on résout via sources "douces"
+  //    a) Query param ?theme=sky|solaire|lunaire|stellaire|galactique
+  const qp = new URLSearchParams(location.search).get('theme');
+  if (qp && ['sky','solaire','lunaire','stellaire','galactique'].includes(qp)) {
+    return `theme-${qp}`;
+  }
+
+  //    b) Ton favori utilisateur: localStorage (défini par ton theme-engine)
+  const stored = (localStorage.getItem('cm_theme') || '').trim();
+  if (stored && stored.startsWith('theme-')) return stored;
+
+  //    c) Défaut "propre" si rien n’est défini : sky
+  return 'theme-sky';
 };
+
+
 
 const container = () => document.getElementById('astro-container');
 const introNode = () => document.getElementById('intro-astro');
