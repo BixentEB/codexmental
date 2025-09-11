@@ -25,11 +25,11 @@ export default {
       45:'Brouillard',48:'Brouillard givrant',51:'Bruine faible',53:'Bruine',55:'Bruine forte',
       61:'Pluie faible',63:'Pluie',65:'Pluie forte',66:'Pluie verglaçante faible',67:'Pluie verglaçante',
       71:'Neige faible',73:'Neige',75:'Neige forte',77:'Grains de neige',
-      80:'Averses faibles',81:'Averses',82:'Averses fortes',85:'Averses de neige faibles',
-      86:'Averses de neige fortes',95:'Orage',96:'Orage grêle',99:'Orage grêle fort'
+      80:'Averses faibles',81:'Averses',82:'Averses fortes',85:'Averses de neige faibles',86:'Averses de neige fortes',
+      95:'Orage',96:'Orage grêle',99:'Orage grêle fort'
     }[code] || '—');
 
-    const html = `
+    el.innerHTML = `
       <div class="astro-kv">
         <div class="k">Lieu</div><div class="v">${loc.name}</div>
         <div class="k">Temp.</div><div class="v">${Math.round(cur.temperature_2m)}°</div>
@@ -43,11 +43,10 @@ export default {
         MAJ ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
       </div>
     `;
-    el.innerHTML = html;
 
-    // garde pour la viz
+    // expose pour la viz
     ctx._sky = { cur, daily };
-    return true; // ← indique à la coque qu’on a des données
+    return true;
   },
 
   async mountViz(el, ctx) {
