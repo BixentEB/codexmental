@@ -1,57 +1,65 @@
 // /assets/js/astro-hub.js
-import { getSunInfo } from '/assets/js/astro-solaire.js';        // réutilisé
+// Hub d’affichage "intro-astro" amélioré en carte 2 colonnes (données + visuel)
+// S’active uniquement sur home.html dans #astro-container.
+// Rend un renderer selon le thème effectif, sinon fallback texte animé existant.
+
+import { getSunInfo } from '/assets/js/astro-solaire.js';
 import { setCurrentAlertText, lancerIntroAstro } from '/assets/js/intro-astro.js';
 
-// Renderers disponibles (on enregistre au fur et à mesure)
-const RENDERERS = new Map();
-
-// ===== Utilitaires =====
+// ========================== Utils ==========================
 const isHome = () => document.body.classList.contains('home');
-// Retourne le thème "effectif" pour le hub, sans casser ta logique globale
+const container = () => document.getElementById('astro-container');
+const introNode = () => document.getElementById('intro-astro');
+
+// Thème effectif (sans casser ta logique globale)
 const themeName = () => {
   const cls = [...document.body.classList];
-  // 1) Si une classe theme-* explicite est présente, on la prend
+
+  // (1) Si une classe theme-* explicite est présente (autre que theme-main), on la prend
   const explicit = cls.find(c => c.startsWith('theme-') && c !== 'theme-main');
   if (explicit) return explicit;
 
-  // 2) Si on est en "theme-main", on résout via sources "douces"
-  //    a) Query param ?theme=sky|solaire|lunaire|stellaire|galactique
+  // (2) Si on est en "theme-main", on résout via sources douces
+  //     a) Query param ?theme=sky|solaire|lunaire|stellaire|galactique
   const qp = new URLSearchParams(location.search).get('theme');
   if (qp && ['sky','solaire','lunaire','stellaire','galactique'].includes(qp)) {
     return `theme-${qp}`;
   }
 
-  //    b) Ton favori utilisateur: localStorage (défini par ton theme-engine)
-  const stored = (localStorage.getItem('cm_theme') || '').trim();
-  if (stored && stored.startsWith('theme-')) return stored;
+  //     b) Favori utilisateur: accepte cm_theme OU codexTheme (tes deux conventions possibles)
+  const storedRaw =
+    (localStorage.getItem('cm_theme') || localStorage.getItem('codexTheme') || '').trim();
 
-  //    c) Défaut "propre" si rien n’est défini : sky
+  if (storedRaw) {
+    // Autorise "theme-xxx" ou juste "xxx"
+    if (storedRaw.startsWith('theme-')) return storedRaw;
+    if (['sky','solaire','lunaire','stellaire','galactique'].includes(storedRaw)) {
+      return `theme-${storedRaw}`;
+    }
+  }
+
+  // (3) Défaut safe pour home si aucune info: sky
   return 'theme-sky';
 };
-
-
-
-const container = () => document.getElementById('astro-container');
-const introNode = () => document.getElementById('intro-astro');
 
 function clearContainer() {
   const c = container();
   if (!c) return;
-  // garde le intro-astro pour fallback
+  // supprime toute carte rendue
   [...c.querySelectorAll('.astro-hub')].forEach(n => n.remove());
-  // réafficher intro-astro par défaut
+  // ré-affiche la ligne animée si elle existe
   if (introNode()) introNode().style.display = 'block';
 }
 
 function mountFrame(themeClass, titleLeft = '', titleRight = '') {
   const c = container();
   if (!c) return null;
-  // cache la ligne animée (elle reste en fallback)
+
+  // cache la ligne animée (fallback toujours dispo si besoin)
   if (introNode()) introNode().style.display = 'none';
 
   const wrap = document.createElement('div');
   wrap.className = `astro-hub ${themeClass}`;
-
   wrap.innerHTML = `
     <div class="astro-col astro-data">
       ${titleLeft ? `<h3>${titleLeft}</h3>` : ''}
@@ -72,64 +80,7 @@ function mountFrame(themeClass, titleLeft = '', titleRight = '') {
   };
 }
 
-// ====== SKY (météo) renderer ======
-RENDERERS.set('theme-sky', {
-  name: 'sky',
-  async render() {
-    const frame = mountFrame('is-sky', 'Météo locale', 'Ciel');
-    if (!frame) return;
-
-    // localisation (geo -> fallback Paris)
-    const loc = await (async () => {
-      try {
-        const p = await new Promise((res, rej) => {
-          if (!navigator.geolocation) return rej();
-          navigator.geolocation.getCurrentPosition(res, rej, {timeout:8000, maximumAge: 10*60*1000});
-        });
-        return { name: 'Ma position', lat: +p.coords.latitude.toFixed(4), lon: +p.coords.longitude.toFixed(4) };
-      } catch {
-        return { name: 'Paris, FR', lat: 48.8566, lon: 2.3522 };
-      }
-    })();
-
-    // Open-Meteo
-    const url = new URL('https://api.open-meteo.com/v1/forecast');
-    url.searchParams.set('latitude', loc.lat);
-    url.searchParams.set('longitude', loc.lon);
-    url.searchParams.set('current', 'temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m');
-    url.searchParams.set('daily', 'sunrise,sunset');
-    url.searchParams.set('timezone', 'auto');
-
-    const res = await fetch(url.toString());
-    const data = await res.json();
-
-    const cur = data.current;
-    const daily = data.daily;
-    const wtxt = wcToText(cur.weather_code);
-
-    // données (colonne gauche)
-    frame.kv.innerHTML = [
-      ['Lieu', loc.name],
-      ['Temp.', `${Math.round(cur.temperature_2m)}°`],
-      ['Ressenti', `${Math.round(cur.apparent_temperature)}°`],
-      ['Humidité', `${Math.round(cur.relative_humidity_2m)}%`],
-      ['Vent', `${Math.round(cur.wind_speed_10m)} km/h`],
-      ['Précip.', cur.precipitation ? `${cur.precipitation} mm` : '—'],
-      ['Ciel', wtxt]
-    ].map(([k,v]) => `<div class="k">${k}</div><div class="v">${v}</div>`).join('');
-
-    // viz (colonne droite) — petite scène CSS/SVG
-    frame.viz.innerHTML = iconFor(cur.weather_code, isNightISO(cur.time, daily.sunrise?.[0], daily.sunset?.[0]));
-
-    // pied
-    frame.foot.textContent = `MAJ ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
-
-    // Met aussi un court texte à intro-astro pour la rotation si jamais le hub se masque
-    setCurrentAlertText(`${wtxt} • ${Math.round(cur.temperature_2m)}° • Lever ${timeOnly(daily.sunrise?.[0])} • Coucher ${timeOnly(daily.sunset?.[0])}`);
-  },
-  destroy() { /* rien de spécial */ }
-});
-
+// Helpers météo
 function wcToText(code) {
   const map = {
     0:'Ciel clair',1:'Principalement clair',2:'Partiellement nuageux',3:'Couvert',
@@ -163,18 +114,77 @@ function iconFor(code, night=false){
   return cloud;
 }
 
-// ====== SOLAIRE renderer (2 colonnes) — réutilise getSunInfo + petite viz ======
+// ======================== Renderers ========================
+const RENDERERS = new Map();
+
+// --- SKY (météo locale) ---
+RENDERERS.set('theme-sky', {
+  name: 'sky',
+  async render() {
+    const frame = mountFrame('is-sky', 'Météo locale', 'Ciel');
+    if (!frame) return;
+
+    // localisation (geo -> fallback Paris)
+    const loc = await (async () => {
+      try {
+        const p = await new Promise((res, rej) => {
+          if (!navigator.geolocation) return rej();
+          navigator.geolocation.getCurrentPosition(res, rej, { timeout:8000, maximumAge:10*60*1000 });
+        });
+        return { name: 'Ma position', lat: +p.coords.latitude.toFixed(4), lon: +p.coords.longitude.toFixed(4) };
+      } catch {
+        return { name: 'Paris, FR', lat: 48.8566, lon: 2.3522 };
+      }
+    })();
+
+    // Open-Meteo
+    const url = new URL('https://api.open-meteo.com/v1/forecast');
+    url.searchParams.set('latitude', loc.lat);
+    url.searchParams.set('longitude', loc.lon);
+    url.searchParams.set('current', 'temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m');
+    url.searchParams.set('daily', 'sunrise,sunset');
+    url.searchParams.set('timezone', 'auto');
+
+    const res = await fetch(url.toString());
+    const data = await res.json();
+
+    const cur = data.current;
+    const daily = data.daily;
+    const wtxt = wcToText(cur.weather_code);
+
+    // colonne gauche (données)
+    frame.kv.innerHTML = [
+      ['Lieu', loc.name],
+      ['Temp.', `${Math.round(cur.temperature_2m)}°`],
+      ['Ressenti', `${Math.round(cur.apparent_temperature)}°`],
+      ['Humidité', `${Math.round(cur.relative_humidity_2m)}%`],
+      ['Vent', `${Math.round(cur.wind_speed_10m)} km/h`],
+      ['Précip.', cur.precipitation ? `${cur.precipitation} mm` : '—'],
+      ['Ciel', wtxt]
+    ].map(([k,v]) => `<div class="k">${k}</div><div class="v">${v}</div>`).join('');
+
+    // colonne droite (viz)
+    frame.viz.innerHTML = iconFor(cur.weather_code, isNightISO(cur.time, daily.sunrise?.[0], daily.sunset?.[0]));
+
+    // pied
+    frame.foot.textContent = `MAJ ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+
+    // court message pour fallback animé si la carte est masquée
+    setCurrentAlertText(`${wtxt} • ${Math.round(cur.temperature_2m)}° • Lever ${timeOnly(daily.sunrise?.[0])} • Coucher ${timeOnly(daily.sunset?.[0])}`);
+  },
+  destroy() {}
+});
+
+// --- SOLAIRE (infos locales + mini-arc) ---
 RENDERERS.set('theme-solaire', {
   name: 'solar',
   async render() {
     const frame = mountFrame('is-solar', 'Soleil (infos locales)', 'Position actuelle');
     if (!frame) return;
 
-    // loc rapide (pas besoin très précis pour l’illustration)
-    const loc = { name:'Paris, FR', lat:48.8566, lon:2.3522 };
+    const loc = { name:'Paris, FR', lat:48.8566, lon:2.3522 }; // pas besoin d’une grande précision ici
     const txt = getSunInfo(new Date(), loc.lat, loc.lon);
 
-    // déduis quelques champs simples depuis le texte (restons light)
     const lines = txt.split('\n');
     const alt = (lines[0].match(/à ([\d.,-]+)° d'altitude/)||[])[1] || '—';
     const azi = (lines[0].match(/et ([\d.,-]+)° d'azimut/)||[])[1] || '—';
@@ -188,7 +198,7 @@ RENDERERS.set('theme-solaire', {
       ['Coucher', coucher.replace('Prochain ', '')],
     ].map(([k,v]) => `<div class="k">${k}</div><div class="v">${v}</div>`).join('');
 
-    // viz — petit arc de course solaire (SVG)
+    // Viz : arc de course solaire (SVG)
     frame.viz.innerHTML = `
       <svg viewBox="0 0 260 160" style="width:100%;height:160px">
         <defs>
@@ -199,30 +209,32 @@ RENDERERS.set('theme-solaire', {
         </defs>
         <path d="M20 120 A110 110 0 0 1 240 120" fill="none" stroke="url(#sunGrad)" stroke-width="6" />
         <circle id="sunDot" cx="130" cy="60" r="10" fill="currentColor">
-          <animate attributeName="cx" dur="8s" repeatCount="indefinite" values="20; 130; 240; 130; 20"/>
-          <animate attributeName="cy" dur="8s" repeatCount="indefinite" values="120; 20; 120; 20; 120"/>
+          <animate attributeName="cx" dur="8s" repeatCount="indefinite" values="20;130;240;130;20"/>
+          <animate attributeName="cy" dur="8s" repeatCount="indefinite" values="120;20;120;20;120"/>
         </circle>
       </svg>
     `;
 
     frame.foot.textContent = 'Position & horaires basés sur SunCalc';
-    setCurrentAlertText(lines.join(' • ')); // pour le fallback animé
+    setCurrentAlertText(lines.join(' • '));
   },
   destroy() {}
 });
 
-// ====== Boot ======
+// ========================== Boot ==========================
 function run() {
   if (!isHome() || !container()) return;
+  console.debug?.('[astro-hub] boot', { isHome: isHome(), hasContainer: !!container() });
 
-  // re-monte à chaque changement de thème (si ton code change la classe body)
   const apply = () => {
     clearContainer();
     const t = themeName();
     const renderer = t && RENDERERS.get(t);
+    console.debug?.('[astro-hub] theme:', t, 'renderer:', !!renderer);
+
     if (renderer) {
       renderer.render().catch(err => {
-        console.warn('astro-hub renderer error', err);
+        console.warn('[astro-hub] renderer error', err);
         // fallback texte animé
         if (introNode()) {
           introNode().style.display = 'block';
@@ -240,9 +252,9 @@ function run() {
 
   apply();
 
-  // Observe un changement de classe sur <body> (bascule de thème)
+  // Observe les changements de classe sur <body> (bascule de thème)
   const mo = new MutationObserver(apply);
-  mo.observe(document.body, { attributes:true, attributeFilter:['class'] });
+  mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 }
 
 document.addEventListener('DOMContentLoaded', run);
