@@ -1,4 +1,3 @@
-// /assets/js/widgets/sky.adapter.js
 export default {
   id: 'theme-sky',
   titleLeft: 'Météo locale',
@@ -25,8 +24,8 @@ export default {
       45:'Brouillard',48:'Brouillard givrant',51:'Bruine faible',53:'Bruine',55:'Bruine forte',
       61:'Pluie faible',63:'Pluie',65:'Pluie forte',66:'Pluie verglaçante faible',67:'Pluie verglaçante',
       71:'Neige faible',73:'Neige',75:'Neige forte',77:'Grains de neige',
-      80:'Averses faibles',81:'Averses',82:'Averses fortes',85:'Averses de neige faibles',86:'Averses de neige fortes',
-      95:'Orage',96:'Orage grêle',99:'Orage grêle fort'
+      80:'Averses faibles',81:'Averses',82:'Averses fortes',85:'Averses de neige faibles',
+      86:'Averses de neige fortes',95:'Orage',96:'Orage grêle',99:'Orage grêle fort'
     }[code] || '—');
 
     el.innerHTML = `
@@ -39,7 +38,7 @@ export default {
         <div class="k">Précip.</div><div class="v">${cur.precipitation ? `${cur.precipitation} mm` : '—'}</div>
         <div class="k">Ciel</div><div class="v">${wcToText(cur.weather_code)}</div>
       </div>
-      <div style="opacity:.7;margin-top:.35rem;">
+      <div style="opacity:.75;margin-top:.3rem;font-size:.88rem;">
         MAJ ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
       </div>
     `;
@@ -59,14 +58,14 @@ export default {
     })();
 
     const iconFor = (code, night=false) => {
-      const sun = `<svg viewBox="0 0 120 120" style="width:120px;height:120px"><circle cx="60" cy="60" r="26" fill="currentColor"/><g stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".9"><line x1="60" y1="6" x2="60" y2="22"/><line x1="60" y1="98" x2="60" y2="114"/><line x1="6" y1="60" x2="22" y2="60"/><line x1="98" y1="60" x2="114" y2="60"/><line x1="24" y1="24" x2="34" y2="34"/><line x1="86" y1="86" x2="96" y2="96"/><line x1="86" y1="34" x2="96" y2="24"/><line x1="24" y1="96" x2="34" y2="86"/></g></svg>`;
-      const moon = `<svg viewBox="0 0 120 120" style="width:120px;height:120px"><path d="M100 70c-9 18-31 25-49 16A38 38 0 0 1 36 30 39 39 0 0 0 60 108c20 0 37-13 40-38z" fill="currentColor"/></svg>`;
-      const cloud = `<svg viewBox="0 0 160 120" style="width:160px;height:120px"><path d="M48 92c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/></svg>`;
-      const rain = `<svg viewBox="0 0 160 140" style="width:160px;height:120px"><path d="M48 80c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/><g fill="currentColor" opacity=".95"><path d="M60 100 l-6 18"/><path d="M90 100 l-6 18"/><path d="M120 100 l-6 18"/></g></svg>`;
-      const snow = `<svg viewBox="0 0 160 140" style="width:160px;height:120px"><path d="M48 80c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/><g fill="currentColor" opacity=".95"><circle cx="72" cy="106" r="4"/><circle cx="96" cy="112" r="4"/><circle cx="120" cy="106" r="4"/></g></svg>`;
-      const storm = `<svg viewBox="0 0 160 140" style="width:160px;height:120px"><path d="M48 80c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/><path d="M92 96l-12 20h12l-6 20 18-26h-12l10-14z" fill="currentColor"/></svg>`;
+      const sun = `<svg viewBox="0 0 120 120" style="width:96px;height:96px"><circle cx="60" cy="60" r="26" fill="currentColor"/><g stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".9"><line x1="60" y1="6" x2="60" y2="22"/><line x1="60" y1="98" x2="60" y2="114"/><line x1="6" y1="60" x2="22" y2="60"/><line x1="98" y1="60" x2="114" y2="60"/><line x1="24" y1="24" x2="34" y2="34"/><line x1="86" y1="86" x2="96" y2="96"/><line x1="86" y1="34" x2="96" y2="24"/><line x1="24" y1="96" x2="34" y2="86"/></g></svg>`;
+      const moon = `<svg viewBox="0 0 120 120" style="width:96px;height:96px"><path d="M100 70c-9 18-31 25-49 16A38 38 0 0 1 36 30 39 39 0 0 0 60 108c20 0 37-13 40-38z" fill="currentColor"/></svg>`;
+      const cloud= `<svg viewBox="0 0 160 120" style="width:110px;height:82px"><path d="M48 92c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/></svg>`;
+      const rain = `<svg viewBox="0 0 160 140" style="width:110px;height:86px"><path d="M48 80c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/><g fill="currentColor" opacity=".95"><path d="M60 100 l-6 18"/><path d="M90 100 l-6 18"/><path d="M120 100 l-6 18"/></g></svg>`;
+      const snow = `<svg viewBox="0 0 160 140" style="width:110px;height:86px"><path d="M48 80c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/><g fill="currentColor" opacity=".95"><circle cx="72" cy="106" r="4"/><circle cx="96" cy="112" r="4"/><circle cx="120" cy="106" r="4"/></g></svg>`;
+      const storm= `<svg viewBox="0 0 160 140" style="width:110px;height:86px"><path d="M48 80c-20 0-36-14-36-32 0-16 12-29 28-31a40 40 0 0 1 78 8h4c16 0 28 12 28 26s-14 29-30 29H48z" fill="currentColor" opacity=".9"/><path d="M92 96l-12 20h12l-6 20 18-26h-12l10-14z" fill="currentColor"/></svg>`;
       if (night && code===0) return moon;
-      if ([0].includes(code)) return sun;
+      if (code===0) return sun;
       if ([1,2,3,45,48].includes(code)) return cloud;
       if ([51,53,55,61,63,65,66,67,80,81,82].includes(code)) return rain;
       if ([71,73,75,77,85,86].includes(code)) return snow;
