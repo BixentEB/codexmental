@@ -1,9 +1,11 @@
-// /assets/js/astro-shell.js
+// Coque neutre à 2 slots ; les adapters injectent le contenu.
+// Mods visuels par défaut (tu peux changer la string ci-dessous).
+const SHELL_MODS = 'compact soft';
 
-// Registry d'adapters de thème (chargés plus bas)
+// Registry d'adapters
 const ADAPTERS = new Map();
 
-/** helpers communs (optionnels pour les adapters) */
+// Helpers utiles aux adapters
 const helpers = {
   async geolocate(fallback = { name:'Paris, FR', latitude:48.8566, longitude:2.3522 }) {
     try {
@@ -31,7 +33,13 @@ function mountShell(themeKey, titles = { left:'', right:'' }) {
   const host = document.getElementById('astro-shell');
   if (!host) return null;
 
-  host.className = `astro-shell ${themeKey.replace('theme-','')}`;
+  // conserve d'éventuelles classes utilisateur + applique mods
+  const userClasses = host.className
+    .split(' ')
+    .filter(c => c && c !== 'astro-shell' && !['sky','solar','lunar','star','gal','show','compact','soft'].includes(c))
+    .join(' ');
+  host.className = `astro-shell ${themeKey.replace('theme-','')} ${SHELL_MODS} ${userClasses}`.trim();
+
   host.innerHTML = `
     <div class="col data">
       ${titles.left ? `<h3>${titles.left}</h3>` : ''}
@@ -63,29 +71,22 @@ async function run() {
   const ctx = { theme, root: ui.host, slots: { data: ui.dataEl, viz: ui.vizEl }, helpers };
 
   try {
-    // Chaque adapter doit retourner true si au moins un des panes a été rempli.
     const okData = (await adapter.mountData?.(ui.dataEl, ctx)) === true;
-    const okViz  = (await adapter.mountViz?.(ui.vizEl, ctx)) === true;
+    const okViz  = (await adapter.mountViz?.(ui.vizEl,  ctx)) === true;
 
-    if (okData || okViz) {
-      host.classList.add('show');   // on affiche la coque
-    } else {
-      host.classList.remove('show'); // pas de données => laisse intro-astro vivre
-      host.innerHTML = '';
-    }
+    if (okData || okViz) host.classList.add('show');
+    else { host.classList.remove('show'); host.innerHTML=''; }
   } catch (e) {
     console.warn('[astro-shell] adapter error', adapter?.id, e);
     host.classList.remove('show');
-    host.innerHTML = '';
+    host.innerHTML='';
   }
 }
 
 document.addEventListener('DOMContentLoaded', run);
 new MutationObserver(run).observe(document.body, { attributes:true, attributeFilter:['data-effective-theme','class'] });
 
-// ---- Import/registre des adapters fournis ----
+// Enregistre les adapters
 import skyAdapter   from '/assets/js/widgets/sky.adapter.js';
 import solarAdapter from '/assets/js/widgets/solaire.adapter.js';
-// (tu en ajouteras d'autres librement : lunaire, stellaire, galactique, ...)
-
 [skyAdapter, solarAdapter].forEach(a => a?.id && ADAPTERS.set(a.id, a));
