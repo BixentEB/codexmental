@@ -1,4 +1,4 @@
-/* ASTRO SHELL — verre clair, compact, neutre (thème = coque ; météo = couleurs physiques) */
+/* ASTRO SHELL — vitre claire, compacte, infos lisibles, météo physique */
 
 :root{
   --aw-maxw: 800px;
@@ -6,14 +6,16 @@
   --aw-pad: 12px;
   --aw-gap: 12px;
 
-  /* Coque (réagit à tes vars de thème si présentes) */
-  --aw-glass-bg: color-mix(in oklab, #ffffff 65%, transparent);
-  --aw-glass-border: color-mix(in oklab, var(--accent-primary, #8fd3ff) 18%, #000 82%);
-  --aw-shadow: rgba(0,0,0,.12);
-  --aw-text: var(--text-color, #e8f2ff);
-  --aw-muted: color-mix(in oklab, var(--text-color, #e8f2ff) 45%, transparent);
+  /* Coque : répond au thème via tes vars globales */
+  --aw-text: var(--text-primary, #e8f2ff);
+  --aw-muted: var(--text-secondary, #a9b7d0);
 
-  /* Palette physique (non teintée par thème) */
+  /* Vitre (nettement plus transparente qu’avant) */
+  --aw-glass-bg: rgba(255,255,255,.14);      /* ↓ opacité */
+  --aw-glass-border: rgba(255,255,255,.22);  /* contour discret */
+  --aw-shadow: rgba(0,0,0,.10);
+
+  /* Palette “physique” météo (indépendante du thème) */
   --sky-sun: #ffd76a;
   --sky-halo: #ffe9a6;
   --sky-cloud-light: #ffffff;
@@ -22,7 +24,7 @@
   --sky-snow: #f6faff;
   --sky-bolt: #e9f2ff;
 
-  --solar-arc: #cfd9e6;
+  --solar-arc: #cfd3de;
   --solar-dot: #ffd76a;
 
   --moon-disk: #f2f2f2;
@@ -49,11 +51,11 @@
   position:relative;
   border:1px solid var(--aw-glass-border);
   border-radius: var(--aw-radius);
-  padding: var(--aw-pad);
-  background: color-mix(in oklab, var(--aw-glass-bg) 85%, transparent);
-  box-shadow: 0 10px 30px var(--aw-shadow);
-  backdrop-filter: blur(8px);
-  min-height: 120px; /* compact */
+  padding: var(--aw-pad) calc(var(--aw-pad) + 2px);
+  background: var(--aw-glass-bg);
+  box-shadow: 0 10px 24px var(--aw-shadow);
+  backdrop-filter: blur(8px) saturate(110%);
+  min-height: 110px; /* plus compact */
 }
 
 .aw-meta{
@@ -61,44 +63,56 @@
   color: var(--aw-muted);
   margin-top: 8px;
 }
-
 .aw-sep{ opacity:.5 }
 
-/* VIZ canvas */
+/* ---- Infos (meilleure lisibilité) ---- */
+.aw-data .aw-row{ display:grid; gap:6px; }
+.aw-data .aw-title{ font-weight:600; color: var(--aw-text); }
+.aw-data .aw-line{ color: var(--aw-muted); }
+.aw-data strong{ color: var(--aw-text); font-weight:600; }
+.aw-list{ list-style:none; padding:0; margin:.25rem 0 0 0; display:grid; gap:4px; }
+.aw-list li{ display:flex; align-items:center; gap:10px; color: var(--aw-muted); }
+.aw-kv{ display:flex; gap:14px; flex-wrap:wrap; }
+.aw-kv .kv{ color: var(--aw-muted); }
+.aw-kv .kv strong{ color: var(--aw-text); }
+
+/* ---- VIZ ---- */
 .aw-viz svg{ width:100%; height:150px; display:block; }
-@media (max-width:720px){ .aw-viz svg{ height:140px; } }
+@media (max-width:720px){ .aw-viz svg{ height:138px; } }
 
 /* Animations */
-@keyframes aw-cloud-drift { from{ transform: translateX(-8%)} to{ transform: translateX(8%)} }
+@keyframes aw-cloud-drift { from{ transform: translateX(-6%)} to{ transform: translateX(6%)} }
+@keyframes aw-cloud-bob   { 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(-2px)} }
 @keyframes aw-sun-breathe { 0%{ transform: scale(1)} 50%{ transform: scale(1.03)} 100%{ transform: scale(1)} }
-@keyframes aw-rain-fall { to{ transform: translateY(110%)} }
-@keyframes aw-snow-fall { to{ transform: translateY(110%) rotate(10deg)} }
-@keyframes aw-bolt-flash {
-  0%, 92% { opacity: 0; filter: drop-shadow(0 0 0 rgba(255,255,255,0)); }
-  94% { opacity: 1; filter: drop-shadow(0 0 6px rgba(255,255,255,.6)); }
-  100% { opacity: 0; }
-}
+@keyframes aw-rain-fall   { to{ transform: translateY(110%)} }
+@keyframes aw-snow-fall   { to{ transform: translateY(110%) rotate(10deg)} }
+@keyframes aw-bolt-flash  { 0%,92%{opacity:0} 94%{opacity:1} 100%{opacity:0} }
 
-/* Primitives météo (physiques) */
+/* Nuages (physiques) */
 .aw-cloud{ fill: var(--sky-cloud-light); opacity:.95; }
 .aw-cloud--dark{ fill: var(--sky-cloud-dark); opacity:.9; }
-.aw-cloud.anim { animation: aw-cloud-drift 8s ease-in-out infinite alternate; }
+.aw-layer{ animation: aw-cloud-drift 10s ease-in-out infinite alternate; }
+.aw-layer--back{ opacity:.9; filter: blur(.2px); }
+.aw-layer--front{ animation-duration:8s; }
+.aw-bob{ animation: aw-cloud-bob 6s ease-in-out infinite; }
 
+/* Soleil */
 .aw-sun{ fill: var(--sky-sun); transform-origin:center; }
 .aw-sun-halo{ fill: var(--sky-halo); opacity:.25; }
 .aw-sun.anim{ animation: aw-sun-breathe 6s ease-in-out infinite; }
 
-.aw-rain line{ stroke: var(--sky-rain); stroke-width:2; stroke-linecap:round; opacity:.8; }
-.aw-rain line.anim{ animation: aw-rain-fall var(--d,800ms) linear var(--delay,0ms) infinite; }
-
+/* Pluie / Neige */
+.aw-rain line{ stroke: var(--sky-rain); stroke-width:2; stroke-linecap:round; opacity:.85; }
+.aw-rain line.anim{ animation: aw-rain-fall var(--d,900ms) linear var(--delay,0ms) infinite; }
 .aw-snow circle{ fill: var(--sky-snow); opacity:.95; }
-.aw-snow circle.anim{ animation: aw-snow-fall var(--d,1600ms) linear var(--delay,0ms) infinite; }
+.aw-snow circle.anim{ animation: aw-snow-fall var(--d,1700ms) linear var(--delay,0ms) infinite; }
 
-.aw-bolt{ fill: var(--sky-bolt); opacity:0; }
+/* Éclairs (flash doux) */
+.aw-bolt{ fill: var(--sky-bolt); opacity:0; filter: drop-shadow(0 0 6px rgba(255,255,255,.5)); }
 .aw-bolt.anim{ animation: aw-bolt-flash 2.8s steps(2,end) infinite; }
 
 /* Solaire */
-.aw-arc{ stroke: var(--solar-arc); stroke-width:2; fill:none; opacity:.9; }
+.aw-arc{ stroke: var(--solar-arc); stroke-width:1.8; fill:none; opacity:.9; }
 .aw-dot{ fill: var(--solar-dot); }
 
 /* Lunaire */
