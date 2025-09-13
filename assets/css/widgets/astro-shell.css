@@ -1,23 +1,25 @@
 /* ASTRO SHELL — verre clair, listes stables, météo physique */
 
+/* =========================
+   Variables pilotées par tes thèmes
+   ========================= */
 :root{
+  /* gabarit */
   --aw-maxw: 800px;
   --aw-radius: 16px;
   --aw-pad: 12px;
   --aw-gap: 12px;
 
-  /* ... */
-  --aw-text: var(--text-primary, #e8f2ff);
-  /* ancien --aw-muted remplacé par un atténué lisible */
-  --aw-muted: color-mix(in oklab, var(--aw-text) 75%, transparent);
+  /* couleurs → pilotées par les thèmes existants */
+  --aw-text: var(--text-primary, #1b1b1b);
+  --aw-muted: var(--text-secondary, #6b7280);
 
-  /* Vitre plus légère */
-  /* vitre inchangée OU plus légère si besoin */
-  --aw-glass-bg: rgba(255,255,255,.12);
-  --aw-glass-border: rgba(255,255,255,.20);
-  --aw-shadow: rgba(0,0,0,.10);
+  /* “vitre” → s’aligne sur tes blocs si dispo, sinon fallback léger */
+  --aw-glass-bg: var(--bg-subtle, rgba(255,255,255,.12));
+  --aw-glass-border: var(--bloc-border, rgba(0,0,0,.18));
+  --aw-shadow: var(--bloc-shadow, rgba(0,0,0,.10));
 
-  /* Météo (physique) */
+  /* palettes “physiques” indépendantes des thèmes (météo) */
   --sky-sun: #ffd76a;
   --sky-halo: #ffe9a6;
   --sky-cloud-light: #ffffff;
@@ -26,13 +28,17 @@
   --sky-snow: #f6faff;
   --sky-bolt: #e9f2ff;
 
-  --solar-arc: #cfd3de;
-  --solar-dot: #ffd76a;
+  /* solaire/lunaire → teintées par tes accents */
+  --solar-arc: var(--text-secondary, #cfd3de);
+  --solar-dot: var(--accent-primary, #ffd76a);
 
   --moon-disk: #f2f2f2;
   --moon-shadow: #0b1120;
 }
 
+/* =========================
+   Coque / layout
+   ========================= */
 #astro-shell{
   width: min(100%, var(--aw-maxw));
   margin: clamp(14px, 3vh, 24px) auto;
@@ -66,8 +72,9 @@
 }
 .aw-sep{ opacity:.5 }
 
-/* ====== INFOS: listes stables ====== */
-/* Bloc données : petit header ville + heure */
+/* =========================
+   Données (bloc gauche)
+   ========================= */
 .aw-data .aw-head{
   display:flex;
   align-items:center;
@@ -76,17 +83,32 @@
   font-size:.88em;
   color: var(--aw-muted);
 }
-.aw-data .aw-title{ font-weight:600; color: var(--aw-text); margin: 0 0 4px 0; }
-.aw-list{ list-style:none; padding:0; margin:0; display:grid; gap:6px; }
-.aw-item{ display:flex; gap:10px; align-items:center; color: var(--aw-muted); }
+.aw-data .aw-title{
+  font-weight:600;
+  color: var(--aw-text);
+  margin: 0 0 4px 0;
+}
+.aw-list{
+  list-style:none;
+  padding:0; margin:0;
+  display:grid; gap:6px;
+}
+.aw-item{
+  display:flex; gap:10px; align-items:center;
+  color: var(--aw-muted);
+}
 .aw-item strong{ color: var(--aw-text); font-weight:600; }
 .aw-item .tag{ opacity:.9 }
 
-/* ====== VIZ ====== */
-.aw-viz svg{ width:100%; height:140px; display:block; } /* un peu plus compact */
+/* =========================
+   Viz (bloc droit)
+   ========================= */
+.aw-viz svg{ width:100%; height:140px; display:block; }
 @media (max-width:720px){ .aw-viz svg{ height:136px; } }
 
-/* Animations */
+/* =========================
+   Animations & styles viz
+   ========================= */
 @keyframes aw-cloud-sweep { from{ transform: translateX(-20%) } to{ transform: translateX(120%) } }
 @keyframes aw-bob { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-2px) } }
 @keyframes aw-sun-breathe { 0%{ transform:scale(1)} 50%{ transform:scale(1.03)} 100%{ transform:scale(1)} }
@@ -122,3 +144,35 @@
 /* Lunaire */
 .aw-moon-disk{ fill: var(--moon-disk); }
 .aw-moon-shadow{ fill: var(--moon-shadow); }
+
+/* =========================
+   Surcharges par thème (suivent tes vars)
+   ========================= */
+body.theme-solaire #astro-shell {
+  --aw-text: var(--text-primary);
+  --aw-muted: var(--text-secondary);
+  --aw-glass-bg: var(--bg-subtle, rgba(255,255,255,.10));
+  --solar-arc: var(--text-secondary);
+  --solar-dot: var(--accent-primary);
+}
+
+body.theme-sky #astro-shell {
+  --aw-text: var(--text-primary);
+  --aw-muted: var(--text-secondary);
+  --aw-glass-bg: var(--bg-subtle, rgba(255,255,255,.14));
+}
+
+body.theme-lunaire #astro-shell {
+  --aw-text: var(--text-primary);
+  --aw-muted: var(--text-secondary);
+  --aw-glass-bg: var(--bg-subtle, rgba(255,255,255,.08));
+  --solar-arc: var(--text-secondary);
+  --solar-dot: var(--accent-primary);
+}
+
+/* Optionnel : booster le contraste du texte dans le bloc Solaire (thème clair) */
+body.theme-solaire #astro-shell .aw-data,
+body.theme-solaire #astro-shell .aw-meta{
+  /* si besoin : augmenter la densité du muted */
+  --aw-muted: color-mix(in oklab, var(--aw-text) 88%, transparent);
+}
