@@ -42,13 +42,13 @@ function moonIllumination(date){
 }
 
 function phaseName(frac){
-  if(frac < 0.03 || frac > 0.97) return 'Nouvelle Lune';
-  if(frac < 0.22) return 'Premier croissant';
-  if(frac < 0.28) return 'Premier quartier';
-  if(frac < 0.47) return 'Gibbeuse croissante';
-  if(frac < 0.53) return 'Pleine Lune';
-  if(frac < 0.72) return 'Gibbeuse décroissante';
-  if(frac < 0.78) return 'Dernier quartier';
+  if(frac < 0.02 || frac > 0.98) return 'Nouvelle Lune';
+  if(frac < 0.24) return 'Premier croissant';
+  if(frac < 0.26) return 'Premier quartier';
+  if(frac < 0.49) return 'Gibbeuse croissante';
+  if(frac < 0.51) return 'Pleine Lune';
+  if(frac < 0.74) return 'Gibbeuse décroissante';
+  if(frac < 0.76) return 'Dernier quartier';
   return 'Dernier croissant';
 }
 
