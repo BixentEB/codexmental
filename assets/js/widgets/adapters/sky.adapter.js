@@ -11,20 +11,27 @@ function conditionGuess(){
 }
 
 async function reverseGeocode(lat, lon){
-  // Public, sans clé ; fallback si ça rate
   const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=fr`;
   try{
     const r = await fetch(url);
     if(!r.ok) throw new Error('geocode http');
     const j = await r.json();
-    const city = j.city || j.locality || j.principalSubdivision || '';
-    const country = j.countryName || '';
+
+    const rawCity = j.city || j.locality || j.principalSubdivision || '';
+    const rawCountry = j.countryName || j.countryCode || '';
+
+    // supprime les articles entre parenthèses : "France (la)" → "France"
+    const country = String(rawCountry).replace(/\s*\([^)]*\)\s*$/, '').trim();
+    const city = String(rawCity).trim();
+
+    // si pas de ville, affiche juste le pays
     const label = [city, country].filter(Boolean).join(', ');
     return label || `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
   }catch{
     return `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
   }
 }
+
 
 export async function getData(shell){
   const now = new Date();
