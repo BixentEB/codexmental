@@ -6,10 +6,13 @@
   --aw-pad: 12px;
   --aw-gap: 12px;
 
+  /* ... */
   --aw-text: var(--text-primary, #e8f2ff);
-  --aw-muted: var(--text-secondary, #a9b7d0);
+  /* ancien --aw-muted remplacé par un atténué lisible */
+  --aw-muted: color-mix(in oklab, var(--aw-text) 75%, transparent);
 
   /* Vitre plus légère */
+  /* vitre inchangée OU plus légère si besoin */
   --aw-glass-bg: rgba(255,255,255,.12);
   --aw-glass-border: rgba(255,255,255,.20);
   --aw-shadow: rgba(0,0,0,.10);
@@ -64,7 +67,16 @@
 .aw-sep{ opacity:.5 }
 
 /* ====== INFOS: listes stables ====== */
-.aw-data .aw-title{ font-weight:600; color: var(--aw-text); margin-bottom: 4px; }
+/* Bloc données : petit header ville + heure */
+.aw-data .aw-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:4px;
+  font-size:.88em;
+  color: var(--aw-muted);
+}
+.aw-data .aw-title{ font-weight:600; color: var(--aw-text); margin: 0 0 4px 0; }
 .aw-list{ list-style:none; padding:0; margin:0; display:grid; gap:6px; }
 .aw-item{ display:flex; gap:10px; align-items:center; color: var(--aw-muted); }
 .aw-item strong{ color: var(--aw-text); font-weight:600; }
