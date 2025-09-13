@@ -1,11 +1,44 @@
-// Terminator circulaire (fini les ellipses) ; orientation fine à venir (SunCalc)
+// LUNAIRE — illumination précise (Meeus simplifié) + terminator circulaire orienté Nord
 
-function lunarPhaseFraction(date){
-  const epoch = Date.UTC(2000,0,6,18,14,0);
-  const synodic = 29.530588853 * 86400000;
-  const t = date.getTime() - epoch;
-  const phase = (t % synodic + synodic) % synodic;
-  return phase / synodic; // 0..1  (0 = Nouvelle, 0.5 = Pleine)
+const RAD = Math.PI/180;
+const DEG = 180/Math.PI;
+
+function toDays2000(date){
+  // J2000.0 (2000-01-01 12:00 UT)
+  const t = date.getTime();
+  const j2000 = Date.UTC(2000,0,1,12,0,0);
+  return (t - j2000) / 86400000; // jours
+}
+
+function moonIllumination(date){
+  // Formules simplifiées (Meeus-ish) pour l’angle de phase
+  const d = toDays2000(date);
+
+  // Soleil (anomalie moyenne)
+  const Ms = (357.5291 + 0.98560028 * d) * RAD;
+
+  // Lune : longitude moyenne, anomalie moyenne, élongation
+  const L  = (218.316 + 13.176396 * d) * RAD;     // long. moyenne
+  const Mm = (134.963 + 13.064993 * d) * RAD;     // anom. moyenne
+  const D  = (297.850 + 12.190749 * d) * RAD;     // élongation
+
+  // Angle de phase (Sun-Earth-Moon)
+  const phi = Math.acos(
+    Math.cos(D) * Math.cos(Mm)
+    - Math.sin(D) * Math.sin(Mm) * Math.cos(Ms)
+  );
+
+  // Fraction éclairée (0..1)
+  const k = (1 - Math.cos(phi)) / 2;
+
+  // Phase fraction 0..1 (0 = Nouvelle, 0.5 = Pleine)
+  const f = (1 + Math.sin(D) * Math.sin(Mm) - Math.cos(D) * Math.cos(Mm) * Math.cos(Ms) >= 0)
+    ? 0.5 - (phi/ (2*Math.PI))
+    : 0.5 + (phi/ (2*Math.PI));
+
+  // Normalise 0..1
+  const frac = ((f % 1) + 1) % 1;
+  return { fraction: k, phase: frac }; // k pour %, frac pour croissante/décroissante
 }
 
 function phaseName(frac){
@@ -21,49 +54,46 @@ function phaseName(frac){
 
 export async function getData(){
   const now = new Date();
-  const f = lunarPhaseFraction(now);
-  const illumPct = Math.round((1 - Math.abs(1 - 2*f)) * 100);
-  return { now, f, illumPct };
+  const { fraction, phase } = moonIllumination(now);
+  const illum = Math.round(fraction * 100);
+  return { now, f: phase, illum };
 }
 
 export function renderData(d){
   return `
-    <div class="aw-row">
-      <div class="aw-title">Lunaire · Phase</div>
-      <div class="aw-kv">
-        <span class="kv">Nom <strong>${phaseName(d.f)}</strong></span>
-        <span class="kv">Illumination <strong>${d.illumPct}%</strong></span>
-      </div>
-      <div class="aw-line">Calcul rapide. Orientation précise SunCalc à venir.</div>
+    <div class="aw-head">
+      <div>Phase lunaire</div>
+      <div>${d.now.toLocaleString()}</div>
     </div>
+    <div class="aw-title">Lunaire · Phase</div>
+    <ul class="aw-list">
+      <li class="aw-item">Nom : <strong>${phaseName(d.f)}</strong></li>
+      <li class="aw-item">Illumination : <strong>${d.illum}%</strong></li>
+      <li class="aw-item">Note : <strong>orientation précise via SunCalc à venir</strong></li>
+    </ul>
   `;
 }
 
 export function renderViz(d){
-  // Disque + masque par cercle décalé (terminateur circulaire)
-  const w=360,h=150,cx=110,cy=78,R=30;
-  const waxing = d.f <= .5;         // croissant si f<.5
-  const k = 1 - Math.abs(1 - 2*d.f); // 0..1 fraction illuminée
-  const dx = (1 - k*2) * R;         // décalage du “masque” (cercle) en X
-  const maskX = cx + (waxing ? dx : -dx);
+  const w=360,h=140,cx=110,cy=76,R=32;
+
+  // fraction éclairée (0..1) et offset pour le terminator circulaire
+  const k = d.illum/100;                     // fraction éclairée
+  const offset = (1 - Math.abs(2*k - 1)) * R; // 0 (pleine) .. R (nouvelle)
+
+  // Orientation Nord :
+  const waxing = d.f < 0.5; // croissante -> éclairée à droite => masque à gauche
+  const maskX = cx + (waxing ? -offset : +offset);
 
   return `
 <svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Phase lunaire">
   <defs>
-    <mask id="m">
-      <!-- fond noir (rien) -->
+    <mask id="moonMask">
       <rect x="0" y="0" width="${w}" height="${h}" fill="black"/>
-      <!-- disque de la lune (base visible) -->
       <circle cx="${cx}" cy="${cy}" r="${R}" fill="white"/>
-      <!-- cercle sombre décalé : crée un terminator CIRCULAIRE -->
       <circle cx="${maskX}" cy="${cy}" r="${R}" fill="black"/>
     </mask>
   </defs>
-
-  <circle class="aw-moon-disk" cx="${cx}" cy="${cy}" r="${R}" mask="url(#m)"></circle>
-
-  <!-- Légende -->
-  <text x="168" y="72" font-size="14" opacity=".9">Illum. ${d.illumPct}%</text>
-  <text x="168" y="94" font-size="12" opacity=".7">${phaseName(d.f)}</text>
+  <circle class="aw-moon-disk" cx="${cx}" cy="${cy}" r="${R}" mask="url(#moonMask)"></circle>
 </svg>`;
 }
