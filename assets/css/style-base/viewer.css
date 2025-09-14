@@ -234,6 +234,29 @@
   border: 1px solid rgba(255,255,255,0.25);
 }
 
+/* Cartouches "note" par défaut (fallback sûr) */
+.codex-note{
+  position: relative; display: block;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  color: inherit;
+  opacity: 1 !important; transform: none !important;
+}
+.codex-note h2{
+  margin: 0 0 .6rem 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.05rem;
+}
+.codex-note p{ margin: .6rem 0; }
+.codex-note.note-small{ font-size: .97rem; }
+.codex-note.note-large{ font-size: 1.05rem; }
+
+.symb-tilt{ display:inline-block; transform: rotate(-8deg); }
+
+
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
   .media-gallery .mosaic{ grid-auto-rows: 80px; }
