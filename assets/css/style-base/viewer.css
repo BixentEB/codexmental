@@ -1,280 +1,73 @@
-/* === 🧾 VIEWER.CSS – Codex Mental (Blog + Atelier) ========================= */
-/* Gère #article-viewer (et #viewer), pour PC et mobile */
+/* ============================================================================
+   VIEWER.CSS — Codex Mental (Blog + Atelier)
+   Orchestrateur transparent, cartes séparées, title-chip, tools intégrés,
+   galerie mosaïque + lightbox. Aucune règle dupliquée.
+   ========================================================================== */
 
-#article-viewer,
-#viewer {
-  flex: 1;
-  padding: 2rem;
-  border-radius: 1rem;
-  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
-  box-shadow: 0 0 20px var(--bloc-shadow, rgba(0, 0, 0, 0.2));
-  min-height: 400px;
-  line-height: 1.7;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  max-width: 100%;
-  overflow-wrap: break-word;
+/* -- Orchestrateur : invisible ------------------------------------------------ */
+#article-viewer{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;              /* l’espacement vient des .viewer-block */
 }
 
-/* Placeholder & erreurs */
-#article-viewer .placeholder,
-#viewer .placeholder {
-  opacity: 0.6;
-  font-style: italic;
-  color: var(--text-secondary, #ccc);
-}
-#article-viewer .erreur,
-#viewer .erreur {
-  color: #ff7070;
-  font-weight: bold;
-  margin-top: 1rem;
-}
-#article-viewer > * + *,
-#viewer > * + * { margin-top: 1rem; }
-
-/* Typo de base */
-#article-viewer em, #viewer em,
-#article-viewer i,  #viewer i  { font-style: italic !important; }
-
-#article-viewer h1, #viewer h1,
-#article-viewer h2, #viewer h2 {
-  font-family: 'Orbitron', sans-serif;
-  margin-top: 1.5rem;
-  margin-bottom: 0.8rem;
-}
-
-#article-viewer p, #viewer p {
-  margin-bottom: 1.2rem;
-  line-height: 1.6;
-  font-size: 1rem;
-  white-space: normal;
-}
-
-/* Blockquotes & figures */
-#article-viewer blockquote, #viewer blockquote,
-#article-viewer figure,     #viewer figure,
-#article-viewer figcaption, #viewer figcaption {
-  display: block; white-space: normal; writing-mode: initial;
-  overflow-wrap: break-word; transform: none; font-family: 'Roboto', sans-serif; width: 100%;
-}
-#article-viewer blockquote, #viewer blockquote {
-  border-left: 4px solid rgba(255,255,255,0.15);
-  padding-left: 1rem; font-style: italic; font-size: 0.95rem;
-}
-#article-viewer figcaption, #viewer figcaption {
-  font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 0.5rem; text-align: left;
-}
-
-/* Menu latéral – largeur souple */
-.blog-layout #viewer-menu { width: auto; max-width: 300px; }
-
-/* Liens du menu : empêcher l’étirement par titres trop longs */
-#viewer-menu ul li a {
-  display: block; max-width: 280px; white-space: normal; overflow-wrap: break-word;
-  /* text-overflow: ellipsis; overflow: hidden;  <- active si besoin */
-}
-
-/* === 🔹 Codex Note Style ==================================================== */
-#article-viewer .codex-note, #viewer .codex-note {
-  margin: 2rem 0; padding: 1.2rem; border-left: 4px solid var(--color-accent, #5cf);
-  background-color: var(--bg-subtle, rgba(0, 0, 32, 0.7));
-  border-radius: 0.6rem; font-size: 1rem; line-height: 1.6; color: var(--text-secondary, #ccd6f6);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-#article-viewer .codex-note p, #viewer .codex-note p { margin-bottom: 0.9em; }
-#article-viewer .codex-note h4, #viewer .codex-note h4 { margin: 0 0 .5rem 0; font-size: 1rem; font-weight: bold; color: var(--color-accent, #5cf); }
-#article-viewer .codex-note:hover, #viewer .codex-note:hover { box-shadow: 0 0 8px var(--color-accent, #5cf); }
-.note-small { font-size: .85rem; opacity: .85; }
-
-/* Thème solaire (optionnel) */
-body.theme-solar .codex-note { background-color: rgba(255,255,210,0.2); color: #333; border-left-color: #d88; }
-body.theme-solar .codex-note h4 { color: #aa5500; }
-
-/* === Cartes du viewer découpé ============================================== */
-.viewer-block {
+/* -- Cartes (blocs) ---------------------------------------------------------- */
+.viewer-block{
   background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.18);
   padding: 1.25rem 1.5rem;
-  margin: 1.2rem 0;            /* espace entre cartes = on voit le fond */
+  margin: 1.2rem 0;                   /* laisse voir le fond entre les blocs */
 }
-.viewer-block.is-empty { display: none; }
-.block-tools { display: flex; justify-content: flex-end; align-items: center; gap: .5rem; }
-#article-body { line-height: 1.7; }
-#article-extras, #article-references, #article-capsules { font-size: .95rem; }
-#article-references::before, #article-capsules::before, #article-extras::before {
-  content: attr(data-label); display: block; opacity: .8; font-family: 'Orbitron', sans-serif;
-  letter-spacing: .03em; margin-bottom: .6rem; font-size: .9rem;
-}
+.viewer-block.is-empty{ display: none !important; }
 
-/* === Effet "Title Chip" (comme Home) ======================================= */
-#article-title { display: flex; justify-content: center; }
-#article-title .title-chip {
+/* -- Bloc Titre : pas de “carte” -------------------------------------------- */
+#article-title.viewer-block{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: .5rem 0 .25rem !important;
+}
+#article-title{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#article-title + .viewer-block{ margin-top: .6rem; }
+
+/* -- Title chip (comme Home) ------------------------------------------------- */
+#article-title .title-chip{
   display: inline-block;
   margin: .1rem auto .3rem;
   padding: .9rem 1.4rem;
   border-radius: 16px;
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     color-mix(in oklab, var(--accent-primary, #8fd3ff) 18%, transparent) 0%,
-    color-mix(in oklab, var(--link-color,   #b38cff) 12%, transparent) 100%);
+    color-mix(in oklab, var(--link-color,   #b38cff) 12%, transparent) 100%
+  );
   border: 1px solid color-mix(in oklab, var(--accent-primary, #8fd3ff) 45%, #000 55%);
   box-shadow:
     0 8px 24px rgba(0,0,0,.35),
     inset 0 1px 0 rgba(255,255,255,.25);
   filter: drop-shadow(0 0 14px color-mix(in oklab, var(--accent-primary, #9fdcff) 30%, transparent));
 }
-#article-title .title-chip span {
+#article-title .title-chip span{
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(1.4rem, 2.6vw, 2rem);
   letter-spacing: .02em;
+  display: inline-block;
+  text-align: center;
+  white-space: normal;                 /* autorise <br> et <wbr> */
+  line-height: 1.15;
+  max-width: min(92vw, 1100px);
 }
 
-/* === Galerie media / mosaïque ============================================= */
-#article-media.viewer-block.is-empty { display: none; }
-
-.media-gallery { width: 100%; }
-.media-gallery .mosaic {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-auto-rows: 90px;
-  grid-auto-flow: dense;
-}
-.media-gallery .tile {
-  grid-column: span 2;
-  grid-row: span 2;
-  overflow: hidden;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  background: #000;
-}
-.media-gallery .tile--main { grid-column: span 4; grid-row: span 4; }
-.media-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.media-gallery .gallery-caption { margin-top: .6rem; font-size: .9rem; opacity: .8; }
-
-/* === Lightbox plein écran ================================================== */
-.no-scroll { overflow: hidden; }
-.lightbox.hidden { display: none !important; }
-.lightbox {
-  position: fixed; inset: 0; z-index: 4000;
-  display: grid; grid-template-columns: 64px 1fr 64px; grid-template-rows: 1fr;
-  align-items: center; justify-items: center;
-}
-.lb-backdrop { position: absolute; inset: 0; background: var(--lb-bg, rgba(0,0,20,0.92)); backdrop-filter: blur(2px); }
-.lb-figure { grid-column: 2; position: relative; z-index: 1; max-width: 90vw; max-height: 82vh; display: flex; flex-direction: column; align-items: center; gap: .6rem; }
-#lb-image { max-width: 90vw; max-height: 76vh; object-fit: contain; border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.55); transition: opacity .25s ease; }
-#lb-image.lb-swap { opacity: 0.75; }
-#lb-caption { font-size: .95rem; opacity: .85; text-align: center; color: var(--lb-caption, #e8f4ff); }
-.lb-close {
-  position: absolute; top: 16px; right: 18px; z-index: 2;
-  width: 42px; height: 42px; border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.06); color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer;
-}
-.lb-nav {
-  z-index: 2; width: 48px; height: 48px; border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.07); color: #fff; font-size: 1.6rem; line-height: 1; cursor: pointer;
-}
-.lb-prev { grid-column: 1; } .lb-next { grid-column: 3; }
-.lb-counter {
-  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-  z-index: 2; padding: .25rem .6rem; font-size: .9rem; border-radius: 8px; color: #eaf6ff;
-  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
-}
-
-/* Orchestrateur transparent : seul le contenu des cartes est visible */
-#article-viewer {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;          /* l’espacement est géré par .viewer-block */
-}
-
-/* Cache fort des blocs vides (même si un autre style traîne) */
-.viewer-block.is-empty { display: none !important; }
-
-/* Espace régulier entre les cartes */
-.viewer-block { margin: 1.2rem 0; }
-
-/* Bulle titre (title-chip) déjà en place ; allège juste le gap au-dessus */
-#article-title { margin-top: .6rem; }
-
-/* Option: si jamais un <hr> de l’article gêne au-dessus des cartes */
-#article-body > hr:first-child { display: none; }
-
-/* Le bloc titre ne doit PAS être une carte */
-#article-title.viewer-block{
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: .5rem 0 .25rem !important; /* resserre l’espace */
-}
-
-/* On garde l’ancrage du bouton de partage dans le titre */
-#article-title{ position: relative; display:flex; justify-content:center; align-items:center; }
-
-/* Option confort : espace réduit juste après le titre */
-#article-title + .viewer-block{ margin-top: .6rem; }
-
-/* Le viewer reste transparent */
-#article-viewer { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
-
-/* Cartes vides : jamais visibles */
-.viewer-block.is-empty { display: none !important; }
-
-/* --- Tools intégrés dans le titre --------------------------------------- */
-#article-title { position: relative; display: flex; justify-content: center; align-items: center; }
-#article-title .title-tools {
-  position: absolute;
-  top: .35rem;
-  right: .5rem;
-  display: flex; align-items: center;
-}
-
-/* Petit carré bouton partage (icône seule) */
-#article-title .btn-share-article {
-  width: 40px; height: 40px; padding: 0;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.25);
-  background: rgba(255,255,255,.07);
-  color: #fff; cursor: pointer;
-  display: grid; place-items: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,.25);
-}
-#article-title .btn-share-article .label { display: none; } /* cache le mot "Partager" */
-#article-title .btn-share-article .icon { font-size: 1rem; line-height: 1; }
-
-/* Menu de partage attaché au bouton, en dropdown */
-#article-title .share-menu {
-  position: absolute;
-  top: 46px; right: 0;
-  background: rgba(0,0,20,.95);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 10px;
-  box-shadow: 0 12px 24px rgba(0,0,0,.45);
-  padding: .35rem .5rem;
-  display: flex; flex-direction: column; gap: .25rem;
-  z-index: 10;
-}
-#article-title .share-menu.hidden { display: none; }
-#article-title .share-menu a { color: #cfe8ff; text-decoration: none; font-size: .95rem; white-space: nowrap; }
-#article-title .share-menu a:hover { text-decoration: underline; }
-
-/* Le H1 peut avoir plusieurs lignes */
-#article-title .title-chip span{
-  display:inline-block;
-  text-align:center;
-  white-space:normal;   /* permet <br> et <wbr> */
-  line-height:1.15;
-  max-width:min(92vw,1100px);
-}
-
-/* Sous-titre optionnel sous la bulle */
+/* Sous-titre optionnel dans la même section titre */
 #article-title .title-sub{
   margin-top:.45rem;
   text-align:center;
@@ -283,24 +76,172 @@ body.theme-solar .codex-note h4 { color: #aa5500; }
   font-style:italic;
 }
 
+/* -- Tools intégrés dans le titre ------------------------------------------- */
+#article-title .title-tools{
+  position: absolute;
+  top: .35rem;
+  right: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+#article-title .btn-share-article{
+  width: 40px; height: 40px; padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.07);
+  color: #fff;
+  display: grid; place-items: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  cursor: pointer;
+}
+#article-title .btn-share-article .label{ display: none; }
+#article-title .btn-share-article .icon{ font-size: 1rem; line-height: 1; }
 
+#article-title .share-menu{
+  position: absolute;
+  top: 46px; right: 0;
+  background: rgba(0,0,20,.95);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.45);
+  padding: .35rem .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  z-index: 10;
+}
+#article-title .share-menu.hidden{ display: none; }
+#article-title .share-menu a{
+  color: #cfe8ff;
+  text-decoration: none;
+  font-size: .95rem;
+  white-space: nowrap;
+}
+#article-title .share-menu a:hover{ text-decoration: underline; }
 
-/* === Responsive ============================================================ */
-@media (max-width: 900px) { .media-gallery .mosaic { grid-auto-rows: 80px; } }
-@media (max-width: 768px) {
-  #article-viewer, #viewer { padding: 1rem !important; font-size: 1rem; line-height: 1.6; }
-  #article-viewer h1, #viewer h1 { font-size: 1.4rem; text-align: center; }
-  #article-viewer h2, #viewer h2 { font-size: 1.2rem; }
-  #article-viewer p,  #viewer p  { font-size: 1rem; margin-bottom: 1rem; }
-  #article-viewer *,   #viewer * { display: block; white-space: normal; writing-mode: initial; transform: none; }
+/* -- Corps & typographie locale -------------------------------------------- */
+#article-body{ line-height: 1.7; }
+#article-body h1, #article-body h2{
+  font-family: 'Orbitron', sans-serif;
+}
+#article-body p{ margin-bottom: 1.1rem; }
 
-  .viewer-block { padding: 1rem; margin: .9rem 0; }
-  #article-title .title-chip span { font-size: 1.4rem; }
-
-  .media-gallery .mosaic { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 70px; }
-  .media-gallery .tile--main { grid-column: span 4; grid-row: span 4; }
-
-  .lightbox { grid-template-columns: 48px 1fr 48px; }
-  #lb-image { max-width: 94vw; max-height: 70vh; }
+#article-references, #article-extras, #article-capsules{ font-size: .95rem; }
+#article-references::before,
+#article-extras::before,
+#article-capsules::before{
+  content: attr(data-label);
+  display: block;
+  opacity: .8;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: .03em;
+  margin-bottom: .6rem;
+  font-size: .9rem;
 }
 
+/* -- Galerie media : mosaïque ------------------------------------------------ */
+#article-media.viewer-block.is-empty{ display: none !important; }
+.media-gallery{ width: 100%; }
+.media-gallery .mosaic{
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  grid-auto-rows: 90px;
+  grid-auto-flow: dense;
+}
+.media-gallery .tile{
+  grid-column: span 2;
+  grid-row: span 2;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  background: #000;
+}
+.media-gallery .tile--main{ grid-column: span 4; grid-row: span 4; }
+.media-gallery img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.media-gallery .gallery-caption{
+  margin-top: .6rem;
+  font-size: .9rem;
+  opacity: .8;
+}
+
+/* -- Lightbox plein écran ---------------------------------------------------- */
+.no-scroll{ overflow: hidden; }
+.lightbox.hidden{ display: none !important; }
+.lightbox{
+  position: fixed; inset: 0; z-index: 4000;
+  display: grid;
+  grid-template-columns: 64px 1fr 64px;
+  grid-template-rows: 1fr;
+  align-items: center; justify-items: center;
+}
+.lb-backdrop{
+  position: absolute; inset: 0;
+  background: var(--lb-bg, rgba(0,0,20,0.92));
+  backdrop-filter: blur(2px);
+}
+.lb-figure{
+  grid-column: 2;
+  position: relative; z-index: 1;
+  max-width: 90vw; max-height: 82vh;
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+}
+#lb-image{
+  max-width: 90vw; max-height: 76vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.55);
+  transition: opacity .25s ease;
+}
+#lb-image.lb-swap{ opacity: .75; }
+#lb-caption{
+  font-size: .95rem; opacity: .85;
+  text-align: center; color: var(--lb-caption, #e8f4ff);
+}
+.lb-close{
+  position: absolute; top: 16px; right: 18px; z-index: 2;
+  width: 42px; height: 42px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.06);
+  color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer;
+}
+.lb-nav{
+  z-index: 2; width: 48px; height: 48px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.07);
+  color: #fff; font-size: 1.6rem; line-height: 1; cursor: pointer;
+}
+.lb-prev{ grid-column: 1; }
+.lb-next{ grid-column: 3; }
+.lb-counter{
+  position: absolute; bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 2; padding: .25rem .6rem;
+  font-size: .9rem; border-radius: 8px; color: #eaf6ff;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* -- Responsive -------------------------------------------------------------- */
+@media (max-width: 900px){
+  .media-gallery .mosaic{ grid-auto-rows: 80px; }
+}
+@media (max-width: 768px){
+  .viewer-block{ padding: 1rem; margin: .9rem 0; }
+  #article-title .title-chip span{ font-size: 1.4rem; }
+
+  .media-gallery .mosaic{
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 70px;
+  }
+  .media-gallery .tile--main{ grid-column: span 4; grid-row: span 4; }
+
+  .lightbox{ grid-template-columns: 48px 1fr 48px; }
+  #lb-image{ max-width: 94vw; max-height: 70vh; }
+}
