@@ -253,8 +253,15 @@
 .codex-note p{ margin: .6rem 0; }
 .codex-note.note-small{ font-size: .97rem; }
 .codex-note.note-large{ font-size: 1.05rem; }
-
 .symb-tilt{ display:inline-block; transform: rotate(-8deg); }
+
+/* Notes extraites → carte autonome : on aplatit l’intérieur */
+.note-card .codex-note{
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
 
 /* ===================== CHAPTER CARDS ===================== */
 .chapter-card{
