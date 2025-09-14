@@ -68,7 +68,7 @@ window.addEventListener("DOMContentLoaded", () => {
   setupScrollButton();
 
   if (currentEffective === "theme-stellaire") {
-    initEtoileFilante();
+    initEtoileFilante(); // paramètres gérés dans etoile-filante.js
   }
   if (currentEffective === "theme-lunaire") {
     import('/assets/js/newmoon.js')
@@ -92,7 +92,9 @@ window.setTheme = (theme) => {
   setTheme(effective);                            // 4) effets
   document.body.dataset.effectiveTheme = effective;
 
-  if (effective === "theme-stellaire") initEtoileFilante();
+  if (effective === "theme-stellaire") {
+    initEtoileFilante(); // idem ici
+  }
   if (effective === "theme-lunaire") {
     import('/assets/js/newmoon.js')
       .then(m => m.updateNewMoonWidget())
