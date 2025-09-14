@@ -104,27 +104,31 @@ function loadContent(viewerEl, url){
     if(mediaHTML) setupGalleryLightbox();
 
     // --- BODY (prend data-part=body OU .article / article ; retire le titre etc.)
-    let bodyCandidate =
-      part('body') ||
-      doc.querySelector('.article') ||
-      doc.querySelector('article') ||
-      doc.querySelector('main > section') ||
-      doc.querySelector('section');
+  // ----- BODY + CHAPITRES -------------------------------------------------
+removeDynamicChapters(viewerEl);
 
-    let bodyHTML='';
-    if(bodyCandidate){
-      const c = bodyCandidate.cloneNode(true);
+let bodyCandidate =
+  part('body') ||
+  doc.querySelector('.article') ||
+  doc.querySelector('article') ||
+  doc.querySelector('main > section') ||
+  doc.querySelector('section');
 
-      // supprime la section titre si elle est incluse (NEW)
-      Array.from(c.querySelectorAll('section[data-part="title"]')).forEach(n=>n.remove());
-      // legacy : supprime h1 et éventuel h2 immédiatement après
-      const h1=c.querySelector('h1'); if(h1){ const n=h1.nextElementSibling; h1.remove(); if(n && n.matches('h2, .subtitle, [data-subtitle]')) n.remove(); }
-      // autres éléments qu’on ne veut pas dans le corps
-      c.querySelectorAll('#article-tools, script, style, link[rel="stylesheet"]').forEach(n=>n.remove());
-
-      bodyHTML = (c.innerHTML||'').trim();
-    }
-    setBlockHTML('article-body', bodyHTML);
+let introHTML = '';
+if (bodyCandidate) {
+  const slices = sliceBodyIntoChapters(bodyCandidate);
+  introHTML = slices.intro;
+  // injecte chaque chapitre comme une carte indépendante
+  const anchor = document.getElementById('article-extras'); // on insère avant extras
+  slices.chapters.forEach(html => {
+    const s = document.createElement('section');
+    s.className = 'viewer-block card article-chapter';
+    s.innerHTML = html;
+    viewerEl.insertBefore(s, anchor);
+  });
+}
+// intro (ou rien si vide)
+setBlockHTML('article-body', introHTML);
 
     // --- EXTRAS / REF / CAPSULES
     setBlockHTML('article-extras',     getOuterIfFilled(part('extras')     || doc.querySelector('.extras')));
