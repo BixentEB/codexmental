@@ -302,4 +302,75 @@ function updateLightboxImage(anim=false){
   if(anim){ img.classList.remove('lb-swap'); void img.offsetWidth; img.classList.add('lb-swap'); }
   img.src=it.src; img.alt=it.alt||''; cap.textContent=it.alt||''; cnt.textContent=`${galleryState.index+1} / ${galleryState.items.length}`;
 }
+
+// Retire les chapitres ajoutés lors d'un précédent affichage
+function removeDynamicChapters(viewerEl){
+  viewerEl.querySelectorAll('.article-chapter').forEach(n => n.remove());
+}
+
+// Découpe le body en { intro, chapters[] }
+// - priorité aux <section data-chapter>
+// - sinon split par <h2>
+function sliceBodyIntoChapters(rootNode){
+  const root = rootNode.cloneNode(true);
+
+  // nettoyage titre / tools éventuellement restés dans le body
+  root.querySelectorAll('section[data-part="title"], #article-tools, script, style, link[rel="stylesheet"]').forEach(n=>n.remove());
+  const h1 = root.querySelector('h1');
+  if (h1) {
+    const n = h1.nextElementSibling;
+    h1.remove();
+    if (n && n.matches('h2, .subtitle, [data-subtitle]')) n.remove();
+  }
+
+  const result = { intro: '', chapters: [] };
+
+  // 1) Chapitres déclarés
+  const declared = Array.from(root.querySelectorAll('section[data-chapter]'));
+  if (declared.length){
+    // intro = ce qui précède la 1ère section chapitre
+    const introWrapper = document.createElement('div');
+    for (let n = root.firstChild; n && n !== declared[0]; n = n.nextSibling){
+      introWrapper.appendChild(n.cloneNode(true));
+    }
+    result.intro = (introWrapper.innerHTML || '').trim();
+
+    declared.forEach(sec => result.chapters.push(sec.outerHTML));
+    return result;
+  }
+
+  // 2) Fallback : split par <h2>
+  const nodes = Array.from(root.childNodes);
+  const introNodes = [];
+  const chapters = [];
+  let bucket = [];
+  let started = false;
+
+  const push = () => {
+    if (!bucket.length) return;
+    const wrap = document.createElement('div');
+    bucket.forEach(n => wrap.appendChild(n));
+    chapters.push(wrap.innerHTML);
+    bucket = [];
+  };
+
+  nodes.forEach(n => {
+    if (n.nodeType === 1 && n.matches('h2')) {
+      if (started) push();
+      started = true;
+      bucket.push(n.cloneNode(true));
+    } else {
+      (started ? bucket : introNodes).push(n.cloneNode(true));
+    }
+  });
+  push();
+
+  const wrapIntro = document.createElement('div');
+  introNodes.forEach(n => wrapIntro.appendChild(n));
+  result.intro = (wrapIntro.innerHTML || '').trim();
+  result.chapters = chapters;
+  return result;
+}
+
+
 function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
