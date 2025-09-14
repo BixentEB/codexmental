@@ -186,6 +186,27 @@ body.theme-solar .codex-note h4 { color: #aa5500; }
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
 }
 
+/* Orchestrateur transparent : seul le contenu des cartes est visible */
+#article-viewer {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;          /* l’espacement est géré par .viewer-block */
+}
+
+/* Cache fort des blocs vides (même si un autre style traîne) */
+.viewer-block.is-empty { display: none !important; }
+
+/* Espace régulier entre les cartes */
+.viewer-block { margin: 1.2rem 0; }
+
+/* Bulle titre (title-chip) déjà en place ; allège juste le gap au-dessus */
+#article-title { margin-top: .6rem; }
+
+/* Option: si jamais un <hr> de l’article gêne au-dessus des cartes */
+#article-body > hr:first-child { display: none; }
+
+
 /* === Responsive ============================================================ */
 @media (max-width: 900px) { .media-gallery .mosaic { grid-auto-rows: 80px; } }
 @media (max-width: 768px) {
