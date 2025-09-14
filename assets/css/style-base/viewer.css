@@ -426,6 +426,28 @@
 
 /* On garde la barre verticale de la carte chapitre (déjà en place via ::before) */
 
+/* décalage quand on saute à un chapitre (pour ne pas passer "sous" la barre) */
+:root{
+  --anchor-offset: 92px;          /* ajuste à la hauteur de ta topbar */
+}
+.article-chapter,
+.note-card{
+  scroll-margin-top: var(--anchor-offset);
+}
+
+/* défilement doux */
+html { scroll-behavior: smooth; }
+
+/* rendu discret du # */
+.chapter-title .anchor{
+  opacity: .35;
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+  margin-left: .35rem;
+  transition: opacity .15s ease;
+}
+.chapter-card:hover .chapter-title .anchor{ opacity: .75; }
+
 
 
 /* -- Responsive -------------------------------------------------------------- */
