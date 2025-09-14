@@ -245,11 +245,7 @@
   color: inherit;
   opacity: 1 !important; transform: none !important;
 }
-.codex-note h2{
-  margin: 0 0 .6rem 0;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.05rem;
-}
+
 .codex-note p{ margin: .6rem 0; }
 .codex-note.note-small{ font-size: .97rem; }
 .codex-note.note-large{ font-size: 1.05rem; }
@@ -263,41 +259,14 @@
   padding: 0 !important;     /* la note gère son propre padding */
 }
 
-/* La note elle-même : fond doux, plus d’air, glow subtil  */
-.note-card .codex-note{
-  position: relative;
-  margin: 0;                               /* le spacing vient de viewer-block */
-  padding: 1.1rem 1.25rem;
-  border-radius: 14px;
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--accent-primary, #9fdcff), transparent 90%) 0%,
-      color-mix(in oklab, #ffffff 4%, transparent) 100%);
-  border: 1px solid color-mix(in oklab, var(--accent-primary, #9fdcff), #000 65%);
-  box-shadow:
-    0 12px 28px rgba(0,0,0,.26),
-    inset 0 1px 0 rgba(255,255,255,.08);
-}
-
-/* Halo léger autour de la note (sans couper le texte) */
-.note-card .codex-note::before{
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: inherit;
-  background: radial-gradient(60% 120% at 20% 0%,
-              color-mix(in oklab, var(--accent-primary, #9fdcff), transparent 75%) 0%,
-              transparent 60%);
-  filter: blur(10px);
-  opacity: .45;
-  pointer-events: none;
-}
 
 /* Titre de note un brin plus lisible */
 .note-card .codex-note h2{
   font-family: 'Orbitron', sans-serif;
   font-size: 1.06rem;
   margin: 0 0 .65rem 0;
+  color: var(--accent-primary);
+  
 }
 
 
