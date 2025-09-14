@@ -269,15 +269,21 @@
 }
 
 /* ============================================================
-   NOTE .codex-note : padding + liseré néon animé (sans aiguille)
+   Codex Mental — Notes (nouvelles classes, sans conflits)
    ============================================================ */
 
-.note-card .codex-note{
-  /* Tweaks rapides (tu peux surcharger ces vars au besoin) */
+/* base carte */
+#article-viewer .cm-note-card{
+  position: relative;
+}
+
+/* contenu note + padding propre */
+#article-viewer .cm-note{
+  /* Vars faciles à régler */
   --note-neon: var(--accent-primary, #8fd3ff);
   --note-radius: 12px;
-  --note-thickness: 2px;      /* épaisseur du trait */
-  --note-speed: 6s;           /* vitesse de rotation */
+  --note-thickness: 2px;    /* épaisseur du serpentin */
+  --note-speed: 6s;         /* vitesse de rotation */
   --pad-y: clamp(1rem, 1.4vw, 1.25rem);
   --pad-x: clamp(1.25rem, 2vw, 1.75rem);
 
@@ -286,28 +292,29 @@
   border: 0;
   border-radius: var(--note-radius);
   padding: var(--pad-y) var(--pad-x);
+  color: inherit;
 }
 
-/* texte un peu plus “aéré” mais propre */
-.note-card .codex-note h2{ margin: 0 0 .7rem; }
-.note-card .codex-note p { margin: .55rem 0; }
+/* typographie compacte mais lisible */
+#article-viewer .cm-note h2{ margin: 0 0 .7rem; }
+#article-viewer .cm-note p { margin: .55rem 0; }
 
-/* Liseré : un arc lumineux qui tourne sur le contour uniquement */
-.note-card .codex-note::before{
+/* serpentin néon qui tourne sur le contour (sans fond, sans cadre fixe) */
+#article-viewer .cm-note::before{
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: var(--note-thickness);
 
-  /* on conserve UNIQUEMENT l’anneau fin (le “bord”) via masque */
+  /* on ne garde QUE l’anneau fin du contour */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
 
-  /* court segment lumineux dans un conic-gradient */
+  /* un court segment lumineux dans un conic-gradient */
   background:
     conic-gradient(
       from 0deg at 50% 50%,
@@ -319,23 +326,30 @@
 
   pointer-events: none;
   transform-origin: 50% 50%;
-  animation: note-ring-rotate var(--note-speed) linear infinite;
+  animation: cm-note-ring-rotate var(--note-speed) linear infinite;
 
-  /* halo discret autour du trait */
+  /* halo discret */
   filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-neon), transparent 75%));
 }
 
-@keyframes note-ring-rotate { to { transform: rotate(360deg); } }
+@keyframes cm-note-ring-rotate { to { transform: rotate(360deg); } }
 
-/* Coupe tout ancien effet “aiguille/étoile” s’il restait un style historique */
-.note-card .codex-note.note-comet::before,
-.note-card .codex-note.note-comet::after{
+/* coupe toute ancienne “aiguille” potentielle */
+#article-viewer .cm-note::after,
+#article-viewer .cm-note.cm-note-comet::before,
+#article-viewer .cm-note.cm-note-comet::after{
   content: none !important;
   background: none !important;
   animation: none !important;
 }
 
-
+/* (optionnel) si tu veux 100% forcer l’ancien couple à s’éteindre */
+#article-viewer .note-card .codex-note::before,
+#article-viewer .note-card .codex-note::after{
+  content: none !important;
+  background: none !important;
+  animation: none !important;
+}
 
 
 /* ===================== CHAPTER CARDS ===================== */
