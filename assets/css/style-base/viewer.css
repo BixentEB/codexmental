@@ -209,55 +209,80 @@
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
 }
 
-/* ==== NOTE: transparence + collapsible, sans modifier le reste ======= */
-
-/* 1) Neutralise tout fond/ombre sur la note interne */
-.note-card .codex-note{
+/* ==== NOTES COLLAPSIBLES ======= */
+.note-card {
   background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 14px;
   padding: 0 !important;
-  margin: 0 !important;
+  margin: 1.2rem 0;
+  overflow: hidden;
 }
 
-/* 2) Le cadre (liseré) vit sur <details> pour entourer titre + contenu */
-.note-card .note-collapsible{
+/* Le cadre collapsible */
+.note-collapsible {
   display: block;
   background: transparent;
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 14px;
-  overflow: hidden;          /* pour des coins nets */
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* 3) Le résumé cliquable : on garde un H2 coloré */
-.note-card .note-collapsible summary{
+/* Titre cliquable */
+.note-collapsible summary {
   list-style: none;
   cursor: pointer;
   display: block;
-  padding: .9rem 1.1rem;
-  background: transparent;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
   user-select: none;
+  transition: background 0.2s ease;
 }
-.note-card .note-collapsible summary::-webkit-details-marker{ display:none; } /* cache le triangle */
 
-.note-card .note-collapsible .note-title{
+.note-collapsible summary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.note-collapsible summary::-webkit-details-marker {
+  display: none;
+}
+
+.note-title {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.06rem;
-  color: var(--accent-primary);        /* ← ta var h2 conservée */
+  font-size: 1.2rem;
+  color: var(--accent-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* 4) Corps de la note (contenu) */
-.note-card .note-body{
-  padding: .2rem 1.1rem 1.05rem;
+/* Chevron indicateur */
+.note-title .chev {
+  font-size: 1.4rem;
+  transition: transform 0.3s ease;
 }
 
-/* 5) Petit indicateur d’état (chevron) non intrusif */
-.note-card .note-collapsible summary .chev{
-  float: right;
-  transition: transform .15s ease;
+.note-collapsible[open] .chev {
+  transform: rotate(90deg);
 }
-.note-card .note-collapsible[open] summary .chev{ transform: rotate(90deg); }
+
+/* Corps de la note */
+.note-body {
+  padding: 0 1.5rem 1.5rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.note-body p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.note-body p:last-child {
+  margin-bottom: 0;
+}
 
 
 /* ---------------------------- CHAPTER CARDS -------------------------------- */
