@@ -1,11 +1,11 @@
 /* ============================================================================
-   VIEWER.CSS v0.3 — Codex Mental (Blog + Atelier)
+   VIEWER.CSS v0.2 — Codex Mental (Blog + Atelier)
    - Orchestrateur transparent
    - Cartes séparées
    - Title chip + tools intégrés
    - Galerie mosaïque + lightbox
    - Chapitres en cartes
-   - Notes : anneau “comète” autour du bloc (sans “aiguille”)
+   - Notes avec anneau néon optionnel (sans "aiguille")
    ========================================================================== */
 
 /* -- Orchestrateur ----------------------------------------------------------- */
@@ -35,6 +35,7 @@
   padding: 0 !important;
   margin: .5rem 0 .25rem !important;
 }
+
 #article-title{
   position: relative;
   display: flex;
@@ -110,12 +111,17 @@
   border-radius: 10px;
   box-shadow: 0 12px 24px rgba(0,0,0,.45);
   padding: .35rem .5rem;
-  display: flex; flex-direction: column;
-  gap: .25rem; z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  z-index: 10;
 }
 #article-title .share-menu.hidden{ display: none; }
 #article-title .share-menu a{
-  color: #cfe8ff; text-decoration: none; font-size: .95rem; white-space: nowrap;
+  color: #cfe8ff;
+  text-decoration: none;
+  font-size: .95rem;
+  white-space: nowrap;
 }
 #article-title .share-menu a:hover{ text-decoration: underline; }
 
@@ -125,24 +131,34 @@
 #article-body p{ margin-bottom: 1.1rem; }
 
 #article-references, #article-extras, #article-capsules{ font-size: .95rem; }
-#article-references::before, #article-extras::before, #article-capsules::before{
+#article-references::before,
+#article-extras::before,
+#article-capsules::before{
   content: attr(data-label);
-  display: block; opacity: .8;
-  font-family: 'Orbitron', sans-serif; letter-spacing: .03em;
-  margin-bottom: .6rem; font-size: .9rem;
+  display: block;
+  opacity: .8;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: .03em;
+  margin-bottom: .6rem;
+  font-size: .9rem;
 }
 
 /* -- Galerie media ----------------------------------------------------------- */
 #article-media.viewer-block.is-empty{ display: none !important; }
 .media-gallery{ width: 100%; }
 .media-gallery .mosaic{
-  display: grid; gap: 10px;
+  display: grid;
+  gap: 10px;
   grid-template-columns: repeat(6, minmax(0,1fr));
-  grid-auto-rows: 90px; grid-auto-flow: dense;
+  grid-auto-rows: 90px;
+  grid-auto-flow: dense;
 }
 .media-gallery .tile{
-  grid-column: span 2; grid-row: span 2; overflow: hidden;
-  border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  grid-column: span 2;
+  grid-row: span 2;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
   background: #000;
 }
 .media-gallery .tile--main{ grid-column: span 4; grid-row: span 4; }
@@ -154,18 +170,26 @@
 .lightbox.hidden{ display: none !important; }
 .lightbox{
   position: fixed; inset: 0; z-index: 4000;
-  display: grid; grid-template-columns: 64px 1fr 64px;
+  display: grid;
+  grid-template-columns: 64px 1fr 64px;
   align-items: center; justify-items: center;
 }
-.lb-backdrop{ position: absolute; inset: 0;
-  background: var(--lb-bg, rgba(0,0,20,0.92)); backdrop-filter: blur(2px);
+.lb-backdrop{
+  position: absolute; inset: 0;
+  background: var(--lb-bg, rgba(0,0,20,0.92));
+  backdrop-filter: blur(2px);
 }
-.lb-figure{ grid-column: 2; position: relative; z-index: 1;
-  max-width: 90vw; max-height: 82vh; display:flex; flex-direction:column; align-items:center; gap:.6rem;
+.lb-figure{
+  grid-column: 2;
+  position: relative; z-index: 1;
+  max-width: 90vw; max-height: 82vh;
+  display: flex; flex-direction: column; align-items:center; gap:.6rem;
 }
 #lb-image{
-  max-width: 90vw; max-height: 76vh; object-fit: contain;
-  border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.55);
+  max-width: 90vw; max-height: 76vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.55);
   transition: opacity .25s ease;
 }
 #lb-image.lb-swap{ opacity: .75; }
@@ -173,7 +197,8 @@
 .lb-close,.lb-nav{
   z-index: 2; border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.35);
-  background: rgba(255,255,255,0.07); color:#fff; cursor:pointer;
+  background: rgba(255,255,255,0.07);
+  color:#fff; cursor:pointer;
 }
 .lb-close{ position:absolute; top:16px; right:18px; width:42px; height:42px; font-size:1.4rem; }
 .lb-nav{ width:48px; height:48px; font-size:1.6rem; }
@@ -184,82 +209,99 @@
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
 }
 
-/* =============================== NOTES ===================================== */
-/* Fallback inline (si pas extraite) */
+/* ------------------------------- NOTES ------------------------------------- */
+/* Fallback de note inline (si pas extraite en carte) */
 .codex-note{
   position: relative; display: block;
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.18);
   border-radius: 12px;
-  padding: 1rem 1.2rem; margin: 1rem 0; color: inherit;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  color: inherit;
+  opacity: 1 !important; transform: none !important;
 }
 .codex-note h2{
-  margin: 0 0 .6rem 0; font-family: 'Orbitron', sans-serif; font-size: 1.05rem;
+  margin: 0 0 .6rem 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.05rem;
 }
 .codex-note p{ margin: .6rem 0; }
 .codex-note.note-small{ font-size: .97rem; }
 .codex-note.note-large{ font-size: 1.05rem; }
 .symb-tilt{ display:inline-block; transform: rotate(-8deg); }
 
-/* Carte conteneur 100% transparente (pas de double cadre) */
+/* La carte conteneur de note = transparente (pas de double cadre) */
 .note-card.viewer-block{
-  background: transparent !important; border: 0 !important;
-  box-shadow: none !important; padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
-/* Neutralisation agressive des anciens effets “aiguille” */
-.note-card::before,
-.note-card::after,
-.note-card .codex-note::before,
-.etoile-filante,
-.etoile-filante::before,
-.etoile-filante::after{ display:none !important; content:none !important; }
-
-/* Note autonome “propre” */
+/* Note autonome (fond un peu adouci dans cette v0.2) */
 .note-card .codex-note{
-  position: relative; overflow: hidden; margin: 0;
-  padding: 1.1rem 1.25rem; border-radius: 14px;
-  background: rgba(255,255,255,.045);
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 1.1rem 1.25rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,.045); /* adouci */
   border: 1px solid rgba(255,255,255,.13);
   box-shadow: 0 12px 28px rgba(0,0,0,.22);
 }
+/* Neutralise tout ancien effet résiduel (ex "aiguille"/anneau legacy) */
+.note-card .codex-note::before{ display:none !important; }
 
-/* -------- Anneau “comète” (optionnel) --------------------------------------
-   Pas de mask-composite. On empile deux backgrounds :
-   - une couche padding-box pour le fond
-   - une conic-gradient animée en border-box qui fait la traînée
-   -------------------------------------------------------------------------- */
-@property --note-angle {                  /* permet l’animation fluide */
-  syntax: '<angle>'; inherits: false; initial-value: 0deg;
-}
-
+/* Effet “anneau/comète” optionnel — activer avec .note-comet */
 .codex-note.note-comet{
   --note-accent: var(--accent-primary, #9fdcff);
-  --note-orbit-speed: 6s;             /* vitesse de rotation */
-  --note-border-w: 2px;               /* épaisseur de la traînée */
-
-  border: var(--note-border-w) solid transparent;   /* expose border-box */
+  --note-border: 2px;
+  --note-orbit-speed: 6s;              /* <<< réglable : vitesse de rotation */
+}
+.codex-note.note-comet::after{
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--note-border));
+  border-radius: inherit;
+  padding: var(--note-border);
   background:
-    linear-gradient(rgba(255,255,255,.045), rgba(255,255,255,.045)) padding-box,
-    conic-gradient(from var(--note-angle),
+    conic-gradient(from 0deg,
       transparent 0 300deg,
       color-mix(in oklab, var(--note-accent), white 25%) 300deg,
       var(--note-accent) 304deg,
       color-mix(in oklab, var(--note-accent), white 25%) 308deg,
-      transparent 318deg) border-box;
-  animation: note-orbit var(--note-orbit-speed) linear infinite;
+      transparent 318deg);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-accent), white 25%));
+  animation: note-orbit var(--note-orbit-speed) linear infinite;
+  will-change: transform;
+  pointer-events: none;
 }
-@keyframes note-orbit{ to{ --note-angle: 360deg; } }
+@keyframes note-orbit{ to{ transform: rotate(1turn); } }
+@supports not (mask-composite: exclude){
+  .codex-note.note-comet::after{
+    inset: 0; padding: 0;
+    border: 2px solid var(--note-accent);
+    box-shadow: 0 0 12px var(--note-accent);
+    animation: none;
+  }
+}
 
 /* ---------------------------- CHAPTER CARDS -------------------------------- */
 .chapter-card{
   --chap-accent: var(--accent-primary);
-  position: relative; overflow: hidden;
+  position: relative;
+  overflow: hidden;
   padding: 1.2rem 1.2rem 1.1rem;
 }
 .chapter-card::before{
-  content:""; position:absolute; inset:0 auto 0 0; width:4px;
+  content:"";
+  position:absolute; inset:0 auto 0 0; width:4px;
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--chap-accent), white 10%),
@@ -268,8 +310,8 @@
   border-radius: 12px 0 0 12px;
 }
 .chapter-header{
-  display: inline-flex; align-items:center; gap:.55rem;
-  padding:0; margin:0 0 .7rem 0; background:transparent; border:0; box-shadow:none;
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: 0; margin: 0 0 .7rem 0; background: transparent; border: 0; box-shadow:none;
   max-width: 100%;
 }
 .chapter-icon{
@@ -287,7 +329,7 @@
   margin: 0; padding: .05rem .15rem .2rem 0;
 }
 .chapter-title::after{
-  content:""; display:block; height:2px; margin-top:.28rem;
+  content: ""; display:block; height:2px; margin-top:.28rem;
   background: linear-gradient(90deg, var(--chap-accent, #8fd3ff), transparent 70%);
   border-radius: 2px;
 }
