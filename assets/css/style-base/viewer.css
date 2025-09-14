@@ -234,88 +234,57 @@
   border: 1px solid rgba(255,255,255,0.25);
 }
 
-/* Cartouches "note" par défaut (fallback sûr) */
-.codex-note{
-  position: relative; display: block;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
-  margin: 1rem 0;
-  color: inherit;
-  opacity: 1 !important; transform: none !important;
-}
-
-.codex-note p{ margin: .6rem 0; }
-.codex-note.note-small{ font-size: .97rem; }
-.codex-note.note-large{ font-size: 1.05rem; }
+/* Symbole */
 .symb-tilt{ display:inline-block; transform: rotate(-8deg); }
 
-/* La carte qui enveloppe la note = transparente (pas de 2e cadre) */
-.note-card.viewer-block{
+
+/* ============================================================
+   Codex Mental — Note minimaliste (sans fond / sans effets)
+   Nouvelles classes : .cm-note-card / .cm-note
+   ============================================================ */
+
+/* Conteneur : aucune carte/fond/ombre */
+#article-viewer .cm-note-card{
+  position: relative;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-  padding: 0 !important;     /* la note gère son propre padding */
+  padding: 0 !important;
+}
+#article-viewer .cm-note-card::before,
+#article-viewer .cm-note-card::after{
+  content: none !important;
+  background: none !important;
+  animation: none !important;
 }
 
-
-/* Titre de note un brin plus lisible */
-.note-card .codex-note h2{
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.06rem;
-  margin: 0 0 .65rem 0;
-  color: var(--accent-primary);
-}
-
-/* ============================================================
-   Codex Mental — Notes (nouvelles classes, sans conflits)
-   ============================================================ */
-
-/* base carte */
-#article-viewer .cm-note-card{
-  position: relative;
-}
-
-/* contenu note + padding propre */
+/* Contenu note : juste du padding et la typo */
 #article-viewer .cm-note{
-  /* Vars faciles à régler */
-  --note-neon: var(--accent-primary, #8fd3ff);
-  --note-radius: 12px;
-  --note-thickness: 2px;    /* épaisseur du serpentin */
-  --note-speed: 6s;         /* vitesse de rotation */
-  --pad-y: clamp(1rem, 1.4vw, 1.25rem);
-  --pad-x: clamp(1.25rem, 2vw, 1.75rem);
-
-  position: relative;
-  background: transparent;
-  border: 0;
-  border-radius: var(--note-radius);
-  padding: var(--pad-y) var(--pad-x);
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 12px;
+  padding: clamp(1rem, 1.4vw, 1.25rem) clamp(1.25rem, 2vw, 1.75rem);
   color: inherit;
 }
+#article-viewer .cm-note::before,
+#article-viewer .cm-note::after{
+  content: none !important;
+  background: none !important;
+  animation: none !important;
+}
 
-/* typographie compacte mais lisible */
-#article-viewer .cm-note h2{ margin: 0 0 .7rem; color: var(--accent-primary); }
+/* Neutralise d’anciens styles éventuels */
+#article-viewer .note-card .codex-note::before,
+#article-viewer .note-card .codex-note::after{
+  content: none !important;
+  background: none !important;
+  animation: none !important;
+}
+
+/* Typo compacte */
+#article-viewer .cm-note h2{ margin: 0 0 .75rem; font-weight: 600; color: var(--accent-primary); }
 #article-viewer .cm-note p { margin: .55rem 0; }
-
-/* serpentin néon qui tourne sur le contour (sans fond, sans cadre fixe) */
-#article-viewer .cm-note::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: var(--note-thickness);
-
-  /* on ne garde QUE l’anneau fin du contour */
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-
-
-
 
 
 /* ===================== CHAPTER CARDS ===================== */
