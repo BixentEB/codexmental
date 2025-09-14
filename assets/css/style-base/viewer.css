@@ -31,12 +31,16 @@
   padding: 0 !important;
   margin: .5rem 0 .25rem !important;
 }
+
+/* Empile le titre, puis le sous-titre (la bulle reste centrée) */
 #article-title{
   position: relative;
   display: flex;
-  justify-content: center;
+  flex-direction: column;  /* <-- au lieu de row */
   align-items: center;
+  gap: .35rem;             /* petit espace entre titre et sous-titre */
 }
+
 #article-title + .viewer-block{ margin-top: .6rem; }
 
 /* -- Title chip (comme Home) ------------------------------------------------- */
@@ -67,14 +71,13 @@
   max-width: min(92vw, 1100px);
 }
 
-/* Sous-titre optionnel dans la même section titre */
+/* Le sous-titre sous la bulle, bien centré */
 #article-title .title-sub{
-  margin-top:.45rem;
-  text-align:center;
-  font-size:clamp(.95rem,1.2vw,1.05rem);
-  opacity:.9;
-  font-style:italic;
+  margin-top: .1rem;
+  text-align: center;
+  width: 100%;
 }
+
 
 /* -- Tools intégrés dans le titre ------------------------------------------- */
 #article-title .title-tools{
