@@ -1,5 +1,6 @@
-// viewer.js — rétro-compat NEW + LEGACY (.article) + <br>/<wbr> dans H1
-// + chapitres en cartes + extraction automatique des .codex-note en cartes séparées
+// viewer.js — NEW + LEGACY (.article) + <br>/<wbr> dans H1
+// Chapitres en cartes + extraction automatique des .codex-note en cartes séparées
+// Partage intégré (Web Share API + fallback)
 
 document.addEventListener('DOMContentLoaded', () => {
   const isBlog   = window.location.pathname.includes('/blog');
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (initial) loadContent(viewerEl, basePath + initial + '.html');
 });
 
-// ---------- shell (sans bloc tools séparé, on met les outils dans le titre)
+// ---------- shell (blocs de base ; tools intégrés au titre)
 function ensureViewerShell(viewerEl){
   ['article-title','article-media','article-body','article-extras','article-references','article-capsules']
     .forEach(id=>{
@@ -50,7 +51,7 @@ function clearForeignChildren(viewerEl){
   Array.from(viewerEl.children).forEach(ch=>{ if(!keep.has(ch.id)) ch.remove(); });
 }
 
-// ---------- charge + découpe (NEW + LEGACY)
+// ---------- charge + découpe
 function loadContent(viewerEl, url){
   fetch(url).then(r=>{ if(!r.ok) throw new Error(url); return r.text(); })
   .then(html=>{
@@ -60,7 +61,7 @@ function loadContent(viewerEl, url){
     const doc=new DOMParser().parseFromString(html,'text/html');
     const part = name => doc.querySelector(`[data-part="${name}"]`);
 
-    // --- TITRE + sous-titre (new: section[data-part=title], legacy: h1 + h2)
+    // --- TITRE + sous-titre
     const titleSection = part('title') || null;
     const titleNode =
       (titleSection && titleSection.querySelector('h1')) ||
@@ -72,7 +73,7 @@ function loadContent(viewerEl, url){
     let titleHTML='';
     if(titleNode){
       const raw = (titleNode.innerHTML||'').trim();
-      const safe = sanitizeTitleHTML(raw);                 // garde <br> et <wbr>
+      const safe = sanitizeTitleHTML(raw); // garde <br>/<wbr>
       const subtitle = subtitleNode ? escapeHTML(subtitleNode.textContent||'') : '';
       titleHTML = `
         <div class="title-chip"><span>${safe}</span></div>
@@ -82,7 +83,7 @@ function loadContent(viewerEl, url){
     }
     setBlockHTML('article-title', titleHTML);
 
-    // --- TOOLS -> dans la bulle du titre
+    // --- TOOLS (dans le titre)
     const toolsEl =
       part('tools') ||
       doc.getElementById('article-tools') ||
@@ -90,7 +91,7 @@ function loadContent(viewerEl, url){
     let toolsHTML = getInnerIfFilled(toolsEl);
     if(!toolsHTML) toolsHTML = defaultToolsMarkup();
     attachToolsIntoTitle(toolsHTML);
-    setupShareButtons();
+    try { setupShareButtons(); } catch(e){ console.warn('share init skipped:', e); }
 
     // --- MEDIA
     const mediaEl = part('media') || doc.querySelector('.media, .gallery, section[data-gallery]');
@@ -105,7 +106,7 @@ function loadContent(viewerEl, url){
     setBlockHTML('article-media', mediaHTML);
     if(mediaHTML) setupGalleryLightbox();
 
-    // ----- BODY + CHAPITRES en cartes --------------------------------------
+    // --- BODY + CHAPITRES en cartes + extraction des notes
     removeDynamicChapters(viewerEl);
 
     let bodyCandidate =
@@ -121,7 +122,7 @@ function loadContent(viewerEl, url){
     if (bodyCandidate) {
       const slices = sliceBodyIntoChaptersRich(bodyCandidate);
 
-      // -- intro : extraire d'éventuelles notes en cartes séparées
+      // notes au niveau intro
       const tmpIntro = document.createElement('div');
       tmpIntro.innerHTML = slices.intro || '';
       const introNotes = Array.from(tmpIntro.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
@@ -134,15 +135,16 @@ function loadContent(viewerEl, url){
         document.getElementById('article-references') ||
         document.getElementById('article-capsules') || null;
 
-      // -- chapitres : créer la carte puis extraire les .codex-note
+      // chapitres
       slices.chapters.forEach(ch => {
-        // 1) chapitre “propre”
+        // extraire les notes du chapitre
         const tmp = document.createElement('div');
         tmp.innerHTML = ch.html;
         const noteNodes = Array.from(tmp.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
         noteNodes.forEach(n => n.remove());
         const contentHTML = (tmp.innerHTML || '').trim();
 
+        // carte chapitre
         const s = document.createElement('section');
         s.className = 'viewer-block card article-chapter chapter-card';
         if (ch.accent) s.style.setProperty('--chap-accent', ch.accent);
@@ -162,7 +164,7 @@ function loadContent(viewerEl, url){
         `;
         viewerEl.insertBefore(s, anchor);
 
-        // 2) notes extraites -> cartes autonomes, juste après le chapitre
+        // notes extraites -> cartes autonomes
         noteNodes.forEach(note => {
           const noteCard = document.createElement('section');
           noteCard.className = 'viewer-block card note-card';
@@ -172,12 +174,10 @@ function loadContent(viewerEl, url){
       });
     }
 
-    // intro (ou rien si vide)
     setBlockHTML('article-body', introHTML);
 
-    // injecter les notes extraites de l’intro juste après le body
+    // notes d'intro juste après le body
     if (introNotesHTML.length){
-      const bodyEl = document.getElementById('article-body');
       const anchor =
         document.getElementById('article-extras') ||
         document.getElementById('article-references') ||
@@ -203,6 +203,7 @@ function loadContent(viewerEl, url){
     setBlockHTML('article-body', `<p class="erreur">Erreur chargement : ${escapeHTML(String(err))}</p>`);
     setBlockHTML('article-extras',''); setBlockHTML('article-references',''); setBlockHTML('article-capsules','');
     console.error(err);
+    document.getElementById('article-viewer')?.style && (document.getElementById('article-viewer').style.opacity='1');
   });
 }
 
@@ -214,7 +215,7 @@ function setBlockHTML(id, html){
   el.setAttribute('aria-hidden', String(!has));
 }
 
-// ---------- Tools dans le titre
+// ---------- Tools (share) dans le titre
 function attachToolsIntoTitle(html){
   const slot=document.querySelector('#article-title .title-tools'); if(!slot) return;
   slot.innerHTML = html;
@@ -236,6 +237,68 @@ function defaultToolsMarkup(){
       </div>
     </div>
   `;
+}
+
+// === NEW: sécurise le partage (Web Share API + fallback)
+function setupShareButtons(){
+  const btn  = document.getElementById('share-button');
+  const menu = document.getElementById('share-menu');
+  if (!btn || !menu) return;
+
+  const pageUrl   = window.location.href;
+  const titleSpan = document.querySelector('#article-title .title-chip span');
+  const pageTitle = titleSpan ? titleSpan.textContent.trim() : document.title;
+
+  const closeMenu = () => {
+    menu.classList.add('hidden');
+    btn.setAttribute('aria-expanded','false');
+    document.removeEventListener('click', onDocClick, true);
+  };
+  const onDocClick = (e) => {
+    if (!menu.contains(e.target) && e.target !== btn) closeMenu();
+  };
+
+  btn.onclick = async (e) => {
+    e.preventDefault();
+
+    // Web Share API si dispo
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: pageTitle || 'Partager', url: pageUrl });
+        return;
+      } catch (_) {
+        // Si l’utilisateur annule, on n’ouvre pas le menu
+      }
+    }
+
+    // Fallback : toggle menu
+    const isHidden = menu.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(!isHidden));
+    if (!isHidden) document.addEventListener('click', onDocClick, true);
+  };
+
+  // Actions des items
+  menu.querySelectorAll('[data-share]').forEach(a=>{
+    a.onclick = (e)=>{
+      e.preventDefault();
+      const type = a.dataset.share;
+      switch(type){
+        case 'facebook':
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,'_blank','noopener');
+          break;
+        case 'twitter':
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(pageTitle)}`,'_blank','noopener');
+          break;
+        case 'email':
+          window.location.href = `mailto:?subject=${encodeURIComponent(pageTitle)}&body=${encodeURIComponent(pageUrl)}`;
+          break;
+        case 'copy':
+          navigator.clipboard?.writeText(pageUrl).then(()=>{ a.textContent='✔️ Copié !'; setTimeout(()=>a.textContent='🔗 Copier le lien',1200); });
+          break;
+      }
+      closeMenu();
+    };
+  });
 }
 
 // helpers
@@ -310,14 +373,14 @@ function updateLightboxImage(anim=false){
   img.src=it.src; img.alt=it.alt||''; cap.textContent=it.alt||''; cnt.textContent=`${galleryState.index+1} / ${galleryState.items.length}`;
 }
 
-// ---------- Chapitres (rich) -----------------------------------------------
+// ---------- Chapitres (rich)
 function removeDynamicChapters(viewerEl){
   viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove());
 }
 
 /* Découpe en chapitres riches :
    - <section data-chapter> : lit data-title / data-icon / data-accent
-   - sinon split sur <h2>
+   - sinon split par <h2>
    Retourne { intro, chapters:[ { id, title, icon, accent, html } ] } */
 function sliceBodyIntoChaptersRich(rootNode){
   const root = rootNode.cloneNode(true);
