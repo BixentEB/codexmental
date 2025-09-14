@@ -1,7 +1,15 @@
-// viewer.js — NEW + LEGACY (.article) + <br>/<wbr> dans H1
-// Chapitres en cartes + extraction automatique des .codex-note en cartes séparées
-// Partage intégré (Web Share API + fallback) + ancres # (scroll propre + copie lien)
-// Galerie mosaïque + lightbox
+/* =========================================================================
+   viewer.js — Blog/Atelier viewer
+   - Shell auto (title, media, body, extras, references, capsules)
+   - Chargement d’articles par menu (data-viewer) + ?article= / ?projet=
+   - Titre avec <br>/<wbr> conservés (sanitizeTitleHTML)
+   - Galerie (mosaïque + lightbox)
+   - Découpage en chapitres (par <h2> ou <section data-chapter>)
+   - Extraction des notes -> cartes autonomes
+     (compatible .note-card, details.note-collapsible, .codex-note, [data-note], [data-block="note"])
+   - Outils de partage (Web Share API + fallback)
+   - Ancres de chapitres (#) : scroll doux + copie lien profond
+   ======================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
   const isBlog   = window.location.pathname.includes('/blog');
@@ -15,18 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
   ensureViewerShell(viewerEl);
   buildLightbox();
   setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
-
-  // ancres # (Option A + B)
-  initChapterAnchors(viewerEl);
+  initChapterAnchors(viewerEl); // ancres # (scroll + copie)
 
   const initial = new URLSearchParams(window.location.search).get(paramKey);
   if (initial) loadContent(viewerEl, basePath + initial + '.html');
 });
 
-
-/* -------------------------------------------------------------------------- */
-/* Shell                                                                      */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------- */
+/* Shell de base                                                          */
+/* --------------------------------------------------------------------- */
 function ensureViewerShell(viewerEl){
   ['article-title','article-media','article-body','article-extras','article-references','article-capsules']
     .forEach(id=>{
@@ -58,9 +63,12 @@ function clearForeignChildren(viewerEl){
   Array.from(viewerEl.children).forEach(ch=>{ if(!keep.has(ch.id)) ch.remove(); });
 }
 
-/* -------------------------------------------------------------------------- */
-/* Chargement + découpe                                                       */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------- */
+/* Chargement + découpe                                                   */
+/* --------------------------------------------------------------------- */
+
+const NOTE_SEL = '.note-card, details.note-collapsible, .codex-note, [data-note], [data-block="note"]';
+
 function loadContent(viewerEl, url){
   fetch(url).then(r=>{ if(!r.ok) throw new Error(url); return r.text(); })
   .then(html=>{
@@ -70,7 +78,7 @@ function loadContent(viewerEl, url){
     const doc=new DOMParser().parseFromString(html,'text/html');
     const part = name => doc.querySelector(`[data-part="${name}"]`);
 
-    /* --- TITRE + sous-titre ------------------------------------------------ */
+    /* ---------- TITRE + sous-titre */
     const titleSection = part('title') || null;
     const titleNode =
       (titleSection && titleSection.querySelector('h1')) ||
@@ -92,7 +100,7 @@ function loadContent(viewerEl, url){
     }
     setBlockHTML('article-title', titleHTML);
 
-    /* --- TOOLS (dans le titre) -------------------------------------------- */
+    /* ---------- TOOLS (dans le titre) */
     const toolsEl =
       part('tools') ||
       doc.getElementById('article-tools') ||
@@ -102,7 +110,7 @@ function loadContent(viewerEl, url){
     attachToolsIntoTitle(toolsHTML);
     try { setupShareButtons(); } catch(e){ console.warn('share init skipped:', e); }
 
-    /* --- MEDIA ------------------------------------------------------------- */
+    /* ---------- MEDIA */
     const mediaEl = part('media') || doc.querySelector('.media, .gallery, section[data-gallery]');
     let mediaHTML='';
     if(mediaEl){
@@ -115,7 +123,7 @@ function loadContent(viewerEl, url){
     setBlockHTML('article-media', mediaHTML);
     if(mediaHTML) setupGalleryLightbox();
 
-    /* --- BODY + chapitres + notes ----------------------------------------- */
+    /* ---------- BODY + CHAPITRES + EXTRACTION DES NOTES */
     removeDynamicChapters(viewerEl);
 
     let bodyCandidate =
@@ -131,10 +139,10 @@ function loadContent(viewerEl, url){
     if (bodyCandidate) {
       const slices = sliceBodyIntoChaptersRich(bodyCandidate);
 
-      // notes d'intro (extraites)
+      // notes au niveau intro -> extraire
       const tmpIntro = document.createElement('div');
       tmpIntro.innerHTML = slices.intro || '';
-      const introNotes = Array.from(tmpIntro.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
+      const introNotes = Array.from(tmpIntro.querySelectorAll(NOTE_SEL));
       introNotes.forEach(n => n.remove());
       introHTML = (tmpIntro.innerHTML || '').trim();
       introNotes.forEach(n => introNotesHTML.push(n.outerHTML));
@@ -143,14 +151,13 @@ function loadContent(viewerEl, url){
         document.getElementById('article-extras') ||
         document.getElementById('article-references') ||
         document.getElementById('article-capsules') || null;
-      
+
       // chapitres
       slices.chapters.forEach(ch => {
+        // extraire les notes du chapitre
         const tmp = document.createElement('div');
         tmp.innerHTML = ch.html;
-
-        // notes du chapitre → extraites
-        const noteNodes = Array.from(tmp.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
+        const noteNodes = Array.from(tmp.querySelectorAll(NOTE_SEL));
         noteNodes.forEach(n => n.remove());
         const contentHTML = (tmp.innerHTML || '').trim();
 
@@ -200,7 +207,7 @@ function loadContent(viewerEl, url){
       });
     }
 
-    // EXTRAS / REF / CAPSULES (si fournis)
+    /* ---------- EXTRAS / REF / CAPSULES */
     setBlockHTML('article-extras',     getOuterIfFilled(part('extras')     || doc.querySelector('.extras')));
     setBlockHTML('article-references', getOuterIfFilled(part('references') || doc.querySelector('.references, footer.references')));
     setBlockHTML('article-capsules',   getOuterIfFilled(part('capsules')   || doc.querySelector('.capsules')));
@@ -213,7 +220,8 @@ function loadContent(viewerEl, url){
     setBlockHTML('article-body', `<p class="erreur">Erreur chargement : ${escapeHTML(String(err))}</p>`);
     setBlockHTML('article-extras',''); setBlockHTML('article-references',''); setBlockHTML('article-capsules','');
     console.error(err);
-    const v = document.getElementById('article-viewer'); if (v && v.style) v.style.opacity='1';
+    const v = document.getElementById('article-viewer');
+    if (v && v.style) v.style.opacity='1';
   });
 }
 
@@ -225,12 +233,9 @@ function setBlockHTML(id, html){
   el.setAttribute('aria-hidden', String(!has));
 }
 
-// Notes : ancien et nouveau markup
-const NOTE_SEL = '.note-card, details.note-collapsible, .codex-note, [data-note], [data-block="note"]';
-
-/* -------------------------------------------------------------------------- */
-/* Ancres # (Option A = scroll propre ; Option B = copie du lien profond)     */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------- */
+/* Ancres de chapitres                                                   */
+/* --------------------------------------------------------------------- */
 function initChapterAnchors(container){
   if(!container) return;
   container.addEventListener('click', e=>{
@@ -246,6 +251,7 @@ function initChapterAnchors(container){
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
 
+    // copie le lien profond
     if (navigator.clipboard){
       const deep = `${location.origin}${location.pathname}${location.search}#${id}`;
       navigator.clipboard.writeText(deep).then(()=>{
@@ -261,9 +267,9 @@ function getAnchorOffset(){
   return isNaN(px) ? 0 : px;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Tools (share)                                                              */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------- */
+/* Outils (partage)                                                      */
+/* --------------------------------------------------------------------- */
 function attachToolsIntoTitle(html){
   const slot=document.querySelector('#article-title .title-tools'); if(!slot) return;
   slot.innerHTML = html;
@@ -286,6 +292,7 @@ function defaultToolsMarkup(){
     </div>
   `;
 }
+
 function setupShareButtons(){
   const btn  = document.getElementById('share-button');
   const menu = document.getElementById('share-menu');
@@ -309,7 +316,7 @@ function setupShareButtons(){
 
     if (navigator.share) {
       try { await navigator.share({ title: pageTitle || 'Partager', url: pageUrl }); return; }
-      catch(_) { /* annulé */ }
+      catch(_) { /* annulation : on ne fait rien */ }
     }
 
     const isHidden = menu.classList.toggle('hidden');
@@ -340,22 +347,19 @@ function setupShareButtons(){
   });
 }
 
-/* -------------------------------------------------------------------------- */
-/* Galerie + lightbox                                                         */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------- */
+/* Galerie                                                                */
+/* --------------------------------------------------------------------- */
 const galleryState={items:[],index:0};
+
 function renderMosaicHTML(imgNodes, caption=''){
   if(!imgNodes||!imgNodes.length) return '';
   const arr=imgNodes.slice(); const i=arr.findIndex(n=>n.hasAttribute('data-main')); if(i>0) arr.unshift(arr.splice(i,1)[0]);
-  const tiles=arr.map((img,idx)=>{
-    const src=img.getAttribute('src');
-    const alt=(img.getAttribute('alt')||'').replace(/"/g,'&quot;');
-    const cls=idx===0?'tile tile--main':'tile';
-    return `<figure class="${cls}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async" data-idx="${idx}"></figure>`;
-  }).join('');
+  const tiles=arr.map((img,idx)=>{const src=img.getAttribute('src'); const alt=(img.getAttribute('alt')||'').replace(/"/g,'&quot;'); const cls=idx===0?'tile tile--main':'tile'; return `<figure class="${cls}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async" data-idx="${idx}"></figure>`;}).join('');
   const cap=caption?`<figcaption class="gallery-caption">${caption}</figcaption>`:'';
   return `<div class="media-gallery" data-count="${arr.length}"><div class="mosaic">${tiles}</div>${cap}</div>`;
 }
+
 function buildLightbox(){
   if(document.getElementById('viewer-lightbox')) return;
   const lb=document.createElement('div');
@@ -376,11 +380,13 @@ function buildLightbox(){
   let startX=0; lb.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;},{passive:true});
   lb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX; if(Math.abs(dx)>40) (dx>0?prevImage():nextImage());},{passive:true});
 }
+
 function setupGalleryLightbox(){
   const imgs=[...document.querySelectorAll('#article-media .mosaic img')];
   galleryState.items=imgs.map(img=>({src:img.getAttribute('src'),alt:img.getAttribute('alt')||''}));
   imgs.forEach((img,idx)=>{ img.addEventListener('click',()=>openLightbox(idx)); img.style.cursor='zoom-in'; });
 }
+
 function openLightbox(i=0){
   galleryState.index=Math.max(0,Math.min(i,galleryState.items.length-1));
   const lb=document.getElementById('viewer-lightbox'); if(!lb) return;
@@ -400,15 +406,15 @@ function updateLightboxImage(anim=false){
   img.src=it.src; img.alt=it.alt||''; cap.textContent=it.alt||''; cnt.textContent=`${galleryState.index+1} / ${galleryState.items.length}`;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Chapitres                                                                   */
-/* -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------- */
+/* Chapitres (split)                                                     */
+/* --------------------------------------------------------------------- */
 function removeDynamicChapters(viewerEl){
-  viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove());
+  viewerEl.querySelectorAll('.article-chapter, .note-card, details.note-collapsible').forEach(n => n.remove());
 }
 
-/* Découpe en chapitres riches :
-   - <section data-chapter> utilise data-title / data-icon / data-accent
+/* Découpe riche :
+   - <section data-chapter> : lit data-title / data-icon / data-accent
    - sinon split par <h2> */
 function sliceBodyIntoChaptersRich(rootNode){
   const root = rootNode.cloneNode(true);
@@ -476,27 +482,15 @@ function sliceBodyIntoChaptersRich(rootNode){
   return result;
 }
 
+/* --------------------------------------------------------------------- */
+/* Utilitaires                                                            */
+/* --------------------------------------------------------------------- */
 function slugify(s){
   return (s||'')
     .toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // accents
     .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
-
-/* -------------------------------------------------------------------------- */
-/* Helpers HTML                                                                */
-/* -------------------------------------------------------------------------- */
-function getInnerIfFilled(el){
-  if(!el) return '';
-  const html = el.innerHTML ?? '';
-  return html.trim() ? html : '';
-}
-function getOuterIfFilled(el){
-  if(!el) return '';
-  const html = el.outerHTML ?? '';
-  return html.trim() ? html : '';
-}
-
 function escapeHTML(s){
   return (s||'')
     .replace(/&/g,'&amp;')
@@ -506,20 +500,16 @@ function escapeHTML(s){
     .replace(/'/g,'&#39;');
 }
 
-
-// Autorise <br> et <wbr> dans le H1, échappe tout le reste
+/* Autorise <br> et <wbr> dans le H1, échappe tout le reste */
 function sanitizeTitleHTML(rawHTML){
   const BR  = '[[BR]]';
   const WBR = '[[WBR]]';
 
-  // 1) On conserve <br> / <wbr> via des jetons
   let s = (rawHTML || '')
     .replace(/<\s*br\s*\/?\s*>/gi, BR)
     .replace(/<\s*wbr\s*\/?\s*>/gi, WBR)
-    // on supprime toute autre balise HTML
     .replace(/<\/?[^>]+>/g, '');
 
-  // 2) Décodage texte, puis échappement
   const tmp = document.createElement('textarea');
   tmp.innerHTML = s;
   s = tmp.value
@@ -529,7 +519,17 @@ function sanitizeTitleHTML(rawHTML){
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-  // 3) On réinjecte nos balises permises
   return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
 }
 
+/* Helpers pour inner/outer HTML si rempli */
+function getInnerIfFilled(el){
+  if(!el) return '';
+  const html=(el.innerHTML||'').trim();
+  return html ? html : '';
+}
+function getOuterIfFilled(el){
+  if(!el) return '';
+  const html=(el.outerHTML||'').trim();
+  return html ? html : '';
+}
