@@ -465,3 +465,39 @@ function slugify(s){
 }
 
 function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Autorise <br> et <wbr> dans le H1, échappe tout le reste
+function sanitizeTitleHTML(rawHTML){
+  const BR  = '[[BR]]';
+  const WBR = '[[WBR]]';
+
+  // 1) On conserve <br> / <wbr> via des jetons
+  let s = (rawHTML || '')
+    .replace(/<\s*br\s*\/?\s*>/gi, BR)
+    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR)
+    // on supprime toute autre balise HTML
+    .replace(/<\/?[^>]+>/g, '');
+
+  // 2) Décodage texte, puis échappement
+  const tmp = document.createElement('textarea');
+  tmp.innerHTML = s;
+  s = tmp.value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  // 3) On réinjecte nos balises permises
+  return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
+}
+
+// déjà présent :
+function escapeHTML(s){
+  return (s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
