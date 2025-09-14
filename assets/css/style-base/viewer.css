@@ -225,6 +225,7 @@
   margin: 0 0 .6rem 0;
   font-family: 'Orbitron', sans-serif;
   font-size: 1.05rem;
+  color: var(--accent-primary);
 }
 .codex-note p{ margin: .6rem 0; }
 .codex-note.note-small{ font-size: .97rem; }
@@ -256,6 +257,11 @@
   font-size: 1.06rem;
   margin: 0 0 .65rem 0;
 }
+
+/* <details> = cadre (liseré) + overflow propre, AUCUNE animation */
+.note-card .note-collapsible{
+  border: 
+
 
 /* ---------------------------- CHAPTER CARDS -------------------------------- */
 .chapter-card{
