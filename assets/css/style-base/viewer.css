@@ -73,6 +73,9 @@
 
 /* Le sous-titre sous la bulle, bien centré */
 #article-title .title-sub{
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  letter-spacing: .02em;
   margin-top: .1rem;
   text-align: center;
   width: 100%;
