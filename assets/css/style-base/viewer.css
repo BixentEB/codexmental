@@ -244,3 +244,62 @@ body.theme-solar .codex-note h4 {
     white-space: revert !important;
   }
 }
+
+/* === Cartes du viewer découpé === */
+.viewer-block {
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 1.25rem 1.5rem;
+  margin: 1.2rem 0;            /* espace entre cartes = on voit le fond */
+}
+
+/* Carte vide = masquée pour ne pas laisser des cadres vides */
+.viewer-block.is-empty {
+  display: none;
+}
+
+/* Titre : style plus ample */
+#article-title h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  text-align: center;
+}
+
+/* Tools en tête, à droite par défaut */
+.block-tools {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* Corps de l’article : garder la typo lisible */
+#article-body {
+  line-height: 1.7;
+}
+
+/* Extras / références / capsules : style léger */
+#article-extras, #article-references, #article-capsules {
+  font-size: .95rem;
+}
+
+/* Petits séparateurs “respirants” si tu veux */
+#article-references::before,
+#article-capsules::before,
+#article-extras::before {
+  content: attr(data-label);
+  display: block;
+  opacity: .8;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: .03em;
+  margin-bottom: .6rem;
+  font-size: .9rem;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+  .viewer-block { padding: 1rem; margin: 0.9rem 0; }
+  #article-title h1 { font-size: 1.4rem; }
+}
