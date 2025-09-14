@@ -268,63 +268,66 @@
   color: var(--accent-primary);
 }
 
-/* ============================================================
-   Liseré néon animé autour des notes (.codex-note)
-   - pas de fond ni de bordure fixe
-   - un seul trait lumineux qui tourne le long du contour
-   ============================================================ */
+/* =============================== */
+/*  NOTE : liseré néon + padding   */
+/* =============================== */
 
 .note-card .codex-note{
-  /* la note reste transparente; on remet un padding pour la lisibilité */
+  /* marge interne un peu plus large pour ne jamais toucher le bord */
   --note-neon: var(--accent-primary, #8fd3ff);
-  --note-radius: 12px;           /* même rayon que ta note */
-  --note-thickness: 2px;         /* épaisseur du liseré */
-  --note-pad-x: 1.25rem;         /* padding texte */
-  --note-pad-y: 1.00rem;
+  --note-radius: 12px;
+  --note-thickness: 2px;
 
-  position: relative;
+  /* plus d'air autour du texte */
+  padding: clamp(1rem, 1.4vw, 1.25rem) clamp(1.25rem, 2vw, 1.75rem);
   background: transparent;
   border: 0;
-  padding: var(--note-pad-y) var(--note-pad-x);
+  border-radius: var(--note-radius);
+  position: relative;
 }
 
-/* le liseré animé */
+/* liseré néon animé qui tourne autour */
 .note-card .codex-note::before{
-  content: "";
-  position: absolute;
-  inset: 0;                           /* colle aux bords */
-  border-radius: var(--note-radius);
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius: inherit;
   padding: var(--note-thickness);
 
-  /* un unique segment lumineux dans un conic-gradient transparent */
-  background:
-    conic-gradient(from var(--note-angle, 0deg),
-      transparent 0 83%,
-      color-mix(in oklab, var(--note-neon), white 25%) 86%,
-      color-mix(in oklab, var(--note-neon), white 10%) 94%,
-      transparent 97% 100%);
-
-  /* on ne garde qu'un anneau fin (= la “bordure”) */
+  /* anneau fin = on garde seulement le “bord” via mask */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
 
-  pointer-events: none;
-  animation: note-neon-spin 5.2s linear infinite;
+  /* un court segment lumineux dans un conic-gradient */
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0 83%,
+      color-mix(in oklab, var(--note-neon), white 25%) 86%,
+      color-mix(in oklab, var(--note-neon), white 10%) 94%,
+      transparent 97% 100%
+    );
+
+  pointer-events:none;
+  will-change: transform;
+  transform-origin:center;
+  animation: note-neon-rotate 5.5s linear infinite;
+
+  /* halo doux */
   filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-neon), transparent 75%));
 }
 
-@keyframes note-neon-spin{
-  to { --note-angle: 360deg; }
-}
+/* rotation “universelle” = marche partout */
+@keyframes note-neon-rotate { to { transform: rotate(360deg); } }
 
-/* sécurité : s'il restait un ancien décor (ex. l’aiguille), on le neutralise */
+/* on neutralise tout ancien décor auto (ex. “aiguille”) */
 .note-card .codex-note::after{
-  content: none !important;
-  animation: none !important;
-  background: none !important;
+  content:none !important;
+  background:none !important;
+  animation:none !important;
 }
 
 
