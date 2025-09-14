@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (initial) loadContent(viewerEl, basePath + initial + '.html');
 });
 
+
 /* -------------------------------------------------------------------------- */
 /* Shell                                                                      */
 /* -------------------------------------------------------------------------- */
@@ -142,7 +143,7 @@ function loadContent(viewerEl, url){
         document.getElementById('article-extras') ||
         document.getElementById('article-references') ||
         document.getElementById('article-capsules') || null;
-
+      
       // chapitres
       slices.chapters.forEach(ch => {
         const tmp = document.createElement('div');
@@ -223,6 +224,9 @@ function setBlockHTML(id, html){
   el.classList.toggle('is-empty', !has);
   el.setAttribute('aria-hidden', String(!has));
 }
+
+// Notes : ancien et nouveau markup
+const NOTE_SEL = '.note-card, details.note-collapsible, .codex-note, [data-note], [data-block="note"]';
 
 /* -------------------------------------------------------------------------- */
 /* Ancres # (Option A = scroll propre ; Option B = copie du lien profond)     */
