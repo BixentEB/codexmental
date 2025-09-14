@@ -221,6 +221,51 @@ body.theme-solar .codex-note h4 { color: #aa5500; }
 /* Option confort : espace réduit juste après le titre */
 #article-title + .viewer-block{ margin-top: .6rem; }
 
+/* Le viewer reste transparent */
+#article-viewer { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+
+/* Cartes vides : jamais visibles */
+.viewer-block.is-empty { display: none !important; }
+
+/* --- Tools intégrés dans le titre --------------------------------------- */
+#article-title { position: relative; display: flex; justify-content: center; align-items: center; }
+#article-title .title-tools {
+  position: absolute;
+  top: .35rem;
+  right: .5rem;
+  display: flex; align-items: center;
+}
+
+/* Petit carré bouton partage (icône seule) */
+#article-title .btn-share-article {
+  width: 40px; height: 40px; padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.07);
+  color: #fff; cursor: pointer;
+  display: grid; place-items: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+#article-title .btn-share-article .label { display: none; } /* cache le mot "Partager" */
+#article-title .btn-share-article .icon { font-size: 1rem; line-height: 1; }
+
+/* Menu de partage attaché au bouton, en dropdown */
+#article-title .share-menu {
+  position: absolute;
+  top: 46px; right: 0;
+  background: rgba(0,0,20,.95);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.45);
+  padding: .35rem .5rem;
+  display: flex; flex-direction: column; gap: .25rem;
+  z-index: 10;
+}
+#article-title .share-menu.hidden { display: none; }
+#article-title .share-menu a { color: #cfe8ff; text-decoration: none; font-size: .95rem; white-space: nowrap; }
+#article-title .share-menu a:hover { text-decoration: underline; }
+
+
 
 
 /* === Responsive ============================================================ */
