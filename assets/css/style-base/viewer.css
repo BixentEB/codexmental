@@ -206,6 +206,22 @@ body.theme-solar .codex-note h4 { color: #aa5500; }
 /* Option: si jamais un <hr> de l’article gêne au-dessus des cartes */
 #article-body > hr:first-child { display: none; }
 
+/* Le bloc titre ne doit PAS être une carte */
+#article-title.viewer-block{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: .5rem 0 .25rem !important; /* resserre l’espace */
+}
+
+/* On garde l’ancrage du bouton de partage dans le titre */
+#article-title{ position: relative; display:flex; justify-content:center; align-items:center; }
+
+/* Option confort : espace réduit juste après le titre */
+#article-title + .viewer-block{ margin-top: .6rem; }
+
+
 
 /* === Responsive ============================================================ */
 @media (max-width: 900px) { .media-gallery .mosaic { grid-auto-rows: 80px; } }
@@ -225,3 +241,4 @@ body.theme-solar .codex-note h4 { color: #aa5500; }
   .lightbox { grid-template-columns: 48px 1fr 48px; }
   #lb-image { max-width: 94vw; max-height: 70vh; }
 }
+
