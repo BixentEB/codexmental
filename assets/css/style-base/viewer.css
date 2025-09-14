@@ -317,12 +317,14 @@
 }
 .chapter-title a.anchor:hover{ opacity:.9; text-decoration:underline; }
 
-/* Responsive */
-@media (max-width: 768px){
-  .chapter-card{ padding: 1rem; }
-  .chapter-header{ margin: 0 0 .6rem 0; }
+/* Les notes extraites ont leur propre “carte”.
+   On aplatit l'intérieur pour éviter une double bordure. */
+.note-card .codex-note{
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
-
 
 
 /* -- Responsive -------------------------------------------------------------- */
@@ -341,4 +343,9 @@
 
   .lightbox{ grid-template-columns: 48px 1fr 48px; }
   #lb-image{ max-width: 94vw; max-height: 70vh; }
+}
+
+@media (max-width: 768px){
+  .chapter-card{ padding: 1rem; }
+  .chapter-header{ margin: 0 0 .6rem 0; }
 }
