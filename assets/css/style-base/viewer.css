@@ -1,42 +1,39 @@
 /* ============================================================================
-   VIEWER.CSS — Codex Mental
+   VIEWER.CSS v0.3 — Codex Mental (Blog + Atelier)
    - Orchestrateur transparent
    - Cartes séparées
    - Title chip + tools intégrés
    - Galerie mosaïque + lightbox
    - Chapitres en cartes
-   - Notes : reset + option liseré néon (note-comet)
+   - Notes : anneau “comète” autour du bloc (sans “aiguille”)
    ========================================================================== */
 
 /* -- Orchestrateur ----------------------------------------------------------- */
 #article-viewer{
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
 /* -- Cartes (blocs) ---------------------------------------------------------- */
 .viewer-block{
-  --bloc-bg: rgba(255,255,255,0.04);
-  --bloc-border: rgba(255,255,255,0.15);
-
-  background: var(--bloc-bg);
-  border: 1px solid var(--bloc-border);
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.18);
   padding: 1.25rem 1.5rem;
   margin: 1.2rem 0;
 }
-.viewer-block.is-empty{ display: none; }
+.viewer-block.is-empty{ display: none !important; }
 
 /* -- Bloc Titre -------------------------------------------------------------- */
 #article-title.viewer-block{
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-  margin: .5rem 0 .25rem;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: .5rem 0 .25rem !important;
 }
 #article-title{
   position: relative;
@@ -136,7 +133,7 @@
 }
 
 /* -- Galerie media ----------------------------------------------------------- */
-#article-media.viewer-block.is-empty{ display: none; }
+#article-media.viewer-block.is-empty{ display: none !important; }
 .media-gallery{ width: 100%; }
 .media-gallery .mosaic{
   display: grid; gap: 10px;
@@ -154,14 +151,14 @@
 
 /* -- Lightbox ---------------------------------------------------------------- */
 .no-scroll{ overflow: hidden; }
-.lightbox.hidden{ display: none; }
+.lightbox.hidden{ display: none !important; }
 .lightbox{
   position: fixed; inset: 0; z-index: 4000;
   display: grid; grid-template-columns: 64px 1fr 64px;
   align-items: center; justify-items: center;
 }
 .lb-backdrop{ position: absolute; inset: 0;
-  background: rgba(0,0,20,0.92); backdrop-filter: blur(2px);
+  background: var(--lb-bg, rgba(0,0,20,0.92)); backdrop-filter: blur(2px);
 }
 .lb-figure{ grid-column: 2; position: relative; z-index: 1;
   max-width: 90vw; max-height: 82vh; display:flex; flex-direction:column; align-items:center; gap:.6rem;
@@ -188,75 +185,72 @@
 }
 
 /* =============================== NOTES ===================================== */
-/* Conteneur carte transparent pour éviter le double cadre */
+/* Fallback inline (si pas extraite) */
+.codex-note{
+  position: relative; display: block;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 1rem 1.2rem; margin: 1rem 0; color: inherit;
+}
+.codex-note h2{
+  margin: 0 0 .6rem 0; font-family: 'Orbitron', sans-serif; font-size: 1.05rem;
+}
+.codex-note p{ margin: .6rem 0; }
+.codex-note.note-small{ font-size: .97rem; }
+.codex-note.note-large{ font-size: 1.05rem; }
+.symb-tilt{ display:inline-block; transform: rotate(-8deg); }
+
+/* Carte conteneur 100% transparente (pas de double cadre) */
 .note-card.viewer-block{
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
+  background: transparent !important; border: 0 !important;
+  box-shadow: none !important; padding: 0 !important;
 }
 
-/* Bloc note “propre” */
-.note-card .codex-note{
-  position: relative;
-  overflow: hidden;
-  margin: 0;
-  padding: 1.1rem 1.25rem;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.045);
-  border: 1px solid rgba(255,255,255,0.13);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.22);
-}
-
-/* Nettoyage ciblé : supprime l’ancienne “aiguille” éventuelle */
+/* Neutralisation agressive des anciens effets “aiguille” */
+.note-card::before,
+.note-card::after,
 .note-card .codex-note::before,
-.note-card .codex-note::after{
-  content: none;
-  background: none;
-  box-shadow: none;
+.etoile-filante,
+.etoile-filante::before,
+.etoile-filante::after{ display:none !important; content:none !important; }
+
+/* Note autonome “propre” */
+.note-card .codex-note{
+  position: relative; overflow: hidden; margin: 0;
+  padding: 1.1rem 1.25rem; border-radius: 14px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.13);
+  box-shadow: 0 12px 28px rgba(0,0,0,.22);
 }
 
-/* -------- Option liseré néon (note-comet) ---------------------------------- */
-@property --note-angle{
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
+/* -------- Anneau “comète” (optionnel) --------------------------------------
+   Pas de mask-composite. On empile deux backgrounds :
+   - une couche padding-box pour le fond
+   - une conic-gradient animée en border-box qui fait la traînée
+   -------------------------------------------------------------------------- */
+@property --note-angle {                  /* permet l’animation fluide */
+  syntax: '<angle>'; inherits: false; initial-value: 0deg;
 }
 
 .codex-note.note-comet{
   --note-accent: var(--accent-primary, #9fdcff);
-  --note-orbit-speed: 6s;
-  --note-border-w: 2px;
+  --note-orbit-speed: 6s;             /* vitesse de rotation */
+  --note-border-w: 2px;               /* épaisseur de la traînée */
 
-  border: var(--note-border-w) solid transparent;
+  border: var(--note-border-w) solid transparent;   /* expose border-box */
   background:
-    /* fond */
     linear-gradient(rgba(255,255,255,.045), rgba(255,255,255,.045)) padding-box,
-    /* liseré animé en bordure */
-    conic-gradient(
-      from var(--note-angle),
+    conic-gradient(from var(--note-angle),
       transparent 0 300deg,
       color-mix(in oklab, var(--note-accent), white 25%) 300deg,
       var(--note-accent) 304deg,
       color-mix(in oklab, var(--note-accent), white 25%) 308deg,
-      transparent 318deg
-    ) border-box;
-
+      transparent 318deg) border-box;
   animation: note-orbit var(--note-orbit-speed) linear infinite;
   filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-accent), white 25%));
 }
 @keyframes note-orbit{ to{ --note-angle: 360deg; } }
-
-/* Fallback (navigateurs sans @property/conic-gradient) */
-@supports not (background: conic-gradient(red, blue)){
-  .codex-note.note-comet{
-    border-color: var(--note-accent);
-    background:
-      linear-gradient(rgba(255,255,255,.045), rgba(255,255,255,.045)) padding-box;
-    box-shadow: 0 0 10px var(--note-accent);
-    animation: none;
-  }
-}
 
 /* ---------------------------- CHAPTER CARDS -------------------------------- */
 .chapter-card{
