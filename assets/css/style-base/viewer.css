@@ -333,6 +333,62 @@
   margin: 0;
 }
 
+/* Titre de chapitre : style léger, largeur = largeur du texte */
+.chapter-header{
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: 0;                 /* plus de cadre/padding */
+  margin: 0 0 .7rem 0;        /* espace sous le titre */
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  max-width: 100%;
+}
+
+.chapter-icon{
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 85%);
+  font-size: .9rem;
+}
+
+.chapter-title{
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  letter-spacing: .01em;
+  color: color-mix(in oklab, var(--chap-accent, #8fd3ff), white 22%);
+  text-shadow: 0 0 8px color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 70%);
+  margin: 0;
+  padding: .05rem .15rem .2rem 0;  /* juste un peu d’air */
+  position: relative;
+}
+
+/* soulignement fin qui suit la largeur du texte */
+.chapter-title::after{
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: .28rem;
+  background: linear-gradient(90deg, var(--chap-accent, #8fd3ff), transparent 70%);
+  border-radius: 2px;
+}
+
+/* lien # discret */
+.chapter-title .anchor{
+  opacity: .55;
+  text-decoration: none;
+  margin-left: .35rem;
+  font-size: .9em;
+}
+.chapter-title .anchor:hover{ opacity: .9; text-decoration: underline; }
+
+/* On garde la barre verticale de la carte chapitre (déjà en place via ::before) */
+
+
 
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
