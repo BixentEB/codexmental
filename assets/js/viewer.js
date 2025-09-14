@@ -1,529 +1,321 @@
-// viewer.js — NEW + LEGACY (.article) + <br>/<wbr> dans H1
-// Chapitres en cartes + extraction automatique des .codex-note en cartes séparées
-// Partage intégré (Web Share API + fallback) + ancres # (scroll propre + copie lien)
-// Galerie mosaïque + lightbox
+/* ============================================================================
+   VIEWER.CSS v0.3 — Codex Mental (Blog + Atelier)
+   - Orchestrateur transparent
+   - Cartes séparées
+   - Title chip + tools intégrés
+   - Galerie mosaïque + lightbox
+   - Chapitres en cartes
+   - Notes : anneau “comète” autour du bloc (sans “aiguille”)
+   ========================================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-  const isBlog   = window.location.pathname.includes('/blog');
-  const paramKey = isBlog ? 'article' : 'projet';
-  const basePath = isBlog ? '/blog/articles/' : '/atelier/';
-
-  const menuEl   = document.getElementById('viewer-menu');
-  const viewerEl = document.getElementById('article-viewer');
-  if (!menuEl || !viewerEl) return;
-
-  ensureViewerShell(viewerEl);
-  buildLightbox();
-  setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
-
-  // ancres # (Option A + B)
-  initChapterAnchors(viewerEl);
-
-  const initial = new URLSearchParams(window.location.search).get(paramKey);
-  if (initial) loadContent(viewerEl, basePath + initial + '.html');
-});
-
-/* -------------------------------------------------------------------------- */
-/* Shell                                                                      */
-/* -------------------------------------------------------------------------- */
-function ensureViewerShell(viewerEl){
-  ['article-title','article-media','article-body','article-extras','article-references','article-capsules']
-    .forEach(id=>{
-      if(!document.getElementById(id)){
-        const s=document.createElement('section');
-        s.id=id; s.className='viewer-block card is-empty';
-        if(id==='article-title') s.classList.add('no-card');
-        viewerEl.appendChild(s);
-      }
-    });
+/* -- Orchestrateur ----------------------------------------------------------- */
+#article-viewer{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
-function setupMenuLinks(menuEl, viewerEl, basePath, paramKey){
-  menuEl.querySelectorAll('a[data-viewer]').forEach(link=>{
-    link.addEventListener('click',e=>{
-      e.preventDefault();
-      const file=link.getAttribute('data-viewer'); if(!file) return;
-      loadContent(viewerEl, basePath+file+'.html');
-      const u=new URL(window.location); u.searchParams.set(paramKey,file);
-      window.history.pushState({},'',u);
-      menuEl.querySelectorAll('a[data-viewer]').forEach(a=>a.classList.remove('active'));
-      link.classList.add('active');
-    });
-  });
+/* -- Cartes (blocs) ---------------------------------------------------------- */
+.viewer-block{
+  background: var(--bloc-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--bloc-border, rgba(255, 255, 255, 0.15));
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  padding: 1.25rem 1.5rem;
+  margin: 1.2rem 0;
+}
+.viewer-block.is-empty{ display: none !important; }
+
+/* -- Bloc Titre -------------------------------------------------------------- */
+#article-title.viewer-block{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: .5rem 0 .25rem !important;
+}
+#article-title{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+}
+#article-title + .viewer-block{ margin-top: .6rem; }
+
+/* Title chip (style Home) */
+#article-title .title-chip{
+  display: inline-block;
+  margin: .1rem auto .3rem;
+  padding: .9rem 1.4rem;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--accent-primary, #8fd3ff) 18%, transparent) 0%,
+    color-mix(in oklab, var(--link-color,   #b38cff) 12%, transparent) 100%
+  );
+  border: 1px solid color-mix(in oklab, var(--accent-primary, #8fd3ff) 45%, #000 55%);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  filter: drop-shadow(0 0 14px color-mix(in oklab, var(--accent-primary, #9fdcff) 30%, transparent));
+}
+#article-title .title-chip span{
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  letter-spacing: .02em;
+  display: inline-block;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.15;
+  max-width: min(92vw, 1100px);
 }
 
-function clearForeignChildren(viewerEl){
-  const keep=new Set(['article-title','article-media','article-body','article-extras','article-references','article-capsules']);
-  Array.from(viewerEl.children).forEach(ch=>{ if(!keep.has(ch.id)) ch.remove(); });
+/* Sous-titre */
+#article-title .title-sub{
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  letter-spacing: .02em;
+  margin-top: .1rem;
+  text-align: center;
+  width: 100%;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Chargement + découpe                                                       */
-/* -------------------------------------------------------------------------- */
-function loadContent(viewerEl, url){
-  fetch(url).then(r=>{ if(!r.ok) throw new Error(url); return r.text(); })
-  .then(html=>{
-    viewerEl.style.opacity='0';
-    clearForeignChildren(viewerEl);
+/* Tools (share) */
+#article-title .title-tools{
+  position: absolute;
+  top: .35rem;
+  right: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+#article-title .btn-share-article{
+  width: 40px; height: 40px; padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.07);
+  color: #fff;
+  display: grid; place-items: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  cursor: pointer;
+}
+#article-title .btn-share-article .label{ display: none; }
+#article-title .btn-share-article .icon{ font-size: 1rem; line-height: 1; }
 
-    const doc=new DOMParser().parseFromString(html,'text/html');
-    const part = name => doc.querySelector(`[data-part="${name}"]`);
+#article-title .share-menu{
+  position: absolute;
+  top: 46px; right: 0;
+  background: rgba(0,0,20,.95);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.45);
+  padding: .35rem .5rem;
+  display: flex; flex-direction: column;
+  gap: .25rem; z-index: 10;
+}
+#article-title .share-menu.hidden{ display: none; }
+#article-title .share-menu a{
+  color: #cfe8ff; text-decoration: none; font-size: .95rem; white-space: nowrap;
+}
+#article-title .share-menu a:hover{ text-decoration: underline; }
 
-    /* --- TITRE + sous-titre ------------------------------------------------ */
-    const titleSection = part('title') || null;
-    const titleNode =
-      (titleSection && titleSection.querySelector('h1')) ||
-      doc.querySelector('h1');
-    const subtitleNode =
-      (titleSection && (titleSection.querySelector('h2[data-subtitle], .subtitle'))) ||
-      (titleNode && titleNode.nextElementSibling && titleNode.nextElementSibling.matches('h2, .subtitle, [data-subtitle]') ? titleNode.nextElementSibling : null);
+/* -- Corps & typo ------------------------------------------------------------ */
+#article-body{ line-height: 1.7; }
+#article-body h1, #article-body h2{ font-family: 'Orbitron', sans-serif; }
+#article-body p{ margin-bottom: 1.1rem; }
 
-    let titleHTML='';
-    if(titleNode){
-      const raw = (titleNode.innerHTML||'').trim();
-      const safe = sanitizeTitleHTML(raw); // garde <br>/<wbr>
-      const subtitle = subtitleNode ? escapeHTML(subtitleNode.textContent||'') : '';
-      titleHTML = `
-        <div class="title-chip"><span>${safe}</span></div>
-        <div class="title-tools"></div>
-        ${subtitle ? `<div class="title-sub">${subtitle}</div>` : '' }
-      `;
-    }
-    setBlockHTML('article-title', titleHTML);
-
-    /* --- TOOLS (dans le titre) -------------------------------------------- */
-    const toolsEl =
-      part('tools') ||
-      doc.getElementById('article-tools') ||
-      doc.querySelector('.tools');
-    let toolsHTML = getInnerIfFilled(toolsEl);
-    if(!toolsHTML) toolsHTML = defaultToolsMarkup();
-    attachToolsIntoTitle(toolsHTML);
-    try { setupShareButtons(); } catch(e){ console.warn('share init skipped:', e); }
-
-    /* --- MEDIA ------------------------------------------------------------- */
-    const mediaEl = part('media') || doc.querySelector('.media, .gallery, section[data-gallery]');
-    let mediaHTML='';
-    if(mediaEl){
-      const imgs=[...mediaEl.querySelectorAll('img')].filter(i=>i.getAttribute('src'));
-      if(imgs.length){
-        const caption=mediaEl.querySelector('figcaption')?.innerHTML||'';
-        mediaHTML = renderMosaicHTML(imgs, caption);
-      }
-    }
-    setBlockHTML('article-media', mediaHTML);
-    if(mediaHTML) setupGalleryLightbox();
-
-    /* --- BODY + chapitres + notes ----------------------------------------- */
-    removeDynamicChapters(viewerEl);
-
-    let bodyCandidate =
-      part('body') ||
-      doc.querySelector('.article') ||
-      doc.querySelector('article') ||
-      doc.querySelector('main > section') ||
-      doc.querySelector('section');
-
-    let introHTML = '';
-    const introNotesHTML = [];
-
-    if (bodyCandidate) {
-      const slices = sliceBodyIntoChaptersRich(bodyCandidate);
-
-      // notes d'intro (extraites)
-      const tmpIntro = document.createElement('div');
-      tmpIntro.innerHTML = slices.intro || '';
-      const introNotes = Array.from(tmpIntro.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
-      introNotes.forEach(n => n.remove());
-      introHTML = (tmpIntro.innerHTML || '').trim();
-      introNotes.forEach(n => introNotesHTML.push(n.outerHTML));
-
-      const anchor =
-        document.getElementById('article-extras') ||
-        document.getElementById('article-references') ||
-        document.getElementById('article-capsules') || null;
-
-      // chapitres
-      slices.chapters.forEach(ch => {
-        const tmp = document.createElement('div');
-        tmp.innerHTML = ch.html;
-
-        // notes du chapitre → extraites
-        const noteNodes = Array.from(tmp.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
-        noteNodes.forEach(n => n.remove());
-        const contentHTML = (tmp.innerHTML || '').trim();
-
-        // carte chapitre
-        const s = document.createElement('section');
-        s.className = 'viewer-block card article-chapter chapter-card';
-        if (ch.accent) s.style.setProperty('--chap-accent', ch.accent);
-        if (ch.id)     s.id = ch.id;
-
-        s.innerHTML = `
-          <header class="chapter-header">
-            ${ch.icon ? `<span class="chapter-icon">${ch.icon}</span>` : ''}
-            <h2 class="chapter-title">
-              ${escapeHTML(ch.title)}
-              ${ch.id ? `<a class="anchor" href="#${ch.id}">#</a>` : ''}
-            </h2>
-          </header>
-          <div class="chapter-content">
-            ${contentHTML}
-          </div>
-        `;
-        viewerEl.insertBefore(s, anchor);
-
-        // notes extraites -> cartes autonomes
-        noteNodes.forEach(note => {
-          const noteCard = document.createElement('section');
-          noteCard.className = 'viewer-block card note-card';
-          noteCard.innerHTML = note.outerHTML;
-          viewerEl.insertBefore(noteCard, anchor);
-        });
-      });
-    }
-
-    setBlockHTML('article-body', introHTML);
-
-    // notes d'intro juste après le body
-    if (introNotesHTML.length){
-      const anchor =
-        document.getElementById('article-extras') ||
-        document.getElementById('article-references') ||
-        document.getElementById('article-capsules') || null;
-      introNotesHTML.forEach(html => {
-        const noteCard = document.createElement('section');
-        noteCard.className = 'viewer-block card note-card';
-        noteCard.innerHTML = html;
-        viewerEl.insertBefore(noteCard, anchor);
-      });
-    }
-
-    // EXTRAS / REF / CAPSULES (si fournis)
-    setBlockHTML('article-extras',     getOuterIfFilled(part('extras')     || doc.querySelector('.extras')));
-    setBlockHTML('article-references', getOuterIfFilled(part('references') || doc.querySelector('.references, footer.references')));
-    setBlockHTML('article-capsules',   getOuterIfFilled(part('capsules')   || doc.querySelector('.capsules')));
-
-    requestAnimationFrame(()=> viewerEl.style.opacity='1');
-  })
-  .catch(err=>{
-    setBlockHTML('article-title','');
-    setBlockHTML('article-media','');
-    setBlockHTML('article-body', `<p class="erreur">Erreur chargement : ${escapeHTML(String(err))}</p>`);
-    setBlockHTML('article-extras',''); setBlockHTML('article-references',''); setBlockHTML('article-capsules','');
-    console.error(err);
-    const v = document.getElementById('article-viewer'); if (v && v.style) v.style.opacity='1';
-  });
+#article-references, #article-extras, #article-capsules{ font-size: .95rem; }
+#article-references::before, #article-extras::before, #article-capsules::before{
+  content: attr(data-label);
+  display: block; opacity: .8;
+  font-family: 'Orbitron', sans-serif; letter-spacing: .03em;
+  margin-bottom: .6rem; font-size: .9rem;
 }
 
-function setBlockHTML(id, html){
-  const el=document.getElementById(id); if(!el) return;
-  el.innerHTML = html || '';
-  const has = !!(html && html.trim());
-  el.classList.toggle('is-empty', !has);
-  el.setAttribute('aria-hidden', String(!has));
+/* -- Galerie media ----------------------------------------------------------- */
+#article-media.viewer-block.is-empty{ display: none !important; }
+.media-gallery{ width: 100%; }
+.media-gallery .mosaic{
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  grid-auto-rows: 90px; grid-auto-flow: dense;
+}
+.media-gallery .tile{
+  grid-column: span 2; grid-row: span 2; overflow: hidden;
+  border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  background: #000;
+}
+.media-gallery .tile--main{ grid-column: span 4; grid-row: span 4; }
+.media-gallery img{ width:100%; height:100%; object-fit:cover; display:block; }
+.media-gallery .gallery-caption{ margin-top:.6rem; font-size:.9rem; opacity:.8; }
+
+/* -- Lightbox ---------------------------------------------------------------- */
+.no-scroll{ overflow: hidden; }
+.lightbox.hidden{ display: none !important; }
+.lightbox{
+  position: fixed; inset: 0; z-index: 4000;
+  display: grid; grid-template-columns: 64px 1fr 64px;
+  align-items: center; justify-items: center;
+}
+.lb-backdrop{ position: absolute; inset: 0;
+  background: var(--lb-bg, rgba(0,0,20,0.92)); backdrop-filter: blur(2px);
+}
+.lb-figure{ grid-column: 2; position: relative; z-index: 1;
+  max-width: 90vw; max-height: 82vh; display:flex; flex-direction:column; align-items:center; gap:.6rem;
+}
+#lb-image{
+  max-width: 90vw; max-height: 76vh; object-fit: contain;
+  border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.55);
+  transition: opacity .25s ease;
+}
+#lb-image.lb-swap{ opacity: .75; }
+#lb-caption{ font-size:.95rem; opacity:.85; text-align:center; color:#e8f4ff; }
+.lb-close,.lb-nav{
+  z-index: 2; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.07); color:#fff; cursor:pointer;
+}
+.lb-close{ position:absolute; top:16px; right:18px; width:42px; height:42px; font-size:1.4rem; }
+.lb-nav{ width:48px; height:48px; font-size:1.6rem; }
+.lb-prev{ grid-column:1; } .lb-next{ grid-column:3; }
+.lb-counter{
+  position: absolute; bottom:16px; left:50%; transform:translateX(-50%);
+  z-index:2; padding:.25rem .6rem; font-size:.9rem; border-radius:8px; color:#eaf6ff;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Ancres # (Option A = scroll propre ; Option B = copie du lien profond)     */
-/* -------------------------------------------------------------------------- */
-function initChapterAnchors(container){
-  if(!container) return;
-  container.addEventListener('click', e=>{
-    const a = e.target.closest('a.anchor'); if(!a) return;
-    e.preventDefault();
-
-    const id = a.getAttribute('href').slice(1);
-    const target = document.getElementById(id);
-    if (target){
-      const offset = getAnchorOffset();
-      const y = target.getBoundingClientRect().top + window.scrollY - offset;
-      window.history.replaceState({},'', `#${id}`);
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-
-    if (navigator.clipboard){
-      const deep = `${location.origin}${location.pathname}${location.search}#${id}`;
-      navigator.clipboard.writeText(deep).then(()=>{
-        a.classList.add('copied');
-        setTimeout(()=>a.classList.remove('copied'), 1200);
-      });
-    }
-  });
+/* =============================== NOTES ===================================== */
+/* Fallback inline (si pas extraite) */
+.codex-note{
+  position: relative; display: block;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 1rem 1.2rem; margin: 1rem 0; color: inherit;
 }
-function getAnchorOffset(){
-  const v = getComputedStyle(document.documentElement).getPropertyValue('--anchor-offset').trim();
-  const px = parseInt(v||'0',10);
-  return isNaN(px) ? 0 : px;
+.codex-note h2{
+  margin: 0 0 .6rem 0; font-family: 'Orbitron', sans-serif; font-size: 1.05rem;
+}
+.codex-note p{ margin: .6rem 0; }
+.codex-note.note-small{ font-size: .97rem; }
+.codex-note.note-large{ font-size: 1.05rem; }
+.symb-tilt{ display:inline-block; transform: rotate(-8deg); }
+
+/* Carte conteneur 100% transparente (pas de double cadre) */
+.note-card.viewer-block{
+  background: transparent !important; border: 0 !important;
+  box-shadow: none !important; padding: 0 !important;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Tools (share)                                                              */
-/* -------------------------------------------------------------------------- */
-function attachToolsIntoTitle(html){
-  const slot=document.querySelector('#article-title .title-tools'); if(!slot) return;
-  slot.innerHTML = html;
-  if(!slot.textContent.trim() && !slot.querySelector('*')) slot.remove();
-}
-function defaultToolsMarkup(){
-  return `
-    <div class="article-tools">
-      <div class="btn-share-wrapper">
-        <button id="share-button" class="btn-share-article" aria-haspopup="true" aria-expanded="false" title="Partager">
-          <span class="icon">🔗</span><span class="label">Partager</span>
-        </button>
-        <div id="share-menu" class="share-menu hidden" role="menu">
-          <a href="#" data-share="facebook" role="menuitem">📘 Facebook</a>
-          <a href="#" data-share="twitter"  role="menuitem">𝕏 Twitter</a>
-          <a href="#" data-share="email"    role="menuitem">✉️ Email</a>
-          <a href="#" data-share="copy"     role="menuitem">🔗 Copier le lien</a>
-        </div>
-      </div>
-    </div>
-  `;
-}
-function setupShareButtons(){
-  const btn  = document.getElementById('share-button');
-  const menu = document.getElementById('share-menu');
-  if (!btn || !menu) return;
+/* Neutralisation agressive des anciens effets “aiguille” */
+.note-card::before,
+.note-card::after,
+.note-card .codex-note::before,
+.etoile-filante,
+.etoile-filante::before,
+.etoile-filante::after{ display:none !important; content:none !important; }
 
-  const pageUrl   = window.location.href;
-  const titleSpan = document.querySelector('#article-title .title-chip span');
-  const pageTitle = titleSpan ? titleSpan.textContent.trim() : document.title;
-
-  const closeMenu = () => {
-    menu.classList.add('hidden');
-    btn.setAttribute('aria-expanded','false');
-    document.removeEventListener('click', onDocClick, true);
-  };
-  const onDocClick = (e) => {
-    if (!menu.contains(e.target) && e.target !== btn) closeMenu();
-  };
-
-  btn.onclick = async (e) => {
-    e.preventDefault();
-
-    if (navigator.share) {
-      try { await navigator.share({ title: pageTitle || 'Partager', url: pageUrl }); return; }
-      catch(_) { /* annulé */ }
-    }
-
-    const isHidden = menu.classList.toggle('hidden');
-    btn.setAttribute('aria-expanded', String(!isHidden));
-    if (!isHidden) document.addEventListener('click', onDocClick, true);
-  };
-
-  menu.querySelectorAll('[data-share]').forEach(a=>{
-    a.onclick = (e)=>{
-      e.preventDefault();
-      const type = a.dataset.share;
-      switch(type){
-        case 'facebook':
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,'_blank','noopener');
-          break;
-        case 'twitter':
-          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(pageTitle)}`,'_blank','noopener');
-          break;
-        case 'email':
-          window.location.href = `mailto:?subject=${encodeURIComponent(pageTitle)}&body=${encodeURIComponent(pageUrl)}`;
-          break;
-        case 'copy':
-          navigator.clipboard?.writeText(pageUrl).then(()=>{ a.textContent='✔️ Copié !'; setTimeout(()=>a.textContent='🔗 Copier le lien',1200); });
-          break;
-      }
-      closeMenu();
-    };
-  });
+/* Note autonome “propre” */
+.note-card .codex-note{
+  position: relative; overflow: hidden; margin: 0;
+  padding: 1.1rem 1.25rem; border-radius: 14px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.13);
+  box-shadow: 0 12px 28px rgba(0,0,0,.22);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Galerie + lightbox                                                         */
-/* -------------------------------------------------------------------------- */
-const galleryState={items:[],index:0};
-function renderMosaicHTML(imgNodes, caption=''){
-  if(!imgNodes||!imgNodes.length) return '';
-  const arr=imgNodes.slice(); const i=arr.findIndex(n=>n.hasAttribute('data-main')); if(i>0) arr.unshift(arr.splice(i,1)[0]);
-  const tiles=arr.map((img,idx)=>{
-    const src=img.getAttribute('src');
-    const alt=(img.getAttribute('alt')||'').replace(/"/g,'&quot;');
-    const cls=idx===0?'tile tile--main':'tile';
-    return `<figure class="${cls}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async" data-idx="${idx}"></figure>`;
-  }).join('');
-  const cap=caption?`<figcaption class="gallery-caption">${caption}</figcaption>`:'';
-  return `<div class="media-gallery" data-count="${arr.length}"><div class="mosaic">${tiles}</div>${cap}</div>`;
-}
-function buildLightbox(){
-  if(document.getElementById('viewer-lightbox')) return;
-  const lb=document.createElement('div');
-  lb.id='viewer-lightbox'; lb.className='lightbox hidden';
-  lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true'); lb.setAttribute('aria-hidden','true');
-  lb.innerHTML=`<div class="lb-backdrop"></div>
-    <button class="lb-close" aria-label="Fermer">×</button>
-    <button class="lb-nav lb-prev" aria-label="Précédent">‹</button>
-    <figure class="lb-figure"><img id="lb-image" alt=""><figcaption id="lb-caption"></figcaption></figure>
-    <button class="lb-nav lb-next" aria-label="Suivant">›</button>
-    <div class="lb-counter" aria-live="polite"></div>`;
-  document.body.appendChild(lb);
-  lb.querySelector('.lb-close').addEventListener('click', closeLightbox);
-  lb.querySelector('.lb-backdrop').addEventListener('click', closeLightbox);
-  lb.querySelector('.lb-prev').addEventListener('click', prevImage);
-  lb.querySelector('.lb-next').addEventListener('click', nextImage);
-  document.addEventListener('keydown', e=>{ if(lb.classList.contains('hidden')) return; if(e.key==='Escape') closeLightbox(); if(e.key==='ArrowLeft') prevImage(); if(e.key==='ArrowRight') nextImage(); });
-  let startX=0; lb.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;},{passive:true});
-  lb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX; if(Math.abs(dx)>40) (dx>0?prevImage():nextImage());},{passive:true});
-}
-function setupGalleryLightbox(){
-  const imgs=[...document.querySelectorAll('#article-media .mosaic img')];
-  galleryState.items=imgs.map(img=>({src:img.getAttribute('src'),alt:img.getAttribute('alt')||''}));
-  imgs.forEach((img,idx)=>{ img.addEventListener('click',()=>openLightbox(idx)); img.style.cursor='zoom-in'; });
-}
-function openLightbox(i=0){
-  galleryState.index=Math.max(0,Math.min(i,galleryState.items.length-1));
-  const lb=document.getElementById('viewer-lightbox'); if(!lb) return;
-  updateLightboxImage(); lb.classList.remove('hidden'); lb.setAttribute('aria-hidden','false'); document.body.classList.add('no-scroll');
-}
-function closeLightbox(){
-  const lb=document.getElementById('viewer-lightbox'); if(!lb) return;
-  lb.classList.add('hidden'); lb.setAttribute('aria-hidden','true'); document.body.classList.remove('no-scroll');
-}
-function nextImage(){ if(!galleryState.items.length) return; galleryState.index=(galleryState.index+1)%galleryState.items.length; updateLightboxImage(true); }
-function prevImage(){ if(!galleryState.items.length) return; galleryState.index=(galleryState.index-1+1e9)%galleryState.items.length; updateLightboxImage(true); }
-function updateLightboxImage(anim=false){
-  const it=galleryState.items[galleryState.index];
-  const img=document.getElementById('lb-image'); const cap=document.getElementById('lb-caption'); const cnt=document.querySelector('.lb-counter');
-  if(!img) return;
-  if(anim){ img.classList.remove('lb-swap'); void img.offsetWidth; img.classList.add('lb-swap'); }
-  img.src=it.src; img.alt=it.alt||''; cap.textContent=it.alt||''; cnt.textContent=`${galleryState.index+1} / ${galleryState.items.length}`;
+/* -------- Anneau “comète” (optionnel) --------------------------------------
+   Pas de mask-composite. On empile deux backgrounds :
+   - une couche padding-box pour le fond
+   - une conic-gradient animée en border-box qui fait la traînée
+   -------------------------------------------------------------------------- */
+@property --note-angle {                  /* permet l’animation fluide */
+  syntax: '<angle>'; inherits: false; initial-value: 0deg;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Chapitres                                                                   */
-/* -------------------------------------------------------------------------- */
-function removeDynamicChapters(viewerEl){
-  viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove());
+.codex-note.note-comet{
+  --note-accent: var(--accent-primary, #9fdcff);
+  --note-orbit-speed: 6s;             /* vitesse de rotation */
+  --note-border-w: 2px;               /* épaisseur de la traînée */
+
+  border: var(--note-border-w) solid transparent;   /* expose border-box */
+  background:
+    linear-gradient(rgba(255,255,255,.045), rgba(255,255,255,.045)) padding-box,
+    conic-gradient(from var(--note-angle),
+      transparent 0 300deg,
+      color-mix(in oklab, var(--note-accent), white 25%) 300deg,
+      var(--note-accent) 304deg,
+      color-mix(in oklab, var(--note-accent), white 25%) 308deg,
+      transparent 318deg) border-box;
+  animation: note-orbit var(--note-orbit-speed) linear infinite;
+  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-accent), white 25%));
+}
+@keyframes note-orbit{ to{ --note-angle: 360deg; } }
+
+/* ---------------------------- CHAPTER CARDS -------------------------------- */
+.chapter-card{
+  --chap-accent: var(--accent-primary);
+  position: relative; overflow: hidden;
+  padding: 1.2rem 1.2rem 1.1rem;
+}
+.chapter-card::before{
+  content:""; position:absolute; inset:0 auto 0 0; width:4px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--chap-accent), white 10%),
+    color-mix(in oklab, var(--chap-accent), black 15%)
+  );
+  border-radius: 12px 0 0 12px;
+}
+.chapter-header{
+  display: inline-flex; align-items:center; gap:.55rem;
+  padding:0; margin:0 0 .7rem 0; background:transparent; border:0; box-shadow:none;
+  max-width: 100%;
+}
+.chapter-icon{
+  width: 26px; height: 26px; display:grid; place-items:center;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 85%);
+  font-size: .9rem;
+}
+.chapter-title{
+  font-family: 'Orbitron', sans-serif; font-weight: 700;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  letter-spacing: .01em;
+  color: color-mix(in oklab, var(--chap-accent, #8fd3ff), white 22%);
+  text-shadow: 0 0 8px color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 70%);
+  margin: 0; padding: .05rem .15rem .2rem 0;
+}
+.chapter-title::after{
+  content:""; display:block; height:2px; margin-top:.28rem;
+  background: linear-gradient(90deg, var(--chap-accent, #8fd3ff), transparent 70%);
+  border-radius: 2px;
 }
 
-/* Découpe en chapitres riches :
-   - <section data-chapter> utilise data-title / data-icon / data-accent
-   - sinon split par <h2> */
-function sliceBodyIntoChaptersRich(rootNode){
-  const root = rootNode.cloneNode(true);
-
-  // Nettoyage du body
-  root.querySelectorAll('section[data-part="title"], #article-tools, script, style, link[rel="stylesheet"]').forEach(n=>n.remove());
-  const h1 = root.querySelector('h1');
-  if (h1) { const n=h1.nextElementSibling; h1.remove(); if(n && n.matches('h2, .subtitle, [data-subtitle]')) n.remove(); }
-
-  const result = { intro:'', chapters:[] };
-
-  // 1) Sections déclarées
-  const declared = Array.from(root.querySelectorAll('section[data-chapter]'));
-  if (declared.length){
-    const introWrap = document.createElement('div');
-    for (let n=root.firstChild; n && n!==declared[0]; n=n.nextSibling) introWrap.appendChild(n.cloneNode(true));
-    result.intro = (introWrap.innerHTML||'').trim();
-
-    declared.forEach(sec => {
-      const accent = sec.getAttribute('data-accent') || '';
-      const icon   = sec.getAttribute('data-icon')   || '';
-      const title  = sec.getAttribute('data-title')  || (sec.querySelector('h2')?.textContent?.trim() || 'Chapitre');
-
-      const c = sec.cloneNode(true);
-      const firstH2 = c.querySelector('h2'); if (firstH2) firstH2.remove();
-      const html = (c.innerHTML||'').trim();
-      const id = 'chap-' + slugify(title);
-
-      result.chapters.push({ id, title, icon, accent, html });
-    });
-    return result;
-  }
-
-  // 2) Fallback : split par <h2>
-  const nodes = Array.from(root.childNodes);
-  const introNodes = [];
-  let bucket = [];
-  let title = null;
-
-  const push = () => {
-    if (!bucket.length || !title) return;
-    const wrap = document.createElement('div');
-    bucket.forEach(n => wrap.appendChild(n));
-    const html = (wrap.innerHTML||'').trim();
-    result.chapters.push({ id:'chap-'+slugify(title), title, icon:'', accent:'', html });
-    bucket = []; title = null;
-  };
-
-  let started = false;
-  nodes.forEach(n => {
-    if (n.nodeType===1 && n.matches('h2')){
-      if (started) push();
-      started = true;
-      title = n.textContent.trim();
-    } else {
-      (started ? bucket : introNodes).push(n.cloneNode(true));
-    }
-  });
-  push();
-
-  const wrapIntro = document.createElement('div');
-  introNodes.forEach(n => wrapIntro.appendChild(n));
-  result.intro = (wrapIntro.innerHTML||'').trim();
-
-  return result;
+/* Ancres # */
+:root{ --anchor-offset: 92px; }
+.article-chapter, .note-card{ scroll-margin-top: var(--anchor-offset); }
+html{ scroll-behavior: smooth; }
+.chapter-title .anchor{
+  opacity: .35; text-decoration: none; border-bottom: 1px dotted currentColor;
+  margin-left: .35rem; transition: opacity .15s ease;
+}
+.chapter-card:hover .chapter-title .anchor{ opacity: .75; }
+.chapter-title .anchor.copied::after{
+  content: 'Lien copié'; font-size: .75rem; margin-left: .35rem; opacity: .9;
 }
 
-function slugify(s){
-  return (s||'')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // accents
-    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+/* -- Responsive -------------------------------------------------------------- */
+@media (max-width: 900px){
+  .media-gallery .mosaic{ grid-auto-rows: 80px; }
 }
-
-/* -------------------------------------------------------------------------- */
-/* Helpers HTML                                                                */
-/* -------------------------------------------------------------------------- */
-function getInnerIfFilled(el){
-  if(!el) return '';
-  const html = el.innerHTML ?? '';
-  return html.trim() ? html : '';
-}
-function getOuterIfFilled(el){
-  if(!el) return '';
-  const html = el.outerHTML ?? '';
-  return html.trim() ? html : '';
-}
-
-function escapeHTML(s){
-  return (s||'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-}
-
-// Autorise <br> et <wbr> dans le H1, échappe tout le reste
-function sanitizeTitleHTML(rawHTML){
-  const BR  = '[[BR]]';
-  const WBR = '[[WBR]]';
-
-  // 1) On conserve <br> / <wbr> via des jetons
-  let s = (rawHTML || '')
-    .replace(/<\s*br\s*\/?\s*>/gi, BR)
-    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR)
-    // on supprime toute autre balise HTML
-    .replace(/<\/?[^>]+>/g, '');
-
-  // 2) Décodage texte, puis échappement
-  const tmp = document.createElement('textarea');
-  tmp.innerHTML = s;
-  s = tmp.value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-
-  // 3) On réinjecte nos balises permises
-  return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
+@media (max-width: 768px){
+  .viewer-block{ padding: 1rem; margin: .9rem 0; }
+  #article-title .title-chip span{ font-size: 1.4rem; }
+  .media-gallery .mosaic{ grid-template-columns: repeat(4, 1fr); grid-auto-rows: 70px; }
+  .media-gallery .tile--main{ grid-column: span 4; grid-row: span 4; }
+  .lightbox{ grid-template-columns: 48px 1fr 48px; }
+  #lb-image{ max-width: 94vw; max-height: 70vh; }
+  .chapter-card{ padding: 1rem; }
+  .chapter-header{ margin: 0 0 .6rem 0; }
 }
