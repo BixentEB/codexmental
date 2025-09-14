@@ -1,15 +1,19 @@
 /* ============================================================================
-   VIEWER.CSS — Codex Mental (Blog + Atelier)
-   Orchestrateur transparent, cartes séparées, title-chip, tools intégrés,
-   galerie mosaïque + lightbox.
+   VIEWER.CSS v0.2 — Codex Mental (Blog + Atelier)
+   - Orchestrateur transparent
+   - Cartes séparées
+   - Title chip + tools intégrés
+   - Galerie mosaïque + lightbox
+   - Chapitres en cartes
+   - Notes avec anneau néon optionnel (sans "aiguille")
    ========================================================================== */
 
-/* -- Orchestrateur : invisible ------------------------------------------------ */
+/* -- Orchestrateur ----------------------------------------------------------- */
 #article-viewer{
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-  padding: 0 !important;              /* l’espacement vient des .viewer-block */
+  padding: 0 !important;
 }
 
 /* -- Cartes (blocs) ---------------------------------------------------------- */
@@ -19,11 +23,11 @@
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.18);
   padding: 1.25rem 1.5rem;
-  margin: 1.2rem 0;                   /* laisse voir le fond entre les blocs */
+  margin: 1.2rem 0;
 }
 .viewer-block.is-empty{ display: none !important; }
 
-/* -- Bloc Titre : pas de “carte” -------------------------------------------- */
+/* -- Bloc Titre -------------------------------------------------------------- */
 #article-title.viewer-block{
   background: transparent !important;
   border: 0 !important;
@@ -32,7 +36,6 @@
   margin: .5rem 0 .25rem !important;
 }
 
-/* Empile le titre, puis le sous-titre (la bulle reste centrée) */
 #article-title{
   position: relative;
   display: flex;
@@ -40,10 +43,9 @@
   align-items: center;
   gap: .35rem;
 }
-
 #article-title + .viewer-block{ margin-top: .6rem; }
 
-/* -- Title chip (comme Home) ------------------------------------------------- */
+/* Title chip (style Home) */
 #article-title .title-chip{
   display: inline-block;
   margin: .1rem auto .3rem;
@@ -55,9 +57,7 @@
     color-mix(in oklab, var(--link-color,   #b38cff) 12%, transparent) 100%
   );
   border: 1px solid color-mix(in oklab, var(--accent-primary, #8fd3ff) 45%, #000 55%);
-  box-shadow:
-    0 8px 24px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.25);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
   filter: drop-shadow(0 0 14px color-mix(in oklab, var(--accent-primary, #9fdcff) 30%, transparent));
 }
 #article-title .title-chip span{
@@ -71,7 +71,7 @@
   max-width: min(92vw, 1100px);
 }
 
-/* Le sous-titre sous la bulle, bien centré */
+/* Sous-titre */
 #article-title .title-sub{
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(1.4rem, 2.6vw, 2rem);
@@ -81,7 +81,7 @@
   width: 100%;
 }
 
-/* -- Tools intégrés dans le titre ------------------------------------------- */
+/* Tools (share) */
 #article-title .title-tools{
   position: absolute;
   top: .35rem;
@@ -210,7 +210,7 @@
 }
 
 /* ------------------------------- NOTES ------------------------------------- */
-/* Base fallback (si non extrait) */
+/* Fallback de note inline (si pas extraite en carte) */
 .codex-note{
   position: relative; display: block;
   background: rgba(255,255,255,.06);
@@ -239,28 +239,25 @@
   padding: 0 !important;
 }
 
-/* La note autonome : fond doux sans halo agressif */
+/* Note autonome (fond un peu adouci dans cette v0.2) */
 .note-card .codex-note{
   position: relative;
   overflow: hidden;
   margin: 0;
   padding: 1.1rem 1.25rem;
   border-radius: 14px;
-  background: rgba(255,255,255,.05);
+  background: rgba(255,255,255,.045); /* adouci */
   border: 1px solid rgba(255,255,255,.13);
   box-shadow: 0 12px 28px rgba(0,0,0,.22);
 }
-.note-card .codex-note::before{ display:none; } /* on neutralise l’ancien halo */
-.note-card .codex-note h2{
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.06rem;
-  margin: 0 0 .65rem 0;
-}
+/* Neutralise tout ancien effet résiduel (ex "aiguille"/anneau legacy) */
+.note-card .codex-note::before{ display:none !important; }
 
-/* Effet “comète” optionnel — activer avec .note-comet */
+/* Effet “anneau/comète” optionnel — activer avec .note-comet */
 .codex-note.note-comet{
   --note-accent: var(--accent-primary, #9fdcff);
   --note-border: 2px;
+  --note-orbit-speed: 6s;              /* <<< réglable : vitesse de rotation */
 }
 .codex-note.note-comet::after{
   content: "";
@@ -281,11 +278,11 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-accent), white 25%));
-  animation: note-orbit 6s linear infinite;
+  animation: note-orbit var(--note-orbit-speed) linear infinite;
   will-change: transform;
   pointer-events: none;
 }
-@keyframes note-orbit { to { transform: rotate(1turn); } }
+@keyframes note-orbit{ to{ transform: rotate(1turn); } }
 @supports not (mask-composite: exclude){
   .codex-note.note-comet::after{
     inset: 0; padding: 0;
@@ -302,11 +299,9 @@
   overflow: hidden;
   padding: 1.2rem 1.2rem 1.1rem;
 }
-/* Liseré vertical gauche */
 .chapter-card::before{
   content:"";
-  position:absolute; inset:0 auto 0 0;
-  width:4px;
+  position:absolute; inset:0 auto 0 0; width:4px;
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--chap-accent), white 10%),
@@ -314,17 +309,9 @@
   );
   border-radius: 12px 0 0 12px;
 }
-
-/* Titre de chapitre léger (pas de cadre) */
 .chapter-header{
-  display: inline-flex;
-  align-items: center;
-  gap: .55rem;
-  padding: 0;
-  margin: 0 0 .7rem 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: 0; margin: 0 0 .7rem 0; background: transparent; border: 0; box-shadow:none;
   max-width: 100%;
 }
 .chapter-icon{
@@ -334,8 +321,7 @@
   font-size: .9rem;
 }
 .chapter-title{
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
+  font-family: 'Orbitron', sans-serif; font-weight: 700;
   font-size: clamp(1.05rem, 1.6vw, 1.3rem);
   letter-spacing: .01em;
   color: color-mix(in oklab, var(--chap-accent, #8fd3ff), white 22%);
@@ -348,8 +334,8 @@
   border-radius: 2px;
 }
 
-/* Ancre # (Option A + B) */
-:root{ --anchor-offset: 92px; }             /* ajuste si ta topbar change */
+/* Ancres # */
+:root{ --anchor-offset: 92px; }
 .article-chapter, .note-card{ scroll-margin-top: var(--anchor-offset); }
 html{ scroll-behavior: smooth; }
 .chapter-title .anchor{
