@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   buildLightbox();
   setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
 
+  // Activer le comportement des ancres # (Option A + B)
+  initChapterAnchors(viewerEl);
+
   const initial = new URLSearchParams(window.location.search).get(paramKey);
   if (initial) loadContent(viewerEl, basePath + initial + '.html');
 });
@@ -215,10 +218,10 @@ function setBlockHTML(id, html){
   el.setAttribute('aria-hidden', String(!has));
 }
 
-// --- Transformer le # en copie de lien (et scroll propre)
-initChapterAnchors(document.getElementById('article-viewer'));
-
+/* ------------------------------- Ancres # ---------------------------------- */
+/* Option A (scroll propre) + Option B (copie du lien profond) */
 function initChapterAnchors(container){
+  if(!container) return;
   container.addEventListener('click', e=>{
     const a = e.target.closest('a.anchor'); if(!a) return;
     e.preventDefault();
@@ -248,8 +251,7 @@ function getAnchorOffset(){
   return isNaN(px) ? 0 : px;
 }
 
-
-// ---------- Tools (share) dans le titre
+/* ------------------------------- Tools (share) ----------------------------- */
 function attachToolsIntoTitle(html){
   const slot=document.querySelector('#article-title .title-tools'); if(!slot) return;
   slot.innerHTML = html;
@@ -273,7 +275,7 @@ function defaultToolsMarkup(){
   `;
 }
 
-// === NEW: sécurise le partage (Web Share API + fallback)
+// Web Share API + fallback
 function setupShareButtons(){
   const btn  = document.getElementById('share-button');
   const menu = document.getElementById('share-menu');
@@ -295,23 +297,16 @@ function setupShareButtons(){
   btn.onclick = async (e) => {
     e.preventDefault();
 
-    // Web Share API si dispo
     if (navigator.share) {
-      try {
-        await navigator.share({ title: pageTitle || 'Partager', url: pageUrl });
-        return;
-      } catch (_) {
-        // Si l’utilisateur annule, on n’ouvre pas le menu
-      }
+      try { await navigator.share({ title: pageTitle || 'Partager', url: pageUrl }); return; }
+      catch(_) { /* annulation : on ne fait rien */ }
     }
 
-    // Fallback : toggle menu
     const isHidden = menu.classList.toggle('hidden');
     btn.setAttribute('aria-expanded', String(!isHidden));
     if (!isHidden) document.addEventListener('click', onDocClick, true);
   };
 
-  // Actions des items
   menu.querySelectorAll('[data-share]').forEach(a=>{
     a.onclick = (e)=>{
       e.preventDefault();
@@ -335,26 +330,7 @@ function setupShareButtons(){
   });
 }
 
-// helpers
-function getInnerIfFilled(node){ if(!node) return ''; const s=(node.innerHTML||'').trim(); return s ? s : ''; }
-function getOuterIfFilled(node){ if(!node) return ''; const s=(node.innerHTML||'').trim(); return s ? node.outerHTML : ''; }
-
-// autorise <br> et <wbr> dans le H1, échappe tout le reste
-function sanitizeTitleHTML(rawHTML){
-  const BR  = '[[BR]]';
-  const WBR = '[[WBR]]';
-  let s = (rawHTML || '')
-    .replace(/<\s*br\s*\/?\s*>/gi, BR)
-    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR)
-    .replace(/<\/?[^>]+>/g, '');
-  const tmp = document.createElement('textarea'); tmp.innerHTML = s;
-  s = tmp.value
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
-}
-
-// ---------- Galerie + lightbox
+/* ------------------------------- Galerie ----------------------------------- */
 const galleryState={items:[],index:0};
 function renderMosaicHTML(imgNodes, caption=''){
   if(!imgNodes||!imgNodes.length) return '';
@@ -398,7 +374,7 @@ function closeLightbox(){
   lb.classList.add('hidden'); lb.setAttribute('aria-hidden','true'); document.body.classList.remove('no-scroll');
 }
 function nextImage(){ if(!galleryState.items.length) return; galleryState.index=(galleryState.index+1)%galleryState.items.length; updateLightboxImage(true); }
-function prevImage(){ if(!galleryState.items.length) return; galleryState.index=(galleryState.index-1+galleryState.items.length)%galleryState.items.length; updateLightboxImage(true); }
+function prevImage(){ if(!galleryState.items.length) return; galleryState.index=(galleryState.index-1+1e9)%galleryState.items.length; updateLightboxImage(true); }
 function updateLightboxImage(anim=false){
   const it=galleryState.items[galleryState.index];
   const img=document.getElementById('lb-image'); const cap=document.getElementById('lb-caption'); const cnt=document.querySelector('.lb-counter');
@@ -407,15 +383,14 @@ function updateLightboxImage(anim=false){
   img.src=it.src; img.alt=it.alt||''; cap.textContent=it.alt||''; cnt.textContent=`${galleryState.index+1} / ${galleryState.items.length}`;
 }
 
-// ---------- Chapitres (rich)
+/* ------------------------------- Chapitres --------------------------------- */
 function removeDynamicChapters(viewerEl){
   viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove());
 }
 
 /* Découpe en chapitres riches :
    - <section data-chapter> : lit data-title / data-icon / data-accent
-   - sinon split par <h2>
-   Retourne { intro, chapters:[ { id, title, icon, accent, html } ] } */
+   - sinon split par <h2> */
 function sliceBodyIntoChaptersRich(rootNode){
   const root = rootNode.cloneNode(true);
 
@@ -429,7 +404,6 @@ function sliceBodyIntoChaptersRich(rootNode){
   // 1) Sections déclarées
   const declared = Array.from(root.querySelectorAll('section[data-chapter]'));
   if (declared.length){
-    // intro = avant la 1re
     const introWrap = document.createElement('div');
     for (let n=root.firstChild; n && n!==declared[0]; n=n.nextSibling) introWrap.appendChild(n.cloneNode(true));
     result.intro = (introWrap.innerHTML||'').trim();
@@ -439,7 +413,6 @@ function sliceBodyIntoChaptersRich(rootNode){
       const icon   = sec.getAttribute('data-icon')   || '';
       const title  = sec.getAttribute('data-title')  || (sec.querySelector('h2')?.textContent?.trim() || 'Chapitre');
 
-      // contenu sans le premier h2 si présent
       const c = sec.cloneNode(true);
       const firstH2 = c.querySelector('h2'); if (firstH2) firstH2.remove();
       const html = (c.innerHTML||'').trim();
