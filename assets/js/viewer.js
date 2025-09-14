@@ -1,4 +1,5 @@
 // viewer.js — rétro-compat NEW + LEGACY (.article) + <br>/<wbr> dans H1
+// + chapitres en cartes + extraction automatique des .codex-note en cartes séparées
 
 document.addEventListener('DOMContentLoaded', () => {
   const isBlog   = window.location.pathname.includes('/blog');
@@ -72,10 +73,11 @@ function loadContent(viewerEl, url){
     if(titleNode){
       const raw = (titleNode.innerHTML||'').trim();
       const safe = sanitizeTitleHTML(raw);                 // garde <br> et <wbr>
+      const subtitle = subtitleNode ? escapeHTML(subtitleNode.textContent||'') : '';
       titleHTML = `
         <div class="title-chip"><span>${safe}</span></div>
         <div class="title-tools"></div>
-        ${subtitleNode ? `<div class="title-sub">${escapeHTML(subtitleNode.textContent||'')}</div>` : '' }
+        ${subtitle ? `<div class="title-sub">${subtitle}</div>` : '' }
       `;
     }
     setBlockHTML('article-title', titleHTML);
@@ -103,49 +105,90 @@ function loadContent(viewerEl, url){
     setBlockHTML('article-media', mediaHTML);
     if(mediaHTML) setupGalleryLightbox();
 
-    // --- BODY (prend data-part=body OU .article / article ; retire le titre etc.)
-  // ----- BODY + CHAPITRES -------------------------------------------------
-// ----- BODY + CHAPITRES en cartes --------------------------------------
-removeDynamicChapters(viewerEl);
+    // ----- BODY + CHAPITRES en cartes --------------------------------------
+    removeDynamicChapters(viewerEl);
 
-let bodyCandidate =
-  part('body') ||
-  doc.querySelector('.article') ||
-  doc.querySelector('article') ||
-  doc.querySelector('main > section') ||
-  doc.querySelector('section');
+    let bodyCandidate =
+      part('body') ||
+      doc.querySelector('.article') ||
+      doc.querySelector('article') ||
+      doc.querySelector('main > section') ||
+      doc.querySelector('section');
 
-let introHTML = '';
-if (bodyCandidate) {
-  const slices = sliceBodyIntoChaptersRich(bodyCandidate);  // <— nouveau
-  introHTML = slices.intro;
+    let introHTML = '';
+    const introNotesHTML = [];
 
-  const anchor = document.getElementById('article-extras') || document.getElementById('article-references') || document.getElementById('article-capsules') || null;
+    if (bodyCandidate) {
+      const slices = sliceBodyIntoChaptersRich(bodyCandidate);
 
-  slices.chapters.forEach(ch => {
-    const s = document.createElement('section');
-    s.className = 'viewer-block card article-chapter chapter-card';
-    if (ch.accent) s.style.setProperty('--chap-accent', ch.accent);
-    if (ch.id)     s.id = ch.id;
+      // -- intro : extraire d'éventuelles notes en cartes séparées
+      const tmpIntro = document.createElement('div');
+      tmpIntro.innerHTML = slices.intro || '';
+      const introNotes = Array.from(tmpIntro.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
+      introNotes.forEach(n => n.remove());
+      introHTML = (tmpIntro.innerHTML || '').trim();
+      introNotes.forEach(n => introNotesHTML.push(n.outerHTML));
 
-    s.innerHTML = `
-      <header class="chapter-header">
-        ${ch.icon ? `<span class="chapter-icon">${ch.icon}</span>` : ''}
-        <h2 class="chapter-title">
-          ${escapeHTML(ch.title)}
-          ${ch.id ? `<a class="anchor" href="#${ch.id}">#</a>` : ''}
-        </h2>
-      </header>
-      <div class="chapter-content">
-        ${ch.html}
-      </div>
-    `;
-    viewerEl.insertBefore(s, anchor);
-  });
-}
+      const anchor =
+        document.getElementById('article-extras') ||
+        document.getElementById('article-references') ||
+        document.getElementById('article-capsules') || null;
 
-// intro (ou rien si vide)
-setBlockHTML('article-body', introHTML);
+      // -- chapitres : créer la carte puis extraire les .codex-note
+      slices.chapters.forEach(ch => {
+        // 1) chapitre “propre”
+        const tmp = document.createElement('div');
+        tmp.innerHTML = ch.html;
+        const noteNodes = Array.from(tmp.querySelectorAll('.codex-note, [data-note], [data-block="note"]'));
+        noteNodes.forEach(n => n.remove());
+        const contentHTML = (tmp.innerHTML || '').trim();
+
+        const s = document.createElement('section');
+        s.className = 'viewer-block card article-chapter chapter-card';
+        if (ch.accent) s.style.setProperty('--chap-accent', ch.accent);
+        if (ch.id)     s.id = ch.id;
+
+        s.innerHTML = `
+          <header class="chapter-header">
+            ${ch.icon ? `<span class="chapter-icon">${ch.icon}</span>` : ''}
+            <h2 class="chapter-title">
+              ${escapeHTML(ch.title)}
+              ${ch.id ? `<a class="anchor" href="#${ch.id}">#</a>` : ''}
+            </h2>
+          </header>
+          <div class="chapter-content">
+            ${contentHTML}
+          </div>
+        `;
+        viewerEl.insertBefore(s, anchor);
+
+        // 2) notes extraites -> cartes autonomes, juste après le chapitre
+        noteNodes.forEach(note => {
+          const noteCard = document.createElement('section');
+          noteCard.className = 'viewer-block card note-card';
+          noteCard.innerHTML = note.outerHTML;
+          viewerEl.insertBefore(noteCard, anchor);
+        });
+      });
+    }
+
+    // intro (ou rien si vide)
+    setBlockHTML('article-body', introHTML);
+
+    // injecter les notes extraites de l’intro juste après le body
+    if (introNotesHTML.length){
+      const bodyEl = document.getElementById('article-body');
+      const anchor =
+        document.getElementById('article-extras') ||
+        document.getElementById('article-references') ||
+        document.getElementById('article-capsules') || null;
+      introNotesHTML.forEach(html => {
+        const noteCard = document.createElement('section');
+        noteCard.className = 'viewer-block card note-card';
+        noteCard.innerHTML = html;
+        viewerEl.insertBefore(noteCard, anchor);
+      });
+    }
 
     // --- EXTRAS / REF / CAPSULES
     setBlockHTML('article-extras',     getOuterIfFilled(part('extras')     || doc.querySelector('.extras')));
@@ -203,75 +246,18 @@ function getOuterIfFilled(node){ if(!node) return ''; const s=(node.innerHTML||'
 function sanitizeTitleHTML(rawHTML){
   const BR  = '[[BR]]';
   const WBR = '[[WBR]]';
-
-  // 1) garde les sauts de ligne voulus
   let s = (rawHTML || '')
     .replace(/<\s*br\s*\/?\s*>/gi, BR)
-    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR);
-
-  // 2) retire toute autre balise
-  s = s.replace(/<\/?[^>]+>/g, '');
-
-  // 3) DECODE les entités (évite &amp; visible si le H1 contenait déjà &amp;)
-  const tmp = document.createElement('textarea');
-  tmp.innerHTML = s;
-  s = tmp.value;
-
-  // 4) échappe proprement
-  s = s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-
-  // 5) réinjecte les sauts
+    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR)
+    .replace(/<\/?[^>]+>/g, '');
+  const tmp = document.createElement('textarea'); tmp.innerHTML = s;
+  s = tmp.value
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
 }
 
-
-function setupShareButtons(){
-  const shareBtn=document.getElementById('share-button');
-  const shareMenu=document.getElementById('share-menu');
-  if(!shareBtn) return;
-
-  shareBtn.addEventListener('click',e=>{
-    e.stopPropagation();
-    if(window.innerWidth<=768 && navigator.share){
-      navigator.share({title:document.title,text:'Découvrez cet article !',url:window.location.href})
-        .catch(()=>toggleShareMenu());
-      return;
-    }
-    toggleShareMenu();
-  });
-  if(shareMenu){
-    shareMenu.querySelectorAll('a[data-share]').forEach(a=>{
-      a.addEventListener('click',e=>{
-        e.preventDefault();
-        const p=a.getAttribute('data-share'); const url=window.location.href;
-        if(p==='facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,'_blank');
-        else if(p==='twitter') window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,'_blank');
-        else if(p==='email') window.location.href=`mailto:?subject=Article&body=${encodeURIComponent(url)}`;
-        else if(p==='copy') copy(url);
-        toggleShareMenu(true);
-      });
-    });
-  }
-}
-function toggleShareMenu(forceHide=false){
-  const m=document.getElementById('share-menu'); const b=document.getElementById('share-button'); if(!m||!b) return;
-  const willHide = forceHide || !m.classList.contains('hidden');
-  if(willHide){ m.classList.add('hidden'); b.setAttribute('aria-expanded','false'); document.removeEventListener('click',outside); }
-  else{ m.classList.remove('hidden'); b.setAttribute('aria-expanded','true'); document.addEventListener('click',outside); setTimeout(()=>toggleShareMenu(true),5000); }
-}
-function outside(e){ const m=document.getElementById('share-menu'); if(m && !m.contains(e.target)) toggleShareMenu(true); }
-function copy(t){
-  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).catch(()=>fallback(t));
-  else fallback(t);
-}
-function fallback(t){ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
-
-// ---------- Galerie + lightbox (inchangé)
+// ---------- Galerie + lightbox
 const galleryState={items:[],index:0};
 function renderMosaicHTML(imgNodes, caption=''){
   if(!imgNodes||!imgNodes.length) return '';
@@ -324,62 +310,70 @@ function updateLightboxImage(anim=false){
   img.src=it.src; img.alt=it.alt||''; cap.textContent=it.alt||''; cnt.textContent=`${galleryState.index+1} / ${galleryState.items.length}`;
 }
 
-// Retire les chapitres ajoutés lors d'un précédent affichage
+// ---------- Chapitres (rich) -----------------------------------------------
 function removeDynamicChapters(viewerEl){
-  viewerEl.querySelectorAll('.article-chapter').forEach(n => n.remove());
+  viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove());
 }
 
-// Découpe le body en { intro, chapters[] }
-// - priorité aux <section data-chapter>
-// - sinon split par <h2>
-function sliceBodyIntoChapters(rootNode){
+/* Découpe en chapitres riches :
+   - <section data-chapter> : lit data-title / data-icon / data-accent
+   - sinon split sur <h2>
+   Retourne { intro, chapters:[ { id, title, icon, accent, html } ] } */
+function sliceBodyIntoChaptersRich(rootNode){
   const root = rootNode.cloneNode(true);
 
-  // nettoyage titre / tools éventuellement restés dans le body
+  // Nettoyage du body
   root.querySelectorAll('section[data-part="title"], #article-tools, script, style, link[rel="stylesheet"]').forEach(n=>n.remove());
   const h1 = root.querySelector('h1');
-  if (h1) {
-    const n = h1.nextElementSibling;
-    h1.remove();
-    if (n && n.matches('h2, .subtitle, [data-subtitle]')) n.remove();
-  }
+  if (h1) { const n=h1.nextElementSibling; h1.remove(); if(n && n.matches('h2, .subtitle, [data-subtitle]')) n.remove(); }
 
-  const result = { intro: '', chapters: [] };
+  const result = { intro:'', chapters:[] };
 
-  // 1) Chapitres déclarés
+  // 1) Sections déclarées
   const declared = Array.from(root.querySelectorAll('section[data-chapter]'));
   if (declared.length){
-    // intro = ce qui précède la 1ère section chapitre
-    const introWrapper = document.createElement('div');
-    for (let n = root.firstChild; n && n !== declared[0]; n = n.nextSibling){
-      introWrapper.appendChild(n.cloneNode(true));
-    }
-    result.intro = (introWrapper.innerHTML || '').trim();
+    // intro = avant la 1re
+    const introWrap = document.createElement('div');
+    for (let n=root.firstChild; n && n!==declared[0]; n=n.nextSibling) introWrap.appendChild(n.cloneNode(true));
+    result.intro = (introWrap.innerHTML||'').trim();
 
-    declared.forEach(sec => result.chapters.push(sec.outerHTML));
+    declared.forEach(sec => {
+      const accent = sec.getAttribute('data-accent') || '';
+      const icon   = sec.getAttribute('data-icon')   || '';
+      const title  = sec.getAttribute('data-title')  || (sec.querySelector('h2')?.textContent?.trim() || 'Chapitre');
+
+      // contenu sans le premier h2 si présent
+      const c = sec.cloneNode(true);
+      const firstH2 = c.querySelector('h2'); if (firstH2) firstH2.remove();
+      const html = (c.innerHTML||'').trim();
+      const id = 'chap-' + slugify(title);
+
+      result.chapters.push({ id, title, icon, accent, html });
+    });
     return result;
   }
 
   // 2) Fallback : split par <h2>
   const nodes = Array.from(root.childNodes);
   const introNodes = [];
-  const chapters = [];
   let bucket = [];
-  let started = false;
+  let title = null;
 
   const push = () => {
-    if (!bucket.length) return;
+    if (!bucket.length || !title) return;
     const wrap = document.createElement('div');
     bucket.forEach(n => wrap.appendChild(n));
-    chapters.push(wrap.innerHTML);
-    bucket = [];
+    const html = (wrap.innerHTML||'').trim();
+    result.chapters.push({ id:'chap-'+slugify(title), title, icon:'', accent:'', html });
+    bucket = []; title = null;
   };
 
+  let started = false;
   nodes.forEach(n => {
-    if (n.nodeType === 1 && n.matches('h2')) {
+    if (n.nodeType===1 && n.matches('h2')){
       if (started) push();
       started = true;
-      bucket.push(n.cloneNode(true));
+      title = n.textContent.trim();
     } else {
       (started ? bucket : introNodes).push(n.cloneNode(true));
     }
@@ -388,10 +382,16 @@ function sliceBodyIntoChapters(rootNode){
 
   const wrapIntro = document.createElement('div');
   introNodes.forEach(n => wrapIntro.appendChild(n));
-  result.intro = (wrapIntro.innerHTML || '').trim();
-  result.chapters = chapters;
+  result.intro = (wrapIntro.innerHTML||'').trim();
+
   return result;
 }
 
+function slugify(s){
+  return (s||'')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // accents
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
 
 function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
