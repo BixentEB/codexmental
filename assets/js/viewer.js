@@ -105,6 +105,7 @@ function loadContent(viewerEl, url){
 
     // --- BODY (prend data-part=body OU .article / article ; retire le titre etc.)
   // ----- BODY + CHAPITRES -------------------------------------------------
+// ----- BODY + CHAPITRES en cartes --------------------------------------
 removeDynamicChapters(viewerEl);
 
 let bodyCandidate =
@@ -116,17 +117,33 @@ let bodyCandidate =
 
 let introHTML = '';
 if (bodyCandidate) {
-  const slices = sliceBodyIntoChapters(bodyCandidate);
+  const slices = sliceBodyIntoChaptersRich(bodyCandidate);  // <— nouveau
   introHTML = slices.intro;
-  // injecte chaque chapitre comme une carte indépendante
-  const anchor = document.getElementById('article-extras'); // on insère avant extras
-  slices.chapters.forEach(html => {
+
+  const anchor = document.getElementById('article-extras') || document.getElementById('article-references') || document.getElementById('article-capsules') || null;
+
+  slices.chapters.forEach(ch => {
     const s = document.createElement('section');
-    s.className = 'viewer-block card article-chapter';
-    s.innerHTML = html;
+    s.className = 'viewer-block card article-chapter chapter-card';
+    if (ch.accent) s.style.setProperty('--chap-accent', ch.accent);
+    if (ch.id)     s.id = ch.id;
+
+    s.innerHTML = `
+      <header class="chapter-header">
+        ${ch.icon ? `<span class="chapter-icon">${ch.icon}</span>` : ''}
+        <h2 class="chapter-title">
+          ${escapeHTML(ch.title)}
+          ${ch.id ? `<a class="anchor" href="#${ch.id}">#</a>` : ''}
+        </h2>
+      </header>
+      <div class="chapter-content">
+        ${ch.html}
+      </div>
+    `;
     viewerEl.insertBefore(s, anchor);
   });
 }
+
 // intro (ou rien si vide)
 setBlockHTML('article-body', introHTML);
 
