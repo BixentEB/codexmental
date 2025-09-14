@@ -238,11 +238,6 @@
 .symb-tilt{ display:inline-block; transform: rotate(-8deg); }
 
 
-/* ============================================================
-   Codex Mental — Note minimaliste (sans fond / sans effets)
-   Nouvelles classes : .cm-note-card / .cm-note
-   ============================================================ */
-
 /* Notes : même rendu pour les deux chemins (.cm-note-card et .note-card) */
 #article-viewer .cm-note-card,
 #article-viewer .note-card{
@@ -265,9 +260,22 @@
   color: inherit;
 }
 
+/* On désactive tout ancien effet (aiguille, lueur, etc.) */
+#article-viewer .cm-note-card::before,
+#article-viewer .cm-note-card::after,
+#article-viewer .note-card::before,
+#article-viewer .note-card::after,
+#article-viewer .cm-note::before,
+#article-viewer .cm-note::after{
+  content: none !important;
+  background: none !important;
+  animation: none !important;
+}
+
 /* Titres + paragraphes un peu plus compacts */
 #article-viewer .cm-note h2{ margin: 0 0 .75rem; font-weight: 600; color: var(--accent-primary); }
 #article-viewer .cm-note p { margin: .55rem 0; }
+
 
 
 
