@@ -1,4 +1,4 @@
-// viewer.js – moteur unifié Blog + Atelier + découpe en blocs
+// viewer.js – moteur unifié Blog + Atelier + découpe en blocs + galerie mosaïque
 
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
@@ -10,23 +10,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewerEl = document.getElementById('article-viewer');
   if (!menuEl || !viewerEl) return;
 
-  // 1) S'assure que le "viewer principal" (shell) existe
+  // 1) Shell du viewer (cartes)
   ensureViewerShell(viewerEl);
 
-  // 2) Branche les liens du menu
+  // 2) Liens du menu
   setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
 
-  // 3) Charge l'article initial si ?article=... / ?projet=...
+  // 3) Article initial
   const initial = new URLSearchParams(window.location.search).get(paramKey);
   if (initial) loadContent(viewerEl, basePath + initial + '.html', { paramKey, file: initial });
 });
 
-// -----------------------------------------------------------------------------
-// Shell : crée les sous-conteneurs si absents (viewer "invisible" = orchestration)
+// ──────────────────────────────────────────────────────────────────────────────
+// Shell : sous-conteneurs (cartes séparées)
 function ensureViewerShell(viewerEl) {
   const ids = [
     'article-title',
     'article-tools',
+    'article-media',       // ⬅️ NOUVEAU bloc images/galerie
     'article-body',
     'article-extras',
     'article-references',
@@ -36,15 +37,14 @@ function ensureViewerShell(viewerEl) {
     if (!document.getElementById(id)) {
       const wrapper = document.createElement('section');
       wrapper.id = id;
-      wrapper.className = 'viewer-block card'; // cartes séparées (fond + marge)
-      // Par défaut, tools en tête
+      wrapper.className = 'viewer-block card';
       if (id === 'article-tools') wrapper.classList.add('block-tools');
       viewerEl.appendChild(wrapper);
     }
   });
 }
 
-// -----------------------------------------------------------------------------
+// ──────────────────────────────────────────────────────────────────────────────
 // Menu -> charge contenu
 function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
   menuEl.querySelectorAll('a[data-viewer]').forEach(link => {
@@ -59,8 +59,8 @@ function setupMenuLinks(menuEl, viewerEl, basePath, paramKey) {
   });
 }
 
-// -----------------------------------------------------------------------------
-// Charge l'article/projet, découpe en parties et injecte
+// ──────────────────────────────────────────────────────────────────────────────
+// Charge l’article, découpe, injecte par cartes
 function loadContent(viewerEl, url, ctx = {}) {
   fetch(url)
     .then(r => {
@@ -68,29 +68,30 @@ function loadContent(viewerEl, url, ctx = {}) {
       return r.text();
     })
     .then(html => {
-      // fade-out doux
       viewerEl.style.opacity = '0';
 
-      // Parse HTML de l'article
       const doc = new DOMParser().parseFromString(html, 'text/html');
-
-      // 1) Récupère les parties (priorité aux data-part)
       const part = name => doc.querySelector(`[data-part="${name}"]`);
 
       // TITRE
-      let titleNode =
+      const titleNode =
         part('title') ||
         doc.querySelector('section[data-part="title"] h1') ||
         doc.querySelector('h1');
 
-      // TOOLS (si absent, on injectera le partial)
-      let toolsNode =
+      // TOOLS
+      const toolsNode =
         part('tools') ||
         doc.getElementById('article-tools') ||
         doc.querySelector('.tools');
 
-      // BODY (article / .article / 1er section structurant)
-      let bodyNode =
+      // MEDIA (galerie) — explicite uniquement pour éviter les doublons
+      const mediaNode =
+        part('media') ||
+        doc.querySelector('.media, .gallery, section[data-gallery]');
+
+      // BODY
+      const bodyNode =
         part('body') ||
         doc.querySelector('article[data-part="body"]') ||
         doc.querySelector('.article') ||
@@ -98,40 +99,47 @@ function loadContent(viewerEl, url, ctx = {}) {
         doc.querySelector('main > section') ||
         doc.querySelector('section');
 
-      // EXTRAS / REFERENCES / CAPSULES (optionnels)
+      // EXTRAS / REFERENCES / CAPSULES
       const extrasNode     = part('extras')     || doc.querySelector('.extras');
       const referencesNode = part('references') || doc.querySelector('.references, footer.references');
       const capsulesNode   = part('capsules')   || doc.querySelector('.capsules');
 
-      // 2) Nettoie et injecte dans les blocs
+      // Injecte
       setBlockHTML('article-title', titleNode ? titleNode.outerHTML : '');
       setBlockHTML('article-body',  bodyNode  ? bodyNode.outerHTML  : '');
       setBlockHTML('article-extras', extrasNode ? extrasNode.outerHTML : '');
       setBlockHTML('article-references', referencesNode ? referencesNode.outerHTML : '');
       setBlockHTML('article-capsules',   capsulesNode   ? capsulesNode.outerHTML   : '');
 
-      // 3) Tools : soit l’article fournit, soit on injecte le partial
+      // Tools : article ou partial
       if (toolsNode) {
         setBlockHTML('article-tools', toolsNode.outerHTML);
-        setupShareButtons(); // branche si l’article avait ses propres boutons
+        setupShareButtons();
       } else {
-        injectArticleTools(); // fallback sur /partials/article-tools.html
+        injectArticleTools();
       }
 
-      // 4) Petite animation de réapparition
+      // Media/Galerie → mosaïque
+      if (mediaNode) {
+        const imgs = [...mediaNode.querySelectorAll('img')].filter(i => i.getAttribute('src'));
+        const caption = mediaNode.querySelector('figcaption')?.innerHTML || '';
+        const galleryHTML = renderMosaicHTML(imgs, caption);
+        setBlockHTML('article-media', galleryHTML);
+      } else {
+        setBlockHTML('article-media', '');
+      }
+
+      // Fade-in
       requestAnimationFrame(() => (viewerEl.style.opacity = '1'));
 
-      // 5) Smartphone : ferme menu partage si ouvert
+      // Mobile : ferme un éventuel menu partage
       const shareMenu = document.getElementById('share-menu');
       if (shareMenu && window.innerWidth <= 768) shareMenu.classList.add('hidden');
-
-      // 6) Option: si le body contient des chapitres <section data-chapter="...">,
-      //    on peut, plus tard, ajouter un sommaire auto ou un accordéon ici.
     })
     .catch(err => {
-      // En cas d’erreur : on laisse un message dans le conteneur body
       setBlockHTML('article-title', '');
       setBlockHTML('article-tools', '');
+      setBlockHTML('article-media', '');
       setBlockHTML('article-body', `<p class="erreur">Erreur chargement : ${url}</p>`);
       setBlockHTML('article-extras', '');
       setBlockHTML('article-references', '');
@@ -140,17 +148,16 @@ function loadContent(viewerEl, url, ctx = {}) {
     });
 }
 
-// Utilitaire : injecte proprement du HTML dans un bloc
+// Utilitaire injection + hide si vide
 function setBlockHTML(id, html) {
   const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML = html || '';
-  // Cache le bloc si vide, montre s’il a du contenu
   el.classList.toggle('is-empty', !html || !html.trim());
 }
 
-// -----------------------------------------------------------------------------
-// Injection du partial de partage (fallback si article n’en fournit pas)
+// ──────────────────────────────────────────────────────────────────────────────
+// PARTAGE (identique)
 function injectArticleTools() {
   const tools = document.getElementById('article-tools');
   if (!tools) return;
@@ -168,8 +175,6 @@ function injectArticleTools() {
     .catch(err => console.error('Erreur outils:', err));
 }
 
-// -----------------------------------------------------------------------------
-// Partage (identique à avant, conservé)
 function setupShareButtons() {
   const shareBtn = document.getElementById('share-button');
   const shareMenu = document.getElementById('share-menu');
@@ -186,7 +191,6 @@ function setupShareButtons() {
       }).catch(() => toggleShareMenu());
       return;
     }
-
     toggleShareMenu();
   });
 
@@ -237,8 +241,8 @@ function fallbackCopy(text) {
   document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
 }
 
-// -----------------------------------------------------------------------------
-// URL + actif (inchangé)
+// ──────────────────────────────────────────────────────────────────────────────
+// URL + actif
 function updateURL(key, val) {
   const u = new URL(window.location);
   u.searchParams.set(key, val);
@@ -247,4 +251,35 @@ function updateURL(key, val) {
 function highlightActive(menuEl, link) {
   menuEl.querySelectorAll('a[data-viewer]').forEach(a => a.classList.remove('active'));
   link.classList.add('active');
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// GALERIE MOSAÏQUE
+function renderMosaicHTML(imgNodes, caption = '') {
+  if (!imgNodes || !imgNodes.length) return '';
+
+  // Si une image a data-main, on la passe en premier
+  const idxMain = imgNodes.findIndex(n => n.hasAttribute('data-main'));
+  if (idxMain > 0) {
+    const main = imgNodes.splice(idxMain, 1)[0];
+    imgNodes.unshift(main);
+  }
+
+  const tiles = imgNodes.map((img, i) => {
+    const src = img.getAttribute('src');
+    const alt = (img.getAttribute('alt') || '').replace(/"/g, '&quot;');
+    const cls = i === 0 ? 'tile tile--main' : 'tile';
+    return `<figure class="${cls}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async"></figure>`;
+  }).join('');
+
+  const cap = caption
+    ? `<figcaption class="gallery-caption">${caption}</figcaption>`
+    : '';
+
+  return `
+    <div class="media-gallery" data-count="${imgNodes.length}">
+      <div class="mosaic">${tiles}</div>
+      ${cap}
+    </div>
+  `;
 }
