@@ -502,6 +502,7 @@ function escapeHTML(s){
     .replace(/'/g,'&#39;');
 }
 
+
 // Autorise <br> et <wbr> dans le H1, échappe tout le reste
 function sanitizeTitleHTML(rawHTML){
   const BR  = '[[BR]]';
@@ -526,4 +527,22 @@ function sanitizeTitleHTML(rawHTML){
 
   // 3) On réinjecte nos balises permises
   return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
+}
+
+/* -------------------------------------------------------------------------- */
+/* Extraction des notes depuis la nouvelle structure                          */
+/* -------------------------------------------------------------------------- */
+function extractNotesFromNewStructure(doc) {
+  const notes = [];
+  
+  // Cherche les notes dans la structure data-part="body"
+  const bodyPart = doc.querySelector('[data-part="body"]');
+  if (bodyPart) {
+    bodyPart.querySelectorAll('.note-card, .viewer-block.note-card').forEach(note => {
+      notes.push(note.outerHTML);
+      note.remove(); // Retire la note du corps pour qu'elle ne soit pas dupliquée
+    });
+  }
+  
+  return notes;
 }
