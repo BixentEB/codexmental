@@ -268,67 +268,73 @@
   color: var(--accent-primary);
 }
 
-/* =============================== */
-/*  NOTE : liseré néon + padding   */
-/* =============================== */
+/* ============================================================
+   NOTE .codex-note : padding + liseré néon animé (sans aiguille)
+   ============================================================ */
 
 .note-card .codex-note{
-  /* marge interne un peu plus large pour ne jamais toucher le bord */
+  /* Tweaks rapides (tu peux surcharger ces vars au besoin) */
   --note-neon: var(--accent-primary, #8fd3ff);
   --note-radius: 12px;
-  --note-thickness: 2px;
+  --note-thickness: 2px;      /* épaisseur du trait */
+  --note-speed: 6s;           /* vitesse de rotation */
+  --pad-y: clamp(1rem, 1.4vw, 1.25rem);
+  --pad-x: clamp(1.25rem, 2vw, 1.75rem);
 
-  /* plus d'air autour du texte */
-  padding: clamp(1rem, 1.4vw, 1.25rem) clamp(1.25rem, 2vw, 1.75rem);
+  position: relative;
   background: transparent;
   border: 0;
   border-radius: var(--note-radius);
-  position: relative;
+  padding: var(--pad-y) var(--pad-x);
 }
 
-/* liseré néon animé qui tourne autour */
+/* texte un peu plus “aéré” mais propre */
+.note-card .codex-note h2{ margin: 0 0 .7rem; }
+.note-card .codex-note p { margin: .55rem 0; }
+
+/* Liseré : un arc lumineux qui tourne sur le contour uniquement */
 .note-card .codex-note::before{
-  content:"";
-  position:absolute;
-  inset:0;
+  content: "";
+  position: absolute;
+  inset: 0;
   border-radius: inherit;
   padding: var(--note-thickness);
 
-  /* anneau fin = on garde seulement le “bord” via mask */
+  /* on conserve UNIQUEMENT l’anneau fin (le “bord”) via masque */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
 
-  /* un court segment lumineux dans un conic-gradient */
+  /* court segment lumineux dans un conic-gradient */
   background:
     conic-gradient(
-      from 0deg,
-      transparent 0 83%,
-      color-mix(in oklab, var(--note-neon), white 25%) 86%,
-      color-mix(in oklab, var(--note-neon), white 10%) 94%,
-      transparent 97% 100%
+      from 0deg at 50% 50%,
+      transparent 0 80%,
+      color-mix(in oklab, var(--note-neon), white 25%) 85%,
+      color-mix(in oklab, var(--note-neon), white 10%) 95%,
+      transparent 100%
     );
 
-  pointer-events:none;
-  will-change: transform;
-  transform-origin:center;
-  animation: note-neon-rotate 5.5s linear infinite;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  animation: note-ring-rotate var(--note-speed) linear infinite;
 
-  /* halo doux */
+  /* halo discret autour du trait */
   filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-neon), transparent 75%));
 }
 
-/* rotation “universelle” = marche partout */
-@keyframes note-neon-rotate { to { transform: rotate(360deg); } }
+@keyframes note-ring-rotate { to { transform: rotate(360deg); } }
 
-/* on neutralise tout ancien décor auto (ex. “aiguille”) */
-.note-card .codex-note::after{
-  content:none !important;
-  background:none !important;
-  animation:none !important;
+/* Coupe tout ancien effet “aiguille/étoile” s’il restait un style historique */
+.note-card .codex-note.note-comet::before,
+.note-card .codex-note.note-comet::after{
+  content: none !important;
+  background: none !important;
+  animation: none !important;
 }
+
 
 
 
