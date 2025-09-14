@@ -284,6 +284,74 @@
   margin-bottom: 0;
 }
 
+/* === NOTES COMPACTES (sans fond, header léger) ============================ */
+.note-card{
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 12px;
+  padding: 0 !important;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+/* <details> neutre, tout se joue sur le summary */
+.note-collapsible{
+  display:block; margin:0; padding:0; border:0; background:transparent;
+}
+
+/* Titre cliquable : compact + sans aplat */
+.note-collapsible summary{
+  list-style: none; cursor: pointer;
+  display:block;
+  padding: .7rem 1rem;                  /* ← plus compact */
+  background: transparent;              /* pas de bande grise */
+  user-select:none;
+  transition: background .18s ease, color .18s ease;
+}
+.note-collapsible summary:hover{
+  background: rgba(255,255,255,.04);    /* léger voile au survol */
+}
+.note-collapsible summary::-webkit-details-marker{ display:none; }
+
+.note-title{
+  margin:0;
+  font-family:'Orbitron',sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.12rem);  /* ← titre un peu plus petit */
+  letter-spacing:.01em;
+  color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 30%);
+  display:flex; align-items:center; gap:.6rem;
+}
+.note-title .chev{
+  margin-left:auto;                      /* chevron collé à droite */
+  font-size:1.25rem; line-height:1;
+  opacity:.7; transition: transform .25s ease, opacity .2s ease;
+  transform: translateY(-1px);
+}
+.note-collapsible[open] .chev{ transform: rotate(90deg); opacity:.9; }
+
+/* Corps de la note : fin trait de séparation + marges douces */
+.note-body{
+  padding: .75rem 1rem 1rem;             /* ← contenu plus dense */
+  border-top: 1px solid rgba(255,255,255,.12);
+  background: transparent;
+  box-shadow: none;
+}
+.note-body p{ margin: .7rem 0; line-height: 1.6; }
+.note-body p:last-child{ margin-bottom:0; }
+
+/* Accent visuel quand la note est ouverte (sans aplat) */
+.note-card:has(details[open]){
+  border-color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 18%);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent-primary, #8fd3ff), transparent 65%);
+}
+/* Fallback si :has() pas dispo : on renforce simplement le header ouvert */
+@supports not selector(:has(*)){
+  .note-collapsible[open] summary{
+    background: rgba(255,255,255,.05);
+  }
+}
+
+
 
 /* ---------------------------- CHAPTER CARDS -------------------------------- */
 .chapter-card{
