@@ -339,6 +339,13 @@
 .note-body p{ margin: .7rem 0; line-height: 1.6; }
 .note-body p:last-child{ margin-bottom:0; }
 
+.note-collapsible[open] .note-body {
+  border-top: none;
+  /* optionnel : resserrer un peu l’espace du haut */
+  padding-top: .6rem;
+}
+
+
 /* Accent visuel quand la note est ouverte (sans aplat) */
 .note-card:has(details[open]){
   border-color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 18%);
