@@ -179,15 +179,35 @@ function getInnerIfFilled(node){ if(!node) return ''; const s=(node.innerHTML||'
 function getOuterIfFilled(node){ if(!node) return ''; const s=(node.innerHTML||'').trim(); return s ? node.outerHTML : ''; }
 
 // autorise <br> et <wbr> dans le H1, échappe tout le reste
-function sanitizeTitleHTML(raw){
-  const BR='[[BR]]', WBR='[[WBR]]';
-  let s = (raw||'')
+function sanitizeTitleHTML(rawHTML){
+  const BR  = '[[BR]]';
+  const WBR = '[[WBR]]';
+
+  // 1) garde les sauts de ligne voulus
+  let s = (rawHTML || '')
     .replace(/<\s*br\s*\/?\s*>/gi, BR)
-    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR)
-    .replace(/<\/?[^>]+>/g,''); // supprime toute autre balise
-  s = escapeHTML(s);
-  return s.replaceAll(BR,'<br>').replaceAll(WBR,'<wbr>');
+    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR);
+
+  // 2) retire toute autre balise
+  s = s.replace(/<\/?[^>]+>/g, '');
+
+  // 3) DECODE les entités (évite &amp; visible si le H1 contenait déjà &amp;)
+  const tmp = document.createElement('textarea');
+  tmp.innerHTML = s;
+  s = tmp.value;
+
+  // 4) échappe proprement
+  s = s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  // 5) réinjecte les sauts
+  return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
 }
+
 
 function setupShareButtons(){
   const shareBtn=document.getElementById('share-button');
