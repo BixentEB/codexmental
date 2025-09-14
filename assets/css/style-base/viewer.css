@@ -243,23 +243,20 @@
    Nouvelles classes : .cm-note-card / .cm-note
    ============================================================ */
 
-/* Conteneur : aucune carte/fond/ombre */
-#article-viewer .cm-note-card{
+/* Notes : même rendu pour les deux chemins (.cm-note-card et .note-card) */
+#article-viewer .cm-note-card,
+#article-viewer .note-card{
   position: relative;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
   padding: 0 !important;
-}
-#article-viewer .cm-note-card::before,
-#article-viewer .cm-note-card::after{
-  content: none !important;
-  background: none !important;
-  animation: none !important;
+  margin: 1.1rem 0;                 /* séparation nette entre blocs */
 }
 
-/* Contenu note : juste du padding et la typo */
-#article-viewer .cm-note{
+/* Le contenu de la note (padding + typo compacte) */
+#article-viewer .cm-note,
+#article-viewer .note-card .cm-note{
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -267,24 +264,11 @@
   padding: clamp(1rem, 1.4vw, 1.25rem) clamp(1.25rem, 2vw, 1.75rem);
   color: inherit;
 }
-#article-viewer .cm-note::before,
-#article-viewer .cm-note::after{
-  content: none !important;
-  background: none !important;
-  animation: none !important;
-}
 
-/* Neutralise d’anciens styles éventuels */
-#article-viewer .note-card .codex-note::before,
-#article-viewer .note-card .codex-note::after{
-  content: none !important;
-  background: none !important;
-  animation: none !important;
-}
-
-/* Typo compacte */
+/* Titres + paragraphes un peu plus compacts */
 #article-viewer .cm-note h2{ margin: 0 0 .75rem; font-weight: 600; color: var(--accent-primary); }
 #article-viewer .cm-note p { margin: .55rem 0; }
+
 
 
 /* ===================== CHAPTER CARDS ===================== */
