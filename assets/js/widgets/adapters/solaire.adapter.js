@@ -3,18 +3,21 @@
 function nowLocal() { return new Date(); }
 
 // essaie de lire tes anciens scripts (ex: intro-astro)
-function readLegacySolar() {
-  const src = (window.IntroAstro && window.IntroAstro.solar) || (window.__astro && window.__astro.solar);
-  if (!src) return null;
-  const { sunrise, solarNoon, sunset, altitude, azimut } = src;
+function readLegacySolarStrict() {
+  const s = window.IntroAstro?.solar || window.__astro?.solar;
+  if (!s) return null;
+  const okNum = v => typeof v === "number" && Number.isFinite(v);
+  // Besoin au minimum d’altitude/azimut “now”
+  if (!okNum(s.altitude) || !okNum(s.azimut)) return null;
   return {
-    sunrise: sunrise || null,
-    noon: solarNoon || null,
-    sunset: sunset || null,
-    altitude: typeof altitude === 'number' ? altitude : null,
-    azimut: typeof azimut === 'number' ? azimut : null,
+    sunrise: s.sunrise || null,
+    noon: s.solarNoon || s.noon || null,
+    sunset: s.sunset || null,
+    altitude: s.altitude,
+    azimut: s.azimut
   };
 }
+
 
 // fallback raisonnable si pas de source legacy
 function fallbackSolar() {
@@ -25,11 +28,12 @@ function fallbackSolar() {
   return { sunrise, noon, sunset, altitude: +alt.toFixed(1), azimut: +azi.toFixed(1) };
 }
 
-export async function getData() {
-  const legacy = readLegacySolar();
-  const base = legacy && legacy.sunrise && legacy.sunset ? legacy : fallbackSolar();
-  return { ...base, now: nowLocal() };
+export async function getData(){
+  const legacy = readLegacySolarStrict();
+  if (!legacy) throw new Error("Solar data unavailable"); // → laisser filer vers le fallback global du site
+  return { ...legacy, now: new Date() };
 }
+
 
 export function renderData(d){
   return `
