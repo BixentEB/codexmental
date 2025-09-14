@@ -209,58 +209,55 @@
   background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
 }
 
-/* ------------------------------- NOTES ------------------------------------- */
-/* Base fallback (si non extrait) */
-.codex-note{
-  position: relative; display: block;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
-  margin: 1rem 0;
-  color: inherit;
-  opacity: 1 !important; transform: none !important;
-}
-.codex-note h2{
-  margin: 0 0 .6rem 0;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.05rem;
-  color: var(--accent-primary);
-}
-.codex-note p{ margin: .6rem 0; }
-.codex-note.note-small{ font-size: .97rem; }
-.codex-note.note-large{ font-size: 1.05rem; }
-.symb-tilt{ display:inline-block; transform: rotate(-8deg); }
+/* ==== NOTE: transparence + collapsible, sans modifier le reste ======= */
 
-/* La carte conteneur de note = transparente (pas de double cadre) */
-.note-card.viewer-block{
+/* 1) Neutralise tout fond/ombre sur la note interne */
+.note-card .codex-note{
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
   padding: 0 !important;
+  margin: 0 !important;
 }
 
-/* La note autonome : fond doux sans halo agressif */
-.note-card .codex-note{
-  position: relative;
-  overflow: hidden;
-  margin: 0;
-  padding: 1.1rem 1.25rem;
+/* 2) Le cadre (liseré) vit sur <details> pour entourer titre + contenu */
+.note-card .note-collapsible{
+  display: block;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.18);
   border-radius: 14px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.13);
-  box-shadow: 0 12px 28px rgba(0,0,0,.22);
+  overflow: hidden;          /* pour des coins nets */
 }
-.note-card .codex-note::before{ display:none; } /* on neutralise l’ancien halo */
-.note-card .codex-note h2{
+
+/* 3) Le résumé cliquable : on garde un H2 coloré */
+.note-card .note-collapsible summary{
+  list-style: none;
+  cursor: pointer;
+  display: block;
+  padding: .9rem 1.1rem;
+  background: transparent;
+  user-select: none;
+}
+.note-card .note-collapsible summary::-webkit-details-marker{ display:none; } /* cache le triangle */
+
+.note-card .note-collapsible .note-title{
+  margin: 0;
   font-family: 'Orbitron', sans-serif;
   font-size: 1.06rem;
-  margin: 0 0 .65rem 0;
+  color: var(--accent-primary);        /* ← ta var h2 conservée */
 }
 
-/* <details> = cadre (liseré) + overflow propre, AUCUNE animation */
-.note-card .note-collapsible{
-  border: 
+/* 4) Corps de la note (contenu) */
+.note-card .note-body{
+  padding: .2rem 1.1rem 1.05rem;
+}
+
+/* 5) Petit indicateur d’état (chevron) non intrusif */
+.note-card .note-collapsible summary .chev{
+  float: right;
+  transition: transform .15s ease;
+}
+.note-card .note-collapsible[open] summary .chev{ transform: rotate(90deg); }
 
 
 /* ---------------------------- CHAPTER CARDS -------------------------------- */
