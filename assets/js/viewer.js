@@ -215,6 +215,40 @@ function setBlockHTML(id, html){
   el.setAttribute('aria-hidden', String(!has));
 }
 
+// --- Transformer le # en copie de lien (et scroll propre)
+initChapterAnchors(document.getElementById('article-viewer'));
+
+function initChapterAnchors(container){
+  container.addEventListener('click', e=>{
+    const a = e.target.closest('a.anchor'); if(!a) return;
+    e.preventDefault();
+
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (target){
+      const offset = getAnchorOffset();
+      const y = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.history.replaceState({},'', `#${id}`);
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+
+    // copie le lien profond
+    if (navigator.clipboard){
+      const deep = `${location.origin}${location.pathname}${location.search}#${id}`;
+      navigator.clipboard.writeText(deep).then(()=>{
+        a.classList.add('copied');
+        setTimeout(()=>a.classList.remove('copied'), 1200);
+      });
+    }
+  });
+}
+function getAnchorOffset(){
+  const v = getComputedStyle(document.documentElement).getPropertyValue('--anchor-offset').trim();
+  const px = parseInt(v||'0',10);
+  return isNaN(px) ? 0 : px;
+}
+
+
 // ---------- Tools (share) dans le titre
 function attachToolsIntoTitle(html){
   const slot=document.querySelector('#article-title .title-tools'); if(!slot) return;
