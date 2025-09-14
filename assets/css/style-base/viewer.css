@@ -255,13 +255,51 @@
 .codex-note.note-large{ font-size: 1.05rem; }
 .symb-tilt{ display:inline-block; transform: rotate(-8deg); }
 
-/* Notes extraites → carte autonome : on aplatit l’intérieur */
-.note-card .codex-note{
-  background: transparent;
-  border: 0;
-  padding: 0;
-  margin: 0;
+/* La carte qui enveloppe la note = transparente (pas de 2e cadre) */
+.note-card.viewer-block{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;     /* la note gère son propre padding */
 }
+
+/* La note elle-même : fond doux, plus d’air, glow subtil  */
+.note-card .codex-note{
+  position: relative;
+  margin: 0;                               /* le spacing vient de viewer-block */
+  padding: 1.1rem 1.25rem;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--accent-primary, #9fdcff), transparent 90%) 0%,
+      color-mix(in oklab, #ffffff 4%, transparent) 100%);
+  border: 1px solid color-mix(in oklab, var(--accent-primary, #9fdcff), #000 65%);
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.26),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* Halo léger autour de la note (sans couper le texte) */
+.note-card .codex-note::before{
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  background: radial-gradient(60% 120% at 20% 0%,
+              color-mix(in oklab, var(--accent-primary, #9fdcff), transparent 75%) 0%,
+              transparent 60%);
+  filter: blur(10px);
+  opacity: .45;
+  pointer-events: none;
+}
+
+/* Titre de note un brin plus lisible */
+.note-card .codex-note h2{
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.06rem;
+  margin: 0 0 .65rem 0;
+}
+
 
 /* ===================== CHAPTER CARDS ===================== */
 .chapter-card{
