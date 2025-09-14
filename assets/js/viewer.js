@@ -529,20 +529,3 @@ function sanitizeTitleHTML(rawHTML){
   return s.replaceAll(BR, '<br>').replaceAll(WBR, '<wbr>');
 }
 
-/* -------------------------------------------------------------------------- */
-/* Extraction des notes depuis la nouvelle structure                          */
-/* -------------------------------------------------------------------------- */
-function extractNotesFromNewStructure(doc) {
-  const notes = [];
-  
-  // Cherche les notes dans la structure data-part="body"
-  const bodyPart = doc.querySelector('[data-part="body"]');
-  if (bodyPart) {
-    bodyPart.querySelectorAll('.note-card, .viewer-block.note-card').forEach(note => {
-      notes.push(note.outerHTML);
-      note.remove(); // Retire la note du corps pour qu'elle ne soit pas dupliquée
-    });
-  }
-  
-  return notes;
-}
