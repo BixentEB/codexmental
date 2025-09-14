@@ -234,49 +234,122 @@
   border: 1px solid rgba(255,255,255,0.25);
 }
 
-/* Symbole */
-.symb-tilt{ display:inline-block; transform: rotate(-8deg); }
-
-
-/* Notes : même rendu pour les deux chemins (.cm-note-card et .note-card) */
-#article-viewer .cm-note-card,
-#article-viewer .note-card{
-  position: relative;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 1.1rem 0;                 /* séparation nette entre blocs */
+/* Cartouches "note" par défaut (fallback sûr) */
+.codex-note{
+  position: relative; display: block;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  color: inherit;
+  opacity: 1 !important; transform: none !important;
 }
 
-/* Le contenu de la note (padding + typo compacte) */
-#article-viewer .cm-note,
-#article-viewer .note-card .cm-note{
+.codex-note p{ margin: .6rem 0; }
+.codex-note.note-small{ font-size: .97rem; }
+.codex-note.note-large{ font-size: 1.05rem; }
+.symb-tilt{ display:inline-block; transform: rotate(-8deg); }
+
+/* La carte qui enveloppe la note = transparente (pas de 2e cadre) */
+.note-card.viewer-block{
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-  border-radius: 12px;
-  padding: clamp(1rem, 1.4vw, 1.25rem) clamp(1.25rem, 2vw, 1.75rem);
+  padding: 0 !important;     /* la note gère son propre padding */
+}
+
+
+/* Titre de note un brin plus lisible */
+.note-card .codex-note h2{
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.06rem;
+  margin: 0 0 .65rem 0;
+  color: var(--accent-primary);
+}
+
+/* ============================================================
+   Codex Mental — Notes (nouvelles classes, sans conflits)
+   ============================================================ */
+
+/* base carte */
+#article-viewer .cm-note-card{
+  position: relative;
+}
+
+/* contenu note + padding propre */
+#article-viewer .cm-note{
+  /* Vars faciles à régler */
+  --note-neon: var(--accent-primary, #8fd3ff);
+  --note-radius: 12px;
+  --note-thickness: 2px;    /* épaisseur du serpentin */
+  --note-speed: 6s;         /* vitesse de rotation */
+  --pad-y: clamp(1rem, 1.4vw, 1.25rem);
+  --pad-x: clamp(1.25rem, 2vw, 1.75rem);
+
+  position: relative;
+  background: transparent;
+  border: 0;
+  border-radius: var(--note-radius);
+  padding: var(--pad-y) var(--pad-x);
   color: inherit;
 }
 
-/* On désactive tout ancien effet (aiguille, lueur, etc.) */
-#article-viewer .cm-note-card::before,
-#article-viewer .cm-note-card::after,
-#article-viewer .note-card::before,
-#article-viewer .note-card::after,
-#article-viewer .cm-note::before,
-#article-viewer .cm-note::after{
+/* typographie compacte mais lisible */
+#article-viewer .cm-note h2{ margin: 0 0 .7rem; }
+#article-viewer .cm-note p { margin: .55rem 0; }
+
+/* serpentin néon qui tourne sur le contour (sans fond, sans cadre fixe) */
+#article-viewer .cm-note::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--note-thickness);
+
+  /* on ne garde QUE l’anneau fin du contour */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+
+  /* un court segment lumineux dans un conic-gradient */
+  background:
+    conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0 80%,
+      color-mix(in oklab, var(--note-neon), white 25%) 85%,
+      color-mix(in oklab, var(--note-neon), white 10%) 95%,
+      transparent 100%
+    );
+
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  animation: cm-note-ring-rotate var(--note-speed) linear infinite;
+
+  /* halo discret */
+  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--note-neon), transparent 75%));
+}
+
+@keyframes cm-note-ring-rotate { to { transform: rotate(360deg); } }
+
+/* coupe toute ancienne “aiguille” potentielle */
+#article-viewer .cm-note::after,
+#article-viewer .cm-note.cm-note-comet::before,
+#article-viewer .cm-note.cm-note-comet::after{
   content: none !important;
   background: none !important;
   animation: none !important;
 }
 
-/* Titres + paragraphes un peu plus compacts */
-#article-viewer .cm-note h2{ margin: 0 0 .75rem; font-weight: 600; color: var(--accent-primary); }
-#article-viewer .cm-note p { margin: .55rem 0; }
-
-
+/* (optionnel) si tu veux 100% forcer l’ancien couple à s’éteindre */
+#article-viewer .note-card .codex-note::before,
+#article-viewer .note-card .codex-note::after{
+  content: none !important;
+  background: none !important;
+  animation: none !important;
+}
 
 
 /* ===================== CHAPTER CARDS ===================== */
