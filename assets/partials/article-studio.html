@@ -7,10 +7,10 @@
 <style>
   :root{
     --bg:#0f1220; --bg2:#12162a; --ink:#e9efff; --muted:#a9b5d1;
-    --accent:#86c7ff; --accent2:#b28cff; --line: #22315a;
+    --accent:#86c7ff; --accent2:#b28cff; --line:#22315a;
     --ok:#4ad295; --warn:#ffbe55; --bad:#ff6b6b; --radius:14px;
-    --mono: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
-    --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    --mono:ui-monospace,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -121,7 +121,15 @@
 
       <!-- Intro -->
       <div id="block-intro" class="fieldset" hidden>
-        <div class="legend">Intro (affichée avant le premier H2)</div>
+        <div class="legend">Introduction (H2 optionnel + contenu)</div>
+        <div class="row">
+          <label>Inclure l’intro</label>
+          <label class="checkbox"><input type="checkbox" id="chk-intro"> Ajouter une introduction</label>
+        </div>
+        <div class="row">
+          <label for="inp-intro-title">Titre de l’intro</label>
+          <input id="inp-intro-title" type="text" placeholder="Introduction">
+        </div>
         <textarea id="ta-intro" placeholder="… intro …"></textarea>
         <div class="counter" data-for="ta-intro"></div>
       </div>
@@ -186,9 +194,11 @@
 
 <script>
 /* ===== State & persistence ===== */
-const KEY='cm-article-studio-v2';
+const KEY='cm-article-studio-v2a';
 const state={
-  title:'',subtitle:'',subtitleMode:'data',intro:'',toc:true,
+  title:'',subtitle:'',subtitleMode:'data',
+  introEnabled:false,introTitle:'',intro:'',
+  toc:true,
   chapters:[], // {n,id,title,html}
   media:{images:[],caption:''}, // {src,alt,main}
   extras:'',references:'',capsules:'',
@@ -210,7 +220,7 @@ const insertButtons=$$('.insertbar .btn');
 const btnSave=$('#btn-save'),btnLoad=$('#btn-load'),btnExport=$('#btn-export'),btnImport=$('#btn-import'),fileImport=$('#file-import');
 const btnBuild=$('#btn-build'),btnDownload=$('#btn-download');
 const blkTitle=$('#block-title'), inpTitle=$('#inp-title'), inpSubtitle=$('#inp-subtitle'), subtitleRadios=$$('input[name="subtitleMode"]');
-const blkIntro=$('#block-intro'), taIntro=$('#ta-intro');
+const blkIntro=$('#block-intro'), chkIntro=$('#chk-intro'), inpIntroTitle=$('#inp-intro-title'), taIntro=$('#ta-intro');
 const blkToc=$('#block-toc'), chkToc=$('#chk-toc');
 const blkChapters=$('#block-chapters'), chaptersEl=$('#chapters'), btnAddChapter=$('#btn-add-chapter');
 const blkMedia=$('#block-media'), imagesEl=$('#images'), btnAddImage=$('#btn-add-image'), inpCaption=$('#inp-caption');
@@ -232,13 +242,15 @@ insertButtons.forEach(b=>{
 });
 
 /* ===== Inputs sync ===== */
-[ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption ].forEach(el=>{
+[ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption,inpIntroTitle ].forEach(el=>{
   el.addEventListener('input',debounce(()=>{
-    state.title=inpTitle.value; state.subtitle=inpSubtitle.value; state.intro=taIntro.value;
+    state.title=inpTitle.value; state.subtitle=inpSubtitle.value;
+    state.intro=taIntro.value; state.introTitle=inpIntroTitle.value;
     state.extras=taExtras.value; state.references=taRefs.value; state.capsules=taCaps.value;
     state.media.caption=inpCaption.value; markDirty();
   },400));
 });
+chkIntro.addEventListener('change',()=>{state.introEnabled=chkIntro.checked; markDirty()});
 subtitleRadios.forEach(r=>r.addEventListener('change',()=>{state.subtitleMode=r.value==='p'?'p':'data'; markDirty()}));
 chkToc.addEventListener('change',()=>{state.toc=chkToc.checked; markDirty()});
 
@@ -296,7 +308,7 @@ function addChapter(){const n=state.chapters.length+1; const ch={n,id:'section-'
 function moveChapter(n,delta){const i=state.chapters.findIndex(c=>c.n===n); const j=i+delta; if(j<0||j>=state.chapters.length) return; const tmp=state.chapters[i]; state.chapters[i]=state.chapters[j]; state.chapters[j]=tmp; renumberChapters(); renderChapters(); markDirty()}
 function duplicateChapter(n){const i=state.chapters.findIndex(c=>c.n===n); const s=state.chapters[i]; const d={n:s.n+1,id:s.id+'-copy',title:s.title+' (copie)',html:s.html}; state.chapters.splice(i+1,0,d); renumberChapters(); renderChapters(); markDirty()}
 function deleteChapter(n){ if(!confirm('Supprimer ce chapitre ?')) return; state.chapters=state.chapters.filter(c=>c.n!==n); renumberChapters(); renderChapters(); markDirty() }
-btnAddChapter.addEventListener('click',addChapter);
+$('#btn-add-chapter').addEventListener('click',addChapter);
 
 /* ===== Media ===== */
 function imageItem(img,idx){
@@ -342,13 +354,13 @@ $('#formatbar').addEventListener('click',e=>{
 });
 function wrap(el,before,after){ el.focus(); const s=el.selectionStart,e=el.selectionEnd,txt=el.value; const sel=txt.slice(s,e); el.value=txt.slice(0,s)+before+sel+after+txt.slice(e); el.setSelectionRange(s+before.length,e+before.length); el.dispatchEvent(new Event('input')) }
 
-/* ===== Build HTML (v2 minimal sections) ===== */
+/* ===== Build HTML (v2 minimal + intro option) ===== */
 function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
 function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
 
 function buildHTML(){
-  // ids uniques pour H2
+  // ids uniques pour H2 (chapitres)
   const seen=new Set();
   state.chapters.forEach(ch=>{
     let base=slugify(ch.title||ch.id||'section'); let id=base,k=2; while(seen.has(id)){id=`${base}-${k++}`} ch.id=id; seen.add(id);
@@ -359,10 +371,16 @@ function buildHTML(){
     ? `<h1${state.subtitle?` data-subtitle="${escapeAttr(state.subtitle)}"`:''}>${escapeHtml(state.title||'Mon titre')}</h1>`
     : `<h1>${escapeHtml(state.title||'Mon titre')}</h1>\n  ${state.subtitle?`<p class="subtitle">${escapeHtml(state.subtitle)}</p>`:''}`;
 
-  // Intro
-  const intro = (state.intro||'').trim();
+  // Intro (H2 optionnel)
+  let introBlock='';
+  if(state.introEnabled){
+    const t=(state.introTitle||'Introduction').trim()||'Introduction';
+    const id = slugify(t||'introduction') || 'introduction';
+    const body = (state.intro||'').trim();
+    introBlock = `  <h2 id="${id}">${escapeHtml(t)}</h2>\n${body?indent(body,2)+'\n':''}\n`;
+  }
 
-  // TOC (carte “sommaire” affichée comme un chapitre)
+  // TOC
   let toc='';
   if(state.toc && state.chapters.length){
     const links=state.chapters.map(ch=>`      <a href="#${ch.id}">${escapeHtml(ch.title||ch.id)}</a>`).join(' •\n');
@@ -391,13 +409,13 @@ ${indent(body,2)}`;
   <!-- Outils (vide : le viewer injecte un partage par défaut) -->
   <section data-part="tools"></section>
 
-${intro ? indent(intro,2)+'\n\n' : ''}${toc}${chs}
+${introBlock}${toc}${chs}
 </article>`;
 
-  // Médias
+  // Médias (seulement si non vides)
   let media='';
-  if(state.media.images.length || (state.media.caption||'').trim()){
-    const imgs=state.media.images.map(im=>{
+  if((state.media.images&&state.media.images.length) || (state.media.caption||'').trim()){
+    const imgs=(state.media.images||[]).map(im=>{
       const main=im.main?' data-main':''; const alt=escapeAttr(im.alt||''); const src=escapeAttr(im.src||'');
       return `    <img src="${src}" alt="${alt}"${main}>`;
     }).join('\n');
@@ -407,23 +425,20 @@ ${intro ? indent(intro,2)+'\n\n' : ''}${toc}${chs}
 ${imgs}${cap}
   </figure>
 </section>`;
-  } else {
-    media = `<section data-part="media"><figure>\n  <!-- images ici -->\n</figure></section>`;
   }
 
-  // Extras / refs / caps (hors <article>, détectés où qu’ils soient)
-  const extras = (state.extras||'').trim()? `<section data-part="extras">\n${indent(state.extras.trim(),2)}\n</section>`:`<section data-part="extras">…</section>`;
-  const refs   = (state.references||'').trim()? `<section data-part="references">\n${indent(state.references.trim(),2)}\n</section>`:`<section data-part="references">…</section>`;
-  const caps   = (state.capsules||'').trim()? `<section data-part="capsules">\n${indent(state.capsules.trim(),2)}\n</section>`:`<section data-part="capsules">…</section>`;
+  // Extras / refs / caps (émis uniquement s'il y a du contenu)
+  const extras = (state.extras||'').trim()? `<section data-part="extras">\n${indent(state.extras.trim(),2)}\n</section>`:'';
+  const refs   = (state.references||'').trim()? `<section data-part="references">\n${indent(state.references.trim(),2)}\n</section>`:'';
+  const caps   = (state.capsules||'').trim()? `<section data-part="capsules">\n${indent(state.capsules.trim(),2)}\n</section>`:'';
 
   const full =
 `<!-- =========================================================
-  ARTICLE — généré par Article Studio v2 (Codex Mental)
+  ARTICLE écrit par Vincero — édité sur la plateforme Article Studio v2 (Codex Mental)
   ========================================================= -->
 ${article}
 
 ${media}
-
 ${extras}
 ${refs}
 ${caps}
@@ -445,9 +460,16 @@ function renderAllFromState(){
   $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
 
   inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||''; (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
-  taIntro.value=state.intro||''; chkToc.checked=!!state.toc;
+
+  chkIntro.checked=!!state.introEnabled;
+  inpIntroTitle.value=state.introTitle||'';
+  taIntro.value=state.intro||'';
+
+  chkToc.checked=!!state.toc;
   renderChapters();
+
   imagesEl.innerHTML=''; state.media.images=state.media.images||[]; renderImages(); inpCaption.value=state.media.caption||'';
+
   taExtras.value=state.extras||''; taRefs.value=state.references||''; taCaps.value=state.capsules||'';
   updateCounters(); buildHTML();
 }
@@ -460,6 +482,9 @@ fileImport.addEventListener('change',e=>{if(e.target.files?.[0]) importJSON(e.ta
 btnBuild.addEventListener('click',buildHTML);
 btnDownload.addEventListener('click',downloadHTML);
 
+/* Raccourcis */
+let activeTextArea=null;
+document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal() }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML() }
