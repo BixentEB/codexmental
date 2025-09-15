@@ -98,8 +98,11 @@ function loadContent(viewerEl, url){
       const part = name => doc.querySelector(`[data-part="${name}"]`);
 
       /* ----- TITRE ----- */
+      // on lit le H1 AVANT normalisation pour fabriquer le header
       const titleSection = part('title');
-      const h1 = (titleSection && titleSection.querySelector('h1')) || doc.querySelector('h1');
+      const h1 = (titleSection && titleSection.querySelector('h1')) ||
+                 doc.querySelector('article[data-article] h1') ||
+                 doc.querySelector('h1');
       const subtitleNode =
         (titleSection && (titleSection.querySelector('h2[data-subtitle], .subtitle'))) ||
         (h1 && h1.nextElementSibling && h1.nextElementSibling.matches('h2, .subtitle, [data-subtitle]')
@@ -138,20 +141,18 @@ function loadContent(viewerEl, url){
       /* ----- BODY (chapitres + notes) ----- */
       removeDynamicItems(viewerEl); // nettoie les précédents chapitres/notes
 
-      let bodyRoot =
-      part('body') || doc.querySelector('article[data-part="body"]') ||
-      doc.querySelector('.article, article') || doc.querySelector('main > section') || doc.body;
+      const bodyRoot = pickBodyRoot(doc, part);
 
-     // NEW: si l’article est "simple" (H1/H2...), on le convertit en <section data-chapter>…>
-     const normalized = normalizeShorthandToChapters(bodyRoot);
+      // Normalisation : articles "simples" (H1/H2...) → <section data-chapter>
+      const normalized = normalizeShorthandToChapters(bodyRoot, h1?.textContent || '');
 
-     const parsed = parseBodyOrdered(normalized);
+      // Parser (ordre + notes)
+      const parsed = parseBodyOrdered(normalized);
 
-
-      // intro dans #article-body
+      // Intro / corps
       setBlockHTML('article-body', parsed.introHTML);
 
-      // items (chapitres et notes) injectés avant les extras/réfs/capsules
+      // Insertion des chapitres et notes avant extras/réfs/capsules
       const anchor =
         document.getElementById('article-extras') ||
         document.getElementById('article-references') ||
@@ -178,7 +179,7 @@ function loadContent(viewerEl, url){
         } else if (item.type === 'note'){
           const noteCard = document.createElement('section');
           noteCard.className = 'viewer-block note-card';
-          noteCard.innerHTML = item.html;   // déjà une <details> si générée par parse
+          noteCard.innerHTML = item.html;   // déjà un <details> si généré par parse
           viewerEl.insertBefore(noteCard, anchor);
         }
       });
@@ -202,6 +203,33 @@ function loadContent(viewerEl, url){
     });
 }
 
+/* ----------------------------------------------------------------------------
+ * Sélection robuste du “body” dans les HTML legacy
+ * -------------------------------------------------------------------------- */
+function pickBodyRoot(doc, partFn){
+  // priorité absolue à data-part="body" ou <article data-part="body">
+  const p = partFn('body');
+  if (p) return p;
+
+  // ensuite <article data-article>
+  const dataArticle = doc.querySelector('article[data-article]');
+  if (dataArticle) return dataArticle;
+
+  // sinon choisir l’<article> le plus “riche” s’il y en a plusieurs
+  const articles = [...doc.querySelectorAll('article')];
+  if (articles.length > 1) {
+    // score simple : longueur textContent + profondeur
+    const scored = articles.map(a => ({
+      el: a,
+      score: (a.textContent||'').length + a.querySelectorAll('*').length * 5
+    })).sort((A,B)=>B.score-A.score);
+    if (scored[0]) return scored[0].el;
+  }
+  if (articles.length === 1) return articles[0];
+
+  // fallback : bloc principal commun
+  return doc.querySelector('main > section') || doc.body;
+}
 
 /* ----------------------------------------------------------------------------
  * Parsing du body : respecte l’ordre, isole chapitres ET notes
@@ -209,51 +237,72 @@ function loadContent(viewerEl, url){
  * - Blocs de note existants (.viewer-block.note-card ou <details.note-collapsible>)
  *   ou anciennes .codex-note => convertis en note-card collapsible
  * -------------------------------------------------------------------------- */
+
 // Convertit un body "simple" (H1/H2...) en sections <section data-chapter="">
-function normalizeShorthandToChapters(rootNode){
+// + gère les H1 multiples et le H2 qui répète le H1
+function normalizeShorthandToChapters(rootNode, titleText=''){
+  // clone de travail
   const root = rootNode ? rootNode.cloneNode(true) : document.createElement('div');
 
-  // Si on a déjà des chapitres explicites, ne rien faire
-  if (root.querySelector('section[data-chapter]')) return root;
+  // Préférer <article data-article> si présent
+  const prefer = root.querySelector && (root.querySelector('article[data-article]') || root) || root;
 
-  // On travaille seulement sur les enfants directs du root
-  const nodes = Array.from(root.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
+  // 0) Unifier le H1 : garder le premier, rétrograder les autres en H2
+  const h1s = prefer.querySelectorAll ? prefer.querySelectorAll('h1') : [];
+  const firstH1 = h1s[0] || null;
+  if (h1s.length > 1) {
+    for (let i=1;i<h1s.length;i++){
+      const h1 = h1s[i];
+      const h2 = document.createElement('h2');
+      h2.innerHTML = h1.innerHTML;
+      [...h1.attributes].forEach(a=>h2.setAttribute(a.name,a.value));
+      h1.replaceWith(h2);
+    }
+  }
 
-  // Retire le premier H1 du flux chapitres (le viewer gère le titre ailleurs)
-  const firstH1 = nodes.find(n => n.nodeType === 1 && n.tagName?.toLowerCase() === 'h1');
-  if (firstH1) firstH1.remove();
+  // 1) Si chapitres déjà présents → retour
+  if (prefer.querySelector && prefer.querySelector('section[data-chapter]')) return prefer;
 
-  // Regroupe intro (avant premier H2) + crée <section data-chapter> pour chaque H2
+  // 2) slug du H1 (pour ignorer un H2 identique)
+  const titleSlug = slugify((titleText || firstH1?.textContent || '').trim());
+
+  // 3) Extraire enfants (ignore texte vide)
+  const nodes = Array.from(prefer.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
+
+  // 4) supprimer le premier H1 du flux (le viewer crée sa title-chip)
+  const firstH1InFlow = nodes.find(n => n.nodeType === 1 && n.tagName?.toLowerCase() === 'h1');
+  if (firstH1InFlow) firstH1InFlow.remove();
+
+  // 5) Construire sections à partir des H2
   const container = document.createElement('div');
   nodes.forEach(n => container.appendChild(n));
 
   const out = document.createElement('div');
   let currentSection = null;
-
-  // Tout ce qui précède le 1er H2 = intro (reste tel quel; parseBodyOrdered l’utilisera)
-  // À partir du 1er H2, on crée des sections data-chapter
-  const children = Array.from(container.childNodes);
   let metH2 = false;
+
+  const children = Array.from(container.childNodes);
 
   for (const node of children){
     if (node.nodeType === 1 && node.tagName.toLowerCase() === 'h2'){
+      // anti-doublon : si ce H2 == H1 → ignorer
+      const h2slug = slugify((node.textContent || '').trim());
+      if (titleSlug && h2slug === titleSlug) continue;
+
       metH2 = true;
-      // Ferme la section courante
+      // Fermer section courante
       if (currentSection) out.appendChild(currentSection);
 
-      // Crée une nouvelle section
+      // Nouvelle section
       currentSection = document.createElement('section');
       currentSection.setAttribute('data-chapter', 'auto');
       const h2 = node.cloneNode(true);
-      // garde l’ID existant ou génère un slug
       const id = h2.id || slugify((h2.textContent || '').trim());
       if (id) currentSection.id = id;
-
-      // Place le h2 dedans (parseBodyOrdered retirera le h2 pour l’entête de chapitre)
       currentSection.appendChild(h2);
       continue;
     }
-    // Si on a déjà rencontré un H2, tout va dans la section en cours
+    // Si un H2 a été vu → contenu de section
     if (metH2){
       if (!currentSection){
         currentSection = document.createElement('section');
@@ -261,7 +310,7 @@ function normalizeShorthandToChapters(rootNode){
       }
       currentSection.appendChild(node.cloneNode(true));
     } else {
-      // avant le 1er H2 : recopie direct (intro)
+      // avant le 1er H2 : intro
       out.appendChild(node.cloneNode(true));
     }
   }
@@ -270,7 +319,6 @@ function normalizeShorthandToChapters(rootNode){
   return out;
 }
 
-      //  * Parsing du body : respecte l’ordre, isole chapitres ET notes
 function parseBodyOrdered(rootNode){
   const root = rootNode ? rootNode.cloneNode(true) : document.createElement('div');
 
