@@ -48,7 +48,7 @@
   .chapters .item,.images .item{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;background:#0b1230}
   .item .head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
   .item .head .title{font-weight:600;color:#dbe7ff}
-  .item .head .ghost{color:var(--muted);font-size:.9rem}
+  .item .head .ghost{color:#a9b5d1;font-size:.9rem}
   .head .controls{margin-left:auto;display:flex;gap:6px}
   .id-inline{display:flex;gap:8px;align-items:center}
   .id-inline input{width:260px}
@@ -58,7 +58,7 @@
   .counter{font-size:.85rem;color:var(--muted);text-align:right}
   .code{white-space:pre;font-family:var(--mono);font-size:.92rem;line-height:1.4;background:#050814;padding:12px;border-radius:10px;overflow:auto;min-height:100%;border:1px solid var(--line)}
   .status{display:flex;gap:10px;align-items:center;margin:0 12px 12px}
-  .pill{padding:.2rem .55rem;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#0b1130;font-size:.85rem}
+  .pill{padding:.2rem .55rem;border-radius:999px;border:1px solid var(--line);color:#a9b5d1;background:#0b1130;font-size:.85rem}
 </style>
 </head>
 <body data-layout="equal">
@@ -82,7 +82,6 @@
 </header>
 
 <div class="wrap">
-  <!-- LEFT -->
   <section class="panel">
     <h2>Édition assistée</h2>
     <div class="content">
@@ -194,7 +193,6 @@
     </div>
   </section>
 
-  <!-- RIGHT -->
   <section class="panel">
     <h2>HTML final (copier / coller)</h2>
     <div class="content">
@@ -378,7 +376,7 @@ function renderImages(){imagesEl.innerHTML=''; state.media.images.forEach((im,i)
 btnAddImage.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
 
 /* ===== Formatting toolbar ===== */
-let activeTextArea=null;
+let activeTextArea=null; // <-- unique déclaration (FIX)
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 $('#formatbar').addEventListener('click',e=>{
   const cmd=e.target?.dataset?.format||e.target?.parentElement?.dataset?.format; if(!cmd||!activeTextArea) return;
@@ -389,7 +387,7 @@ $('#formatbar').addEventListener('click',e=>{
 });
 function wrap(el,before,after){ el.focus(); const s=el.selectionStart,e=el.selectionEnd,txt=el.value; const sel=txt.slice(s,e); el.value=txt.slice(0,s)+before+sel+after+txt.slice(e); el.setSelectionRange(s+before.length,e+before.length); el.dispatchEvent(new Event('input')) }
 
-/* ===== Build HTML (v2 minimal + intro option) ===== */
+/* ===== Build HTML ===== */
 function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
 function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
@@ -490,11 +488,11 @@ function downloadHTML(){
 
 /* ===== Render / boot ===== */
 function renderAllFromState(){
-  // afficher les blocs
   blkTitle.hidden=false; blkIntro.hidden=false; blkToc.hidden=false; blkChapters.hidden=false; blkMedia.hidden=false;
   $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
 
-  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||''; (state.subtitleMode==='p'?$$('input[name="subtitleMode"]')[1]:$$('input[name="subtitleMode"]')[0]).checked=true;
+  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||'';
+  (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
 
   chkIntro.checked=!!state.introEnabled;
   inpIntroTitle.value=state.introTitle||'';
@@ -507,9 +505,7 @@ function renderAllFromState(){
 
   taExtras.value=state.extras||''; taRefs.value=state.references||''; taCaps.value=state.capsules||'';
 
-  // layout
-  setLayout(state.layout||'equal');
-
+  setLayout(state.layout||'equal'); // appliquer mise en page
   updateCounters(); buildHTML();
 }
 
@@ -521,9 +517,7 @@ fileImport.addEventListener('change',e=>{if(e.target.files?.[0]) importJSON(e.ta
 btnBuild.addEventListener('click',buildHTML);
 btnDownload.addEventListener('click',downloadHTML);
 
-/* Raccourcis édition */
-let activeTextArea=null;
-document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
+/* Raccourcis */
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal() }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML() }
