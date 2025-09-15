@@ -77,15 +77,14 @@ function loadContent(viewerEl, url){
       const doc  = new DOMParser().parseFromString(html, 'text/html');
       const part = name => doc.querySelector(`[data-part="${name}"]`);
 
-      /* ----- TITRE ----- */
+/* ----- TITRE ----- */
 const titleSection = part('title');
 const h1 = (titleSection && titleSection.querySelector('h1')) ||
            doc.querySelector('article[data-article] h1') ||
            doc.querySelector('h1');
 
-// 🔧 Nouveau : on lit d’abord le data-subtitle du H1,
-// puis à défaut un éventuel élément .subtitle / [data-subtitle] dans la section titre.
-// (On NE considère plus jamais un <h2> voisin comme sous-titre.)
+// On lit d'abord le data-subtitle du H1, puis un éventuel .subtitle / [data-subtitle] dans la section titre.
+// (On n’utilise PLUS le 1er <h2> comme sous-titre.)
 const subtitle =
   (h1?.getAttribute('data-subtitle') || '').trim() ||
   (titleSection?.querySelector('[data-subtitle], .subtitle')?.textContent || '').trim();
@@ -282,7 +281,10 @@ function parseBodyOrdered(rootNode){
   const introNodes = [];
   let hasStarted = false;
 
-  const children = Array.from(root.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
+  const children = Array.from(root.childNodes).filter(n =>
+  !(n.nodeType === 3 && !n.nodeValue.trim()) &&  // texte vide
+  n.nodeType !== 8                               // NEW: commentaires
+);
   for (const n of children){
     if (n.nodeType === 1 && n.matches('section[data-chapter]')) {
       hasStarted = true;
@@ -527,3 +529,27 @@ function sanitizeTitleHTML(rawHTML){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   return s.replaceAll(BR,'<br>').replaceAll(WBR,'<wbr>');
 }
+
+function stripHTMLComments(s){
+  return (s || '').replace(/<!--[\s\S]*?-->/g, '');
+}
+
+// Remplace/ajoute cette fonction utilitaire
+function setBlockHTML(id, html){
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  // NEW: on évalue le “vide” après suppression des commentaires
+  const clean = stripHTMLComments(html).trim();
+  const has = clean.length > 0;
+
+  el.innerHTML = has ? html : '';
+  el.classList.toggle('is-empty', !has);
+  el.setAttribute('aria-hidden', String(!has));
+
+  // NEW: masque totalement l’intro si elle est vide (plus de “gros bloc vide”)
+  if (id === 'article-body') {
+    el.style.display = has ? '' : 'none';
+  }
+}
+
