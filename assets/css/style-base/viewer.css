@@ -240,6 +240,38 @@
   #article-viewer #article-media .mosaic .tile{ grid-column: span 3; } /* 2 par ligne */
 }
 
+/* Images seules sans fond ----------------------------------
+/* === IMAGES INLINE DANS L'ARTICLE (sans bloc/carte) ===================== */
+#article-body figure.inline-media{
+  display: grid;
+  gap: .6rem;
+  margin: 1rem 0;
+  background: transparent;            /* pas de fond */
+  border: 0; box-shadow: none;        /* surtout pas de “carte” */
+}
+#article-body figure.inline-media img{
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* variantes de mise en page */
+#article-body figure.inline-media.two-cols{ grid-template-columns: 1fr 1fr; }
+#article-body figure.inline-media.three-cols{ grid-template-columns: repeat(3,1fr); }
+
+/* flush = bord à bord à l’intérieur du bloc texte (utile pour une grande image) */
+#article-body figure.inline-media.flush{ margin-left: -0.5rem; margin-right: -0.5rem; }
+
+/* légende discrète */
+#article-body figure.inline-media figcaption{
+  font-size: .95rem; line-height: 1.35; opacity: .85; color: #dfe7ff;
+}
+
+/* petit helper pour appeler la lightbox si ton JS l’écoute via [data-lb] */
+#article-body figure.inline-media [data-lb]{ cursor: zoom-in; }
+
 
 
 
