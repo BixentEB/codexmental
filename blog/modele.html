@@ -20,7 +20,7 @@
   </figure>
 </section>
 
------------------------------------------------------------------------- OPTION SOMMAIRE -----------------------------------------------------------------------------------------------------------------------------
+<!------------------------------------------------------------------------ OPTION SOMMAIRE -----------------------------------------------------------------------------------------------------------------------------
 
   <section data-chapter="sommaire">
     <h2>Sommaire</h2>
@@ -34,7 +34,48 @@
   </nav>
 </section>
 
------------------------------------------------------------------------- VERSION ANNOTEE -----------------------------------------------------------------------------------------------------------------------------
+<!------------------------------------------------------------------------ OPTION IMAGE -----------------------------------------------------------------------------------------------------------------------------
+
+<!-- Dans l’article HTML, VISIBLE EN HAUT SOUS TITRE PRINCIPAL -->
+<section data-part="media">
+  <figure>
+    <img src="/img/articles/identite/hero.jpg" alt="Portrait" data-main>  <!-- image principale -->
+    <img src="/img/articles/identite/plan-large.jpg" alt="Plan large">
+    <img src="/img/articles/identite/detail-1.jpg" alt="Détail 1">
+    <img src="/img/articles/identite/detail-2.jpg" alt="Détail 2">
+    <figcaption>Quelques images liées à l’article.</figcaption>
+  </figure>
+</section>
+
+<!----------------------
+
+
+<!-- 1) Une image simple, sans bloc -->
+<figure class="inline-media">
+  <img src="/img/articles/cameleon/scene-1.jpg" alt="Rue bondée" data-lb>
+  <figcaption>Se fondre ≠ se perdre.</figcaption>
+</figure>
+
+<!-- 2) Deux images côte à côte -->
+<figure class="inline-media two-cols">
+  <img src="/img/articles/cameleon/detail-a.jpg" alt="Détail A" data-lb>
+  <img src="/img/articles/cameleon/detail-b.jpg" alt="Détail B" data-lb>
+</figure>
+
+<!-- 3) Trois vignettes alignées -->
+<figure class="inline-media three-cols">
+  <img src="/img/articles/cameleon/p-1.jpg" alt="p1" data-lb>
+  <img src="/img/articles/cameleon/p-2.jpg" alt="p2" data-lb>
+  <img src="/img/articles/cameleon/p-3.jpg" alt="p3" data-lb>
+</figure>
+
+<!-- 4) Une grande image “flush” (bord à bord dans la zone texte) -->
+<figure class="inline-media flush">
+  <img src="/img/articles/cameleon/hero-alt.jpg" alt="Plan large" data-lb>
+</figure>
+
+
+<!------------------------------------------------------------------------ VERSION ANNOTEE -----------------------------------------------------------------------------------------------------------------------------
 
 <!-- ===== MODELE ARTICLE (à copier/coller) ===== -->
 
