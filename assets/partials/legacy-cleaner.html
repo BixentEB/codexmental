@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Legacy Article Cleaner — Codex Mental</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{font:14px/1.5 system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b0f1a;color:#eaf2ff;margin:0}
+  header{padding:12px 16px;border-bottom:1px solid #1f2a44;background:#0e1322;position:sticky;top:0}
+  main{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+  textarea{width:100%;min-height:60vh;background:#0e1424;color:#eaf2ff;border:1px solid #243559;border-radius:10px;padding:12px}
+  .panel{display:flex;flex-direction:column;gap:8px}
+  .btnbar{display:flex;gap:8px}
+  button{padding:8px 12px;border-radius:10px;border:1px solid #3a5ea8;background:#1a2750;color:#eaf2ff;cursor:pointer}
+  button:hover{filter:brightness(1.1)}
+  .note{font-size:12px;opacity:.8}
+</style>
+</head>
+<body>
+<header>
+  <strong>Legacy Cleaner</strong> — unifie en <code>&lt;article data-article&gt;</code>, H1 unique, rétrograde H1 doublons → H2.
+</header>
+<main>
+  <section class="panel">
+    <label>Ancien HTML</label>
+    <textarea id="inp" placeholder="Colle ici ton HTML legacy…"></textarea>
+    <div class="btnbar">
+      <button id="demo">Charger un exemple</button>
+      <button id="clean">Nettoyer</button>
+    </div>
+    <p class="note">Astuce : les <code>class="article"</code> inutiles seront déroulées, les scripts/styles supprimés.</p>
+  </section>
+  <section class="panel">
+    <label>HTML nettoyé (copie/colle)</label>
+    <textarea id="out" placeholder="Résultat…"></textarea>
+    <div class="btnbar">
+      <button id="download">Télécharger .html</button>
+    </div>
+  </section>
+</main>
+<script>
+const $ = sel => document.querySelector(sel);
+
+function slugify(s){
+  return String(s||'').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)+/g,'');
+}
+
+function unwrap(el){
+  const parent = el.parentNode;
+  while (el.firstChild) parent.insertBefore(el.firstChild, el);
+  parent.removeChild(el);
+}
+
+function cleanLegacy(html){
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // remove scripts/styles
+  doc.querySelectorAll('script, style, link[rel="stylesheet"]').forEach(n=>n.remove());
+
+  // unwrap legacy .article wrappers (sauf <article data-article>)
+  doc.querySelectorAll('.article').forEach(el=>{
+    if (el.tagName.toLowerCase()==='article' && el.hasAttribute('data-article')) return;
+    unwrap(el);
+  });
+
+  // pick the best root
+  let root =
+    doc.querySelector('article[data-article]') ||
+    doc.querySelector('article') ||
+    doc.querySelector('main') ||
+    doc.body;
+
+  // Create a fresh <article data-article>
+  const out = doc.createElement('article');
+  out.setAttribute('data-article','');
+
+  // keep first H1, demote others to H2
+  const allH1 = root.querySelectorAll('h1');
+  let firstH1 = allH1[0];
+  if (!firstH1){
+    firstH1 = doc.createElement('h1');
+    firstH1.textContent = doc.title || 'Sans titre';
+  }
+  out.appendChild(firstH1);
+
+  if (allH1.length>1){
+    for (let i=1;i<allH1.length;i++){
+      const h1 = allH1[i];
+      const h2 = doc.createElement('h2');
+      h2.innerHTML = h1.innerHTML;
+      [...h1.attributes].forEach(a=>h2.setAttribute(a.name,a.value));
+      h1.replaceWith(h2);
+    }
+  }
+
+  // move all remaining body content after removing the first H1 copy
+  // (on retire le premier H1 rencontré dans le flux)
+  const firstInFlow = root.querySelector('h1');
+  if (firstInFlow) firstInFlow.remove();
+
+  // drop empty text nodes at ends
+  function trimEmptyText(container){
+    while (container.firstChild && container.firstChild.nodeType===3 && !container.firstChild.nodeValue.trim()) container.removeChild(container.firstChild);
+    while (container.lastChild && container.lastChild.nodeType===3 && !container.lastChild.nodeValue.trim()) container.removeChild(container.lastChild);
+  }
+  trimEmptyText(root);
+
+  while (root.firstChild){
+    out.appendChild(root.firstChild);
+  }
+
+  // optional: if first H2 duplicates H1, remove that H2
+  const titleSlug = slugify(firstH1.textContent.trim());
+  const firstH2 = out.querySelector('h2');
+  if (firstH2 && slugify(firstH2.textContent.trim()) === titleSlug){
+    firstH2.remove();
+  }
+
+  // return pretty-ish HTML
+  return '<article data-article>\n' + out.innerHTML + '\n</article>';
+}
+
+$('#clean').onclick = ()=>{
+  try{
+    $('#out').value = cleanLegacy($('#inp').value);
+  }catch(e){
+    $('#out').value = 'Erreur: ' + e.message;
+  }
+};
+
+$('#download').onclick = ()=>{
+  const blob = new Blob([$('#out').value], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'article-clean.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+$('#demo').onclick = ()=>{
+  $('#inp').value = `
+<section class="article">
+  <h1>✨ RÉVÉLATION</h1>
+  <h2 class="article">✨ RÉVÉLATION</h2>
+  <p>Intro…</p>
+  <h2>IA vs consommation numérique</h2>
+  <table><tr><td>demo</td></tr></table>
+  <h1>Doublon H1 (sera rétrogradé)</h1>
+  <p>Suite après le tableau (conservée).</p>
+</section>`;
+};
+</script>
+</body>
+</html>
