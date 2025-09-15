@@ -248,23 +248,26 @@ const blkMedia=$('#block-media'), imagesEl=$('#images'), btnAddImage=$('#btn-add
 const taExtras=$('#ta-extras'), taRefs=$('#ta-refs'), taCaps=$('#ta-caps');
 
 /* ===== Layout handling ===== */
-  function setLayout(mode){
+function setLayout(mode){
   if(!['left','equal','right'].includes(mode)) mode='equal';
+  state.layout=mode;
   document.body.setAttribute('data-layout', mode);
-  localStorage.setItem(KEY_UI, mode); // persiste le choix
+  localStorage.setItem(KEY_UI, mode);
 
-  // état visuel du bouton actif
-  [btnLayoutLeft, btnLayoutEq, btnLayoutRight].forEach(b=>b.setAttribute('aria-pressed','false'));
-  ({left:btnLayoutLeft, equal:btnLayoutEq, right:btnLayoutRight}[mode]).setAttribute('aria-pressed','true');
+  // bouton actif
+  [btnLayoutLeft, btnLayoutEq, btnLayoutRight].forEach(b=>b?.setAttribute('aria-pressed','false'));
+  ({left:btnLayoutLeft, equal:btnLayoutEq, right:btnLayoutRight}[mode])?.setAttribute('aria-pressed','true');
 }
-
-/* keyboard: Ctrl+Alt+←/0/→ */
+// listeners de clic + raccourcis clavier
+btnLayoutLeft.addEventListener('click',  ()=>setLayout('left'));
+btnLayoutEq.addEventListener('click',    ()=>setLayout('equal'));
+btnLayoutRight.addEventListener('click', ()=>setLayout('right'));
 document.addEventListener('keydown',(e)=>{
   const k=e.key.toLowerCase();
   if((e.ctrlKey||e.metaKey) && e.altKey){
     if(k==='arrowleft'){ e.preventDefault(); setLayout('left') }
-    if(k==='0'){ e.preventDefault(); setLayout('equal') }
-    if(k==='arrowright'){ e.preventDefault(); setLayout('right') }
+    if(k==='0'){        e.preventDefault(); setLayout('equal') }
+    if(k==='arrowright'){e.preventDefault(); setLayout('right') }
   }
 });
 
@@ -350,7 +353,7 @@ function addChapter(){const n=state.chapters.length+1; const ch={n,id:'section-'
 function moveChapter(n,delta){const i=state.chapters.findIndex(c=>c.n===n); const j=i+delta; if(j<0||j>=state.chapters.length) return; const tmp=state.chapters[i]; state.chapters[i]=state.chapters[j]; state.chapters[j]=tmp; renumberChapters(); renderChapters(); markDirty()}
 function duplicateChapter(n){const i=state.chapters.findIndex(c=>c.n===n); const s=state.chapters[i]; const d={n:s.n+1,id:s.id+'-copy',title:s.title+' (copie)',html:s.html}; state.chapters.splice(i+1,0,d); renumberChapters(); renderChapters(); markDirty()}
 function deleteChapter(n){ if(!confirm('Supprimer ce chapitre ?')) return; state.chapters=state.chapters.filter(c=>c.n!==n); renumberChapters(); renderChapters(); markDirty() }
-$('#btn-add-chapter').addEventListener('click',addChapter);
+btnAddChapter.addEventListener('click',addChapter);
 
 /* ===== Media ===== */
 function imageItem(img,idx){
@@ -385,7 +388,7 @@ function renderImages(){imagesEl.innerHTML=''; state.media.images.forEach((im,i)
 btnAddImage.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
 
 /* ===== Formatting toolbar ===== */
-let activeTextArea=null; // <-- unique déclaration (FIX)
+let activeTextArea=null;
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 $('#formatbar').addEventListener('click',e=>{
   const cmd=e.target?.dataset?.format||e.target?.parentElement?.dataset?.format; if(!cmd||!activeTextArea) return;
@@ -396,7 +399,7 @@ $('#formatbar').addEventListener('click',e=>{
 });
 function wrap(el,before,after){ el.focus(); const s=el.selectionStart,e=el.selectionEnd,txt=el.value; const sel=txt.slice(s,e); el.value=txt.slice(0,s)+before+sel+after+txt.slice(e); el.setSelectionRange(s+before.length,e+before.length); el.dispatchEvent(new Event('input')) }
 
-/* ===== Build HTML ===== */
+/* ===== Build HTML (v2 minimal + intro option) ===== */
 function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
 function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
@@ -497,11 +500,11 @@ function downloadHTML(){
 
 /* ===== Render / boot ===== */
 function renderAllFromState(){
+  // afficher les blocs
   blkTitle.hidden=false; blkIntro.hidden=false; blkToc.hidden=false; blkChapters.hidden=false; blkMedia.hidden=false;
   $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
 
-  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||'';
-  (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
+  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||''; (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
 
   chkIntro.checked=!!state.introEnabled;
   inpIntroTitle.value=state.introTitle||'';
@@ -514,7 +517,9 @@ function renderAllFromState(){
 
   taExtras.value=state.extras||''; taRefs.value=state.references||''; taCaps.value=state.capsules||'';
 
-  setLayout(state.layout||'equal'); // appliquer mise en page
+  // layout initial
+  setLayout(state.layout||'equal');
+
   updateCounters(); buildHTML();
 }
 
@@ -527,6 +532,7 @@ btnBuild.addEventListener('click',buildHTML);
 btnDownload.addEventListener('click',downloadHTML);
 
 /* Raccourcis */
+let activeTextArea=null;
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal() }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML() }
@@ -535,6 +541,7 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='u' && activeTextArea){ e.preventDefault(); wrap(activeTextArea,'<u>','</u>') }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k' && activeTextArea){ e.preventDefault(); const href=prompt('URL du lien :','https://'); if(href) wrap(activeTextArea,`<a href="${href}">`,'</a>') }
 });
+document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 
 /* Autosave 3 min + on idle */
 setInterval(()=>{ if(state.dirty) saveLocal() },180000);
@@ -543,5 +550,6 @@ window.addEventListener('beforeunload',e=>{ if(state.dirty){ e.preventDefault();
 
 renderAllFromState();
 </script>
+
 </body>
 </html>
