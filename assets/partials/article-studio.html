@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Article Studio v2 — Codex Mental</title>
-<!-- petit favicon inline pour éviter le 404 de la console -->
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="%23121739"/><text x="50%" y="62%" font-size="76" text-anchor="middle" fill="%2386c7ff" font-family="Arial, Helvetica, sans-serif">A</text></svg>'>
 <style>
   :root{
@@ -28,28 +27,21 @@
   .btn.good{background:rgba(74,210,149,.10);border-color:rgba(74,210,149,.5)}
   .btn.small{padding:.35rem .55rem;font-size:.9rem}
 
-  /* Layout responsive + modes (contraste clair et smooth) */
-  .wrap{
-    display:grid; gap:14px; padding:14px; height:calc(100% - 58px);
-    transition:grid-template-columns .25s ease;
-  }
+  /* Layout responsive + modes */
+  .wrap{display:grid; gap:14px; padding:14px; height:calc(100% - 58px); transition:grid-template-columns .25s ease}
   body[data-layout="equal"]  .wrap{grid-template-columns:1fr 1fr}
   body[data-layout="left"]   .wrap{grid-template-columns:minmax(560px,2fr) minmax(420px,1fr)}
   body[data-layout="right"]  .wrap{grid-template-columns:minmax(420px,1fr) minmax(560px,2fr)}
-
-  .btn.toggle[aria-pressed="true"]{
-    outline:2px solid var(--accent);
-    background:rgba(134,199,255,.15);
-  }
+  .btn.toggle[aria-pressed="true"]{outline:2px solid var(--accent); background:rgba(134,199,255,.15)}
 
   .panel{border:1px solid var(--line);border-radius:var(--radius);background:#0c1125;min-height:0;display:flex;flex-direction:column}
   .panel h2{font-size:1rem;margin:0;padding:10px 12px;border-bottom:1px solid var(--line);color:#cfe3ff}
   .panel .content{padding:12px;overflow:auto;min-height:0;flex:1}
 
   .insertbar,.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-  .row{display:grid;grid-template-columns:170px 1fr;gap:10px;align-items:start;margin-bottom:10px}
+  .row{display:grid;grid-template-columns:180px 1fr;gap:10px;align-items:start;margin-bottom:10px}
   .row label{color:var(--muted)}
-  input[type="text"],input[type="url"],textarea,select{width:100%;background:#0a0f22;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;font:inherit}
+  input[type="text"],input[type="url"],textarea,select{width:100%;background:#0a0f22;color:#e9efff;border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;font:inherit}
   textarea{min-height:110px;resize:vertical}
   .hint{color:var(--muted);font-size:.9rem}
   .fieldset{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:10px 0}
@@ -74,13 +66,9 @@
 <header class="appbar">
   <div class="title">🧰 Article Studio</div>
   <div class="spacer"></div>
-
-  <!-- Layout controls -->
   <button id="btn-layout-left"  class="btn small toggle" title="Focus Édition (Ctrl+Alt+←)">⇤ Édition</button>
   <button id="btn-layout-eq"    class="btn small toggle" title="50/50 (Ctrl+Alt+0)">50/50</button>
   <button id="btn-layout-right" class="btn small toggle" title="Focus Aperçu (Ctrl+Alt+→)">Aperçu ⇥</button>
-
-  <!-- Data controls -->
   <button id="btn-save" class="btn">Sauver</button>
   <button id="btn-load" class="btn">Charger</button>
   <button id="btn-export" class="btn">Export JSON</button>
@@ -91,7 +79,6 @@
 </header>
 
 <div class="wrap">
-  <!-- LEFT -->
   <section class="panel">
     <h2>Édition assistée</h2>
     <div class="content">
@@ -116,20 +103,17 @@
         <button class="btn small" data-format="ul">• Liste</button>
         <button class="btn small" data-format="ol">1. Liste</button>
         <button class="btn small" data-format="quote">« Citation »</button>
-        <span class="hint">Raccourcis : Ctrl+B / Ctrl+I / Ctrl+U, Ctrl+K (lien)</span>
+        <!-- bonus utiles -->
+        <button class="btn small" data-format="hr">— hr —</button>
+        <button class="btn small" data-format="sup">x<sup>2</sup></button>
+        <button class="btn small" data-format="sub">H<sub>2</sub>O</button>
       </div>
 
       <!-- Title -->
       <div id="block-title" class="fieldset" hidden>
         <div class="legend">Titre (H1) + Sous-titre (optionnel)</div>
-        <div class="row">
-          <label for="inp-title">Titre</label>
-          <input id="inp-title" type="text" placeholder="Mon titre">
-        </div>
-        <div class="row">
-          <label for="inp-subtitle">Sous-titre</label>
-          <input id="inp-subtitle" type="text" placeholder="Sous-titre (optionnel)">
-        </div>
+        <div class="row"><label for="inp-title">Titre</label><input id="inp-title" type="text" placeholder="Mon titre"></div>
+        <div class="row"><label for="inp-subtitle">Sous-titre</label><input id="inp-subtitle" type="text" placeholder="Sous-titre (optionnel)"></div>
         <div class="row">
           <label>Mode sous-titre</label>
           <div>
@@ -137,19 +121,22 @@
             <label class="checkbox"><input type="radio" name="subtitleMode" value="p"> &lt;p class="subtitle"&gt;</label>
           </div>
         </div>
+        <div class="row"><label>Outils / partage</label><label class="checkbox"><input type="checkbox" id="chk-tools" checked> Inclure le slot « tools »</label></div>
+        <div class="row">
+          <label>Retours à la ligne</label>
+          <select id="sel-wrap">
+            <option value="p" selected>Paragraphe &lt;p&gt;</option>
+            <option value="br">Saut de ligne &lt;br&gt;</option>
+            <option value="none">Aucun (laisser tel quel)</option>
+          </select>
+        </div>
       </div>
 
       <!-- Intro -->
       <div id="block-intro" class="fieldset" hidden>
         <div class="legend">Introduction (H2 optionnel + contenu)</div>
-        <div class="row">
-          <label>Inclure l’intro</label>
-          <label class="checkbox"><input type="checkbox" id="chk-intro"> Ajouter une introduction</label>
-        </div>
-        <div class="row">
-          <label for="inp-intro-title">Titre de l’intro</label>
-          <input id="inp-intro-title" type="text" placeholder="Introduction">
-        </div>
+        <div class="row"><label>Inclure l’intro</label><label class="checkbox"><input type="checkbox" id="chk-intro"> Ajouter une introduction</label></div>
+        <div class="row"><label for="inp-intro-title">Titre de l’intro</label><input id="inp-intro-title" type="text" placeholder="Introduction"></div>
         <textarea id="ta-intro" placeholder="… intro …"></textarea>
         <div class="counter" data-for="ta-intro"></div>
       </div>
@@ -171,30 +158,15 @@
       <div id="block-media" class="fieldset" hidden>
         <div class="legend">Médias (figure)</div>
         <div class="images" id="images"></div>
-        <div class="row">
-          <label>Figcaption</label>
-          <input id="inp-caption" type="text" placeholder="Quelques images liées à l’article.">
-        </div>
+        <div class="row"><label>Figcaption</label><input id="inp-caption" type="text" placeholder="Quelques images liées à l’article."></div>
         <button class="btn small" id="btn-add-image">+ Ajouter une image</button>
         <div class="hint">Astuce : coche une image « principale » (data-main). Ordre réordonnable avec ↑↓.</div>
       </div>
 
       <!-- Extras / References / Capsules -->
-      <div id="block-extras" class="fieldset" hidden>
-        <div class="legend">Extras</div>
-        <textarea id="ta-extras" placeholder="…"></textarea>
-        <div class="counter" data-for="ta-extras"></div>
-      </div>
-      <div id="block-refs" class="fieldset" hidden>
-        <div class="legend">Références</div>
-        <textarea id="ta-refs" placeholder="…"></textarea>
-        <div class="counter" data-for="ta-refs"></div>
-      </div>
-      <div id="block-caps" class="fieldset" hidden>
-        <div class="legend">Capsules</div>
-        <textarea id="ta-caps" placeholder="…"></textarea>
-        <div class="counter" data-for="ta-caps"></div>
-      </div>
+      <div id="block-extras" class="fieldset" hidden><div class="legend">Extras</div><textarea id="ta-extras" placeholder="…"></textarea><div class="counter" data-for="ta-extras"></div></div>
+      <div id="block-refs" class="fieldset" hidden><div class="legend">Références</div><textarea id="ta-refs" placeholder="…"></textarea><div class="counter" data-for="ta-refs"></div></div>
+      <div id="block-caps" class="fieldset" hidden><div class="legend">Capsules</div><textarea id="ta-caps" placeholder="…"></textarea><div class="counter" data-for="ta-caps"></div></div>
 
       <div class="status">
         <div id="pill-save" class="pill">autosave 3 min • Ctrl+S</div>
@@ -203,7 +175,6 @@
     </div>
   </section>
 
-  <!-- RIGHT -->
   <section class="panel">
     <h2>HTML final (copier / coller)</h2>
     <div class="content">
@@ -214,12 +185,13 @@
 
 <script>
 /* ===== State & persistence ===== */
-const KEY='cm-article-studio-v2a';
+const KEY='cm-article-studio-v2b';       // (nouvelle clé -> évite un ancien brouillon vide)
 const KEY_UI='cm-article-studio-layout';
 const state={
   title:'',subtitle:'',subtitleMode:'data',
+  wrapMode:'p',                           // 'p' | 'br' | 'none'
+  tools:true, toc:true,
   introEnabled:false,introTitle:'',intro:'',
-  toc:true,
   chapters:[], // {n,id,title,html}
   media:{images:[],caption:''}, // {src,alt,main}
   extras:'',references:'',capsules:'',
@@ -231,10 +203,81 @@ const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const debounce=(fn,ms=600)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
 function slugify(str){return (str||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'section'}
 function markDirty(){state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées'}
-function saveLocal(){state.updatedAt=Date.now(); localStorage.setItem(KEY,JSON.stringify(state)); state.dirty=false; $('#pill-dirty').textContent='tout est sauvegardé'}
-function loadLocal(){const raw=localStorage.getItem(KEY); if(!raw) return; Object.assign(state,JSON.parse(raw)); renderAllFromState()}
-function exportJSON(){const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='article-studio.json'; a.click(); URL.revokeObjectURL(a.href)}
-function importJSON(file){const fr=new FileReader(); fr.onload=()=>{try{Object.assign(state,JSON.parse(fr.result)); renderAllFromState(); saveLocal()}catch{alert('Fichier JSON invalide')}}; fr.readAsText(file)}
+
+/* force une synchro UI -> state (utile avant save/export/build) */
+function syncFromInputs(){
+  state.title=$('#inp-title')?.value||'';
+  state.subtitle=$('#inp-subtitle')?.value||'';
+  state.subtitleMode=($$('input[name="subtitleMode"]:checked')[0]?.value==='p')?'p':'data';
+  state.tools=$('#chk-tools')?.checked??true;
+  state.wrapMode=$('#sel-wrap')?.value||'p';
+  state.introEnabled=$('#chk-intro')?.checked??false;
+  state.introTitle=$('#inp-intro-title')?.value||'';
+  state.intro=$('#ta-intro')?.value||'';
+  state.toc=$('#chk-toc')?.checked??true;
+  state.media.caption=$('#inp-caption')?.value||'';
+  state.extras=$('#ta-extras')?.value||'';
+  state.references=$('#ta-refs')?.value||'';
+  state.capsules=$('#ta-caps')?.value||'';
+  // chapitres (relecture UI -> state)
+  const nodes=$$('#chapters .item');
+  if(nodes.length){
+    state.chapters = nodes.map((node,i)=>({
+      n:i+1,
+      id:$('.ch-id',node).value || slugify($('.ch-title',node).value||('section-'+(i+1))),
+      title:$('.ch-title',node).value||'',
+      html:$('.ch-html',node).value||''
+    }));
+  }
+}
+function saveLocal(){
+  syncFromInputs();
+  state.updatedAt=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(state));
+  state.dirty=false;
+  const d=new Date(state.updatedAt);
+  $('#pill-dirty').textContent='sauvegardé à '+d.toLocaleTimeString();
+}
+function loadLocal(){
+  const raw=localStorage.getItem(KEY);
+  if(!raw){ alert('Aucun brouillon trouvé.'); return; }
+  try{
+    const loaded=JSON.parse(raw)||{};
+    // defaults pour les clés manquantes
+    Object.assign(state,{
+      title:'',subtitle:'',subtitleMode:'data',
+      wrapMode:'p',tools:true,toc:true,
+      introEnabled:false,introTitle:'',intro:'',
+      chapters:[],media:{images:[],caption:''},
+      extras:'',references:'',capsules:'',
+      layout:'equal'
+    }, loaded);
+    renderAllFromState();
+  }catch(e){ alert('Brouillon invalide'); }
+}
+function exportJSON(){
+  syncFromInputs();
+  const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='article-studio.json'; a.click(); URL.revokeObjectURL(a.href);
+}
+function importJSON(file){
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const data=JSON.parse(fr.result);
+      Object.assign(state,{
+        title:'',subtitle:'',subtitleMode:'data',
+        wrapMode:'p',tools:true,toc:true,
+        introEnabled:false,introTitle:'',intro:'',
+        chapters:[],media:{images:[],caption:''},
+        extras:'',references:'',capsules:'',
+        layout:'equal'
+      }, data);
+      renderAllFromState(); saveLocal();
+    }catch{ alert('Fichier JSON invalide'); }
+  };
+  fr.readAsText(file);
+}
 
 /* ===== UI refs ===== */
 const out=$('#out');
@@ -248,6 +291,7 @@ const blkToc=$('#block-toc'), chkToc=$('#chk-toc');
 const blkChapters=$('#block-chapters'), chaptersEl=$('#chapters'), btnAddChapter=$('#btn-add-chapter');
 const blkMedia=$('#block-media'), imagesEl=$('#images'), btnAddImage=$('#btn-add-image'), inpCaption=$('#inp-caption');
 const taExtras=$('#ta-extras'), taRefs=$('#ta-refs'), taCaps=$('#ta-caps');
+const selWrap=$('#sel-wrap'), chkTools=$('#chk-tools');
 
 /* ===== Layout handling ===== */
 function setLayout(mode){
@@ -285,18 +329,14 @@ insertButtons.forEach(b=>{
   });
 });
 
-/* ===== Inputs sync ===== */
-[ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption,inpIntroTitle ].forEach(el=>{
-  el.addEventListener('input',debounce(()=>{
-    state.title=inpTitle.value; state.subtitle=inpSubtitle.value;
-    state.intro=taIntro.value; state.introTitle=inpIntroTitle.value;
-    state.extras=taExtras.value; state.references=taRefs.value; state.capsules=taCaps.value;
-    state.media.caption=inpCaption.value; markDirty();
-  },400));
+/* ===== Inputs sync (live) ===== */
+[ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption,inpIntroTitle,selWrap ].forEach(el=>{
+  el.addEventListener('input',debounce(()=>{ markDirty(); },250));
 });
 chkIntro.addEventListener('change',()=>{state.introEnabled=chkIntro.checked; markDirty()});
 subtitleRadios.forEach(r=>r.addEventListener('change',()=>{state.subtitleMode=r.value==='p'?'p':'data'; markDirty()}));
 chkToc.addEventListener('change',()=>{state.toc=chkToc.checked; markDirty()});
+chkTools.addEventListener('change',()=>{state.tools=chkTools.checked; markDirty()});
 
 /* ===== Counters ===== */
 function updateCounters(){
@@ -307,7 +347,7 @@ function updateCounters(){
   });
 }
 
-/* ===== Chapters (H2 simples) ===== */
+/* ===== Chapters ===== */
 function chapterItem(ch){
   const root=document.createElement('div'); root.className='item'; root.dataset.id=ch.id;
   root.innerHTML=`
@@ -320,39 +360,35 @@ function chapterItem(ch){
         <button class="btn small bad" data-act="del">Supprimer</button>
       </div>
     </div>
-    <div class="row">
-      <label>Titre H2</label>
-      <input type="text" class="ch-title" placeholder="Titre du chapitre" value="${ch.title||''}">
-    </div>
-    <div class="row id-inline">
-      <label>ID (ancre)</label>
-      <input type="text" class="ch-id" value="${ch.id}">
-      <button class="btn small" data-act="slug">Slug</button>
-    </div>
+    <div class="row"><label>Titre H2</label><input type="text" class="ch-title" placeholder="Titre du chapitre" value="${ch.title||''}"></div>
+    <div class="row id-inline"><label>ID (ancre)</label><input type="text" class="ch-id" value="${ch.id}"><button class="btn small" data-act="slug">Slug</button></div>
     <textarea class="ch-html" placeholder="… contenu …">${ch.html||''}</textarea>
     <div class="counter"></div>`;
   const elTitle=$('.ch-title',root), elId=$('.ch-id',root), elHtml=$('.ch-html',root), counter=$('.counter',root);
   const syncCounter=()=>{counter.textContent=`${(elHtml.value.trim().split(/\s+/).filter(Boolean).length)} mots`};
-  elTitle.addEventListener('input',debounce(()=>{ch.title=elTitle.value; $('.ghost',root).textContent=ch.title||'(sans titre)'; markDirty()},400));
-  elId.addEventListener('input',debounce(()=>{ch.id=elId.value||slugify(ch.title); markDirty()},400));
-  elHtml.addEventListener('input',debounce(()=>{ch.html=elHtml.value; updateCounters(); syncCounter(); markDirty()},400));
+  elTitle.addEventListener('input',debounce(()=>{$('.ghost',root).textContent=elTitle.value||'(sans titre)'; markDirty()},300));
+  elId.addEventListener('input',debounce(()=>{markDirty()},300));
+  elHtml.addEventListener('input',debounce(()=>{updateCounters(); syncCounter(); markDirty()},300));
   root.addEventListener('click',ev=>{
     const act=ev.target?.dataset?.act; if(!act) return;
-    if(act==='slug'){ elId.value=slugify(elTitle.value||ch.id); ch.id=elId.value; markDirty() }
-    if(act==='up'){ moveChapter(ch.n,-1) }
-    if(act==='down'){ moveChapter(ch.n,+1) }
-    if(act==='dup'){ duplicateChapter(ch.n) }
-    if(act==='del'){ deleteChapter(ch.n) }
+    const i=state.chapters.findIndex(x=>x.id===ch.id);
+    if(act==='slug'){ elId.value=slugify(elTitle.value||ch.id); markDirty() }
+    if(act==='up'   && i>0){ const t=state.chapters[i-1]; state.chapters[i-1]=state.chapters[i]; state.chapters[i]=t; renderChapters(); markDirty() }
+    if(act==='down' && i<state.chapters.length-1){ const t=state.chapters[i+1]; state.chapters[i+1]=state.chapters[i]; state.chapters[i]=t; renderChapters(); markDirty() }
+    if(act==='dup'){ const d={n:ch.n+1,id:(ch.id||'section')+'-copy',title:(ch.title||'')+' (copie)',html:ch.html||''}; state.chapters.splice(i+1,0,d); renumberChapters(); renderChapters(); markDirty() }
+    if(act==='del'){ if(confirm('Supprimer ce chapitre ?')){ state.chapters=state.chapters.filter((_,k)=>k!==i); renumberChapters(); renderChapters(); markDirty() } }
   });
   syncCounter(); return root;
 }
 function renumberChapters(){state.chapters.forEach((c,i)=>c.n=i+1)}
-function renderChapters(){chaptersEl.innerHTML=''; state.chapters.forEach(ch=>{chaptersEl.appendChild(chapterItem(ch))})}
+function renderChapters(){
+  chaptersEl.innerHTML='';
+  // si vide (première fois), on garde l'état existant, sinon on recompose depuis state
+  if(!state.chapters.length){ /* no-op */ }
+  state.chapters.forEach(ch=>chaptersEl.appendChild(chapterItem(ch)));
+}
 function addChapter(){const n=state.chapters.length+1; const ch={n,id:'section-'+n,title:'',html:''}; state.chapters.push(ch); renderChapters(); markDirty()}
-function moveChapter(n,delta){const i=state.chapters.findIndex(c=>c.n===n); const j=i+delta; if(j<0||j>=state.chapters.length) return; const tmp=state.chapters[i]; state.chapters[i]=state.chapters[j]; state.chapters[j]=tmp; renumberChapters(); renderChapters(); markDirty()}
-function duplicateChapter(n){const i=state.chapters.findIndex(c=>c.n===n); const s=state.chapters[i]; const d={n:s.n+1,id:s.id+'-copy',title:s.title+' (copie)',html:s.html}; state.chapters.splice(i+1,0,d); renumberChapters(); renderChapters(); markDirty()}
-function deleteChapter(n){ if(!confirm('Supprimer ce chapitre ?')) return; state.chapters=state.chapters.filter(c=>c.n!==n); renumberChapters(); renderChapters(); markDirty() }
-btnAddChapter.addEventListener('click',addChapter);
+$('#btn-add-chapter').addEventListener('click',addChapter);
 
 /* ===== Media ===== */
 function imageItem(img,idx){
@@ -373,7 +409,7 @@ function imageItem(img,idx){
       <div class="hint">(${idx+1})</div><div></div>
     </div>`;
   const elSrc=$('.im-src',root), elAlt=$('.im-alt',root), elMain=$('.im-main',root);
-  const sync=debounce(()=>{img.src=elSrc.value; img.alt=elAlt.value; img.main=elMain.checked; markDirty()},300);
+  const sync=debounce(()=>{img.src=elSrc.value; img.alt=elAlt.value; img.main=elMain.checked; markDirty()},250);
   elSrc.addEventListener('input',sync); elAlt.addEventListener('input',sync); elMain.addEventListener('change',sync);
   root.addEventListener('click',ev=>{
     const act=ev.target?.dataset?.act; if(!act) return; const i=state.media.images.indexOf(img);
@@ -387,41 +423,70 @@ function renderImages(){imagesEl.innerHTML=''; state.media.images.forEach((im,i)
 btnAddImage.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
 
 /* ===== Formatting toolbar ===== */
-let activeTextArea=null;  /* <— unique déclaration */
+let activeTextArea=null;
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 $('#formatbar').addEventListener('click',e=>{
   const cmd=e.target?.dataset?.format||e.target?.parentElement?.dataset?.format; if(!cmd||!activeTextArea) return;
   const el=activeTextArea;
-  const W={em:['<em>','</em>'],strong:['<strong>','</strong>'],u:['<u>','</u>'],code:['<code>','</code>'],quote:['<blockquote>','</blockquote>'],ul:['\n<ul>\n<li>','</li>\n</ul>\n'],ol:['\n<ol>\n<li>','</li>\n</ol>\n']};
+  const W={
+    em:['<em>','</em>'],strong:['<strong>','</strong>'],u:['<u>','</u>'],code:['<code>','</code>'],quote:['<blockquote>','</blockquote>'],
+    ul:['\n<ul>\n<li>','</li>\n</ul>\n'],ol:['\n<ol>\n<li>','</li>\n</ol>\n'],
+    hr:['\n<hr>\n',''],sup:['<sup>','</sup>'],sub:['<sub>','</sub>']
+  };
   if(cmd==='link'){const href=prompt('URL du lien :','https://'); if(href){wrap(el,`<a href="${href}">`,'</a>')} return}
   const [b,a]=W[cmd]||['','']; wrap(el,b,a);
 });
-function wrap(el,before,after){ el.focus(); const s=el.selectionStart,e=el.selectionEnd,txt=el.value; const sel=txt.slice(s,e); el.value=txt.slice(0,s)+before+sel+after+txt.slice(e); el.setSelectionRange(s+before.length,e+before.length); el.dispatchEvent(new Event('input')) }
+function wrap(el,before,after){
+  el.focus(); const s=el.selectionStart,e=el.selectionEnd,txt=el.value; const sel=txt.slice(s,e);
+  el.value=txt.slice(0,s)+before+sel+after+txt.slice(e);
+  el.setSelectionRange(s+before.length,s+before.length+sel.length);
+  el.dispatchEvent(new Event('input'));
+}
 
-/* ===== Build HTML (v2 minimal + intro option) ===== */
+/* ===== Helpers build ===== */
 function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
 function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
+function hasHtmlTags(s){return /<\/?[a-z][\s\S]*?>/i.test((s||''))}
 
+/* convertit le texte sans balises selon wrapMode */
+function convertByWrapMode(s, mode){
+  const raw=(s||'').replace(/\r/g,'').trim();
+  if(!raw) return '';
+  if(hasHtmlTags(raw)) return raw; // respecter l'HTML saisi
+  if(mode==='p'){
+    return raw.split(/\n+/).map(l=>l.trim()).filter(Boolean).map(l=>`<p>${escapeHtml(l)}</p>`).join('\n');
+  }else if(mode==='br'){
+    return escapeHtml(raw).replace(/\n/g,'<br>\n');
+  }else{ // none
+    return escapeHtml(raw); // pas de <br> ni <p>
+  }
+}
+
+/* ===== Build HTML ===== */
 function buildHTML(){
-  // ids uniques pour H2 (chapitres)
+  syncFromInputs(); // sécurise que l'état reflète bien l'UI
+
+  // ids uniques pour H2
   const seen=new Set();
   state.chapters.forEach(ch=>{
-    let base=slugify(ch.title||ch.id||'section'); let id=base,k=2; while(seen.has(id)){id=`${base}-${k++}`} ch.id=id; seen.add(id);
+    let base=slugify(ch.title||ch.id||'section'), id=base, k=2;
+    while(seen.has(id)) id=`${base}-${k++}`;
+    ch.id=id; seen.add(id);
   });
 
-  // H1 + sous-titre
+  // H1
   const h1 = state.subtitleMode==='data'
     ? `<h1${state.subtitle?` data-subtitle="${escapeAttr(state.subtitle)}"`:''}>${escapeHtml(state.title||'Mon titre')}</h1>`
     : `<h1>${escapeHtml(state.title||'Mon titre')}</h1>\n  ${state.subtitle?`<p class="subtitle">${escapeHtml(state.subtitle)}</p>`:''}`;
 
-  // Intro (H2 optionnel)
+  // Intro
   let introBlock='';
   if(state.introEnabled){
     const t=(state.introTitle||'Introduction').trim()||'Introduction';
     const id = slugify(t||'introduction') || 'introduction';
-    const body = (state.intro||'').trim();
-    introBlock = `  <h2 id="${id}">${escapeHtml(t)}</h2>\n${body?indent(body,2)+'\n':''}\n`;
+    const bodyHTML = convertByWrapMode(state.intro||'', state.wrapMode);
+    introBlock = `  <h2 id="${id}">${escapeHtml(t)}</h2>\n${bodyHTML?indent(bodyHTML,2)+'\n':''}\n`;
   }
 
   // TOC
@@ -436,27 +501,25 @@ ${links}
   </section>\n\n`;
   }
 
-  // Chapitres en H2 simples
+  // Chapitres
   const chs = state.chapters.map(ch=>{
-    const body = ch.html?.trim() ? ch.html.trim() : '<p>… contenu …</p>';
+    const bodyHTML = convertByWrapMode(ch.html||'', state.wrapMode) || '<p>… contenu …</p>';
     return `  <h2 id="${ch.id}">${escapeHtml(ch.title||('Chapitre '+ch.n))}</h2>
-${indent(body,2)}`;
+${indent(bodyHTML,2)}`;
   }).join('\n\n');
 
-  // Article (data-article minimal)
+  const toolsBlock = state.tools ? '  <section data-part="tools"></section>\n\n' : '';
+
   const article =
 `<article data-article>
   <section data-part="title" class="title-chip">
     ${h1}
   </section>
 
-  <!-- Outils (vide : le viewer injecte un partage par défaut) -->
-  <section data-part="tools"></section>
-
-${introBlock}${toc}${chs}
+${toolsBlock}${introBlock}${toc}${chs}
 </article>`;
 
-  // Médias (seulement si non vides)
+  // Médias (optionnels)
   let media='';
   if((state.media.images&&state.media.images.length) || (state.media.caption||'').trim()){
     const imgs=(state.media.images||[]).map(im=>{
@@ -471,15 +534,19 @@ ${imgs}${cap}
 </section>`;
   }
 
-  // Extras / refs / caps (émis uniquement s'il y a du contenu)
+  // Extras / refs / caps (optionnels)
   const extras = (state.extras||'').trim()? `<section data-part="extras">\n${indent(state.extras.trim(),2)}\n</section>`:'';
   const refs   = (state.references||'').trim()? `<section data-part="references">\n${indent(state.references.trim(),2)}\n</section>`:'';
   const caps   = (state.capsules||'').trim()? `<section data-part="capsules">\n${indent(state.capsules.trim(),2)}\n</section>`:'';
+
+  // Garde CSS : cache tools quand il est vide
+  const guardCss = `<style>[data-article] [data-part="tools"]:not(:has(*)){display:none}</style>`;
 
   const full =
 `<!-- =========================================================
   ARTICLE écrit par Vincero — édité sur la plateforme Article Studio v2 (Codex Mental)
   ========================================================= -->
+${guardCss}
 ${article}
 
 ${media}
@@ -491,44 +558,41 @@ ${caps}
 }
 
 /* ===== Download ===== */
-function downloadHTML(){
-  const html=buildHTML();
-  const blob=new Blob([html],{type:'text/html'}); const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download=(slugify(state.title||'article')||'article')+'.html'; a.click(); URL.revokeObjectURL(a.href);
-}
+function downloadHTML(){ const html=buildHTML(); const blob=new Blob([html],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=(slugify(state.title||'article')||'article')+'.html'; a.click(); URL.revokeObjectURL(a.href) }
 
 /* ===== Render / boot ===== */
 function renderAllFromState(){
   blkTitle.hidden=false; blkIntro.hidden=false; blkToc.hidden=false; blkChapters.hidden=false; blkMedia.hidden=false;
   $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
 
-  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||''; (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
+  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||'';
+  (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
+  selWrap.value=state.wrapMode||'p';
+  chkTools.checked=!!state.tools;
 
-  chkIntro.checked=!!state.introEnabled;
-  inpIntroTitle.value=state.introTitle||'';
-  taIntro.value=state.intro||'';
-
+  chkIntro.checked=!!state.introEnabled; inpIntroTitle.value=state.introTitle||''; taIntro.value=state.intro||'';
   chkToc.checked=!!state.toc;
-  renderChapters();
 
-  imagesEl.innerHTML=''; state.media.images=state.media.images||[]; renderImages(); inpCaption.value=state.media.caption||'';
+  // Recrée l’UI des chapitres
+  chaptersEl.innerHTML='';
+  (state.chapters||[]).forEach(ch=>chaptersEl.appendChild(chapterItem(ch)));
 
+  imagesEl.innerHTML=''; state.media.images=(state.media.images||[]); renderImages(); inpCaption.value=state.media.caption||'';
   taExtras.value=state.extras||''; taRefs.value=state.references||''; taCaps.value=state.capsules||'';
 
-  setLayout(state.layout||'equal');   /* applique le layout + surligne le bouton actif */
-  updateCounters();
-  buildHTML();
+  setLayout(state.layout||'equal');
+  updateCounters(); buildHTML();
 }
 
 btnSave.addEventListener('click',saveLocal);
-btnLoad.addEventListener('click',()=>{loadLocal(); alert('Brouillon chargé.')} );
+btnLoad.addEventListener('click',loadLocal);
 btnExport.addEventListener('click',exportJSON);
 btnImport.addEventListener('click',()=>fileImport.click());
 fileImport.addEventListener('change',e=>{if(e.target.files?.[0]) importJSON(e.target.files[0])});
 btnBuild.addEventListener('click',buildHTML);
 btnDownload.addEventListener('click',downloadHTML);
 
-/* Raccourcis clavier (édition + build + format) */
+/* Raccourcis */
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal() }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML() }
@@ -537,10 +601,8 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='u' && activeTextArea){ e.preventDefault(); wrap(activeTextArea,'<u>','</u>') }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k' && activeTextArea){ e.preventDefault(); const href=prompt('URL du lien :','https://'); if(href) wrap(activeTextArea,`<a href="${href}">`,'</a>') }
 });
-
-/* Autosave 3 min + auto-save au repos */
 setInterval(()=>{ if(state.dirty) saveLocal() },180000);
-document.addEventListener('input',debounce(()=>{ updateCounters(); if(state.dirty) saveLocal() },1200));
+document.addEventListener('input',debounce(()=>{ updateCounters(); state.dirty=true },800));
 window.addEventListener('beforeunload',e=>{ if(state.dirty){ e.preventDefault(); e.returnValue='' } });
 
 renderAllFromState();
