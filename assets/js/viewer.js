@@ -1,10 +1,12 @@
-// viewer.js — Codex Mental (Blog + Atelier) — 2025-09-15
-// Corrections :
-// - Suppression de tous les <h1> du corps après lecture du titre (anti-doublon)
-// - Suppression de tout #article-tools résiduel dans le body
-// - Ignore tout <h2> identique au <h1> (anti-doublon)
-// - Sélection robuste du body (préfère <article data-article>, sinon l’<article> le plus riche)
-// - Conversion auto H2→<section data-chapter> si article “simple”
+// viewer.js — Codex Mental (Blog + Atelier) — build 2025-09-15
+// Corrections clés :
+// • Lecture titre + sous-titre via <h1 data-subtitle="…"> (on n’utilise plus un <h2> voisin)
+// • Suppression de tous les <h1> du corps + de #article-tools résiduels (anti-doublon)
+// • Ignore un <h2> identique au <h1> (anti-doublon)
+// • Sélection robuste du body (préfère <article data-article>, sinon l’<article> “le plus riche”)
+// • Conversion auto H2 → <section data-chapter> si article “simple”, même si wrappeurs (ex. .bloc-full)
+// • parseBodyOrdered : ignore les commentaires HTML (évite le “bloc vide”)
+// • setBlockHTML : masque totalement l’intro si vide (après strip des commentaires)
 
 document.addEventListener('DOMContentLoaded', () => {
   const isBlog   = window.location.pathname.includes('/blog');
@@ -77,28 +79,25 @@ function loadContent(viewerEl, url){
       const doc  = new DOMParser().parseFromString(html, 'text/html');
       const part = name => doc.querySelector(`[data-part="${name}"]`);
 
-/* ----- TITRE ----- */
-const titleSection = part('title');
-const h1 = (titleSection && titleSection.querySelector('h1')) ||
-           doc.querySelector('article[data-article] h1') ||
-           doc.querySelector('h1');
+      /* ----- TITRE ----- */
+      const titleSection = part('title');
+      const h1 = (titleSection && titleSection.querySelector('h1')) ||
+                 doc.querySelector('article[data-article] h1') ||
+                 doc.querySelector('h1');
+      // Sous-titre : on lit PRIORITAIREMENT data-subtitle du H1, sinon .subtitle/[data-subtitle] dans la section titre
+      const subtitle =
+        (h1?.getAttribute('data-subtitle') || '').trim() ||
+        (titleSection?.querySelector('[data-subtitle], .subtitle')?.textContent || '').trim();
 
-// On lit d'abord le data-subtitle du H1, puis un éventuel .subtitle / [data-subtitle] dans la section titre.
-// (On n’utilise PLUS le 1er <h2> comme sous-titre.)
-const subtitle =
-  (h1?.getAttribute('data-subtitle') || '').trim() ||
-  (titleSection?.querySelector('[data-subtitle], .subtitle')?.textContent || '').trim();
-
-let titleHTML = '';
-if (h1){
-  const safe = sanitizeTitleHTML(h1.innerHTML || '');
-  titleHTML =
-    `<div class="title-chip"><span>${safe}</span></div>
-     <div class="title-tools"></div>
-     ${subtitle ? `<div class="title-sub">${escapeHTML(subtitle)}</div>` : ''}`;
-}
-setBlockHTML('article-title', titleHTML);
-
+      let titleHTML = '';
+      if (h1){
+        const safe  = sanitizeTitleHTML(h1.innerHTML || '');
+        titleHTML =
+          `<div class="title-chip"><span>${safe}</span></div>
+           <div class="title-tools"></div>
+           ${subtitle ? `<div class="title-sub">${escapeHTML(subtitle)}</div>` : ''}`;
+      }
+      setBlockHTML('article-title', titleHTML);
 
       /* ----- TOOLS ----- */
       const toolsEl = part('tools') || doc.getElementById('article-tools') || doc.querySelector('.tools');
@@ -122,12 +121,15 @@ setBlockHTML('article-title', titleHTML);
       removeDynamicItems(viewerEl);
       const bodyRoot = pickBodyRoot(doc, part);
 
+      // Normalisation “H1/H2 simples” → sections data-chapter (déplie les wrappeurs)
       const normalized = normalizeShorthandToChapters(bodyRoot, h1?.textContent || '');
 
+      // Parsing ordonné (intro + chapitres + notes)
       const parsed = parseBodyOrdered(normalized);
 
       setBlockHTML('article-body', parsed.introHTML);
 
+      // Insertion des cartes chapitres/notes avant extras/réfs/capsules
       const anchor =
         document.getElementById('article-extras') ||
         document.getElementById('article-references') ||
@@ -159,6 +161,7 @@ setBlockHTML('article-title', titleHTML);
         }
       });
 
+      /* ----- EXTRA / REF / CAPS ----- */
       setBlockHTML('article-extras',     getOuterIfFilled(part('extras')     || doc.querySelector('.extras')));
       setBlockHTML('article-references', getOuterIfFilled(part('references') || doc.querySelector('.references, footer.references')));
       setBlockHTML('article-capsules',   getOuterIfFilled(part('capsules')   || doc.querySelector('.capsules')));
@@ -181,21 +184,25 @@ setBlockHTML('article-title', titleHTML);
 function pickBodyRoot(doc, partFn){
   const p = partFn('body'); if (p) return p;
   const dataArticle = doc.querySelector('article[data-article]'); if (dataArticle) return dataArticle;
+
   const articles = [...doc.querySelectorAll('article')];
   if (articles.length > 1) {
-    const scored = articles.map(a => ({ el:a, score:(a.textContent||'').length + a.querySelectorAll('*').length * 5 }))
-                           .sort((A,B)=>B.score-A.score);
+    const scored = articles.map(a => ({
+      el:a,
+      score:(a.textContent||'').length + a.querySelectorAll('*').length * 5
+    })).sort((A,B)=>B.score-A.score);
     if (scored[0]) return scored[0].el;
   }
   if (articles.length === 1) return articles[0];
+
   return doc.querySelector('main > section') || doc.body;
 }
 
-// Remplace TOUT le bloc de cette fonction par celui-ci
+/* ───────────── Normalisation H1/H2 → sections + anti-doublons ───────────── */
 function normalizeShorthandToChapters(rootNode, titleText=''){
   const root = rootNode ? rootNode.cloneNode(true) : document.createElement('div');
 
-  // Utilitaire
+  // Helpers
   const hasDirectH2 = (el) => [...el.children].some(ch => ch.tagName && ch.tagName.toLowerCase()==='h2');
   const cleanExtras  = (el) => {
     el.querySelectorAll && el.querySelectorAll('h1, #article-tools, script, style, link[rel="stylesheet"]').forEach(n=>n.remove());
@@ -203,14 +210,14 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
   };
   const unwrapToH2Host = (el) => {
     let cur = el;
-    // 1) descendre dans les wrappers “simples” (un seul enfant utile)
+    // Descend dans les wrappeurs “simples” (1 enfant utile)
     for (let guard=0; guard<6; guard++){
       const kids = [...cur.children].filter(k => !k.matches('script, style, link[rel="stylesheet"]'));
       if (kids.length === 1 && !kids[0].hasAttribute('data-part')) {
         cur = kids[0];
       } else break;
     }
-    // 2) si pas d'H2 directs, prendre le conteneur le plus proche qui contient des H2
+    // Si pas d’H2 directs, remonte au conteneur le + proche qui en contient
     if (!hasDirectH2(cur)) {
       const host = cur.querySelector('h2')?.closest('section,div,article,main') || cur;
       cur = host;
@@ -218,23 +225,23 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
     return cur;
   };
 
-  // 0) préférer <article data-article> si présent
+  // 0) Préférer <article data-article> si présent
   const prefer = (root.querySelector && (root.querySelector('article[data-article]') || root)) || root;
 
-  // Nettoie H1 / tools résiduels
+  // Nettoyage H1/Tools/scripts
   cleanExtras(prefer);
 
-  // Trouver le bon niveau où les H2 sont au 1er niveau
+  // Trouver le niveau où les H2 sont au 1er niveau
   const work = unwrapToH2Host(prefer);
   cleanExtras(work);
 
-  // Si chapitres explicitement présents → retour
+  // Si chapitres déjà présents → retour
   if (work.querySelector && work.querySelector('section[data-chapter]')) return work;
 
-  // Anti-doublon: ignorer un H2 identique au H1 lu pour le titre
+  // Anti-doublon : ignorer un H2 identique au H1
   const titleSlug = slugify((titleText || '').trim());
 
-  // Construire sections à partir des H2 directs du conteneur choisi
+  // Construire sections à partir des H2 directs
   const nodes = Array.from(work.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
   const container = document.createElement('div'); nodes.forEach(n => container.appendChild(n));
 
@@ -244,7 +251,7 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
   for (const node of Array.from(container.childNodes)){
     if (node.nodeType === 1 && node.tagName.toLowerCase() === 'h2'){
       const h2slug = slugify((node.textContent || '').trim());
-      if (titleSlug && h2slug === titleSlug) continue; // évite H2 = H1
+      if (titleSlug && h2slug === titleSlug) continue;
 
       if (currentSection) out.appendChild(currentSection);
       metH2 = true;
@@ -264,7 +271,7 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
       }
       currentSection.appendChild(node.cloneNode(true));
     } else {
-      // avant le 1er H2 → intro
+      // Avant le 1er H2 → intro
       out.appendChild(node.cloneNode(true));
     }
   }
@@ -281,10 +288,12 @@ function parseBodyOrdered(rootNode){
   const introNodes = [];
   let hasStarted = false;
 
+  // Ignore texte blanc ET commentaires HTML
   const children = Array.from(root.childNodes).filter(n =>
-  !(n.nodeType === 3 && !n.nodeValue.trim()) &&  // texte vide
-  n.nodeType !== 8                               // NEW: commentaires
-);
+    !(n.nodeType === 3 && !n.nodeValue.trim()) && // texte vide
+    n.nodeType !== 8                               // commentaires
+  );
+
   for (const n of children){
     if (n.nodeType === 1 && n.matches('section[data-chapter]')) {
       hasStarted = true;
@@ -301,16 +310,20 @@ function parseBodyOrdered(rootNode){
       out.items.push({ type:'chapter', id, title, icon, accent, html });
       continue;
     }
+
+    // Notes : déjà en <details> ou formats legacy
     if (n.nodeType === 1 && (n.matches('section.viewer-block.note-card, .note-card, details.note-collapsible, .codex-note, [data-note], [data-block="note"]'))){
       hasStarted = true;
       const noteHTML = toNoteCardHTML(n);
       out.items.push({ type:'note', html: noteHTML });
       continue;
     }
+
     if (!hasStarted) {
       introNodes.push(n.cloneNode(true));
     }
   }
+
   const wrap = document.createElement('div');
   introNodes.forEach(x => wrap.appendChild(x));
   out.introHTML = (wrap.innerHTML || '').trim();
@@ -334,16 +347,38 @@ function toNoteCardHTML(node){
 }
 
 /* ───────────────────────────── Helpers UI ────────────────────────────────── */
+function stripHTMLComments(s){
+  return (s || '').replace(/<!--[\s\S]*?-->/g, '');
+}
 function setBlockHTML(id, html){
   const el = document.getElementById(id);
   if (!el) return;
-  el.innerHTML = html || '';
-  const has = !!(html && html.trim());
+
+  // Évalue le “vide” après suppression des commentaires
+  const clean = stripHTMLComments(html || '').trim();
+  const has = clean.length > 0;
+
+  el.innerHTML = has ? html : '';
   el.classList.toggle('is-empty', !has);
   el.setAttribute('aria-hidden', String(!has));
+
+  // Masque totalement l’intro si elle est vide (évite le “gros bloc vide”)
+  if (id === 'article-body') {
+    el.style.display = has ? '' : 'none';
+  }
 }
-function getInnerIfFilled(el){ if (!el) return ''; const html = el.innerHTML || ''; return html.trim() ? html : ''; }
-function getOuterIfFilled(el){ if (!el) return ''; const html = el.outerHTML || el.innerHTML || ''; return (html.trim() ? html : ''); }
+function getInnerIfFilled(el){
+  if (!el) return '';
+  const html = el.innerHTML || '';
+  const clean = stripHTMLComments(html).trim();
+  return clean ? html : '';
+}
+function getOuterIfFilled(el){
+  if (!el) return '';
+  const html = el.outerHTML || el.innerHTML || '';
+  const clean = stripHTMLComments(html).trim();
+  return clean ? html : '';
+}
 
 /* ───────────────────────────── Ancres # ──────────────────────────────────── */
 function initChapterAnchors(container){
@@ -519,37 +554,30 @@ function updateLightboxImage(anim=false){
 
 /* ───────────────────────────── Utilitaires ───────────────────────────────── */
 function removeDynamicItems(viewerEl){ viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove()); }
-function slugify(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
-function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function slugify(s){
+  return (s||'')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+function escapeHTML(s){
+  return (s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
 // Autorise <br>/<wbr> dans le H1, échappe le reste
 function sanitizeTitleHTML(rawHTML){
   const BR='[[BR]]', WBR='[[WBR]]';
-  let s=(rawHTML||'').replace(/<\s*br\s*\/?\s*>/gi,BR).replace(/<\s*wbr\s*\/?\s*>/gi,WBR).replace(/<\/?[^>]+>/g,'');
+  let s=(rawHTML||'')
+    .replace(/<\s*br\s*\/?\s*>/gi,BR)
+    .replace(/<\s*wbr\s*\/?\s*>/gi,WBR)
+    .replace(/<\/?[^>]+>/g,'');
   const tmp=document.createElement('textarea'); tmp.innerHTML=s; s=tmp.value
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
   return s.replaceAll(BR,'<br>').replaceAll(WBR,'<wbr>');
 }
-
-function stripHTMLComments(s){
-  return (s || '').replace(/<!--[\s\S]*?-->/g, '');
-}
-
-// Remplace/ajoute cette fonction utilitaire
-function setBlockHTML(id, html){
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  // NEW: on évalue le “vide” après suppression des commentaires
-  const clean = stripHTMLComments(html).trim();
-  const has = clean.length > 0;
-
-  el.innerHTML = has ? html : '';
-  el.classList.toggle('is-empty', !has);
-  el.setAttribute('aria-hidden', String(!has));
-
-  // NEW: masque totalement l’intro si elle est vide (plus de “gros bloc vide”)
-  if (id === 'article-body') {
-    el.style.display = has ? '' : 'none';
-  }
-}
-
