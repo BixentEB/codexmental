@@ -1,9 +1,10 @@
-// viewer.js — Codex Mental (Blog + Atelier)
-// - Shell viewer (blocs)
-// - Chargement d’articles via ?article=… (ou ?projet=… pour l’atelier)
-// - Titre + sous-titre, tools (share), galerie + lightbox
-// - Découpe du body en chapitres + insertion ordonnée des notes
-// - Ancres # : scroll propre + copie du lien
+// viewer.js — Codex Mental (Blog + Atelier) — 2025-09-15
+// Corrections :
+// - Suppression de tous les <h1> du corps après lecture du titre (anti-doublon)
+// - Suppression de tout #article-tools résiduel dans le body
+// - Ignore tout <h2> identique au <h1> (anti-doublon)
+// - Sélection robuste du body (préfère <article data-article>, sinon l’<article> le plus riche)
+// - Conversion auto H2→<section data-chapter> si article “simple”
 
 document.addEventListener('DOMContentLoaded', () => {
   const isBlog   = window.location.pathname.includes('/blog');
@@ -16,17 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   ensureViewerShell(viewerEl);
   buildLightbox();
-
   if (menuEl) setupMenuLinks(menuEl, viewerEl, basePath, paramKey);
-
-  // Activer les ancres # (titre de chapitre)
   initChapterAnchors(viewerEl);
 
-  // Article initial
   const initial = new URLSearchParams(window.location.search).get(paramKey);
   if (initial) {
     loadContent(viewerEl, basePath + initial + '.html');
-    // marquer actif dans le menu si présent
     if (menuEl) {
       const a = menuEl.querySelector(`a[data-viewer="${initial}"]`);
       if (a) {
@@ -37,29 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* ----------------------------------------------------------------------------
- * Shell viewer : sections standardisées
- * -------------------------------------------------------------------------- */
+/* ───────────────────────────────── Shell ─────────────────────────────────── */
 function ensureViewerShell(viewerEl){
-  const blocks = [
-    'article-title',
-    'article-media',
-    'article-body',
-    'article-extras',
-    'article-references',
-    'article-capsules'
-  ];
-  blocks.forEach(id=>{
-    if(!document.getElementById(id)){
-      const s = document.createElement('section');
-      s.id = id;
-      s.className = 'viewer-block';
-      if(id === 'article-title') s.classList.add('no-card'); // titre = pas de carte
-      viewerEl.appendChild(s);
-    }
-  });
+  ['article-title','article-media','article-body','article-extras','article-references','article-capsules']
+    .forEach(id=>{
+      if(!document.getElementById(id)){
+        const s = document.createElement('section');
+        s.id = id;
+        s.className = 'viewer-block';
+        if(id === 'article-title') s.classList.add('no-card');
+        viewerEl.appendChild(s);
+      }
+    });
 }
-
 function setupMenuLinks(menuEl, viewerEl, basePath, paramKey){
   menuEl.querySelectorAll('a[data-viewer]').forEach(link=>{
     link.addEventListener('click',e=>{
@@ -75,18 +61,12 @@ function setupMenuLinks(menuEl, viewerEl, basePath, paramKey){
     });
   });
 }
-
 function clearForeignChildren(viewerEl){
-  const keep = new Set([
-    'article-title','article-media','article-body',
-    'article-extras','article-references','article-capsules'
-  ]);
+  const keep = new Set(['article-title','article-media','article-body','article-extras','article-references','article-capsules']);
   Array.from(viewerEl.children).forEach(ch => { if(!keep.has(ch.id)) ch.remove(); });
 }
 
-/* ----------------------------------------------------------------------------
- * Chargement + parsing
- * -------------------------------------------------------------------------- */
+/* ─────────────────────────────── Chargement ──────────────────────────────── */
 function loadContent(viewerEl, url){
   fetch(url)
     .then(r => { if(!r.ok) throw new Error(url); return r.text(); })
@@ -97,8 +77,7 @@ function loadContent(viewerEl, url){
       const doc  = new DOMParser().parseFromString(html, 'text/html');
       const part = name => doc.querySelector(`[data-part="${name}"]`);
 
-      /* ----- TITRE ----- */
-      // on lit le H1 AVANT normalisation pour fabriquer le header
+      /* ----- TITRE (lu avant normalisation) ----- */
       const titleSection = part('title');
       const h1 = (titleSection && titleSection.querySelector('h1')) ||
                  doc.querySelector('article[data-article] h1') ||
@@ -120,12 +99,12 @@ function loadContent(viewerEl, url){
       }
       setBlockHTML('article-title', titleHTML);
 
-      /* ----- TOOLS (Share) ----- */
+      /* ----- TOOLS ----- */
       const toolsEl = part('tools') || doc.getElementById('article-tools') || doc.querySelector('.tools');
       attachToolsIntoTitle(getInnerIfFilled(toolsEl) || defaultToolsMarkup());
-      try { setupShareButtons(); } catch(e) { console.warn('Share init skipped:', e); }
+      try { setupShareButtons(); } catch(e) {}
 
-      /* ----- MEDIA (galerie mosaïque) ----- */
+      /* ----- MEDIA ----- */
       const mediaEl = part('media') || doc.querySelector('.media, .gallery, section[data-gallery]');
       let mediaHTML = '';
       if (mediaEl){
@@ -138,21 +117,16 @@ function loadContent(viewerEl, url){
       setBlockHTML('article-media', mediaHTML);
       if (mediaHTML) setupGalleryLightbox();
 
-      /* ----- BODY (chapitres + notes) ----- */
-      removeDynamicItems(viewerEl); // nettoie les précédents chapitres/notes
-
+      /* ----- BODY ----- */
+      removeDynamicItems(viewerEl);
       const bodyRoot = pickBodyRoot(doc, part);
 
-      // Normalisation : articles "simples" (H1/H2...) → <section data-chapter>
       const normalized = normalizeShorthandToChapters(bodyRoot, h1?.textContent || '');
 
-      // Parser (ordre + notes)
       const parsed = parseBodyOrdered(normalized);
 
-      // Intro / corps
       setBlockHTML('article-body', parsed.introHTML);
 
-      // Insertion des chapitres et notes avant extras/réfs/capsules
       const anchor =
         document.getElementById('article-extras') ||
         document.getElementById('article-references') ||
@@ -179,12 +153,11 @@ function loadContent(viewerEl, url){
         } else if (item.type === 'note'){
           const noteCard = document.createElement('section');
           noteCard.className = 'viewer-block note-card';
-          noteCard.innerHTML = item.html;   // déjà un <details> si généré par parse
+          noteCard.innerHTML = item.html;
           viewerEl.insertBefore(noteCard, anchor);
         }
       });
 
-      /* ----- EXTRAS / REFERENCES / CAPSULES ----- */
       setBlockHTML('article-extras',     getOuterIfFilled(part('extras')     || doc.querySelector('.extras')));
       setBlockHTML('article-references', getOuterIfFilled(part('references') || doc.querySelector('.references, footer.references')));
       setBlockHTML('article-capsules',   getOuterIfFilled(part('capsules')   || doc.querySelector('.capsules')));
@@ -203,77 +176,37 @@ function loadContent(viewerEl, url){
     });
 }
 
-/* ----------------------------------------------------------------------------
- * Sélection robuste du “body” dans les HTML legacy
- * -------------------------------------------------------------------------- */
+/* ─────────────── Sélection robuste du body (legacy safe) ─────────────────── */
 function pickBodyRoot(doc, partFn){
-  // priorité absolue à data-part="body" ou <article data-part="body">
-  const p = partFn('body');
-  if (p) return p;
-
-  // ensuite <article data-article>
-  const dataArticle = doc.querySelector('article[data-article]');
-  if (dataArticle) return dataArticle;
-
-  // sinon choisir l’<article> le plus “riche” s’il y en a plusieurs
+  const p = partFn('body'); if (p) return p;
+  const dataArticle = doc.querySelector('article[data-article]'); if (dataArticle) return dataArticle;
   const articles = [...doc.querySelectorAll('article')];
   if (articles.length > 1) {
-    // score simple : longueur textContent + profondeur
-    const scored = articles.map(a => ({
-      el: a,
-      score: (a.textContent||'').length + a.querySelectorAll('*').length * 5
-    })).sort((A,B)=>B.score-A.score);
+    const scored = articles.map(a => ({ el:a, score:(a.textContent||'').length + a.querySelectorAll('*').length * 5 }))
+                           .sort((A,B)=>B.score-A.score);
     if (scored[0]) return scored[0].el;
   }
   if (articles.length === 1) return articles[0];
-
-  // fallback : bloc principal commun
   return doc.querySelector('main > section') || doc.body;
 }
 
-/* ----------------------------------------------------------------------------
- * Parsing du body : respecte l’ordre, isole chapitres ET notes
- * - Sections <section data-chapter> => chapitres
- * - Blocs de note existants (.viewer-block.note-card ou <details.note-collapsible>)
- *   ou anciennes .codex-note => convertis en note-card collapsible
- * -------------------------------------------------------------------------- */
-
-// Convertit un body "simple" (H1/H2...) en sections <section data-chapter="">
-// + gère les H1 multiples et le H2 qui répète le H1
+/* ───────────── Normalisation H1/H2 → sections + anti-doublons ────────────── */
 function normalizeShorthandToChapters(rootNode, titleText=''){
-  // clone de travail
   const root = rootNode ? rootNode.cloneNode(true) : document.createElement('div');
-
-  // Préférer <article data-article> si présent
   const prefer = root.querySelector && (root.querySelector('article[data-article]') || root) || root;
 
-  // 0) Unifier le H1 : garder le premier, rétrograder les autres en H2
-  const h1s = prefer.querySelectorAll ? prefer.querySelectorAll('h1') : [];
-  const firstH1 = h1s[0] || null;
-  if (h1s.length > 1) {
-    for (let i=1;i<h1s.length;i++){
-      const h1 = h1s[i];
-      const h2 = document.createElement('h2');
-      h2.innerHTML = h1.innerHTML;
-      [...h1.attributes].forEach(a=>h2.setAttribute(a.name,a.value));
-      h1.replaceWith(h2);
-    }
-  }
+  // 0) on enlève TOUT <h1> du flux (le viewer a déjà créé la title-chip)
+  prefer.querySelectorAll && prefer.querySelectorAll('h1').forEach(h=>h.remove());
+  // 0-bis) on enlève tout #article-tools laissé dans le corps
+  prefer.querySelectorAll && prefer.querySelectorAll('#article-tools').forEach(n=>n.remove());
 
-  // 1) Si chapitres déjà présents → retour
+  // 1) si l’auteur a déjà <section data-chapter>, on garde
   if (prefer.querySelector && prefer.querySelector('section[data-chapter]')) return prefer;
 
-  // 2) slug du H1 (pour ignorer un H2 identique)
-  const titleSlug = slugify((titleText || firstH1?.textContent || '').trim());
+  const titleSlug = slugify((titleText || '').trim());
 
-  // 3) Extraire enfants (ignore texte vide)
   const nodes = Array.from(prefer.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
 
-  // 4) supprimer le premier H1 du flux (le viewer crée sa title-chip)
-  const firstH1InFlow = nodes.find(n => n.nodeType === 1 && n.tagName?.toLowerCase() === 'h1');
-  if (firstH1InFlow) firstH1InFlow.remove();
-
-  // 5) Construire sections à partir des H2
   const container = document.createElement('div');
   nodes.forEach(n => container.appendChild(n));
 
@@ -282,18 +215,14 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
   let metH2 = false;
 
   const children = Array.from(container.childNodes);
-
   for (const node of children){
     if (node.nodeType === 1 && node.tagName.toLowerCase() === 'h2'){
-      // anti-doublon : si ce H2 == H1 → ignorer
       const h2slug = slugify((node.textContent || '').trim());
-      if (titleSlug && h2slug === titleSlug) continue;
+      if (titleSlug && h2slug === titleSlug) continue; // ignore H2=H1
 
       metH2 = true;
-      // Fermer section courante
       if (currentSection) out.appendChild(currentSection);
 
-      // Nouvelle section
       currentSection = document.createElement('section');
       currentSection.setAttribute('data-chapter', 'auto');
       const h2 = node.cloneNode(true);
@@ -302,7 +231,6 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
       currentSection.appendChild(h2);
       continue;
     }
-    // Si un H2 a été vu → contenu de section
     if (metH2){
       if (!currentSection){
         currentSection = document.createElement('section');
@@ -310,8 +238,7 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
       }
       currentSection.appendChild(node.cloneNode(true));
     } else {
-      // avant le 1er H2 : intro
-      out.appendChild(node.cloneNode(true));
+      out.appendChild(node.cloneNode(true)); // intro
     }
   }
   if (currentSection) out.appendChild(currentSection);
@@ -319,10 +246,9 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
   return out;
 }
 
+/* ─────────────────────────── Parsing ordonné ─────────────────────────────── */
 function parseBodyOrdered(rootNode){
   const root = rootNode ? rootNode.cloneNode(true) : document.createElement('div');
-
-  // retirer scripts/styles éventuels et le bloc <section data-part="title"> au cas où
   root.querySelectorAll('script, style, link[rel="stylesheet"], section[data-part="title"], #article-tools').forEach(n=>n.remove());
 
   const out = { introHTML:'', items:[] };
@@ -330,66 +256,45 @@ function parseBodyOrdered(rootNode){
   let hasStarted = false;
 
   const children = Array.from(root.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
-
   for (const n of children){
     if (n.nodeType === 1 && n.matches('section[data-chapter]')) {
       hasStarted = true;
       const sec = n.cloneNode(true);
       const accent = sec.getAttribute('data-accent') || '';
       const icon   = sec.getAttribute('data-icon')   || '';
-      const idAttr = sec.getAttribute('id') || '';     // si l’auteur fournit un id
-
-      // titre : data-title > <h2> > fallback
+      const idAttr = sec.getAttribute('id') || '';
       const tFromAttr = sec.getAttribute('data-title');
       const h2 = sec.querySelector(':scope > h2');
       let title = tFromAttr || (h2 ? (h2.textContent || '').trim() : 'Chapitre');
       if (h2) h2.remove();
-
       const id = (idAttr || ('chap-' + slugify(title)));
       const html = (sec.innerHTML || '').trim();
-
       out.items.push({ type:'chapter', id, title, icon, accent, html });
       continue;
     }
-
-    // Bloc de note existant : <section class="viewer-block note-card">… ou <details.note-collapsible>
     if (n.nodeType === 1 && (n.matches('section.viewer-block.note-card, .note-card, details.note-collapsible, .codex-note, [data-note], [data-block="note"]'))){
       hasStarted = true;
       const noteHTML = toNoteCardHTML(n);
       out.items.push({ type:'note', html: noteHTML });
       continue;
     }
-
-    // Tout le reste
     if (!hasStarted) {
       introNodes.push(n.cloneNode(true));
     }
   }
-
-  // intro
   const wrap = document.createElement('div');
   introNodes.forEach(x => wrap.appendChild(x));
   out.introHTML = (wrap.innerHTML || '').trim();
-
   return out;
 }
-
-// Transforme différentes variantes de note en HTML <details> prêt à insérer
 function toNoteCardHTML(node){
-  // 1) Si c’est déjà un <details class="note-collapsible">, on garde tel quel
-  if (node.matches && node.matches('details.note-collapsible')) {
-    return node.outerHTML;
-  }
-  // 2) Si c’est un container .viewer-block.note-card contenant déjà <details>, on retourne l’intérieur
+  if (node.matches && node.matches('details.note-collapsible')) return node.outerHTML;
   if (node.matches && node.matches('section.viewer-block.note-card, .note-card')) {
-    const d = node.querySelector('details.note-collapsible');
-    return d ? d.outerHTML : node.innerHTML;
+    const d = node.querySelector('details.note-collapsible'); return d ? d.outerHTML : node.innerHTML;
   }
-  // 3) Ancienne .codex-note (ou data-note) : on crée un details/summary simple
   const tmp = document.createElement('div');
   tmp.innerHTML = node.outerHTML || node.innerHTML || '';
   const title = (tmp.querySelector('h2,h3,h4')?.textContent || 'Note').trim();
-  // retirer le premier titre pour ne garder que le corps
   const firstT = tmp.querySelector('h2,h3,h4'); if (firstT) firstT.remove();
   const body = tmp.innerHTML.trim();
   return `
@@ -399,9 +304,7 @@ function toNoteCardHTML(node){
     </details>`;
 }
 
-/* ----------------------------------------------------------------------------
- * Helpers UI
- * -------------------------------------------------------------------------- */
+/* ───────────────────────────── Helpers UI ────────────────────────────────── */
 function setBlockHTML(id, html){
   const el = document.getElementById(id);
   if (!el) return;
@@ -410,27 +313,14 @@ function setBlockHTML(id, html){
   el.classList.toggle('is-empty', !has);
   el.setAttribute('aria-hidden', String(!has));
 }
+function getInnerIfFilled(el){ if (!el) return ''; const html = el.innerHTML || ''; return html.trim() ? html : ''; }
+function getOuterIfFilled(el){ if (!el) return ''; const html = el.outerHTML || el.innerHTML || ''; return (html.trim() ? html : ''); }
 
-function getInnerIfFilled(el){
-  if (!el) return '';
-  const html = el.innerHTML || '';
-  return html.trim() ? html : '';
-}
-function getOuterIfFilled(el){
-  if (!el) return '';
-  const html = el.outerHTML || el.innerHTML || '';
-  return (html.trim() ? html : '');
-}
-
-/* ----------------------------------------------------------------------------
- * Ancres # : scroll propre + copie du lien
- * -------------------------------------------------------------------------- */
+/* ───────────────────────────── Ancres # ──────────────────────────────────── */
 function initChapterAnchors(container){
   if(!container) return;
   container.addEventListener('click', e=>{
-    const a = e.target.closest('a.anchor'); if(!a) return;
-    e.preventDefault();
-
+    const a = e.target.closest('a.anchor'); if(!a) return; e.preventDefault();
     const id = a.getAttribute('href').slice(1);
     const target = document.getElementById(id);
     if (target){
@@ -439,26 +329,20 @@ function initChapterAnchors(container){
       window.history.replaceState({},'', `#${id}`);
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
-
-    // copie le lien profond
     if (navigator.clipboard){
       const deep = `${location.origin}${location.pathname}${location.search}#${id}`;
       navigator.clipboard.writeText(deep).then(()=>{
-        a.classList.add('copied');
-        setTimeout(()=>a.classList.remove('copied'), 1200);
+        a.classList.add('copied'); setTimeout(()=>a.classList.remove('copied'), 1200);
       });
     }
   });
 }
 function getAnchorOffset(){
   const v  = getComputedStyle(document.documentElement).getPropertyValue('--anchor-offset').trim();
-  const px = parseInt(v||'0',10);
-  return isNaN(px) ? 0 : px;
+  const px = parseInt(v||'0',10); return isNaN(px) ? 0 : px;
 }
 
-/* ----------------------------------------------------------------------------
- * Tools : bouton Partager (Web Share API + fallback)
- * -------------------------------------------------------------------------- */
+/* ───────────────────────────── Tools / Share ─────────────────────────────── */
 function attachToolsIntoTitle(html){
   const slot = document.querySelector('#article-title .title-tools');
   if (!slot) return;
@@ -495,17 +379,11 @@ function setupShareButtons(){
     btn.setAttribute('aria-expanded','false');
     document.removeEventListener('click', onDocClick, true);
   };
-  const onDocClick = (e) => {
-    if (!menu.contains(e.target) && e.target !== btn) closeMenu();
-  };
+  const onDocClick = (e) => { if (!menu.contains(e.target) && e.target !== btn) closeMenu(); };
 
   btn.onclick = async (e) => {
     e.preventDefault();
-
-    if (navigator.share) {
-      try { await navigator.share({ title: pageTitle || 'Partager', url: pageUrl }); return; }
-      catch(_) { /* annulé */ }
-    }
+    if (navigator.share) { try { await navigator.share({ title: pageTitle || 'Partager', url: pageUrl }); return; } catch(_) {} }
     const isHidden = menu.classList.toggle('hidden');
     btn.setAttribute('aria-expanded', String(!isHidden));
     if (!isHidden) document.addEventListener('click', onDocClick, true);
@@ -516,50 +394,38 @@ function setupShareButtons(){
       e.preventDefault();
       const type = a.dataset.share;
       switch(type){
-        case 'facebook':
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,'_blank','noopener'); break;
-        case 'twitter':
-          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(pageTitle)}`,'_blank','noopener'); break;
-        case 'email':
-          window.location.href = `mailto:?subject=${encodeURIComponent(pageTitle)}&body=${encodeURIComponent(pageUrl)}`; break;
-        case 'copy':
-          navigator.clipboard?.writeText(pageUrl).then(()=>{ a.textContent='✔️ Copié !'; setTimeout(()=>a.textContent='🔗 Copier le lien',1200); }); break;
+        case 'facebook': window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,'_blank','noopener'); break;
+        case 'twitter':  window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(pageTitle)}`,'_blank','noopener'); break;
+        case 'email':    window.location.href = `mailto:?subject=${encodeURIComponent(pageTitle)}&body=${encodeURIComponent(pageUrl)}`; break;
+        case 'copy':     navigator.clipboard?.writeText(pageUrl).then(()=>{ a.textContent='✔️ Copié !'; setTimeout(()=>a.textContent='🔗 Copier le lien',1200); }); break;
       }
       closeMenu();
     };
   });
 }
 
-/* ----------------------------------------------------------------------------
- * Galerie mosaïque + Lightbox
- * -------------------------------------------------------------------------- */
+/* ─────────────────────────── Galerie / Lightbox ──────────────────────────── */
 const galleryState = { items:[], index:0 };
-
 function renderMosaicHTML(imgNodes, caption=''){
   if(!imgNodes || !imgNodes.length) return '';
   const arr = imgNodes.slice();
   const i   = arr.findIndex(n => n.hasAttribute('data-main'));
-  if (i > 0) arr.unshift(arr.splice(i,1)[0]); // la "main" en premier
-
+  if (i > 0) arr.unshift(arr.splice(i,1)[0]);
   const tiles = arr.map((img,idx)=>{
     const src = img.getAttribute('src');
     const alt = (img.getAttribute('alt') || '').replace(/"/g,'&quot;');
     const cls = idx===0 ? 'tile tile--main' : 'tile';
     return `<figure class="${cls}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async" data-idx="${idx}"></figure>`;
   }).join('');
-
   const cap = caption ? `<figcaption class="gallery-caption">${caption}</figcaption>` : '';
   return `<div class="media-gallery" data-count="${arr.length}"><div class="mosaic">${tiles}</div>${cap}</div>`;
 }
-
 function buildLightbox(){
   if(document.getElementById('viewer-lightbox')) return;
   const lb = document.createElement('div');
   lb.id = 'viewer-lightbox';
   lb.className = 'lightbox hidden';
-  lb.setAttribute('role','dialog');
-  lb.setAttribute('aria-modal','true');
-  lb.setAttribute('aria-hidden','true');
+  lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true'); lb.setAttribute('aria-hidden','true');
   lb.innerHTML = `
     <div class="lb-backdrop"></div>
     <button class="lb-close" aria-label="Fermer">×</button>
@@ -591,27 +457,21 @@ function buildLightbox(){
     if(Math.abs(dx)>40) (dx>0?prevImage():nextImage());
   },{passive:true});
 }
-
 function setupGalleryLightbox(){
   const imgs = [...document.querySelectorAll('#article-media .mosaic img')];
   galleryState.items = imgs.map(img=>({src:img.getAttribute('src'), alt:img.getAttribute('alt')||''}));
-  imgs.forEach((img,idx)=>{
-    img.addEventListener('click',()=>openLightbox(idx));
-    img.style.cursor='zoom-in';
-  });
+  imgs.forEach((img,idx)=>{ img.addEventListener('click',()=>openLightbox(idx)); img.style.cursor='zoom-in'; });
 }
 function openLightbox(i=0){
   galleryState.index = Math.max(0, Math.min(i, galleryState.items.length-1));
   const lb = document.getElementById('viewer-lightbox'); if(!lb) return;
   updateLightboxImage();
-  lb.classList.remove('hidden');
-  lb.setAttribute('aria-hidden','false');
+  lb.classList.remove('hidden'); lb.setAttribute('aria-hidden','false');
   document.body.classList.add('no-scroll');
 }
 function closeLightbox(){
   const lb = document.getElementById('viewer-lightbox'); if(!lb) return;
-  lb.classList.add('hidden');
-  lb.setAttribute('aria-hidden','true');
+  lb.classList.add('hidden'); lb.setAttribute('aria-hidden','true');
   document.body.classList.remove('no-scroll');
 }
 function nextImage(){ if(!galleryState.items.length) return; galleryState.index=(galleryState.index+1)%galleryState.items.length; updateLightboxImage(true); }
@@ -628,38 +488,15 @@ function updateLightboxImage(anim=false){
   cnt.textContent = `${galleryState.index+1} / ${galleryState.items.length}`;
 }
 
-/* ----------------------------------------------------------------------------
- * Utilitaires
- * -------------------------------------------------------------------------- */
-function removeDynamicItems(viewerEl){
-  viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove());
-}
-function slugify(s){
-  return (s||'')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-}
-function escapeHTML(s){
-  return (s||'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-}
-// Autorise <br> et <wbr> dans le H1, échappe tout le reste
+/* ───────────────────────────── Utilitaires ───────────────────────────────── */
+function removeDynamicItems(viewerEl){ viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove()); }
+function slugify(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+function escapeHTML(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+// Autorise <br>/<wbr> dans le H1, échappe le reste
 function sanitizeTitleHTML(rawHTML){
-  const BR  = '[[BR]]';
-  const WBR = '[[WBR]]';
-  let s = (rawHTML || '')
-    .replace(/<\s*br\s*\/?\s*>/gi, BR)
-    .replace(/<\s*wbr\s*\/?\s*>/gi, WBR)
-    .replace(/<\/?[^>]+>/g, ''); // toute autre balise supprimée
-  const tmp = document.createElement('textarea');
-  tmp.innerHTML = s;
-  s = tmp.value
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const BR='[[BR]]', WBR='[[WBR]]';
+  let s=(rawHTML||'').replace(/<\s*br\s*\/?\s*>/gi,BR).replace(/<\s*wbr\s*\/?\s*>/gi,WBR).replace(/<\/?[^>]+>/g,'');
+  const tmp=document.createElement('textarea'); tmp.innerHTML=s; s=tmp.value
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   return s.replaceAll(BR,'<br>').replaceAll(WBR,'<wbr>');
 }
