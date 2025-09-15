@@ -190,41 +190,66 @@ function pickBodyRoot(doc, partFn){
   return doc.querySelector('main > section') || doc.body;
 }
 
-/* ───────────── Normalisation H1/H2 → sections + anti-doublons ────────────── */
+// Remplace TOUT le bloc de cette fonction par celui-ci
 function normalizeShorthandToChapters(rootNode, titleText=''){
   const root = rootNode ? rootNode.cloneNode(true) : document.createElement('div');
-  const prefer = root.querySelector && (root.querySelector('article[data-article]') || root) || root;
 
-  // 0) on enlève TOUT <h1> du flux (le viewer a déjà créé la title-chip)
-  prefer.querySelectorAll && prefer.querySelectorAll('h1').forEach(h=>h.remove());
-  // 0-bis) on enlève tout #article-tools laissé dans le corps
-  prefer.querySelectorAll && prefer.querySelectorAll('#article-tools').forEach(n=>n.remove());
+  // Utilitaire
+  const hasDirectH2 = (el) => [...el.children].some(ch => ch.tagName && ch.tagName.toLowerCase()==='h2');
+  const cleanExtras  = (el) => {
+    el.querySelectorAll && el.querySelectorAll('h1, #article-tools, script, style, link[rel="stylesheet"]').forEach(n=>n.remove());
+    return el;
+  };
+  const unwrapToH2Host = (el) => {
+    let cur = el;
+    // 1) descendre dans les wrappers “simples” (un seul enfant utile)
+    for (let guard=0; guard<6; guard++){
+      const kids = [...cur.children].filter(k => !k.matches('script, style, link[rel="stylesheet"]'));
+      if (kids.length === 1 && !kids[0].hasAttribute('data-part')) {
+        cur = kids[0];
+      } else break;
+    }
+    // 2) si pas d'H2 directs, prendre le conteneur le plus proche qui contient des H2
+    if (!hasDirectH2(cur)) {
+      const host = cur.querySelector('h2')?.closest('section,div,article,main') || cur;
+      cur = host;
+    }
+    return cur;
+  };
 
-  // 1) si l’auteur a déjà <section data-chapter>, on garde
-  if (prefer.querySelector && prefer.querySelector('section[data-chapter]')) return prefer;
+  // 0) préférer <article data-article> si présent
+  const prefer = (root.querySelector && (root.querySelector('article[data-article]') || root)) || root;
 
+  // Nettoie H1 / tools résiduels
+  cleanExtras(prefer);
+
+  // Trouver le bon niveau où les H2 sont au 1er niveau
+  const work = unwrapToH2Host(prefer);
+  cleanExtras(work);
+
+  // Si chapitres explicitement présents → retour
+  if (work.querySelector && work.querySelector('section[data-chapter]')) return work;
+
+  // Anti-doublon: ignorer un H2 identique au H1 lu pour le titre
   const titleSlug = slugify((titleText || '').trim());
 
-  const nodes = Array.from(prefer.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
-
-  const container = document.createElement('div');
-  nodes.forEach(n => container.appendChild(n));
+  // Construire sections à partir des H2 directs du conteneur choisi
+  const nodes = Array.from(work.childNodes).filter(n => !(n.nodeType === 3 && !n.nodeValue.trim()));
+  const container = document.createElement('div'); nodes.forEach(n => container.appendChild(n));
 
   const out = document.createElement('div');
-  let currentSection = null;
-  let metH2 = false;
+  let currentSection = null, metH2 = false;
 
-  const children = Array.from(container.childNodes);
-  for (const node of children){
+  for (const node of Array.from(container.childNodes)){
     if (node.nodeType === 1 && node.tagName.toLowerCase() === 'h2'){
       const h2slug = slugify((node.textContent || '').trim());
-      if (titleSlug && h2slug === titleSlug) continue; // ignore H2=H1
+      if (titleSlug && h2slug === titleSlug) continue; // évite H2 = H1
 
-      metH2 = true;
       if (currentSection) out.appendChild(currentSection);
+      metH2 = true;
 
       currentSection = document.createElement('section');
-      currentSection.setAttribute('data-chapter', 'auto');
+      currentSection.setAttribute('data-chapter','auto');
       const h2 = node.cloneNode(true);
       const id = h2.id || slugify((h2.textContent || '').trim());
       if (id) currentSection.id = id;
@@ -234,15 +259,15 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
     if (metH2){
       if (!currentSection){
         currentSection = document.createElement('section');
-        currentSection.setAttribute('data-chapter', 'auto');
+        currentSection.setAttribute('data-chapter','auto');
       }
       currentSection.appendChild(node.cloneNode(true));
     } else {
-      out.appendChild(node.cloneNode(true)); // intro
+      // avant le 1er H2 → intro
+      out.appendChild(node.cloneNode(true));
     }
   }
   if (currentSection) out.appendChild(currentSection);
-
   return out;
 }
 
