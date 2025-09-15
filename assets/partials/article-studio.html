@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Article Studio — Codex Mental</title>
+<style>
+  :root{
+    --bg:#0f1220; --bg2:#12162a; --pane:#0b0e1a; --ink:#e9efff; --muted:#a9b5d1;
+    --accent:#86c7ff; --accent2:#b28cff; --ok:#4ad295; --warn:#ffbe55; --bad:#ff6b6b;
+    --line: color-mix(in oklab, var(--accent) 25%, #000 75%);
+    --chip1: color-mix(in oklab, var(--accent) 18%, transparent);
+    --chip2: color-mix(in oklab, var(--accent2) 12%, transparent);
+    --radius:14px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:linear-gradient(180deg,var(--bg),var(--bg2));
+    color:var(--ink); font-family:var(--sans); line-height:1.45;
+  }
+
+  header.appbar{
+    position:sticky; top:0; z-index:10;
+    backdrop-filter:saturate(1.2) blur(8px);
+    background:linear-gradient(90deg,var(--chip1),transparent 30%, transparent 70%, var(--chip2));
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:10px; padding:10px 14px;
+  }
+  header .title{font-weight:700; letter-spacing:.3px}
+  header .spacer{flex:1}
+  .btn{
+    background:#1a2040; color:var(--ink); border:1px solid var(--line);
+    padding:.45rem .7rem; border-radius:10px; cursor:pointer; font-size:.95rem;
+  }
+  .btn:hover{background:#202656}
+  .btn.good{border-color:color-mix(in oklab, var(--ok) 60%, #000 40%); background:rgba(74,210,149,.09)}
+  .btn.warn{border-color:color-mix(in oklab, var(--warn) 60%, #000 40%); background:rgba(255,190,85,.08)}
+  .btn.bad{border-color:color-mix(in oklab, var(--bad) 60%, #000 40%); background:rgba(255,107,107,.08)}
+  .btn.small{padding:.35rem .55rem; font-size:.9rem}
+
+  .wrap{display:grid; grid-template-columns: 1fr 1fr; gap:14px; padding:14px; height:calc(100% - 58px)}
+  .panel{
+    border:1px solid var(--line); border-radius:var(--radius); background: #0c1125;
+    min-height: 0; display:flex; flex-direction:column;
+  }
+  .panel h2{font-size:1rem; margin:0; padding:10px 12px; border-bottom:1px solid var(--line); color:#cfe3ff}
+  .panel .content{padding:12px; overflow:auto; min-height:0; flex:1}
+
+  /* left layout */
+  .toolbar, .insertbar {
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;
+  }
+  .toolbar .btn, .insertbar .btn{background:#121739}
+  .row{display:grid; grid-template-columns:170px 1fr; gap:10px; align-items:start; margin-bottom:10px}
+  .row label{color:var(--muted)}
+  input[type="text"], input[type="url"], textarea, select{
+    width:100%; background:#0a0f22; color:var(--ink); border:1px solid var(--line);
+    border-radius:10px; padding:.6rem .7rem; font:inherit;
+  }
+  textarea{min-height:110px; resize:vertical}
+  .hint{color:var(--muted); font-size:.9rem}
+
+  .fieldset{border:1px dashed var(--line); border-radius:12px; padding:10px; margin:10px 0}
+  .fieldset .legend{font-size:.95rem; color:#cfe3ff; margin-bottom:8px}
+
+  .chapters .item, .images .item{
+    border:1px solid var(--line); border-radius:12px; padding:10px; margin-bottom:10px; background:#0b1230;
+  }
+  .item .head{display:flex; align-items:center; gap:8px; margin-bottom:8px}
+  .item .head .title{font-weight:600; color:#dbe7ff}
+  .item .head .ghost{color:var(--muted); font-size:.9rem}
+  .head .controls{margin-left:auto; display:flex; gap:6px}
+  .id-inline{display:flex; gap:8px; align-items:center}
+  .id-inline input{width:260px}
+
+  .images .grid{display:grid; gap:8px}
+  .images .item .grid{grid-template-columns:1fr 1fr 120px 90px auto}
+  .checkbox{display:flex; align-items:center; gap:6px; color:var(--muted)}
+  .muted{color:var(--muted)}
+  .counter{font-size:.85rem; color:var(--muted); text-align:right}
+
+  /* right panel */
+  .code{
+    white-space:pre; font-family:var(--mono); font-size:.92rem; line-height:1.4;
+    background: #050814; padding:12px; border-radius:10px; overflow:auto; min-height:100%;
+    border:1px solid var(--line);
+  }
+
+  .status{display:flex; gap:10px; align-items:center; margin:0 12px 12px}
+  .pill{
+    padding:.2rem .55rem; border-radius:999px; border:1px solid var(--line); color:var(--muted);
+    background:#0b1130; font-size:.85rem;
+  }
+
+  @media (max-width: 1000px){
+    .wrap{grid-template-columns: 1fr}
+  }
+</style>
+</head>
+<body>
+<header class="appbar">
+  <div class="title">🧰 Article Studio</div>
+  <div class="spacer"></div>
+  <button id="btn-save" class="btn">Sauver</button>
+  <button id="btn-load" class="btn">Charger</button>
+  <button id="btn-export" class="btn">Export JSON</button>
+  <input id="file-import" type="file" accept="application/json" hidden />
+  <button id="btn-import" class="btn">Import JSON</button>
+  <button id="btn-build" class="btn good">Valider / Construire</button>
+  <button id="btn-download" class="btn">Télécharger .html</button>
+</header>
+
+<div class="wrap">
+  <!-- LEFT -->
+  <section class="panel">
+    <h2>Édition assistée</h2>
+    <div class="content">
+      <!-- Insert palette -->
+      <div class="insertbar">
+        <button class="btn small" data-insert="title">+ Titre</button>
+        <button class="btn small" data-insert="intro">+ Intro</button>
+        <button class="btn small" data-insert="toc">+ Sommaire auto</button>
+        <button class="btn small" data-insert="chapter">+ Chapitre</button>
+        <button class="btn small" data-insert="media">+ Médias</button>
+        <button class="btn small" data-insert="extras">+ Extras</button>
+        <button class="btn small" data-insert="refs">+ Références</button>
+        <button class="btn small" data-insert="caps">+ Capsules</button>
+      </div>
+
+      <!-- Format toolbar -->
+      <div class="toolbar" id="formatbar">
+        <span class="hint">Mise en forme (zone texte active) :</span>
+        <button class="btn small" data-format="em"><i>I</i></button>
+        <button class="btn small" data-format="strong"><b>B</b></button>
+        <button class="btn small" data-format="u"><u>U</u></button>
+        <button class="btn small" data-format="code"><span style="font-family:var(--mono)">code</span></button>
+        <button class="btn small" data-format="link">Lien</button>
+        <button class="btn small" data-format="ul">• Liste</button>
+        <button class="btn small" data-format="ol">1. Liste</button>
+        <button class="btn small" data-format="quote">« Citation »</button>
+        <span class="hint">Raccourcis : Ctrl+B / Ctrl+I / Ctrl+U, Ctrl+K (lien)</span>
+      </div>
+
+      <!-- Title -->
+      <div id="block-title" class="fieldset" hidden>
+        <div class="legend">Titre d’article (H1) + Sous-titre (optionnel)</div>
+        <div class="row">
+          <label for="inp-title">Titre</label>
+          <input id="inp-title" type="text" placeholder="Mon titre" />
+        </div>
+        <div class="row">
+          <label for="inp-subtitle">Sous-titre</label>
+          <input id="inp-subtitle" type="text" placeholder="Sous-titre (optionnel)" />
+        </div>
+        <div class="row">
+          <label>Mode sous-titre</label>
+          <div>
+            <label class="checkbox"><input type="radio" name="subtitleMode" value="data" checked /> data-subtitle sur le H1</label>
+            <label class="checkbox"><input type="radio" name="subtitleMode" value="p" /> &lt;p class="subtitle"&gt;</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intro -->
+      <div id="block-intro" class="fieldset" hidden>
+        <div class="legend">Intro (apparaît avant les chapitres)</div>
+        <textarea id="ta-intro" placeholder="… intro …"></textarea>
+        <div class="counter" data-for="ta-intro"></div>
+      </div>
+
+      <!-- TOC -->
+      <div id="block-toc" class="fieldset" hidden>
+        <div class="legend">Sommaire automatique</div>
+        <label class="checkbox"><input type="checkbox" id="chk-toc" checked /> Générer la section « Sommaire » à partir des H2</label>
+      </div>
+
+      <!-- Chapters -->
+      <div id="block-chapters" class="fieldset" hidden>
+        <div class="legend">Chapitres (H2)</div>
+        <div class="chapters" id="chapters"></div>
+        <button class="btn small" id="btn-add-chapter">+ Ajouter un chapitre</button>
+      </div>
+
+      <!-- Media -->
+      <div id="block-media" class="fieldset" hidden>
+        <div class="legend">Médias (figure)</div>
+        <div class="images" id="images">
+          <!-- items -->
+        </div>
+        <div class="row">
+          <label>Figcaption</label>
+          <input id="inp-caption" type="text" placeholder="Quelques images liées à l’article." />
+        </div>
+        <button class="btn small" id="btn-add-image">+ Ajouter une image</button>
+        <div class="hint">Astuce : coche une image « principale » (data-main). Tu peux réordonner avec ↑↓.</div>
+      </div>
+
+      <!-- Extras / References / Capsules -->
+      <div id="block-extras" class="fieldset" hidden>
+        <div class="legend">Extras</div>
+        <textarea id="ta-extras" placeholder="…"></textarea>
+        <div class="counter" data-for="ta-extras"></div>
+      </div>
+      <div id="block-refs" class="fieldset" hidden>
+        <div class="legend">Références</div>
+        <textarea id="ta-refs" placeholder="…"></textarea>
+        <div class="counter" data-for="ta-refs"></div>
+      </div>
+      <div id="block-caps" class="fieldset" hidden>
+        <div class="legend">Capsules</div>
+        <textarea id="ta-caps" placeholder="…"></textarea>
+        <div class="counter" data-for="ta-caps"></div>
+      </div>
+
+      <div class="status">
+        <div id="pill-save" class="pill">autosave 3 min • Ctrl+S</div>
+        <div id="pill-dirty" class="pill">brouillon non sauvegardé</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT -->
+  <section class="panel">
+    <h2>HTML final (copier / coller)</h2>
+    <div class="content">
+      <pre id="out" class="code">&lt;!-- Résultat… --&gt;</pre>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ==============================
+   State & Persistence
+============================== */
+const KEY = 'cm-article-studio-v1';
+
+const state = {
+  title: '',
+  subtitle: '',
+  subtitleMode: 'data', // 'data' | 'p'
+  intro: '',
+  toc: true,
+  chapters: [], // {n,id,title,html}
+  media: { images: [], caption:'' }, // {src,alt,main}
+  extras: '',
+  references: '',
+  capsules: '',
+  updatedAt: Date.now(),
+  dirty: false
+};
+
+function markDirty(){
+  state.dirty = true;
+  pillDirty.textContent = 'modifications non sauvegardées';
+}
+
+function saveLocal(){
+  state.updatedAt = Date.now();
+  localStorage.setItem(KEY, JSON.stringify(state));
+  state.dirty = false;
+  pillDirty.textContent = 'tout est sauvegardé';
+}
+
+function loadLocal(){
+  const raw = localStorage.getItem(KEY);
+  if(!raw) return;
+  const data = JSON.parse(raw);
+  Object.assign(state, data);
+  renderAllFromState();
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'article-studio.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJSON(file){
+  const fr = new FileReader();
+  fr.onload = () => {
+    try{
+      const data = JSON.parse(fr.result);
+      Object.assign(state, data);
+      renderAllFromState();
+      saveLocal();
+    }catch(e){ alert('Fichier JSON invalide'); }
+  };
+  fr.readAsText(file);
+}
+
+/* ==============================
+   Utils
+============================== */
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const debounce = (fn, ms=600) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms)} };
+
+function slugify(str){
+  return (str||'')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/[^a-z0-9]+/g,'-')
+    .replace(/(^-|-$)/g,'')
+    || 'section';
+}
+
+function wrapSelection(el, before, after){
+  el.focus();
+  const [s,e] = [el.selectionStart, el.selectionEnd];
+  const txt = el.value;
+  const selected = txt.slice(s,e);
+  const out = txt.slice(0,s) + before + selected + after + txt.slice(e);
+  el.value = out;
+  el.setSelectionRange(s+before.length, e+before.length);
+  el.dispatchEvent(new Event('input'));
+}
+
+/* ==============================
+   DOM refs
+============================== */
+const pillDirty = $('#pill-dirty');
+const out = $('#out');
+
+const insertButtons = $$('.insertbar .btn');
+const btnSave = $('#btn-save'), btnLoad = $('#btn-load'), btnExport = $('#btn-export'), btnImport = $('#btn-import');
+const fileImport = $('#file-import');
+const btnBuild = $('#btn-build'), btnDownload = $('#btn-download');
+
+const blkTitle = $('#block-title'), inpTitle = $('#inp-title'), inpSubtitle = $('#inp-subtitle');
+const subtitleRadios = $$('input[name="subtitleMode"]');
+
+const blkIntro = $('#block-intro'), taIntro = $('#ta-intro');
+const blkToc = $('#block-toc'), chkToc = $('#chk-toc');
+const blkChapters = $('#block-chapters'), chaptersEl = $('#chapters'), btnAddChapter = $('#btn-add-chapter');
+
+const blkMedia = $('#block-media'), imagesEl = $('#images'), btnAddImage = $('#btn-add-image'), inpCaption = $('#inp-caption');
+
+const taExtras = $('#ta-extras'), taRefs = $('#ta-refs'), taCaps = $('#ta-caps');
+
+const counters = $$('.counter');
+
+/* ==============================
+   Init UI
+============================== */
+insertButtons.forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const t = b.dataset.insert;
+    if(t==='title'){ blkTitle.hidden=false; inpTitle.focus(); }
+    if(t==='intro'){ blkIntro.hidden=false; taIntro.focus(); }
+    if(t==='toc'){ blkToc.hidden=false; }
+    if(t==='chapter'){ blkChapters.hidden=false; addChapter(); }
+    if(t==='media'){ blkMedia.hidden=false; }
+    if(t==='extras'){ $('#block-extras').hidden=false; taExtras.focus(); }
+    if(t==='refs'){ $('#block-refs').hidden=false; taRefs.focus(); }
+    if(t==='caps'){ $('#block-caps').hidden=false; taCaps.focus(); }
+  })
+});
+
+[ inpTitle, inpSubtitle, taIntro, taExtras, taRefs, taCaps, inpCaption ].forEach(el=>{
+  el.addEventListener('input', debounce(()=>{
+    state.title = inpTitle.value;
+    state.subtitle = inpSubtitle.value;
+    state.intro = taIntro.value;
+    state.extras = taExtras.value;
+    state.references = taRefs.value;
+    state.capsules = taCaps.value;
+    state.media.caption = inpCaption.value;
+    markDirty();
+  },400));
+});
+
+subtitleRadios.forEach(r=>r.addEventListener('change', ()=>{
+  state.subtitleMode = r.value==='p'?'p':'data';
+  markDirty();
+}));
+
+chkToc.addEventListener('change', ()=>{ state.toc = chkToc.checked; markDirty(); });
+
+/* Counters */
+function updateCounters(){
+  counters.forEach(c=>{
+    const id = c.getAttribute('data-for');
+    const el = document.getElementById(id);
+    const len = (el?.value||'').length;
+    const words = (el?.value||'').trim().split(/\s+/).filter(Boolean).length;
+    c.textContent = `${words} mots • ${len} caractères`;
+  });
+}
+
+/* Chapters */
+function chapterItem(ch){
+  const root = document.createElement('div');
+  root.className='item';
+  root.dataset.id = ch.id;
+
+  root.innerHTML = `
+    <div class="head">
+      <div class="title">Chapitre ${ch.n} — <span class="ghost">${ch.title||'(sans titre)'}</span></div>
+      <div class="controls">
+        <button class="btn small" data-act="up">↑</button>
+        <button class="btn small" data-act="down">↓</button>
+        <button class="btn small" data-act="dup">Dupliquer</button>
+        <button class="btn small bad" data-act="del">Supprimer</button>
+      </div>
+    </div>
+    <div class="row">
+      <label>Titre H2</label>
+      <input type="text" class="ch-title" placeholder="Titre du chapitre" value="${ch.title||''}">
+    </div>
+    <div class="row id-inline">
+      <label>ID (ancre)</label>
+      <input type="text" class="ch-id" value="${ch.id}">
+      <button class="btn small" data-act="slug">Slug</button>
+    </div>
+    <textarea class="ch-html" placeholder="… contenu …">${ch.html||''}</textarea>
+    <div class="counter"></div>
+  `;
+
+  const elTitle = $('.ch-title', root);
+  const elId = $('.ch-id', root);
+  const elHtml = $('.ch-html', root);
+  const counter = $('.counter', root);
+
+  const syncCounter = ()=>{ counter.textContent = `${(elHtml.value.trim().split(/\s+/).filter(Boolean).length)} mots`; };
+
+  elTitle.addEventListener('input', debounce(()=>{
+    ch.title = elTitle.value;
+    $('.ghost', root).textContent = ch.title || '(sans titre)';
+    markDirty();
+  },400));
+
+  elId.addEventListener('input', debounce(()=>{
+    ch.id = elId.value || slugify(ch.title);
+    markDirty();
+  },400));
+
+  elHtml.addEventListener('input', debounce(()=>{
+    ch.html = elHtml.value;
+    updateCounters(); syncCounter(); markDirty();
+  },400));
+
+  root.addEventListener('click', (ev)=>{
+    const act = ev.target?.dataset?.act;
+    if(!act) return;
+    if(act==='slug'){ elId.value = slugify(elTitle.value||ch.id); ch.id = elId.value; markDirty(); }
+    if(act==='up'){ moveChapter(ch.n, -1); }
+    if(act==='down'){ moveChapter(ch.n, +1); }
+    if(act==='dup'){ duplicateChapter(ch.n); }
+    if(act==='del'){ deleteChapter(ch.n); }
+  });
+
+  syncCounter();
+  return root;
+}
+
+function renumberChapters(){
+  state.chapters.forEach((c,i)=>c.n=i+1);
+}
+
+function renderChapters(){
+  chaptersEl.innerHTML='';
+  state.chapters.forEach(ch=>{
+    chaptersEl.appendChild(chapterItem(ch));
+  });
+}
+
+function addChapter(){
+  const n = state.chapters.length + 1;
+  const ch = { n, id:'section-'+n, title:'', html:'' };
+  state.chapters.push(ch);
+  renderChapters();
+  markDirty();
+}
+
+function moveChapter(n, delta){
+  const i = state.chapters.findIndex(c=>c.n===n);
+  const j = i + delta;
+  if(j<0 || j>=state.chapters.length) return;
+  const tmp = state.chapters[i];
+  state.chapters[i] = state.chapters[j];
+  state.chapters[j] = tmp;
+  renumberChapters();
+  renderChapters();
+  markDirty();
+}
+
+function duplicateChapter(n){
+  const i = state.chapters.findIndex(c=>c.n===n);
+  const src = state.chapters[i];
+  const dup = { n: src.n+1, id: src.id+'-copy', title: src.title+' (copie)', html: src.html };
+  state.chapters.splice(i+1, 0, dup);
+  renumberChapters();
+  renderChapters();
+  markDirty();
+}
+
+function deleteChapter(n){
+  if(!confirm('Supprimer ce chapitre ?')) return;
+  state.chapters = state.chapters.filter(c=>c.n!==n);
+  renumberChapters();
+  renderChapters();
+  markDirty();
+}
+
+btnAddChapter.addEventListener('click', addChapter);
+
+/* Media */
+function imageItem(img, idx){
+  const root = document.createElement('div');
+  root.className='item';
+  root.innerHTML = `
+    <div class="head">
+      <div class="title">Image ${idx+1}</div>
+      <div class="controls">
+        <button class="btn small" data-act="up">↑</button>
+        <button class="btn small" data-act="down">↓</button>
+        <button class="btn small bad" data-act="del">Supprimer</button>
+      </div>
+    </div>
+    <div class="grid">
+      <input type="url" class="im-src" placeholder="/img/..." value="${img.src||''}">
+      <input type="text" class="im-alt" placeholder="Texte alternatif" value="${img.alt||''}">
+      <label class="checkbox"><input type="checkbox" class="im-main" ${img.main?'checked':''}> data-main</label>
+      <div class="muted">(${idx+1})</div>
+      <div></div>
+    </div>
+  `;
+  const elSrc = $('.im-src', root);
+  const elAlt = $('.im-alt', root);
+  const elMain = $('.im-main', root);
+
+  const sync = debounce(()=>{
+    img.src = elSrc.value;
+    img.alt = elAlt.value;
+    img.main = elMain.checked;
+    markDirty();
+  },300);
+
+  elSrc.addEventListener('input', sync);
+  elAlt.addEventListener('input', sync);
+  elMain.addEventListener('change', sync);
+
+  root.addEventListener('click', (ev)=>{
+    const act = ev.target?.dataset?.act;
+    if(!act) return;
+    const i = state.media.images.indexOf(img);
+    if(act==='up' && i>0){
+      const t=state.media.images[i-1]; state.media.images[i-1]=img; state.media.images[i]=t;
+      renderImages(); markDirty();
+    }
+    if(act==='down' && i<state.media.images.length-1){
+      const t=state.media.images[i+1]; state.media.images[i+1]=img; state.media.images[i]=t;
+      renderImages(); markDirty();
+    }
+    if(act==='del'){
+      state.media.images.splice(i,1);
+      renderImages(); markDirty();
+    }
+  });
+
+  return root;
+}
+
+function renderImages(){
+  imagesEl.innerHTML='';
+  state.media.images.forEach((im, i)=>imagesEl.appendChild(imageItem(im,i)));
+}
+
+btnAddImage.addEventListener('click', ()=>{
+  state.media.images.push({src:'',alt:'',main:false});
+  renderImages(); markDirty();
+});
+
+/* Formatting toolbar */
+let activeTextArea = null;
+document.addEventListener('focusin', (e)=>{
+  if(e.target.tagName==='TEXTAREA') activeTextArea = e.target;
+});
+$('#formatbar').addEventListener('click', (e)=>{
+  const cmd = e.target?.dataset?.format || e.target?.parentElement?.dataset?.format;
+  if(!cmd || !activeTextArea) return;
+  const el = activeTextArea;
+
+  const wrappers = {
+    em: ['<em>','</em>'],
+    strong:['<strong>','</strong>'],
+    u:['<u>','</u>'],
+    code:['<code>','</code>'],
+    quote:['<blockquote>','</blockquote>'],
+    ul:['\n<ul>\n<li>','</li>\n</ul>\n'],
+    ol:['\n<ol>\n<li>','</li>\n</ol>\n']
+  };
+  if(cmd==='link'){
+    const href = prompt('URL du lien :','https://');
+    if(href){ wrapSelection(el, `<a href="${href}">`, '</a>'); }
+    return;
+  }
+  const [b,a] = wrappers[cmd] || ['',''];
+  wrapSelection(el,b,a);
+});
+
+/* Build HTML */
+function buildHTML(){
+  // dedupe IDs
+  const seen = new Set();
+  state.chapters.forEach(ch=>{
+    let base = slugify(ch.title || ch.id);
+    if(!base) base = 'section';
+    let id = base, k=2;
+    while(seen.has(id)){ id = `${base}-${k++}`; }
+    ch.id = id; seen.add(id);
+  });
+
+  // Title
+  const h1sub = state.subtitleMode==='data'
+    ? `<h1${state.subtitle ? ` data-subtitle="${escapeAttr(state.subtitle)}"`:''}>${escapeHtml(state.title||'Mon titre')}</h1>`
+    : `<h1>${escapeHtml(state.title||'Mon titre')}</h1>\n  ${state.subtitle?`<p class="subtitle">${escapeHtml(state.subtitle)}</p>`:''}`;
+
+  // Intro
+  const intro = (state.intro||'').trim() ? `  <section data-chapter="intro">\n    ${indentHtml(state.intro.trim(),4)}\n  </section>\n\n` : '';
+
+  // TOC
+  let toc = '';
+  if(state.toc && state.chapters.length){
+    const links = state.chapters.map(ch=>`      <a href="#${ch.id}">${escapeHtml(ch.title||ch.id)}</a>`).join(' •\n');
+    toc =
+`  <section data-chapter="sommaire" id="sommaire">
+    <h2>Sommaire</h2>
+    <nav class="article-toc">
+${links}
+    </nav>
+  </section>\n\n`;
+  }
+
+  // Chapters
+  const chs = state.chapters.map(ch=>{
+    const body = ch.html?.trim() ? indentHtml(ch.html.trim(),4) : '    <p>… contenu …</p>';
+    return `  <section data-chapter="${ch.n}" id="${ch.id}">
+    <h2>${escapeHtml(ch.title||('Chapitre '+ch.n))}</h2>
+${body}
+  </section>`;
+  }).join('\n\n');
+
+  // Media
+  let media = '';
+  if(state.media.images.length || (state.media.caption||'').trim()){
+    const imgs = state.media.images.map(im=>{
+      const main = im.main ? ' data-main' : '';
+      const alt = escapeAttr(im.alt||'');
+      const src = escapeAttr(im.src||'');
+      return `    <img src="${src}" alt="${alt}"${main}>`;
+    }).join('\n');
+    const cap = (state.media.caption||'').trim() ? `\n    <figcaption>${escapeHtml(state.media.caption.trim())}</figcaption>` : '';
+    media =
+`<section data-part="media">
+  <figure>
+${imgs}
+${cap}
+  </figure>
+</section>`;
+  }
+
+  // Extras / refs / caps
+  const extras = (state.extras||'').trim() ? `<section data-part="extras">\n${indentHtml(state.extras.trim(),2)}\n</section>` : `<section data-part="extras">…</section>`;
+  const refs = (state.references||'').trim() ? `<section data-part="references">\n${indentHtml(state.references.trim(),2)}\n</section>` : `<section data-part="references">…</section>`;
+  const caps = (state.capsules||'').trim() ? `<section data-part="capsules">\n${indentHtml(state.capsules.trim(),2)}\n</section>` : `<section data-part="capsules">…</section>`;
+
+  const html =
+`<!-- =========================================================
+  ARTICLE — généré par Article Studio (Codex Mental)
+  ========================================================= -->
+
+<!-- Titre -->
+<section data-part="title" class="title-chip">
+  ${h1sub}
+</section>
+
+<!-- Outils (laissé vide : le viewer injecte “Partager”) -->
+<section data-part="tools"></section>
+
+<!-- Corps -->
+<article data-part="body">
+${intro}${toc}${chs ? chs+'\n' : ''}
+</article>
+
+<!-- Média -->
+${media || '<section data-part="media"><figure>\n  <!-- images ici -->\n</figure></section>'}
+
+<!-- Extras / Références / Capsules -->
+${extras}
+${refs}
+${caps}
+`;
+
+  out.textContent = html;
+  return html;
+}
+
+function escapeHtml(s=''){ return s.replace(/[&<>]/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+function escapeAttr(s=''){ return s.replace(/"/g,'&quot;'); }
+
+function indentHtml(s, spaces=2){
+  const pad = ' '.repeat(spaces);
+  return s.split('\n').map(l=> pad + l).join('\n');
+}
+
+/* Download .html */
+function downloadHTML(){
+  const html = buildHTML();
+  const blob = new Blob([html], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (slugify(state.title||'article')||'article') + '.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* Render all from state */
+function renderAllFromState(){
+  // show blocks when content exists
+  blkTitle.hidden = false;
+  blkIntro.hidden = false;
+  blkToc.hidden = false;
+  blkChapters.hidden = false;
+  blkMedia.hidden = false;
+  $('#block-extras').hidden = false;
+  $('#block-refs').hidden = false;
+  $('#block-caps').hidden = false;
+
+  inpTitle.value = state.title||'';
+  inpSubtitle.value = state.subtitle||'';
+  (state.subtitleMode==='p' ? subtitleRadios[1] : subtitleRadios[0]).checked = true;
+
+  taIntro.value = state.intro||'';
+  chkToc.checked = !!state.toc;
+
+  renderChapters();
+
+  imagesEl.innerHTML='';
+  state.media.images = state.media.images||[];
+  renderImages();
+  inpCaption.value = state.media.caption||'';
+
+  taExtras.value = state.extras||'';
+  taRefs.value = state.references||'';
+  taCaps.value = state.capsules||'';
+
+  updateCounters();
+  buildHTML();
+}
+
+/* Autosave + keyboard */
+btnSave.addEventListener('click', saveLocal);
+btnLoad.addEventListener('click', ()=>{ loadLocal(); alert('Brouillon chargé.'); });
+btnExport.addEventListener('click', exportJSON);
+btnImport.addEventListener('click', ()=>fileImport.click());
+fileImport.addEventListener('change', (e)=>{ if(e.target.files?.[0]) importJSON(e.target.files[0]); });
+btnBuild.addEventListener('click', buildHTML);
+btnDownload.addEventListener('click', downloadHTML);
+
+document.addEventListener('keydown', (e)=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal(); }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML(); }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='b' && activeTextArea){ e.preventDefault(); wrapSelection(activeTextArea,'<strong>','</strong>'); }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='i' && activeTextArea){ e.preventDefault(); wrapSelection(activeTextArea,'<em>','</em>'); }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='u' && activeTextArea){ e.preventDefault(); wrapSelection(activeTextArea,'<u>','</u>'); }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k' && activeTextArea){ e.preventDefault(); const href=prompt('URL du lien :','https://'); if(href) wrapSelection(activeTextArea,`<a href="${href}">`,'</a>'); }
+});
+
+/* autosave every 3min + on idle typing */
+setInterval(()=>{ if(state.dirty) saveLocal(); }, 180000);
+document.addEventListener('input', debounce(()=>{ updateCounters(); if(state.dirty) saveLocal(); }, 1200));
+
+window.addEventListener('beforeunload', (e)=>{
+  if(state.dirty){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+/* Boot */
+renderAllFromState();
+</script>
+</body>
+</html>
