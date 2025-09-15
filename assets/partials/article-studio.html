@@ -18,7 +18,7 @@
 
   header.appbar{position:sticky;top:0;z-index:10;backdrop-filter:saturate(1.1) blur(8px);
     background:linear-gradient(90deg,rgba(134,199,255,.12),transparent 35%,transparent 65%,rgba(178,140,255,.10));
-    border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;padding:10px 14px}
+    border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;padding:10px 14px;flex-wrap:wrap}
   header .title{font-weight:700}
   header .spacer{flex:1}
   .btn{background:#121739;border:1px solid var(--line);color:var(--ink);padding:.45rem .7rem;border-radius:10px;cursor:pointer}
@@ -26,7 +26,13 @@
   .btn.good{background:rgba(74,210,149,.10);border-color:rgba(74,210,149,.5)}
   .btn.small{padding:.35rem .55rem;font-size:.9rem}
 
-  .wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px;height:calc(100% - 58px)}
+  /* Layout responsive + modes */
+  .wrap{display:grid;gap:14px;padding:14px;height:calc(100% - 58px)}
+  body[data-layout="equal"]  .wrap{grid-template-columns:1fr 1fr}
+  body[data-layout="left"]   .wrap{grid-template-columns:1.35fr .65fr}
+  body[data-layout="right"]  .wrap{grid-template-columns:.65fr 1.35fr}
+  @media (max-width:1000px){.wrap{grid-template-columns:1fr}}
+
   .panel{border:1px solid var(--line);border-radius:var(--radius);background:#0c1125;min-height:0;display:flex;flex-direction:column}
   .panel h2{font-size:1rem;margin:0;padding:10px 12px;border-bottom:1px solid var(--line);color:#cfe3ff}
   .panel .content{padding:12px;overflow:auto;min-height:0;flex:1}
@@ -53,14 +59,19 @@
   .code{white-space:pre;font-family:var(--mono);font-size:.92rem;line-height:1.4;background:#050814;padding:12px;border-radius:10px;overflow:auto;min-height:100%;border:1px solid var(--line)}
   .status{display:flex;gap:10px;align-items:center;margin:0 12px 12px}
   .pill{padding:.2rem .55rem;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#0b1130;font-size:.85rem}
-
-  @media (max-width:1000px){.wrap{grid-template-columns:1fr}}
 </style>
 </head>
-<body>
+<body data-layout="equal">
 <header class="appbar">
   <div class="title">🧰 Article Studio</div>
   <div class="spacer"></div>
+
+  <!-- Layout controls -->
+  <button id="btn-layout-left"  class="btn small" title="Focus Édition (Ctrl+Alt+←)">⇤ Édition</button>
+  <button id="btn-layout-eq"    class="btn small" title="50/50 (Ctrl+Alt+0)">50/50</button>
+  <button id="btn-layout-right" class="btn small" title="Focus Aperçu (Ctrl+Alt+→)">Aperçu ⇥</button>
+
+  <!-- Data controls -->
   <button id="btn-save" class="btn">Sauver</button>
   <button id="btn-load" class="btn">Charger</button>
   <button id="btn-export" class="btn">Export JSON</button>
@@ -195,6 +206,7 @@
 <script>
 /* ===== State & persistence ===== */
 const KEY='cm-article-studio-v2a';
+const KEY_UI='cm-article-studio-layout';
 const state={
   title:'',subtitle:'',subtitleMode:'data',
   introEnabled:false,introTitle:'',intro:'',
@@ -202,7 +214,8 @@ const state={
   chapters:[], // {n,id,title,html}
   media:{images:[],caption:''}, // {src,alt,main}
   extras:'',references:'',capsules:'',
-  updatedAt:Date.now(),dirty:false
+  updatedAt:Date.now(),dirty:false,
+  layout: localStorage.getItem(KEY_UI) || 'equal'
 };
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
@@ -219,12 +232,34 @@ const out=$('#out');
 const insertButtons=$$('.insertbar .btn');
 const btnSave=$('#btn-save'),btnLoad=$('#btn-load'),btnExport=$('#btn-export'),btnImport=$('#btn-import'),fileImport=$('#file-import');
 const btnBuild=$('#btn-build'),btnDownload=$('#btn-download');
+const btnLayoutLeft=$('#btn-layout-left'), btnLayoutEq=$('#btn-layout-eq'), btnLayoutRight=$('#btn-layout-right');
 const blkTitle=$('#block-title'), inpTitle=$('#inp-title'), inpSubtitle=$('#inp-subtitle'), subtitleRadios=$$('input[name="subtitleMode"]');
 const blkIntro=$('#block-intro'), chkIntro=$('#chk-intro'), inpIntroTitle=$('#inp-intro-title'), taIntro=$('#ta-intro');
 const blkToc=$('#block-toc'), chkToc=$('#chk-toc');
 const blkChapters=$('#block-chapters'), chaptersEl=$('#chapters'), btnAddChapter=$('#btn-add-chapter');
 const blkMedia=$('#block-media'), imagesEl=$('#images'), btnAddImage=$('#btn-add-image'), inpCaption=$('#inp-caption');
 const taExtras=$('#ta-extras'), taRefs=$('#ta-refs'), taCaps=$('#ta-caps');
+
+/* ===== Layout handling ===== */
+function setLayout(mode){
+  if(!['left','equal','right'].includes(mode)) mode='equal';
+  state.layout=mode;
+  document.body.setAttribute('data-layout', mode);
+  localStorage.setItem(KEY_UI, mode); // persistant, sans marquer dirty
+}
+btnLayoutLeft.addEventListener('click',()=>setLayout('left'));
+btnLayoutEq.addEventListener('click',()=>setLayout('equal'));
+btnLayoutRight.addEventListener('click',()=>setLayout('right'));
+
+/* keyboard: Ctrl+Alt+←/0/→ */
+document.addEventListener('keydown',(e)=>{
+  const k=e.key.toLowerCase();
+  if((e.ctrlKey||e.metaKey) && e.altKey){
+    if(k==='arrowleft'){ e.preventDefault(); setLayout('left') }
+    if(k==='0'){ e.preventDefault(); setLayout('equal') }
+    if(k==='arrowright'){ e.preventDefault(); setLayout('right') }
+  }
+});
 
 /* ===== Insert palette ===== */
 insertButtons.forEach(b=>{
@@ -459,7 +494,7 @@ function renderAllFromState(){
   blkTitle.hidden=false; blkIntro.hidden=false; blkToc.hidden=false; blkChapters.hidden=false; blkMedia.hidden=false;
   $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
 
-  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||''; (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
+  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||''; (state.subtitleMode==='p'?$$('input[name="subtitleMode"]')[1]:$$('input[name="subtitleMode"]')[0]).checked=true;
 
   chkIntro.checked=!!state.introEnabled;
   inpIntroTitle.value=state.introTitle||'';
@@ -471,6 +506,10 @@ function renderAllFromState(){
   imagesEl.innerHTML=''; state.media.images=state.media.images||[]; renderImages(); inpCaption.value=state.media.caption||'';
 
   taExtras.value=state.extras||''; taRefs.value=state.references||''; taCaps.value=state.capsules||'';
+
+  // layout
+  setLayout(state.layout||'equal');
+
   updateCounters(); buildHTML();
 }
 
@@ -482,7 +521,7 @@ fileImport.addEventListener('change',e=>{if(e.target.files?.[0]) importJSON(e.ta
 btnBuild.addEventListener('click',buildHTML);
 btnDownload.addEventListener('click',downloadHTML);
 
-/* Raccourcis */
+/* Raccourcis édition */
 let activeTextArea=null;
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 document.addEventListener('keydown',e=>{
