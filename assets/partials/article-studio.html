@@ -4,6 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Article Studio v2 — Codex Mental</title>
+<!-- petit favicon inline pour éviter le 404 de la console -->
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="%23121739"/><text x="50%" y="62%" font-size="76" text-anchor="middle" fill="%2386c7ff" font-family="Arial, Helvetica, sans-serif">A</text></svg>'>
 <style>
   :root{
     --bg:#0f1220; --bg2:#12162a; --ink:#e9efff; --muted:#a9b5d1;
@@ -26,21 +28,19 @@
   .btn.good{background:rgba(74,210,149,.10);border-color:rgba(74,210,149,.5)}
   .btn.small{padding:.35rem .55rem;font-size:.9rem}
 
-  /* Layout responsive + modes */
- /* Layout responsive + modes */
-.wrap{
-  display:grid; gap:14px; padding:14px; height:calc(100% - 58px);
-  transition:grid-template-columns .25s ease;
-}
-body[data-layout="equal"]  .wrap{grid-template-columns:1fr 1fr}
-body[data-layout="left"]   .wrap{grid-template-columns:minmax(560px,2fr) minmax(420px,1fr)}
-body[data-layout="right"]  .wrap{grid-template-columns:minmax(420px,1fr) minmax(560px,2fr)}
+  /* Layout responsive + modes (contraste clair et smooth) */
+  .wrap{
+    display:grid; gap:14px; padding:14px; height:calc(100% - 58px);
+    transition:grid-template-columns .25s ease;
+  }
+  body[data-layout="equal"]  .wrap{grid-template-columns:1fr 1fr}
+  body[data-layout="left"]   .wrap{grid-template-columns:minmax(560px,2fr) minmax(420px,1fr)}
+  body[data-layout="right"]  .wrap{grid-template-columns:minmax(420px,1fr) minmax(560px,2fr)}
 
-.btn.toggle[aria-pressed="true"]{
-  outline:2px solid var(--accent);
-  background:rgba(134,199,255,.15);
-}
-
+  .btn.toggle[aria-pressed="true"]{
+    outline:2px solid var(--accent);
+    background:rgba(134,199,255,.15);
+  }
 
   .panel{border:1px solid var(--line);border-radius:var(--radius);background:#0c1125;min-height:0;display:flex;flex-direction:column}
   .panel h2{font-size:1rem;margin:0;padding:10px 12px;border-bottom:1px solid var(--line);color:#cfe3ff}
@@ -91,6 +91,7 @@ body[data-layout="right"]  .wrap{grid-template-columns:minmax(420px,1fr) minmax(
 </header>
 
 <div class="wrap">
+  <!-- LEFT -->
   <section class="panel">
     <h2>Édition assistée</h2>
     <div class="content">
@@ -202,6 +203,7 @@ body[data-layout="right"]  .wrap{grid-template-columns:minmax(420px,1fr) minmax(
     </div>
   </section>
 
+  <!-- RIGHT -->
   <section class="panel">
     <h2>HTML final (copier / coller)</h2>
     <div class="content">
@@ -253,12 +255,9 @@ function setLayout(mode){
   state.layout=mode;
   document.body.setAttribute('data-layout', mode);
   localStorage.setItem(KEY_UI, mode);
-
-  // bouton actif
   [btnLayoutLeft, btnLayoutEq, btnLayoutRight].forEach(b=>b?.setAttribute('aria-pressed','false'));
   ({left:btnLayoutLeft, equal:btnLayoutEq, right:btnLayoutRight}[mode])?.setAttribute('aria-pressed','true');
 }
-// listeners de clic + raccourcis clavier
 btnLayoutLeft.addEventListener('click',  ()=>setLayout('left'));
 btnLayoutEq.addEventListener('click',    ()=>setLayout('equal'));
 btnLayoutRight.addEventListener('click', ()=>setLayout('right'));
@@ -388,7 +387,7 @@ function renderImages(){imagesEl.innerHTML=''; state.media.images.forEach((im,i)
 btnAddImage.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
 
 /* ===== Formatting toolbar ===== */
-let activeTextArea=null;
+let activeTextArea=null;  /* <— unique déclaration */
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 $('#formatbar').addEventListener('click',e=>{
   const cmd=e.target?.dataset?.format||e.target?.parentElement?.dataset?.format; if(!cmd||!activeTextArea) return;
@@ -500,7 +499,6 @@ function downloadHTML(){
 
 /* ===== Render / boot ===== */
 function renderAllFromState(){
-  // afficher les blocs
   blkTitle.hidden=false; blkIntro.hidden=false; blkToc.hidden=false; blkChapters.hidden=false; blkMedia.hidden=false;
   $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
 
@@ -517,10 +515,9 @@ function renderAllFromState(){
 
   taExtras.value=state.extras||''; taRefs.value=state.references||''; taCaps.value=state.capsules||'';
 
-  // layout initial
-  setLayout(state.layout||'equal');
-
-  updateCounters(); buildHTML();
+  setLayout(state.layout||'equal');   /* applique le layout + surligne le bouton actif */
+  updateCounters();
+  buildHTML();
 }
 
 btnSave.addEventListener('click',saveLocal);
@@ -531,8 +528,7 @@ fileImport.addEventListener('change',e=>{if(e.target.files?.[0]) importJSON(e.ta
 btnBuild.addEventListener('click',buildHTML);
 btnDownload.addEventListener('click',downloadHTML);
 
-/* Raccourcis */
-let activeTextArea=null;
+/* Raccourcis clavier (édition + build + format) */
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal() }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML() }
@@ -541,15 +537,13 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='u' && activeTextArea){ e.preventDefault(); wrap(activeTextArea,'<u>','</u>') }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k' && activeTextArea){ e.preventDefault(); const href=prompt('URL du lien :','https://'); if(href) wrap(activeTextArea,`<a href="${href}">`,'</a>') }
 });
-document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 
-/* Autosave 3 min + on idle */
+/* Autosave 3 min + auto-save au repos */
 setInterval(()=>{ if(state.dirty) saveLocal() },180000);
 document.addEventListener('input',debounce(()=>{ updateCounters(); if(state.dirty) saveLocal() },1200));
 window.addEventListener('beforeunload',e=>{ if(state.dirty){ e.preventDefault(); e.returnValue='' } });
 
 renderAllFromState();
 </script>
-
 </body>
 </html>
