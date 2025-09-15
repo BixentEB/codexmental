@@ -41,7 +41,9 @@
   gap: .35rem;
 }
 
-/* -- Titre + sous-titre ------------------------------------------------------ */
+#article-title + .viewer-block{ margin-top: .6rem; }
+
+/* -- Title chip (comme Home) ------------------------------------------------- */
 #article-title .title-chip{
   display: inline-block;
   margin: .1rem auto .3rem;
@@ -52,9 +54,11 @@
     color-mix(in oklab, var(--accent-primary, #8fd3ff) 18%, transparent) 0%,
     color-mix(in oklab, var(--link-color,   #b38cff) 12%, transparent) 100%
   );
-  border: 1px solid color-mix(in oklab, #fff 18%, transparent);
-  color: #eaf6ff;
-  box-shadow: 0 10px 28px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.2);
+  border: 1px solid color-mix(in oklab, var(--accent-primary, #8fd3ff) 45%, #000 55%);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.25);
+  filter: drop-shadow(0 0 14px color-mix(in oklab, var(--accent-primary, #9fdcff) 30%, transparent));
 }
 #article-title .title-chip span{
   font-family: 'Orbitron', sans-serif;
@@ -69,38 +73,44 @@
 
 /* Le sous-titre sous la bulle, bien centré */
 #article-title .title-sub{
-  font-family: var(--font-sans, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans");
-  color: #e8edff;
-  opacity: .9;
-  font-weight: 500;
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  letter-spacing: .02em;
+  margin-top: .1rem;
   text-align: center;
-  line-height: 1.25;
-  max-width: min(94vw, 1100px);
+  width: 100%;
 }
 
-/* Bouton partage (si présent) */
-#article-title .share{
+/* -- Tools intégrés dans le titre ------------------------------------------- */
+#article-title .title-tools{
   position: absolute;
-  right: .25rem; top: .25rem;
+  top: .35rem;
+  right: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
 }
-#article-title .share button{
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.18);
-  color: #dfeaff;
-  padding: .35rem .55rem;
-  border-radius: 10px;
+#article-title .btn-share-article{
+  width: 40px; height: 40px; padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(255,255,255,.07);
+  color: #fff;
+  display: grid; place-items: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
   cursor: pointer;
 }
-#article-title .share button:hover{
-  background: rgba(255,255,255,.12);
-}
+#article-title .btn-share-article .label{ display: none; }
+#article-title .btn-share-article .icon{ font-size: 1rem; line-height: 1; }
+
 #article-title .share-menu{
-  position: absolute; right: 0; top: 2.2rem;
-  background: rgba(10,14,30,.92);
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 12px;
-  padding: .55rem .65rem;
+  position: absolute;
+  top: 46px; right: 0;
+  background: rgba(0,0,20,.95);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0,0,0,.45);
+  padding: .35rem .5rem;
   display: flex;
   flex-direction: column;
   gap: .25rem;
@@ -116,28 +126,22 @@
 #article-title .share-menu a:hover{ text-decoration: underline; }
 
 /* -- Corps & typo ------------------------------------------------------------ */
-#article-body{
-  font-family: var(--font-serif, ui-serif, Georgia, Cambria, "Times New Roman", Times, serif);
-  font-size: clamp(1rem, .95rem + .25vw, 1.1rem);
-  line-height: 1.65;
-  color: #eaf0ff;
-}
-#article-body p{ margin: .7rem 0; }
-#article-body h2{
+#article-body{ line-height: 1.7; }
+#article-body h1, #article-body h2{ font-family: 'Orbitron', sans-serif; }
+#article-body p{ margin-bottom: 1.1rem; }
+
+#article-references, #article-extras, #article-capsules{ font-size: .95rem; }
+#article-references::before,
+#article-extras::before,
+#article-capsules::before{
+  content: attr(data-label);
+  display: block;
+  opacity: .8;
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1.1rem, 1rem + .6vw, 1.45rem);
-  letter-spacing: .02em;
-  margin: 1.25rem 0 .6rem;
-  color: #d8e7ff;
+  letter-spacing: .03em;
+  margin-bottom: .6rem;
+  font-size: .9rem;
 }
-#article-body h3{
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(1rem, .95rem + .4vw, 1.25rem);
-  margin: 1rem 0 .5rem;
-  color: #dce7ff;
-}
-#article-body ul{ margin: .6rem 0 .8rem 1.1rem; }
-#article-body li{ margin: .25rem 0; }
 
 /* === MEDIA — ALBUM HERO + VIGNETTES (seule section modifiée) ============== */
 
@@ -240,64 +244,299 @@
 }
 
 
+
 /* -- Lightbox ---------------------------------------------------------------- */
 .no-scroll{ overflow: hidden; }
 .lightbox.hidden{ display: none !important; }
 .lightbox{
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0,0,0,.72);
-  display: grid; place-items: center;
-  backdrop-filter: blur(3px) saturate(1.1);
-}
-.lightbox .lb-inner{
-  max-width: min(96vw, 1400px);
-  max-height: 90vh;
+  position: fixed; inset: 0; z-index: 4000;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: .6rem;
-  padding: .75rem;
+  grid-template-columns: 64px 1fr 64px;
+  align-items: center; justify-items: center;
 }
-.lightbox figure{
-  margin: 0; padding: 0;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 14px;
-  overflow: hidden;
-  display: grid; place-items: center;
+.lb-backdrop{
+  position: absolute; inset: 0;
+  background: var(--lb-bg, rgba(0,0,20,0.92));
+  backdrop-filter: blur(2px);
 }
-.lightbox img{
-  max-width: 100%;
-  max-height: 78vh;
+.lb-figure{
+  grid-column: 2;
+  position: relative; z-index: 1;
+  max-width: 90vw; max-height: 82vh;
+  display: flex; flex-direction: column; align-items:center; gap:.6rem;
+}
+#lb-image{
+  max-width: 90vw; max-height: 76vh;
   object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.55);
+  transition: opacity .25s ease;
+}
+#lb-image.lb-swap{ opacity: .75; }
+#lb-caption{ font-size:.95rem; opacity:.85; text-align:center; color:#e8f4ff; }
+.lb-close,.lb-nav{
+  z-index: 2; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.07);
+  color:#fff; cursor:pointer;
+}
+.lb-close{ position:absolute; top:16px; right:18px; width:42px; height:42px; font-size:1.4rem; }
+.lb-nav{ width:48px; height:48px; font-size:1.6rem; }
+.lb-prev{ grid-column:1; } .lb-next{ grid-column:3; }
+.lb-counter{
+  position: absolute; bottom:16px; left:50%; transform:translateX(-50%);
+  z-index:2; padding:.25rem .6rem; font-size:.9rem; border-radius:8px; color:#eaf6ff;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* ==== NOTES COLLAPSIBLES ======= */
+.note-card {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 14px;
+  padding: 0 !important;
+  margin: 1.2rem 0;
+  overflow: hidden;
+}
+
+/* Le cadre collapsible */
+.note-collapsible {
   display: block;
-  background: #0b0f1a;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
-.lightbox .lb-caption{
-  text-align: center;
-  color: #e7eeff;
-  font-size: .95rem;
-  opacity: .9;
-}
-
-.lightbox .lb-close{
-  justify-self: center;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.22);
-  color: #f4f8ff;
-  padding: .45rem .8rem;
-  border-radius: 12px;
+/* Titre cliquable */
+.note-collapsible summary {
+  list-style: none;
   cursor: pointer;
-}
-.lightbox .lb-close:hover{
-  background: rgba(255,255,255,.16);
+  display: block;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  user-select: none;
+  transition: background 0.2s ease;
 }
 
-/* -- Utilitaires ------------------------------------------------------------- */
-.center{ text-align: center; }
-.hidden{ display: none !important; }
-.mt-0{ margin-top: 0 !important; }
-.mt-1{ margin-top: .25rem !important; }
-.mt-2{ margin-top: .5rem !important; }
-.mt-3{ margin-top: 1rem !important; }
-.mb-0{ margin-bottom: 0 !important; }
+.note-collapsible summary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.note-collapsible summary::-webkit-details-marker {
+  display: none;
+}
+
+.note-title {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  color: var(--accent-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Chevron indicateur */
+.note-title .chev {
+  font-size: 1.4rem;
+  transition: transform 0.3s ease;
+}
+
+.note-collapsible[open] .chev {
+  transform: rotate(90deg);
+}
+
+/* Corps de la note */
+.note-body {
+  padding: 0 1.5rem 1.5rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.note-body p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.note-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* === NOTES COMPACTES (sans fond, header léger) ============================ */
+.note-card{
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 12px;
+  padding: 0 !important;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+/* <details> neutre, tout se joue sur le summary */
+.note-collapsible{
+  display:block; margin:0; padding:0; border:0; background:transparent;
+}
+
+/* Titre cliquable : compact + sans aplat */
+.note-collapsible summary{
+  list-style: none; cursor: pointer;
+  display:block;
+  padding: .7rem 1rem;                  /* ← plus compact */
+  background: transparent;              /* pas de bande grise */
+  user-select:none;
+  transition: background .18s ease, color .18s ease;
+}
+.note-collapsible summary:hover{
+  background: rgba(255,255,255,.04);    /* léger voile au survol */
+}
+.note-collapsible summary::-webkit-details-marker{ display:none; }
+
+.note-title{
+  margin:0;
+  font-family:'Orbitron',sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.12rem);  /* ← titre un peu plus petit */
+  letter-spacing:.01em;
+  color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 30%);
+  display:flex; align-items:center; gap:.6rem;
+}
+.note-title .chev{
+  margin-left:auto;                      /* chevron collé à droite */
+  font-size:1.25rem; line-height:1;
+  opacity:.7; transition: transform .25s ease, opacity .2s ease;
+  transform: translateY(-1px);
+}
+.note-collapsible[open] .chev{ transform: rotate(90deg); opacity:.9; }
+
+/* Corps de la note : fin trait de séparation + marges douces */
+.note-body{
+  padding: .75rem 1rem 1rem;             /* ← contenu plus dense */
+  border-top: 1px solid rgba(255,255,255,.12);
+  background: transparent;
+  box-shadow: none;
+}
+.note-body p{ margin: .7rem 0; line-height: 1.6; }
+.note-body p:last-child{ margin-bottom:0; }
+
+.note-collapsible[open] .note-body {
+  border-top: none;
+  /* optionnel : resserrer un peu l’espace du haut */
+  padding-top: .6rem;
+}
+
+
+/* Accent visuel quand la note est ouverte (sans aplat) */
+.note-card:has(details[open]){
+  border-color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 18%);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent-primary, #8fd3ff), transparent 65%);
+}
+/* Fallback si :has() pas dispo : on renforce simplement le header ouvert */
+@supports not selector(:has(*)){
+  .note-collapsible[open] summary{
+    background: rgba(255,255,255,.05);
+  }
+}
+
+
+
+/* ---------------------------- CHAPTER CARDS -------------------------------- */
+.chapter-card{
+  --chap-accent: var(--accent-primary);
+  position: relative;
+  overflow: hidden;
+  padding: 1.2rem 1.2rem 1.1rem;
+}
+/* Liseré vertical gauche */
+.chapter-card::before{
+  content:"";
+  position:absolute; inset:0 auto 0 0;
+  width:4px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--chap-accent), white 10%),
+    color-mix(in oklab, var(--chap-accent), black 15%)
+  );
+  border-radius: 12px 0 0 12px;
+}
+
+/* Titre de chapitre léger (pas de cadre) */
+.chapter-header{
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: 0;
+  margin: 0 0 .7rem 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  max-width: 100%;
+}
+.chapter-icon{
+  width: 26px; height: 26px; display:grid; place-items:center;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 85%);
+  font-size: .9rem;
+}
+.chapter-title{
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  letter-spacing: .01em;
+  color: color-mix(in oklab, var(--chap-accent, #8fd3ff), white 22%);
+  text-shadow: 0 0 8px color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 70%);
+  margin: 0; padding: .05rem .15rem .2rem 0;
+}
+.chapter-title::after{
+  content: ""; display:block; height:2px; margin-top:.28rem;
+  background: linear-gradient(90deg, var(--chap-accent, #8fd3ff), transparent 70%);
+  border-radius: 2px;
+}
+
+/* Ancre # (Option A + B) */
+:root{ --anchor-offset: 92px; }             /* ajuste si ta topbar change */
+.article-chapter, .note-card{ scroll-margin-top: var(--anchor-offset); }
+html{ scroll-behavior: smooth; }
+.chapter-title .anchor{
+  opacity: .35; text-decoration: none; border-bottom: 1px dotted currentColor;
+  margin-left: .35rem; transition: opacity .15s ease;
+}
+.chapter-card:hover .chapter-title .anchor{ opacity: .75; }
+.chapter-title .anchor.copied::after{
+  content: 'Lien copié'; font-size: .75rem; margin-left: .35rem; opacity: .9;
+}
+
+/* Masquer toute "coquille" de viewer vide */
+#article-viewer .viewer-block.is-empty {
+  display: none !important;
+}
+
+/* Au cas où : neutraliser tout effet de carte sur les sections vides */
+#article-viewer .card.is-empty {
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  height: 0;
+}
+
+/* Quand l'écran d'accueil (placeholder) est visible, on planque tout le reste */
+#article-viewer:has(.placeholder) .viewer-block {
+  display: none !important;
+}
+
+
+/* -- Responsive -------------------------------------------------------------- */
+@media (max-width: 900px){
+  .media-gallery .mosaic{ grid-auto-rows: 80px; }
+}
+@media (max-width: 768px){
+  .viewer-block{ padding: 1rem; margin: .9rem 0; }
+  #article-title .title-chip span{ font-size: 1.4rem; }
+  .media-gallery .mosaic{ grid-template-columns: repeat(4, 1fr); grid-auto-rows: 70px; }
+  .media-gallery .tile--main{ grid-column: span 4; grid-row: span 4; }
+  .lightbox{ grid-template-columns: 48px 1fr 48px; }
+  #lb-image{ max-width: 94vw; max-height: 70vh; }
+  .chapter-card{ padding: 1rem; }
+  .chapter-header{ margin: 0 0 .6rem 0; }
+}
