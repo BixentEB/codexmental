@@ -426,6 +426,26 @@ html{ scroll-behavior: smooth; }
   content: 'Lien copié'; font-size: .75rem; margin-left: .35rem; opacity: .9;
 }
 
+/* Masquer toute "coquille" de viewer vide */
+#article-viewer .viewer-block.is-empty {
+  display: none !important;
+}
+
+/* Au cas où : neutraliser tout effet de carte sur les sections vides */
+#article-viewer .card.is-empty {
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  height: 0;
+}
+
+/* Quand l'écran d'accueil (placeholder) est visible, on planque tout le reste */
+#article-viewer:has(.placeholder) .viewer-block {
+  display: none !important;
+}
+
+
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
   .media-gallery .mosaic{ grid-auto-rows: 80px; }
