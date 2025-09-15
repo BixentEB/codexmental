@@ -27,11 +27,20 @@
   .btn.small{padding:.35rem .55rem;font-size:.9rem}
 
   /* Layout responsive + modes */
-  .wrap{display:grid;gap:14px;padding:14px;height:calc(100% - 58px)}
-  body[data-layout="equal"]  .wrap{grid-template-columns:1fr 1fr}
-  body[data-layout="left"]   .wrap{grid-template-columns:1.35fr .65fr}
-  body[data-layout="right"]  .wrap{grid-template-columns:.65fr 1.35fr}
-  @media (max-width:1000px){.wrap{grid-template-columns:1fr}}
+ /* Layout responsive + modes */
+.wrap{
+  display:grid; gap:14px; padding:14px; height:calc(100% - 58px);
+  transition:grid-template-columns .25s ease;
+}
+body[data-layout="equal"]  .wrap{grid-template-columns:1fr 1fr}
+body[data-layout="left"]   .wrap{grid-template-columns:minmax(560px,2fr) minmax(420px,1fr)}
+body[data-layout="right"]  .wrap{grid-template-columns:minmax(420px,1fr) minmax(560px,2fr)}
+
+.btn.toggle[aria-pressed="true"]{
+  outline:2px solid var(--accent);
+  background:rgba(134,199,255,.15);
+}
+
 
   .panel{border:1px solid var(--line);border-radius:var(--radius);background:#0c1125;min-height:0;display:flex;flex-direction:column}
   .panel h2{font-size:1rem;margin:0;padding:10px 12px;border-bottom:1px solid var(--line);color:#cfe3ff}
@@ -67,9 +76,9 @@
   <div class="spacer"></div>
 
   <!-- Layout controls -->
-  <button id="btn-layout-left"  class="btn small" title="Focus Édition (Ctrl+Alt+←)">⇤ Édition</button>
-  <button id="btn-layout-eq"    class="btn small" title="50/50 (Ctrl+Alt+0)">50/50</button>
-  <button id="btn-layout-right" class="btn small" title="Focus Aperçu (Ctrl+Alt+→)">Aperçu ⇥</button>
+  <button id="btn-layout-left"  class="btn small toggle" title="Focus Édition (Ctrl+Alt+←)">⇤ Édition</button>
+  <button id="btn-layout-eq"    class="btn small toggle" title="50/50 (Ctrl+Alt+0)">50/50</button>
+  <button id="btn-layout-right" class="btn small toggle" title="Focus Aperçu (Ctrl+Alt+→)">Aperçu ⇥</button>
 
   <!-- Data controls -->
   <button id="btn-save" class="btn">Sauver</button>
@@ -239,15 +248,15 @@ const blkMedia=$('#block-media'), imagesEl=$('#images'), btnAddImage=$('#btn-add
 const taExtras=$('#ta-extras'), taRefs=$('#ta-refs'), taCaps=$('#ta-caps');
 
 /* ===== Layout handling ===== */
-function setLayout(mode){
+  function setLayout(mode){
   if(!['left','equal','right'].includes(mode)) mode='equal';
-  state.layout=mode;
   document.body.setAttribute('data-layout', mode);
-  localStorage.setItem(KEY_UI, mode); // persistant, sans marquer dirty
+  localStorage.setItem(KEY_UI, mode); // persiste le choix
+
+  // état visuel du bouton actif
+  [btnLayoutLeft, btnLayoutEq, btnLayoutRight].forEach(b=>b.setAttribute('aria-pressed','false'));
+  ({left:btnLayoutLeft, equal:btnLayoutEq, right:btnLayoutRight}[mode]).setAttribute('aria-pressed','true');
 }
-btnLayoutLeft.addEventListener('click',()=>setLayout('left'));
-btnLayoutEq.addEventListener('click',()=>setLayout('equal'));
-btnLayoutRight.addEventListener('click',()=>setLayout('right'));
 
 /* keyboard: Ctrl+Alt+←/0/→ */
 document.addEventListener('keydown',(e)=>{
