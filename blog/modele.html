@@ -19,3 +19,89 @@
     <figcaption>Quelques images liées à l’article.</figcaption>
   </figure>
 </section>
+
+------------------------------------------------------------------------VERSION ANNOTEE -----------------------------------------------------------------------------------------------------------------------------
+
+<!-- ===== MODELE ARTICLE (à copier/coller) ===== -->
+
+<!-- Titre principal (affiché en "bulle") -->
+<section data-part="title">
+  <h1>… Titre de l’article …</h1>
+  <!-- Sous-titre optionnel : supprimez cette ligne si inutile -->
+  <h2 data-subtitle>… Sous-titre (optionnel) …</h2>
+</section>
+
+<!-- Outils / partage (optionnel). Laissez vide pour utiliser le partial auto. -->
+<section data-part="tools"></section>
+
+<!-- Corps de l’article -->
+<article data-part="body">
+
+  <!-- =========================================================
+       (A) MODE « CHAPITRES DÉCLARÉS » — recommandé
+       Chaque <section data-chapter> devient une carte/chapitre.
+       L’attribut data-chapter peut rester vide : le titre vient du <h2>.
+       ========================================================= -->
+
+  <section data-chapter="intro">
+    <h2>… Titre du chapitre 1 …</h2>
+    <p>… contenu …</p>
+  </section>
+
+  <section data-chapter>
+    <h2>… Titre du chapitre 2 …</h2>
+    <p>… contenu …</p>
+  </section>
+
+  <!-- NOTE INDÉPENDANTE
+       Astuce : placez les notes EN DEHORS des <section data-chapter>
+       pour qu’elles soient rendues comme des cartes autonomes. -->
+  <div class="viewer-block note-card">
+    <details class="note-collapsible">
+      <summary>
+        <h2 class="note-title">
+          🔎 … Titre de la note …
+          <span class="chev">›</span>
+        </h2>
+      </summary>
+      <div class="note-body">
+        <p>… contenu de la note …</p>
+      </div>
+    </details>
+  </div>
+
+  <section data-chapter>
+    <h2>… Titre du chapitre 3 …</h2>
+    <p>… contenu …</p>
+  </section>
+
+  <!-- =========================================================
+       (B) MODE « H2 SIMPLES » — alternatif ultra-simple
+       Si vous préférez ne PAS gérer de data-chapter :
+       supprimez les <section data-chapter> ci-dessus, et utilisez
+       simplement des <h2> pour couper le texte (le viewer découpe).
+       =========================================================
+  <h2>… Titre …</h2>
+  <p>… contenu …</p>
+
+  <h2>… Titre suivant …</h2>
+  <p>… contenu …</p>
+  -->
+
+</article>
+
+<!-- (Optionnel) Média : un <figure> avec des <img>. 
+     data-main met l’image de couverture en avant dans la mosaïque. -->
+<section data-part="media">
+  <figure>
+    <img src="CHEMIN/hero.jpg" alt="…" data-main>
+    <img src="CHEMIN/visuel-2.jpg" alt="…">
+    <img src="CHEMIN/visuel-3.jpg" alt="…">
+    <figcaption>… Légende (optionnelle) …</figcaption>
+  </figure>
+</section>
+
+<!-- (Optionnels) Blocs additionnels. Laissez vides si non utilisés. -->
+<section data-part="extras"></section>
+<section data-part="references"></section>
+<section data-part="capsules"></section>
