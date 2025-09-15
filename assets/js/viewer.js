@@ -77,27 +77,29 @@ function loadContent(viewerEl, url){
       const doc  = new DOMParser().parseFromString(html, 'text/html');
       const part = name => doc.querySelector(`[data-part="${name}"]`);
 
-      /* ----- TITRE (lu avant normalisation) ----- */
-      const titleSection = part('title');
-      const h1 = (titleSection && titleSection.querySelector('h1')) ||
-                 doc.querySelector('article[data-article] h1') ||
-                 doc.querySelector('h1');
-      const subtitleNode =
-        (titleSection && (titleSection.querySelector('h2[data-subtitle], .subtitle'))) ||
-        (h1 && h1.nextElementSibling && h1.nextElementSibling.matches('h2, .subtitle, [data-subtitle]')
-          ? h1.nextElementSibling
-          : null);
+      /* ----- TITRE ----- */
+const titleSection = part('title');
+const h1 = (titleSection && titleSection.querySelector('h1')) ||
+           doc.querySelector('article[data-article] h1') ||
+           doc.querySelector('h1');
 
-      let titleHTML = '';
-      if (h1){
-        const safe  = sanitizeTitleHTML(h1.innerHTML || '');
-        const sub   = subtitleNode ? escapeHTML(subtitleNode.textContent || '') : '';
-        titleHTML =
-          `<div class="title-chip"><span>${safe}</span></div>
-           <div class="title-tools"></div>
-           ${sub ? `<div class="title-sub">${sub}</div>` : ''}`;
-      }
-      setBlockHTML('article-title', titleHTML);
+// 🔧 Nouveau : on lit d’abord le data-subtitle du H1,
+// puis à défaut un éventuel élément .subtitle / [data-subtitle] dans la section titre.
+// (On NE considère plus jamais un <h2> voisin comme sous-titre.)
+const subtitle =
+  (h1?.getAttribute('data-subtitle') || '').trim() ||
+  (titleSection?.querySelector('[data-subtitle], .subtitle')?.textContent || '').trim();
+
+let titleHTML = '';
+if (h1){
+  const safe = sanitizeTitleHTML(h1.innerHTML || '');
+  titleHTML =
+    `<div class="title-chip"><span>${safe}</span></div>
+     <div class="title-tools"></div>
+     ${subtitle ? `<div class="title-sub">${escapeHTML(subtitle)}</div>` : ''}`;
+}
+setBlockHTML('article-title', titleHTML);
+
 
       /* ----- TOOLS ----- */
       const toolsEl = part('tools') || doc.getElementById('article-tools') || doc.querySelector('.tools');
