@@ -426,21 +426,7 @@ function getOuterIfFilled(el){
   return clean ? html : '';
 }
 
-/* ───────────────────────────── Ponctuation # ──────────────────────────────────── */
-function fixFrenchPunctuation(container){
-  // fine insécable (U+202F) avant : ; ? ! et avant » — sans toucher au code ni aux liens
-  const WALK = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
-  const NNBSP = '\u202F';
-  let n;
-  while(n = WALK.nextNode()){
-    // Remplace " :" " ;" " ?" " !" " »" par U+202F + signe
-    n.nodeValue = n.nodeValue
-      .replace(/ (\:|\;|\?|\!|»)/g, NNBSP + '$1');
-  }
-}
 
-// …dans loadContent(), après avoir posé article-body + chapitres…
-fixFrenchPunctuation(document.getElementById('article-body'));
 
 /* ───────────────────────────── Ancres # ──────────────────────────────────── */
 function initChapterAnchors(container){
