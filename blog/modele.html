@@ -1,162 +1,80 @@
-<section data-part="title" class="title-chip"><h1>Mon titre</h1></section>
-<section data-part="tools"></section> <!-- optionnel, sinon partial -->
-<article data-part="body">
-  <section data-chapter="intro">...</section>
-  <section data-chapter="1">...</section>
+<article data-article>
+  <section data-part="title" class="title-chip">
+    <h1>Titre de l’article</h1>
+    <h2 data-subtitle>Sous-titre (optionnel)</h2>
+    <div id="article-tools"></div>
+  </section>
+
+  <h2>Introduction</h2>
+  <p>… ton intro …</p>
+
+  <h2>Titre de section</h2>
+  <h3>Sous-partie (optionnelle)</h3>
+  <p>…</p>
+
+  <h2>Conclusion</h2>
+  <p>…</p>
 </article>
-<section data-part="extras">...</section>         <!-- optionnel -->
-<section data-part="references">...</section>     <!-- optionnel -->
-<section data-part="capsules">...</section>       <!-- optionnel -->
 
 
-<!-- Dans l’article HTML -->
-<section data-part="media">
-  <figure>
-    <img src="/img/articles/identite/hero.jpg" alt="Portrait" data-main>
-    <img src="/img/articles/identite/plan-large.jpg" alt="Plan large">
-    <img src="/img/articles/identite/detail-1.jpg" alt="Détail 1">
-    <img src="/img/articles/identite/detail-2.jpg" alt="Détail 2">
-    <figcaption>Quelques images liées à l’article.</figcaption>
-  </figure>
-</section>
+-------------------------------------- COMPLETE --------------------------------------
 
-<!------------------------------------------------------------------------ OPTION SOMMAIRE ----------------------------------------------------------------------------------------------------------------------------->
+<article data-article>
+  <!-- Titre + outils -->
+  <section data-part="title" class="title-chip">
+    <h1>Titre de l’article</h1>
+    <h2 data-subtitle>Sous-titre (optionnel)</h2>
+    <div id="article-tools"></div>
+  </section>
 
-  <section data-chapter="sommaire">
-    <h2>Sommaire</h2>
+  <!-- (Optionnel) Média d’en-tête / galerie -->
+  <section data-part="media">
+    <figure>
+      <img src="/path/hero.jpg" alt="Légende" data-main>
+      <!-- autres <img> si besoin -->
+      <figcaption>Légende (optionnelle)</figcaption>
+    </figure>
+  </section>
+
+  <!-- (Optionnel) Sommaire manuel -->
+  <h2>Sommaire</h2>
   <nav class="article-toc">
-      <a href="#decalage-ages">Âges qui se répètent</a> •
-      <a href="#decalage-democratisation">Rôle de la démocratisation</a> •
-      <a href="#decalage-verrou">L’IA est-elle verrouillable ?</a> •
-      <a href="#decalage-dates">Repères temporels</a> •
-      <a href="#decalage-cas">Cas particuliers</a> •
-      <a href="#decalage-conclusion">Conclusion</a>
+    <ul>
+      <li><a href="#section-1">Section 1</a> •</li>
+      <li><a href="#section-2">Section 2</a> •</li>
+      <li><a href="#conclusion">Conclusion</a></li>
+    </ul>
   </nav>
-</section>
 
-<!------------------------------------------------------------------------ OPTION IMAGE ----------------------------------------------------------------------------------------------------------------------------->
+  <!-- Corps : H2 = chapitres auto (pas de section[data-chapter]) -->
+  <h2 id="section-1">Section 1</h2>
+  <h3>Sous-partie</h3>
+  <p>…</p>
 
-<!-- Dans l’article HTML, VISIBLE EN HAUT SOUS TITRE PRINCIPAL -->
-<section data-part="media">
-  <figure>
-    <img src="/img/articles/identite/hero.jpg" alt="Portrait" data-main>  <!-- image principale -->
-    <img src="/img/articles/identite/plan-large.jpg" alt="Plan large">
-    <img src="/img/articles/identite/detail-1.jpg" alt="Détail 1">
-    <img src="/img/articles/identite/detail-2.jpg" alt="Détail 2">
-    <figcaption>Quelques images liées à l’article.</figcaption>
-  </figure>
-</section>
+  <h2 id="section-2">Section 2</h2>
+  <p>…</p>
 
-<!---------------------->
+  <!-- (Optionnel) Note “encart” : NE PAS l’entourer de section[data-chapter] -->
+  <details class="note-collapsible">
+    <summary><h3 class="note-title">🔎 Note <span class="chev">›</span></h3></summary>
+    <div class="note-body">
+      <p>… contenu de la note …</p>
+    </div>
+  </details>
 
-
-<!-- 1) Une image simple, sans bloc -->
-<figure class="inline-media">
-  <img src="/img/articles/cameleon/scene-1.jpg" alt="Rue bondée" data-lb>
-  <figcaption>Se fondre ≠ se perdre.</figcaption>
-</figure>
-
-<!-- 2) Deux images côte à côte -->
-<figure class="inline-media two-cols">
-  <img src="/img/articles/cameleon/detail-a.jpg" alt="Détail A" data-lb>
-  <img src="/img/articles/cameleon/detail-b.jpg" alt="Détail B" data-lb>
-</figure>
-
-<!-- 3) Trois vignettes alignées -->
-<figure class="inline-media three-cols">
-  <img src="/img/articles/cameleon/p-1.jpg" alt="p1" data-lb>
-  <img src="/img/articles/cameleon/p-2.jpg" alt="p2" data-lb>
-  <img src="/img/articles/cameleon/p-3.jpg" alt="p3" data-lb>
-</figure>
-
-<!-- 4) Une grande image “flush” (bord à bord dans la zone texte) -->
-<figure class="inline-media flush">
-  <img src="/img/articles/cameleon/hero-alt.jpg" alt="Plan large" data-lb>
-</figure>
-
-
-<!------------------------------------------------------------------------ VERSION ANNOTEE ----------------------------------------------------------------------------------------------------------------------------->
-
-<!-- ===== MODELE ARTICLE (à copier/coller) ===== -->
-
-<!-- Titre principal (affiché en "bulle") -->
-<section data-part="title">
-  <h1>… Titre de l’article …</h1>
-  <!-- Sous-titre optionnel : supprimez cette ligne si inutile -->
-  <h2 data-subtitle>… Sous-titre (optionnel) …</h2>
-</section>
-
-<!-- Outils / partage (optionnel). Laissez vide pour utiliser le partial auto. -->
-<section data-part="tools"></section>
-
-<!-- Corps de l’article -->
-<article data-part="body">
-
-  <!-- =========================================================
-       (A) MODE « CHAPITRES DÉCLARÉS » — recommandé
-       Chaque <section data-chapter> devient une carte/chapitre.
-       L’attribut data-chapter peut rester vide : le titre vient du <h2>.
-       ========================================================= -->
-
-  <section data-chapter="intro">
-    <h2>… Titre du chapitre 1 …</h2>
-    <p>… contenu …</p>
-  </section>
-
-  <section data-chapter>
-    <h2>… Titre du chapitre 2 …</h2>
-    <p>… contenu …</p>
-  </section>
-
-  <!-- NOTE INDÉPENDANTE
-       Astuce : placez les notes EN DEHORS des <section data-chapter>
-       pour qu’elles soient rendues comme des cartes autonomes. -->
-  <div class="viewer-block note-card">
-    <details class="note-collapsible">
-      <summary>
-        <h2 class="note-title">
-          🔎 … Titre de la note …
-          <span class="chev">›</span>
-        </h2>
-      </summary>
-      <div class="note-body">
-        <p>… contenu de la note …</p>
-      </div>
-    </details>
-  </div>
-
-  <section data-chapter>
-    <h2>… Titre du chapitre 3 …</h2>
-    <p>… contenu …</p>
-  </section>
-
-  <!-- =========================================================
-       (B) MODE « H2 SIMPLES » — alternatif ultra-simple
-       Si vous préférez ne PAS gérer de data-chapter :
-       supprimez les <section data-chapter> ci-dessus, et utilisez
-       simplement des <h2> pour couper le texte (le viewer découpe).
-       =========================================================
-  <h2>… Titre …</h2>
-  <p>… contenu …</p>
-
-  <h2>… Titre suivant …</h2>
-  <p>… contenu …</p>
-  -->
-
+  <h2 id="conclusion">Conclusion</h2>
+  <p>…</p>
 </article>
 
-<!-- (Optionnel) Média : un <figure> avec des <img>. 
-     data-main met l’image de couverture en avant dans la mosaïque. -->
-<section data-part="media">
-  <figure>
-    <img src="CHEMIN/hero.jpg" alt="…" data-main>
-    <img src="CHEMIN/visuel-2.jpg" alt="…">
-    <img src="CHEMIN/visuel-3.jpg" alt="…">
-    <figcaption>… Légende (optionnelle) …</figcaption>
-  </figure>
+<!-- (Optionnel) Extras / Références / Capsules hors article -->
+<section data-part="extras">
+  <!-- encarts, callouts, etc. -->
 </section>
 
-<!-- (Optionnels) Blocs additionnels. Laissez vides si non utilisés. -->
-<section data-part="extras"></section>
-<section data-part="references"></section>
-<section data-part="capsules"></section>
+<section data-part="references">
+  <!-- sources, liens -->
+</section>
+
+<section data-part="capsules">
+  <!-- mini-cartes / annexes -->
+</section>
