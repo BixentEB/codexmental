@@ -406,9 +406,10 @@ p.jp { text-align: justify; text-wrap: pretty; text-justify: inter-word; hyphens
   text-align: justify;
   text-wrap: pretty;
   text-justify: inter-word;
-  hyphens: auto;
-  overflow-wrap: break-word;   /* ← au lieu de anywhere */
+  hyphens: manual;           /* ou: none */
+  -webkit-hyphens: manual;   /* WebKit */
   word-break: normal;
+  overflow-wrap: break-word; /* casse seulement les très longs mots, sans '-' */
 }
 @media (max-width: 768px){ .jp-scope p { text-align:left; } }
 
@@ -417,9 +418,10 @@ p.jp { text-align: justify; text-wrap: pretty; text-justify: inter-word; hyphens
   text-align: justify;
   text-wrap: pretty;
   text-justify: inter-word;
-  hyphens: auto;
+  hyphens: manual;           /* ou: none */
+  -webkit-hyphens: manual;   /* WebKit */
   word-break: normal;
-  overflow-wrap: break-word;   /* ← remplace anywhere */
+  overflow-wrap: break-word; /* casse seulement les très longs mots, sans '-' */
 }
 @media (max-width: 768px){
   #article-viewer .chapter-content p { text-align: left; }
