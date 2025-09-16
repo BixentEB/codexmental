@@ -8,6 +8,8 @@
 // • parseBodyOrdered : ignore les commentaires HTML (évite le “bloc vide”)
 // • setBlockHTML : masque totalement l’intro si vide (après strip des commentaires)
 
+// viewer.js — Codex Mental (Blog + Atelier) — build 2025-09-16
+
 document.addEventListener('DOMContentLoaded', () => {
   const isBlog   = window.location.pathname.includes('/blog');
   const paramKey = isBlog ? 'article' : 'projet';
@@ -70,6 +72,14 @@ function clearForeignChildren(viewerEl){
 
 /* ─────────────────────────────── Chargement ──────────────────────────────── */
 function loadContent(viewerEl, url){
+  // 1) Vider TOUT DE SUITE pour éviter l’effet “fantôme” si fetch échoue
+  setBlockHTML('article-title','');
+  setBlockHTML('article-media','');
+  setBlockHTML('article-body','');
+  setBlockHTML('article-extras','');
+  setBlockHTML('article-references','');
+  setBlockHTML('article-capsules','');
+
   fetch(url)
     .then(r => { if(!r.ok) throw new Error(url); return r.text(); })
     .then(html => {
@@ -79,12 +89,20 @@ function loadContent(viewerEl, url){
       const doc  = new DOMParser().parseFromString(html, 'text/html');
       const part = name => doc.querySelector(`[data-part="${name}"]`);
 
+      /* ----- GARDE CONTENU : refuser une page fallback qui n’a pas d’article ----- */
+      const hasArticleMarkers = !!(
+        doc.querySelector('article[data-article]') ||
+        doc.querySelector('section[data-part="title"]') ||
+        doc.querySelector('[data-chapter], h2')
+      );
+      if (!hasArticleMarkers) throw new Error(url);
+
       /* ----- TITRE ----- */
       const titleSection = part('title');
       const h1 = (titleSection && titleSection.querySelector('h1')) ||
                  doc.querySelector('article[data-article] h1') ||
                  doc.querySelector('h1');
-      // Sous-titre : on lit PRIORITAIREMENT data-subtitle du H1, sinon .subtitle/[data-subtitle] dans la section titre
+
       const subtitle =
         (h1?.getAttribute('data-subtitle') || '').trim() ||
         (titleSection?.querySelector('[data-subtitle], .subtitle')?.textContent || '').trim();
@@ -235,7 +253,7 @@ function normalizeShorthandToChapters(rootNode, titleText=''){
   const work = unwrapToH2Host(prefer);
   cleanExtras(work);
 
-  // Si chapitres déjà présents → retour
+  // ✅ EARLY RETURN : si l’article est déjà structuré en chapitres, on ne touche à rien
   if (work.querySelector && work.querySelector('section[data-chapter]')) return work;
 
   // Anti-doublon : ignorer un H2 identique au H1
@@ -346,7 +364,35 @@ function toNoteCardHTML(node){
     </details>`;
 }
 
-/* ───────────────────────────── Helpers UI ────────────────────────────────── */
+/* ───────────────────────────── Utilitaires ───────────────────────────────── */
+function removeDynamicItems(viewerEl){ viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove()); }
+function slugify(s){
+  return (s||'')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+function escapeHTML(s){
+  return (s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+// Autorise <br>/<wbr> dans le H1, échappe le reste
+function sanitizeTitleHTML(rawHTML){
+  const BR='[[BR]]', WBR='[[WBR]]';
+  let s=(rawHTML||'')
+    .replace(/<\s*br\s*\/?\s*>/gi,BR)
+    .replace(/<\s*wbr\s*\/?\s*>/gi,WBR)
+    .replace(/<\/?[^>]+>/g,'');
+  const tmp=document.createElement('textarea'); tmp.innerHTML=s; s=tmp.value
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+  return s.replaceAll(BR,'<br>').replaceAll(WBR,'<wbr>');
+}
 function stripHTMLComments(s){
   return (s || '').replace(/<!--[\s\S]*?-->/g, '');
 }
@@ -550,34 +596,4 @@ function updateLightboxImage(anim=false){
   img.src = it.src; img.alt = it.alt || '';
   cap.textContent = it.alt || '';
   cnt.textContent = `${galleryState.index+1} / ${galleryState.items.length}`;
-}
-
-/* ───────────────────────────── Utilitaires ───────────────────────────────── */
-function removeDynamicItems(viewerEl){ viewerEl.querySelectorAll('.article-chapter, .note-card').forEach(n => n.remove()); }
-function slugify(s){
-  return (s||'')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-}
-function escapeHTML(s){
-  return (s||'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-}
-// Autorise <br>/<wbr> dans le H1, échappe le reste
-function sanitizeTitleHTML(rawHTML){
-  const BR='[[BR]]', WBR='[[WBR]]';
-  let s=(rawHTML||'')
-    .replace(/<\s*br\s*\/?\s*>/gi,BR)
-    .replace(/<\s*wbr\s*\/?\s*>/gi,WBR)
-    .replace(/<\/?[^>]+>/g,'');
-  const tmp=document.createElement('textarea'); tmp.innerHTML=s; s=tmp.value
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-  return s.replaceAll(BR,'<br>').replaceAll(WBR,'<wbr>');
 }
