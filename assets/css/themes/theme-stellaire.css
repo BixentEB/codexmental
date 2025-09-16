@@ -151,3 +151,7 @@ body.theme-stellaire .tabs .tab.active {
   background: var(--accent-primary, #77caff);
   color: #000; /* texte noir pour contraste maximal */
 }
+
+body.theme-stellaire #article-body h3 {
+  color: #4eaaff; /* bleu clair distinct des h2 (#77caff) */
+}
