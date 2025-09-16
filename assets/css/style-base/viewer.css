@@ -633,21 +633,21 @@ p.jp {
 }
 @media (max-width: 768px){ .jp-scope p { text-align:left; } }
 
-/* Paragraphes du contenu article : justification moins “troueuse” */
+/* AVANT (trop agressif) */
+/* overflow-wrap: anywhere; */
+
+/* APRÈS : garde les mots ensemble et respecte les insécables */
 #article-viewer .chapter-content p {
   text-align: justify;
   text-wrap: pretty;
   text-justify: inter-word;
   hyphens: auto;
-  -webkit-hyphens: auto;
-  overflow-wrap: anywhere;   /* évite les énormes blancs sur mots longs/URLs */
-  word-spacing: normal;      /* évite sur-stylage involontaire */
-  letter-spacing: normal;
+  word-break: normal;
+  overflow-wrap: break-word;   /* remplace anywhere */
 }
 
-/* Mobile : la justification est souvent moche → rebasculer à gauche si tu préfères */
 @media (max-width: 768px){
-  #article-viewer .chapter-content p { text-align: left; }
+  #article-viewer .chapter-content p { text-align: left; } /* option: plus propre sur mobile */
 }
 
 /* Un petit plus visuel (facultatif) pour un bord droit plus propre */
