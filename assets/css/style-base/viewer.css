@@ -561,17 +561,6 @@ html{ scroll-behavior: smooth; }
   display: none !important;
 }
 
-/* --- Titres H3, par thème (override léger et ciblé) --- */
-body.theme-stellaire #article-viewer #article-body h3 {
-  color: #4eaaff !important; /* plus clair que le H2 (#77caff) */ 
-}
-body.theme-lunaire #article-viewer #article-body h3 {
-  color: #5da3ff !important; /* plus vif que le H2 (#3b7dd8) */
-}
-body.theme-galactique #article-viewer #article-body h3 {
-  color: #d1b3ff !important; /* lavande clair vs H2 (#b388ff) */
-}
-
 
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
