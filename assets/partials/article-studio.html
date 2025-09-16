@@ -184,9 +184,41 @@
 </div>
 
 <script>
-/* ===== State & persistence ===== */
-const KEY='cm-article-studio-v2b';       // (nouvelle clé -> évite un ancien brouillon vide)
+/* =========================================================
+   Article Studio v2 — Script (corrigé)
+   - Storage adapter (local -> fichier fallback)
+   - Wrap retours à la ligne: p / br / none
+   - Tools slot conservé + masqué s'il est vide
+   ========================================================= */
+
+/* --- Utils DOM --- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const debounce=(fn,ms=600)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+
+/* --- Storage adapter: localStorage si dispo, sinon null (fallback fichier) --- */
+const KEY='cm-article-studio-v2b';
 const KEY_UI='cm-article-studio-layout';
+const STORAGE = (() => {
+  try {
+    const t='__cm_test__';
+    window.localStorage.setItem(t,'1');
+    window.localStorage.removeItem(t);
+    return window.localStorage; // OK
+  } catch (e) {
+    console.warn('localStorage indisponible :', e);
+    return null;               // fallback fichier
+  }
+})();
+
+/* --- Helpers généraux --- */
+function slugify(str){return (str||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'section'}
+function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
+function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
+function hasHtmlTags(s){return /<\/?[a-z][\s\S]*?>/i.test((s||''))}
+
+/* --- État --- */
 const state={
   title:'',subtitle:'',subtitleMode:'data',
   wrapMode:'p',                           // 'p' | 'br' | 'none'
@@ -196,15 +228,12 @@ const state={
   media:{images:[],caption:''}, // {src,alt,main}
   extras:'',references:'',capsules:'',
   updatedAt:Date.now(),dirty:false,
-  layout: localStorage.getItem(KEY_UI) || 'equal'
+  layout: (STORAGE ? STORAGE.getItem(KEY_UI) : null) || 'equal'
 };
-const $=(s,r=document)=>r.querySelector(s);
-const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const debounce=(fn,ms=600)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
-function slugify(str){return (str||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'section'}
+
 function markDirty(){state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées'}
 
-/* force une synchro UI -> state (utile avant save/export/build) */
+/* --- Synchro UI -> state (à appeler avant save/export/build) --- */
 function syncFromInputs(){
   state.title=$('#inp-title')?.value||'';
   state.subtitle=$('#inp-subtitle')?.value||'';
@@ -219,7 +248,7 @@ function syncFromInputs(){
   state.extras=$('#ta-extras')?.value||'';
   state.references=$('#ta-refs')?.value||'';
   state.capsules=$('#ta-caps')?.value||'';
-  // chapitres (relecture UI -> state)
+  // chapitres
   const nodes=$$('#chapters .item');
   if(nodes.length){
     state.chapters = nodes.map((node,i)=>({
@@ -230,30 +259,67 @@ function syncFromInputs(){
     }));
   }
 }
+
+/* --- Persistence: local -> fichier fallback --- */
 function saveLocal(){
   syncFromInputs();
   state.updatedAt=Date.now();
-  localStorage.setItem(KEY,JSON.stringify(state));
-  state.dirty=false;
-  const d=new Date(state.updatedAt);
-  $('#pill-dirty').textContent='sauvegardé à '+d.toLocaleTimeString();
+  if(STORAGE){
+    STORAGE.setItem(KEY, JSON.stringify(state));
+    state.dirty=false;
+    $('#pill-dirty').textContent='sauvegardé (local)';
+  }else{
+    // Fallback : sauvegarde fichier
+    const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download='article-studio-autosave.json';
+    a.click(); URL.revokeObjectURL(a.href);
+    state.dirty=false;
+    $('#pill-dirty').textContent='sauvegardé (fichier)';
+  }
 }
 function loadLocal(){
-  const raw=localStorage.getItem(KEY);
-  if(!raw){ alert('Aucun brouillon trouvé.'); return; }
-  try{
-    const loaded=JSON.parse(raw)||{};
-    // defaults pour les clés manquantes
-    Object.assign(state,{
-      title:'',subtitle:'',subtitleMode:'data',
-      wrapMode:'p',tools:true,toc:true,
-      introEnabled:false,introTitle:'',intro:'',
-      chapters:[],media:{images:[],caption:''},
-      extras:'',references:'',capsules:'',
-      layout:'equal'
-    }, loaded);
-    renderAllFromState();
-  }catch(e){ alert('Brouillon invalide'); }
+  if(STORAGE){
+    const raw=STORAGE.getItem(KEY);
+    if(!raw){ alert('Aucun brouillon local.'); return; }
+    try{
+      const loaded=JSON.parse(raw)||{};
+      Object.assign(state,{
+        title:'',subtitle:'',subtitleMode:'data',
+        wrapMode:'p',tools:true,toc:true,
+        introEnabled:false,introTitle:'',intro:'',
+        chapters:[],media:{images:[],caption:''},
+        extras:'',references:'',capsules:'',
+        layout:'equal'
+      }, loaded);
+      renderAllFromState();
+    }catch(e){ alert('Brouillon local corrompu.'); }
+  }else{
+    // Fallback : ouverture d'un fichier JSON
+    fileImport.onchange=(e)=>{
+      const f=e.target.files?.[0]; if(!f) return;
+      const fr=new FileReader();
+      fr.onload=()=>{
+        try{
+          const data=JSON.parse(fr.result);
+          Object.assign(state,{
+            title:'',subtitle:'',subtitleMode:'data',
+            wrapMode:'p',tools:true,toc:true,
+            introEnabled:false,introTitle:'',intro:'',
+            chapters:[],media:{images:[],caption:''},
+            extras:'',references:'',capsules:'',
+            layout:'equal'
+          }, data);
+          renderAllFromState();
+          $('#pill-dirty').textContent='chargé (fichier)';
+        }catch{ alert('Fichier JSON invalide'); }
+      };
+      fr.readAsText(f);
+      e.target.value='';
+    };
+    fileImport.click();
+  }
 }
 function exportJSON(){
   syncFromInputs();
@@ -279,7 +345,7 @@ function importJSON(file){
   fr.readAsText(file);
 }
 
-/* ===== UI refs ===== */
+/* --- UI refs --- */
 const out=$('#out');
 const insertButtons=$$('.insertbar .btn');
 const btnSave=$('#btn-save'),btnLoad=$('#btn-load'),btnExport=$('#btn-export'),btnImport=$('#btn-import'),fileImport=$('#file-import');
@@ -293,12 +359,12 @@ const blkMedia=$('#block-media'), imagesEl=$('#images'), btnAddImage=$('#btn-add
 const taExtras=$('#ta-extras'), taRefs=$('#ta-refs'), taCaps=$('#ta-caps');
 const selWrap=$('#sel-wrap'), chkTools=$('#chk-tools');
 
-/* ===== Layout handling ===== */
+/* --- Layout handling --- */
 function setLayout(mode){
   if(!['left','equal','right'].includes(mode)) mode='equal';
   state.layout=mode;
   document.body.setAttribute('data-layout', mode);
-  localStorage.setItem(KEY_UI, mode);
+  if(STORAGE) STORAGE.setItem(KEY_UI, mode);
   [btnLayoutLeft, btnLayoutEq, btnLayoutRight].forEach(b=>b?.setAttribute('aria-pressed','false'));
   ({left:btnLayoutLeft, equal:btnLayoutEq, right:btnLayoutRight}[mode])?.setAttribute('aria-pressed','true');
 }
@@ -314,7 +380,7 @@ document.addEventListener('keydown',(e)=>{
   }
 });
 
-/* ===== Insert palette ===== */
+/* --- Palette d'insertion --- */
 insertButtons.forEach(b=>{
   b.addEventListener('click',()=>{
     const t=b.dataset.insert;
@@ -329,7 +395,7 @@ insertButtons.forEach(b=>{
   });
 });
 
-/* ===== Inputs sync (live) ===== */
+/* --- Inputs live -> dirty --- */
 [ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption,inpIntroTitle,selWrap ].forEach(el=>{
   el.addEventListener('input',debounce(()=>{ markDirty(); },250));
 });
@@ -338,7 +404,7 @@ subtitleRadios.forEach(r=>r.addEventListener('change',()=>{state.subtitleMode=r.
 chkToc.addEventListener('change',()=>{state.toc=chkToc.checked; markDirty()});
 chkTools.addEventListener('change',()=>{state.tools=chkTools.checked; markDirty()});
 
-/* ===== Counters ===== */
+/* --- Compteurs --- */
 function updateCounters(){
   $$('.counter').forEach(c=>{
     const id=c.getAttribute('data-for'); const el=document.getElementById(id);
@@ -347,7 +413,7 @@ function updateCounters(){
   });
 }
 
-/* ===== Chapters ===== */
+/* --- Chapitres --- */
 function chapterItem(ch){
   const root=document.createElement('div'); root.className='item'; root.dataset.id=ch.id;
   root.innerHTML=`
@@ -383,14 +449,12 @@ function chapterItem(ch){
 function renumberChapters(){state.chapters.forEach((c,i)=>c.n=i+1)}
 function renderChapters(){
   chaptersEl.innerHTML='';
-  // si vide (première fois), on garde l'état existant, sinon on recompose depuis state
-  if(!state.chapters.length){ /* no-op */ }
   state.chapters.forEach(ch=>chaptersEl.appendChild(chapterItem(ch)));
 }
 function addChapter(){const n=state.chapters.length+1; const ch={n,id:'section-'+n,title:'',html:''}; state.chapters.push(ch); renderChapters(); markDirty()}
 $('#btn-add-chapter').addEventListener('click',addChapter);
 
-/* ===== Media ===== */
+/* --- Médias --- */
 function imageItem(img,idx){
   const root=document.createElement('div'); root.className='item';
   root.innerHTML=`
@@ -422,7 +486,7 @@ function imageItem(img,idx){
 function renderImages(){imagesEl.innerHTML=''; state.media.images.forEach((im,i)=>imagesEl.appendChild(imageItem(im,i)))}
 btnAddImage.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
 
-/* ===== Formatting toolbar ===== */
+/* --- Toolbar mise en forme --- */
 let activeTextArea=null;
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
 $('#formatbar').addEventListener('click',e=>{
@@ -443,13 +507,7 @@ function wrap(el,before,after){
   el.dispatchEvent(new Event('input'));
 }
 
-/* ===== Helpers build ===== */
-function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
-function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
-function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
-function hasHtmlTags(s){return /<\/?[a-z][\s\S]*?>/i.test((s||''))}
-
-/* convertit le texte sans balises selon wrapMode */
+/* --- Conversion retours à la ligne --- */
 function convertByWrapMode(s, mode){
   const raw=(s||'').replace(/\r/g,'').trim();
   if(!raw) return '';
@@ -459,13 +517,13 @@ function convertByWrapMode(s, mode){
   }else if(mode==='br'){
     return escapeHtml(raw).replace(/\n/g,'<br>\n');
   }else{ // none
-    return escapeHtml(raw); // pas de <br> ni <p>
+    return escapeHtml(raw);
   }
 }
 
-/* ===== Build HTML ===== */
+/* --- Build HTML --- */
 function buildHTML(){
-  syncFromInputs(); // sécurise que l'état reflète bien l'UI
+  syncFromInputs();
 
   // ids uniques pour H2
   const seen=new Set();
@@ -508,6 +566,7 @@ ${links}
 ${indent(bodyHTML,2)}`;
   }).join('\n\n');
 
+  // Slot tools (optionnel)
   const toolsBlock = state.tools ? '  <section data-part="tools"></section>\n\n' : '';
 
   const article =
@@ -539,7 +598,7 @@ ${imgs}${cap}
   const refs   = (state.references||'').trim()? `<section data-part="references">\n${indent(state.references.trim(),2)}\n</section>`:'';
   const caps   = (state.capsules||'').trim()? `<section data-part="capsules">\n${indent(state.capsules.trim(),2)}\n</section>`:'';
 
-  // Garde CSS : cache tools quand il est vide
+  // Garde CSS : cache tools quand il est vide (apparait dès que le viewer injecte)
   const guardCss = `<style>[data-article] [data-part="tools"]:not(:has(*)){display:none}</style>`;
 
   const full =
@@ -557,12 +616,20 @@ ${caps}
   out.textContent=full; return full;
 }
 
-/* ===== Download ===== */
-function downloadHTML(){ const html=buildHTML(); const blob=new Blob([html],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=(slugify(state.title||'article')||'article')+'.html'; a.click(); URL.revokeObjectURL(a.href) }
+/* --- Download --- */
+function downloadHTML(){
+  const html=buildHTML();
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(slugify(state.title||'article')||'article')+'.html';
+  a.click(); URL.revokeObjectURL(a.href);
+}
 
-/* ===== Render / boot ===== */
+/* --- Rendu / boot --- */
 function renderAllFromState(){
-  blkTitle.hidden=false; blkIntro.hidden=false; blkToc.hidden=false; blkChapters.hidden=false; blkMedia.hidden=false;
+  // afficher les blocs
+  $('#block-title').hidden=false; $('#block-intro').hidden=false; $('#block-toc').hidden=false; $('#block-chapters').hidden=false; $('#block-media').hidden=false;
   $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
 
   inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||'';
@@ -582,8 +649,16 @@ function renderAllFromState(){
 
   setLayout(state.layout||'equal');
   updateCounters(); buildHTML();
+
+  // Indiquer l'état autosave
+  if(STORAGE){
+    $('#pill-save').textContent='autosave 3 min (local)';
+  }else{
+    $('#pill-save').textContent='autosave désactivé (stockage bloqué)';
+  }
 }
 
+/* --- Events boutons --- */
 btnSave.addEventListener('click',saveLocal);
 btnLoad.addEventListener('click',loadLocal);
 btnExport.addEventListener('click',exportJSON);
@@ -592,7 +667,7 @@ fileImport.addEventListener('change',e=>{if(e.target.files?.[0]) importJSON(e.ta
 btnBuild.addEventListener('click',buildHTML);
 btnDownload.addEventListener('click',downloadHTML);
 
-/* Raccourcis */
+/* --- Raccourcis --- */
 document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal() }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML() }
@@ -601,11 +676,17 @@ document.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='u' && activeTextArea){ e.preventDefault(); wrap(activeTextArea,'<u>','</u>') }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k' && activeTextArea){ e.preventDefault(); const href=prompt('URL du lien :','https://'); if(href) wrap(activeTextArea,`<a href="${href}">`,'</a>') }
 });
-setInterval(()=>{ if(state.dirty) saveLocal() },180000);
-document.addEventListener('input',debounce(()=>{ updateCounters(); state.dirty=true },800));
-window.addEventListener('beforeunload',e=>{ if(state.dirty){ e.preventDefault(); e.returnValue='' } });
 
+/* --- Autosave (3 min) seulement si storage local dispo --- */
+if(STORAGE){
+  setInterval(()=>{ if(state.dirty) saveLocal() },180000);
+}else{
+  // rien
+}
+
+/* --- Boot --- */
 renderAllFromState();
 </script>
+
 </body>
 </html>
