@@ -464,6 +464,7 @@ function fixFrenchPunctuation(container) {
   if (!container || container.nodeType !== 1) return;
 
   const SKIP_TAG = /^(SCRIPT|STYLE|CODE|PRE|TEXTAREA|KBD|SAMP)$/i;
+  const INLINE_OK = /^(A|ABBR|B|I|EM|STRONG|SPAN|SMALL|MARK|S|SUB|SUP|U)$/i;
   const NNBSP = '\u202F'; // fine insécable
   const NBSP  = '\u00A0';
 
@@ -475,31 +476,79 @@ function fixFrenchPunctuation(container) {
         const p = node.parentNode;
         if (!p || SKIP_TAG.test(p.nodeName)) return NodeFilter.FILTER_REJECT;
         if (p.closest && p.closest('.no-french-fix')) return NodeFilter.FILTER_REJECT;
-        // on ne traite que les textes où il y a quelque chose à faire
-        if (!/[\u00A0\u202F :;?!»«]/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }
-    },
-    false
+    }
   );
 
-  const nodes = [];
-  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const texts = [];
+  while (walker.nextNode()) texts.push(walker.currentNode);
 
-  for (const n of nodes) {
+  // 1) Cas simple : espace + ponctuation dans le même nœud
+  for (const n of texts) {
     let s = n.nodeValue;
 
-    // 1) Espace fine insécable avant : ; ? ! »
-    s = s.replace(/[\u00A0\u202F ]([:;?!»])/g, NNBSP + '$1');
+    // fine insécable avant : ; ? ! »
+    s = s.replace(/[ \u00A0\u202F]([:;?!»])/g, NNBSP + '$1');
 
-    // 2) Guillemets français « … » : fine insécable à l’intérieur
-    s = s
-      .replace(/«\s*/g, '«' + NNBSP)
-      .replace(/\s*»/g, NNBSP + '»');
+    // Guillemets français
+    s = s.replace(/«\s*/g, '«' + NNBSP).replace(/\s*»/g, NNBSP + '»');
 
     n.nodeValue = s;
   }
+
+  // 2) Cas croisé : espace en fin de nœud A + ponctuation en début de nœud B
+  for (let i = 0; i < texts.length - 1; i++) {
+    const a = texts[i];
+    let   b = texts[i + 1];
+
+    // saute les wrappers inline vides entre A et B (ex. <strong> :</strong>)
+    let probe = b;
+    while (probe && probe.nodeValue === '' && probe.parentNode && INLINE_OK.test(probe.parentNode.nodeName)) {
+      // Text node vide : pas utile ici, on avance
+      const next = nextTextSibling(probe);
+      if (!next) break;
+      probe = next;
+    }
+    b = probe || b;
+
+    if (!a || !b) continue;
+
+    // A finit par un espace ? B commence par : ; ? ! » ?
+    const tail = a.nodeValue.slice(-1);
+    const head = b.nodeValue.charAt(0);
+
+    if (/[ \u00A0\u202F]/.test(tail) && /[:;?!»]/.test(head)) {
+      // remplace l’espace de fin de A par une fine insécable collée au début de B
+      a.nodeValue = a.nodeValue.replace(/[ \u00A0\u202F]$/, '');
+      b.nodeValue = NNBSP + b.nodeValue;
+    }
+  }
+
+  function nextTextSibling(node){
+    // cherche le prochain node texte en suivant les siblings/descendants immédiats
+    let n = node;
+    while (n && n !== container) {
+      if (n.nextSibling) {
+        n = n.nextSibling;
+        if (n.nodeType === 3) return n;
+        // descendre à l’intérieur s’il y a du texte
+        const t = (n.nodeType === 1) ? n.firstChild : null;
+        if (t) {
+          let cur = t;
+          while (cur) {
+            if (cur.nodeType === 3) return cur;
+            cur = cur.firstChild || cur.nextSibling;
+          }
+        }
+      } else {
+        n = n.parentNode;
+      }
+    }
+    return null;
+  }
 }
+
 
 /* ───────────────────────────── Ancres # ──────────────────────────────────── */
 function initChapterAnchors(container){
