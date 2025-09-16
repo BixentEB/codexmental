@@ -41,10 +41,10 @@ h4 {
   text-align: justify;
   text-wrap: pretty;             /* réduit les “trous” */
   text-justify: inter-word;      /* fallback */
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-  hyphens: auto;                 /* nécessite lang="fr" sur le conteneur */
-  overflow-wrap: anywhere;       /* évite les grands blancs si un mot est long */
+  -webkit-hyphens: manual;
+  -ms-hyphens: manual;
+  hyphens: manual;           /* sinon ça remet les “pré-” partout */
+  overflow-wrap: break-word; /* repli propre sans tiret */
 }
 
 /* Variante: auto en desktop, aligné à gauche en mobile */
@@ -60,7 +60,8 @@ p.jp {
   text-align: justify;
   text-wrap: pretty;
   text-justify: inter-word;
-  hyphens: auto;
-  overflow-wrap: anywhere;
+  hyphens: manual;
+  overflow-wrap: break-word;
 }
 @media (max-width: 768px){ p.jp { text-align:left; } }
+
