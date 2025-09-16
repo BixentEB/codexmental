@@ -428,6 +428,25 @@ p.jp { text-align: justify; text-wrap: pretty; text-justify: inter-word; hyphens
 }
 #article-viewer .chapter-content { hanging-punctuation: allow-end; }
 
+/* Anti-césure & casses moches dans le viewer (forte spécificité) */
+#article-viewer article[data-article].jp-scope p,
+#article-viewer .chapter-content p {
+  text-align: justify;
+  text-wrap: pretty;
+  text-justify: inter-word;
+  hyphens: manual;           /* pas de tirets auto */
+  -webkit-hyphens: manual;
+  word-break: normal;
+  overflow-wrap: break-word; /* casse seulement les très longs mots */
+}
+
+/* Optionnel : en mobile, on repasse à gauche */
+@media (max-width: 768px){
+  #article-viewer article[data-article].jp-scope p,
+  #article-viewer .chapter-content p { text-align: left; }
+}
+
+
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
   .media-gallery .mosaic{ grid-auto-rows: 80px; }
