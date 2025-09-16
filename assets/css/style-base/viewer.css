@@ -555,21 +555,17 @@ html{ scroll-behavior: smooth; }
   display: none !important;
 }
 
-/* TYPOGRAPHIES SPECIALES */
-/* === STELLAIRE === */
-body.theme-stellaire #article-body h3 {
-  color: #4eaaff; /* bleu clair distinct des h2 (#77caff) */
+/* --- Titres H3, par thème (override léger et ciblé) --- */
+body.theme-stellaire #article-viewer #article-body h3 {
+  color: #4eaaff !important; /* plus clair que le H2 (#77caff) */ 
+}
+body.theme-lunaire #article-viewer #article-body h3 {
+  color: #5da3ff !important; /* plus vif que le H2 (#3b7dd8) */
+}
+body.theme-galactique #article-viewer #article-body h3 {
+  color: #d1b3ff !important; /* lavande clair vs H2 (#b388ff) */
 }
 
-/* === LUNAIRE === */
-body.theme-lunaire #article-body h3 {
-  color: #5da3ff; /* bleu plus vif que h2 (#3b7dd8) */
-}
-
-/* === GALACTIQUE === */
-body.theme-galactique #article-body h3 {
-  color: #d1b3ff; /* lavande clair, contraste avec h2 (#b388ff) */
-}
 
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
