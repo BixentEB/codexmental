@@ -151,24 +151,19 @@
 
 /* === MEDIA — HERO + RUBAN DE VIGNETTES (remplacement ciblé) =============== */
 
-/* bloc media sans carte */
 #article-viewer #article-media.viewer-block{
   padding: .5rem 0;
   background: transparent;
   border: 0; box-shadow: none;
 }
-
-/* conteneur centré */
 #article-viewer #article-media .media-gallery{
   --gap: 12px;
-  --thumb-min: 140px;                  /* largeur min d’une vignette */
-  --thumb-ratio: 4 / 3;                /* ratio vignettes */
-  --hero-ratio: 16 / 10;               /* ratio image principale */
+  --thumb-min: 140px;
+  --thumb-ratio: 4 / 3;
+  --hero-ratio: 16 / 10;
   max-width: min(1100px, 94vw);
   margin: 0 auto;
 }
-
-/* grille : 12 colonnes, placement dense */
 #article-viewer #article-media .mosaic{
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -176,8 +171,6 @@
   grid-auto-flow: dense;
   align-items: stretch;
 }
-
-/* tuiles génériques */
 #article-viewer #article-media .tile,
 #article-viewer #article-media .tile--main{
   position: relative;
@@ -195,47 +188,35 @@
 #article-viewer #article-media .mosaic .tile:hover img{
   transform: scale(1.03);
 }
-
-/* --- HERO (data-main / .tile--main) --------------------------------------- */
-/* Toujours sur la première rangée, centré, ratio stable. */
 #article-viewer #article-media .tile--main{
-  grid-row: 1;                         /* force la 1re “bande” */
-  grid-column: 2 / span 10;            /* centré avec marges */
+  grid-row: 1;
+  grid-column: 2 / span 10;
   aspect-ratio: var(--hero-ratio);
 }
-
-/* --- RUBAN DE VIGNETTES ---------------------------------------------------- */
-/* Les autres images forment un ruban en dessous, lignes auto-remplies. */
 #article-viewer #article-media .mosaic .tile{
-  grid-column: span 3;                 /* 4 par ligne sur desktop (12/3) */
+  grid-column: span 3;
   aspect-ratio: var(--thumb-ratio);
 }
-
-/* --- CAS 1 SEULE IMAGE : plein cadre, non rognée --------------------------- */
 #article-viewer #article-media .media-gallery[data-count="1"] .tile--main{
   grid-column: 1 / -1;
-  aspect-ratio: auto;                  /* on laisse respirer */
+  aspect-ratio: auto;
 }
 #article-viewer #article-media .media-gallery[data-count="1"] .mosaic img{
   object-fit: contain; background: transparent; box-shadow: none;
 }
-
-/* --- CAS 2–3 IMAGES : hero + 1/2 vignettes centrées ----------------------- */
 #article-viewer #article-media .media-gallery[data-count="2"] .mosaic .tile{
-  grid-column: 5 / span 4;             /* 1 vignette centrée sous le hero */
+  grid-column: 5 / span 4;
 }
 #article-viewer #article-media .media-gallery[data-count="3"] .mosaic .tile{
-  grid-column: span 4;                 /* 2 vignettes sur une ligne */
+  grid-column: span 4;
 }
-
-/* --- RESPONSIVE ------------------------------------------------------------ */
 @media (max-width: 1100px){
   #article-viewer #article-media .tile--main{ grid-column: 1 / -1; }
 }
 @media (max-width: 900px){
   #article-viewer #article-media .media-gallery{ --gap:10px; }
   #article-viewer #article-media .mosaic{ grid-template-columns: repeat(10, 1fr); }
-  #article-viewer #article-media .mosaic .tile{ grid-column: span 5; } /* 2 par ligne */
+  #article-viewer #article-media .mosaic .tile{ grid-column: span 5; }
 }
 @media (max-width: 640px){
   #article-viewer #article-media .media-gallery{
@@ -243,17 +224,16 @@
   }
   #article-viewer #article-media .mosaic{ grid-template-columns: repeat(6, 1fr); }
   #article-viewer #article-media .tile--main{ grid-column: 1 / -1; }
-  #article-viewer #article-media .mosaic .tile{ grid-column: span 3; } /* 2 par ligne */
+  #article-viewer #article-media .mosaic .tile{ grid-column: span 3; }
 }
 
-/* Images seules sans fond ----------------------------------
-/* === IMAGES INLINE DANS L'ARTICLE (sans bloc/carte) ===================== */
+/* === IMAGES INLINE DANS L'ARTICLE ========================================= */
 #article-body figure.inline-media{
   display: grid;
   gap: .6rem;
   margin: 1rem 0;
-  background: transparent;            /* pas de fond */
-  border: 0; box-shadow: none;        /* surtout pas de “carte” */
+  background: transparent;
+  border: 0; box-shadow: none;
 }
 #article-body figure.inline-media img{
   width: 100%;
@@ -262,24 +242,13 @@
   border-radius: 12px;
   object-fit: cover;
 }
-
-/* variantes de mise en page */
 #article-body figure.inline-media.two-cols{ grid-template-columns: 1fr 1fr; }
 #article-body figure.inline-media.three-cols{ grid-template-columns: repeat(3,1fr); }
-
-/* flush = bord à bord à l’intérieur du bloc texte (utile pour une grande image) */
 #article-body figure.inline-media.flush{ margin-left: -0.5rem; margin-right: -0.5rem; }
-
-/* légende discrète */
 #article-body figure.inline-media figcaption{
   font-size: .95rem; line-height: 1.35; opacity: .85; color: #dfe7ff;
 }
-
-/* petit helper pour appeler la lightbox si ton JS l’écoute via [data-lb] */
 #article-body figure.inline-media [data-lb]{ cursor: zoom-in; }
-
-
-
 
 /* -- Lightbox ---------------------------------------------------------------- */
 .no-scroll{ overflow: hidden; }
@@ -334,232 +303,67 @@
   margin: 1.2rem 0;
   overflow: hidden;
 }
-
-/* Le cadre collapsible */
-.note-collapsible {
-  display: block;
-  background: transparent;
-  border: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Titre cliquable */
+.note-collapsible { display: block; background: transparent; border: none; margin: 0; padding: 0; }
 .note-collapsible summary {
-  list-style: none;
-  cursor: pointer;
-  display: block;
-  padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  user-select: none;
-  transition: background 0.2s ease;
+  list-style: none; cursor: pointer; display: block;
+  padding: 1rem 1.5rem; background: rgba(255, 255, 255, 0.05);
+  user-select: none; transition: background 0.2s ease;
 }
-
-.note-collapsible summary:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.note-collapsible summary::-webkit-details-marker {
-  display: none;
-}
-
+.note-collapsible summary:hover { background: rgba(255, 255, 255, 0.08); }
+.note-collapsible summary::-webkit-details-marker { display: none; }
 .note-title {
-  margin: 0;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.2rem;
-  color: var(--accent-primary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.2rem;
+  color: var(--accent-primary); display: flex; justify-content: space-between; align-items: center;
 }
+.note-title .chev { font-size: 1.4rem; transition: transform 0.3s ease; }
+.note-collapsible[open] .chev { transform: rotate(90deg); }
+.note-body { padding: 0 1.5rem 1.5rem; background: transparent; border: none; box-shadow: none; }
+.note-body p { margin-bottom: 1rem; line-height: 1.6; }
+.note-body p:last-child { margin-bottom: 0; }
 
-/* Chevron indicateur */
-.note-title .chev {
-  font-size: 1.4rem;
-  transition: transform 0.3s ease;
-}
-
-.note-collapsible[open] .chev {
-  transform: rotate(90deg);
-}
-
-/* Corps de la note */
-.note-body {
-  padding: 0 1.5rem 1.5rem;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
-
-.note-body p {
-  margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.note-body p:last-child {
-  margin-bottom: 0;
-}
-
-/* === NOTES COMPACTES (sans fond, header léger) ============================ */
-.note-card{
-  background: transparent !important;
-  border: 1px solid rgba(255,255,255,.14) !important;
-  border-radius: 12px;
-  padding: 0 !important;
-  margin: 1rem 0;
-  overflow: hidden;
-}
-
-/* <details> neutre, tout se joue sur le summary */
-.note-collapsible{
-  display:block; margin:0; padding:0; border:0; background:transparent;
-}
-
-/* Titre cliquable : compact + sans aplat */
-.note-collapsible summary{
-  list-style: none; cursor: pointer;
-  display:block;
-  padding: .7rem 1rem;                  /* ← plus compact */
-  background: transparent;              /* pas de bande grise */
-  user-select:none;
-  transition: background .18s ease, color .18s ease;
-}
-.note-collapsible summary:hover{
-  background: rgba(255,255,255,.04);    /* léger voile au survol */
-}
+/* === NOTES COMPACTES ======================================================= */
+.note-card{ background: transparent !important; border: 1px solid rgba(255,255,255,.14) !important; border-radius: 12px; padding: 0 !important; margin: 1rem 0; overflow: hidden; }
+.note-collapsible{ display:block; margin:0; padding:0; border:0; background:transparent; }
+.note-collapsible summary{ list-style: none; cursor: pointer; display:block; padding: .7rem 1rem; background: transparent; user-select:none; transition: background .18s ease, color .18s ease; }
+.note-collapsible summary:hover{ background: rgba(255,255,255,.04); }
 .note-collapsible summary::-webkit-details-marker{ display:none; }
-
-.note-title{
-  margin:0;
-  font-family:'Orbitron',sans-serif;
-  font-size: clamp(1rem, 1.2vw, 1.12rem);  /* ← titre un peu plus petit */
-  letter-spacing:.01em;
-  color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 30%);
-  display:flex; align-items:center; gap:.6rem;
-}
-.note-title .chev{
-  margin-left:auto;                      /* chevron collé à droite */
-  font-size:1.25rem; line-height:1;
-  opacity:.7; transition: transform .25s ease, opacity .2s ease;
-  transform: translateY(-1px);
-}
+.note-title{ margin:0; font-family:'Orbitron',sans-serif; font-size: clamp(1rem, 1.2vw, 1.12rem); letter-spacing:.01em; color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 30%); display:flex; align-items:center; gap:.6rem; }
+.note-title .chev{ margin-left:auto; font-size:1.25rem; line-height:1; opacity:.7; transition: transform .25s ease, opacity .2s ease; transform: translateY(-1px); }
 .note-collapsible[open] .chev{ transform: rotate(90deg); opacity:.9; }
-
-/* Corps de la note : fin trait de séparation + marges douces */
-.note-body{
-  padding: .75rem 1rem 1rem;             /* ← contenu plus dense */
-  border-top: 1px solid rgba(255,255,255,.12);
-  background: transparent;
-  box-shadow: none;
-}
+.note-body{ padding: .75rem 1rem 1rem; border-top: 1px solid rgba(255,255,255,.12); background: transparent; box-shadow: none; }
 .note-body p{ margin: .7rem 0; line-height: 1.6; }
 .note-body p:last-child{ margin-bottom:0; }
-
-.note-collapsible[open] .note-body {
-  border-top: none;
-  /* optionnel : resserrer un peu l’espace du haut */
-  padding-top: .6rem;
-}
-
-
-/* Accent visuel quand la note est ouverte (sans aplat) */
-.note-card:has(details[open]){
-  border-color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 18%);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent-primary, #8fd3ff), transparent 65%);
-}
-/* Fallback si :has() pas dispo : on renforce simplement le header ouvert */
-@supports not selector(:has(*)){
-  .note-collapsible[open] summary{
-    background: rgba(255,255,255,.05);
-  }
-}
-
-
+.note-collapsible[open] .note-body { border-top: none; padding-top: .6rem; }
+.note-card:has(details[open]){ border-color: color-mix(in oklab, var(--accent-primary, #8fd3ff), white 18%); box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent-primary, #8fd3ff), transparent 65%); }
+@supports not selector(:has(*)){ .note-collapsible[open] summary{ background: rgba(255,255,255,.05); } }
 
 /* ---------------------------- CHAPTER CARDS -------------------------------- */
-.chapter-card{
-  --chap-accent: var(--accent-primary);
-  position: relative;
-  overflow: hidden;
-  padding: 1.2rem 1.2rem 1.1rem;
-}
-/* Liseré vertical gauche */
+.chapter-card{ --chap-accent: var(--accent-primary); position: relative; overflow: hidden; padding: 1.2rem 1.2rem 1.1rem; }
 .chapter-card::before{
-  content:"";
-  position:absolute; inset:0 auto 0 0;
-  width:4px;
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--chap-accent), white 10%),
-    color-mix(in oklab, var(--chap-accent), black 15%)
-  );
+  content:""; position:absolute; inset:0 auto 0 0; width:4px;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--chap-accent), white 10%), color-mix(in oklab, var(--chap-accent), black 15%));
   border-radius: 12px 0 0 12px;
 }
-
-/* Titre de chapitre léger (pas de cadre) */
-.chapter-header{
-  display: inline-flex;
-  align-items: center;
-  gap: .55rem;
-  padding: 0;
-  margin: 0 0 .7rem 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  max-width: 100%;
-}
-.chapter-icon{
-  width: 26px; height: 26px; display:grid; place-items:center;
-  border-radius: 50%;
-  background: color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 85%);
-  font-size: .9rem;
-}
+.chapter-header{ display: inline-flex; align-items: center; gap: .55rem; padding: 0; margin: 0 0 .7rem 0; background: transparent; border: 0; box-shadow: none; max-width: 100%; }
+.chapter-icon{ width: 26px; height: 26px; display:grid; place-items:center; border-radius: 50%; background: color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 85%); font-size: .9rem; }
 .chapter-title{
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
-  letter-spacing: .01em;
-  color: color-mix(in oklab, var(--chap-accent, #8fd3ff), white 22%);
+  font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  letter-spacing: .01em; color: color-mix(in oklab, var(--chap-accent, #8fd3ff), white 22%);
   text-shadow: 0 0 8px color-mix(in oklab, var(--chap-accent, #8fd3ff), transparent 70%);
   margin: 0; padding: .05rem .15rem .2rem 0;
 }
-.chapter-title::after{
-  content: ""; display:block; height:2px; margin-top:.28rem;
-  background: linear-gradient(90deg, var(--chap-accent, #8fd3ff), transparent 70%);
-  border-radius: 2px;
-}
+.chapter-title::after{ content: ""; display:block; height:2px; margin-top:.28rem; background: linear-gradient(90deg, var(--chap-accent, #8fd3ff), transparent 70%); border-radius: 2px; }
 
-/* Ancre # (Option A + B) */
-:root{ --anchor-offset: 92px; }             /* ajuste si ta topbar change */
+:root{ --anchor-offset: 92px; }
 .article-chapter, .note-card{ scroll-margin-top: var(--anchor-offset); }
 html{ scroll-behavior: smooth; }
-.chapter-title .anchor{
-  opacity: .35; text-decoration: none; border-bottom: 1px dotted currentColor;
-  margin-left: .35rem; transition: opacity .15s ease;
-}
+.chapter-title .anchor{ opacity: .35; text-decoration: none; border-bottom: 1px dotted currentColor; margin-left: .35rem; transition: opacity .15s ease; }
 .chapter-card:hover .chapter-title .anchor{ opacity: .75; }
-.chapter-title .anchor.copied::after{
-  content: 'Lien copié'; font-size: .75rem; margin-left: .35rem; opacity: .9;
-}
+.chapter-title .anchor.copied::after{ content: 'Lien copié'; font-size: .75rem; margin-left: .35rem; opacity: .9; }
 
-/* Masquer toute "coquille" de viewer vide */
-#article-viewer .viewer-block.is-empty {
-  display: none !important;
-}
-
-/* Au cas où : neutraliser tout effet de carte sur les sections vides */
-#article-viewer .card.is-empty {
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-  margin: 0;
-  height: 0;
-}
-
-/* Quand l'écran d'accueil (placeholder) est visible, on planque tout le reste */
-#article-viewer:has(.placeholder) .viewer-block {
-  display: none !important;
-}
+#article-viewer .viewer-block.is-empty { display: none !important; }
+#article-viewer .card.is-empty { border: 0; box-shadow: none; padding: 0; margin: 0; height: 0; }
+#article-viewer:has(.placeholder) .viewer-block { display: none !important; }
 
 #article-viewer .article-toc{
   background: var(--toc-bg, var(--bloc-bg));
@@ -572,88 +376,55 @@ html{ scroll-behavior: smooth; }
 #article-viewer .article-toc a{ color: var(--toc-link, var(--text-primary)); text-decoration:none; }
 #article-viewer .article-toc a:hover{ color: var(--toc-link-hover, var(--link-color)); text-decoration:underline; }
 #article-viewer .article-toc li{ color: var(--toc-text, var(--text-primary)); }
-
-/* Sommaire pliable : header compact + chevron qui tourne */
-#article-viewer .toc-collapsible > summary {
-  display:flex; align-items:center; justify-content:space-between;
-  cursor:pointer; list-style:none; user-select:none; padding:.25rem 0 .5rem;
-}
+#article-viewer .toc-collapsible > summary { display:flex; align-items:center; justify-content:space-between; cursor:pointer; list-style:none; user-select:none; padding:.25rem 0 .5rem; }
 #article-viewer .toc-collapsible > summary::-webkit-details-marker { display:none; }
 #article-viewer .toc-collapsible .toc-title { font-weight:600; opacity:.9; }
 #article-viewer .toc-collapsible .chev { transition: transform .2s ease; display:inline-block; }
 #article-viewer .toc-collapsible[open] .chev { transform: rotate(90deg); }
-
-/* Liste plus serrée pour un sommaire */
 #article-viewer .article-toc ol { margin:.25rem 0; padding-left:1.25rem; }
 #article-viewer .article-toc li { margin:.15rem 0; }
 
 /* -- TYPOGRAPHIE -------------------------------------------------------------- */
+#article-viewer h1, #article-viewer h2 { text-wrap: balance; }
 
-/* Titres: meilleures césures visuelles */
-#article-viewer h1, 
-#article-viewer h2 {
-  text-wrap: balance;            /* Chrome/Edge/Safari récents */
-}
-
-/* Paragraphes “jolis” (utilise cette classe où tu veux) */
+/* utilitaires existants */
 .justify-pretty {
-  text-align: justify;
-  text-wrap: pretty;             /* réduit les “trous” */
-  text-justify: inter-word;      /* fallback */
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-  hyphens: auto;                 /* nécessite lang="fr" sur le conteneur */
-  overflow-wrap: anywhere;       /* évite les grands blancs si un mot est long */
-}
-
-/* Variante: auto en desktop, aligné à gauche en mobile */
-@media (max-width: 768px){
-  .justify-pretty {
-    text-align: left;            /* sur mobile, la justification est souvent moche */
-  }
-}
-
-/* utilitaire : justification “propre” pour un paragraphe */
-p.jp {
   text-align: justify;
   text-wrap: pretty;
   text-justify: inter-word;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
   hyphens: auto;
   overflow-wrap: anywhere;
 }
+@media (max-width: 768px){ .justify-pretty { text-align: left; } }
+p.jp { text-align: justify; text-wrap: pretty; text-justify: inter-word; hyphens: auto; overflow-wrap: anywhere; }
 @media (max-width: 768px){ p.jp { text-align:left; } }
 
-/* active la justification uniquement pour les <p> à l’intérieur */
+/* jp-scope (TA MODIF) : on ne casse plus “n’importe où”, on passe à break-word */
 .jp-scope p {
   text-align: justify;
   text-wrap: pretty;
   text-justify: inter-word;
   hyphens: auto;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;   /* ← au lieu de anywhere */
+  word-break: normal;
 }
 @media (max-width: 768px){ .jp-scope p { text-align:left; } }
 
-/* AVANT (trop agressif) */
-/* overflow-wrap: anywhere; */
-
-/* APRÈS : garde les mots ensemble et respecte les insécables */
+/* Paragraphes de l’article : réglage safe par défaut */
 #article-viewer .chapter-content p {
   text-align: justify;
   text-wrap: pretty;
   text-justify: inter-word;
   hyphens: auto;
   word-break: normal;
-  overflow-wrap: break-word;   /* remplace anywhere */
+  overflow-wrap: break-word;   /* ← remplace anywhere */
 }
-
 @media (max-width: 768px){
-  #article-viewer .chapter-content p { text-align: left; } /* option: plus propre sur mobile */
+  #article-viewer .chapter-content p { text-align: left; }
 }
-
-/* Un petit plus visuel (facultatif) pour un bord droit plus propre */
-#article-viewer .chapter-content { hanging-punctuation: allow-end; }  /* surtout Safari */
-
-
+#article-viewer .chapter-content { hanging-punctuation: allow-end; }
 
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
