@@ -185,10 +185,7 @@
 
 <script>
 /* =========================================================
-   Article Studio v2 — Script (corrigé)
-   - Storage adapter (local -> fichier fallback)
-   - Wrap retours à la ligne: p / br / none
-   - Tools slot conservé + masqué s'il est vide
+   Article Studio v2 — Script (corrigé complet)
    ========================================================= */
 
 /* --- Utils DOM --- */
@@ -197,7 +194,7 @@ const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const debounce=(fn,ms=600)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
 
 /* --- Storage adapter: localStorage si dispo, sinon null (fallback fichier) --- */
-const KEY='cm-article-studio-v2b';
+const KEY   ='cm-article-studio-v2b';
 const KEY_UI='cm-article-studio-layout';
 const STORAGE = (() => {
   try {
@@ -216,39 +213,40 @@ function slugify(str){return (str||'').normalize('NFD').replace(/[\u0300-\u036f]
 function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
 function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
-function hasHtmlTags(s){return /<\/?[a-z][\s\S]*?>/i.test((s||''))}
 
 /* --- État --- */
 const state={
   title:'',subtitle:'',subtitleMode:'data',
-  wrapMode:'p',                           // 'p' | 'br' | 'none'
+  wrapMode:'p',                // 'p' | 'br' | 'none'
   tools:true, toc:true,
   introEnabled:false,introTitle:'',intro:'',
-  chapters:[], // {n,id,title,html}
-  media:{images:[],caption:''}, // {src,alt,main}
+  chapters:[],                 // {n,id,title,html}
+  media:{images:[],caption:''},// {src,alt,main}
   extras:'',references:'',capsules:'',
   updatedAt:Date.now(),dirty:false,
   layout: (STORAGE ? STORAGE.getItem(KEY_UI) : null) || 'equal'
 };
-
-function markDirty(){state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées'}
+function markDirty(){state.dirty=true; $('#pill-dirty')?.textContent='modifications non sauvegardées'}
 
 /* --- Synchro UI -> state (à appeler avant save/export/build) --- */
 function syncFromInputs(){
-  state.title=$('#inp-title')?.value||'';
-  state.subtitle=$('#inp-subtitle')?.value||'';
-  state.subtitleMode=($$('input[name="subtitleMode"]:checked')[0]?.value==='p')?'p':'data';
-  state.tools=$('#chk-tools')?.checked??true;
-  state.wrapMode=$('#sel-wrap')?.value||'p';
-  state.introEnabled=$('#chk-intro')?.checked??false;
-  state.introTitle=$('#inp-intro-title')?.value||'';
-  state.intro=$('#ta-intro')?.value||'';
-  state.toc=$('#chk-toc')?.checked??true;
-  state.media.caption=$('#inp-caption')?.value||'';
-  state.extras=$('#ta-extras')?.value||'';
-  state.references=$('#ta-refs')?.value||'';
-  state.capsules=$('#ta-caps')?.value||'';
-  // chapitres
+  state.title       = $('#inp-title')?.value || '';
+  state.subtitle    = $('#inp-subtitle')?.value || '';
+  state.subtitleMode= ($$('input[name="subtitleMode"]:checked')[0]?.value==='p') ? 'p' : 'data';
+  state.wrapMode    = $('#sel-wrap')?.value || 'p';
+  state.tools       = $('#chk-tools')?.checked ?? true;
+
+  state.introEnabled= $('#chk-intro')?.checked ?? false;
+  state.introTitle  = $('#inp-intro-title')?.value || '';
+  state.intro       = $('#ta-intro')?.value || '';
+  state.toc         = $('#chk-toc')?.checked ?? true;
+
+  state.media.caption = $('#inp-caption')?.value || '';
+  state.extras        = $('#ta-extras')?.value || '';
+  state.references    = $('#ta-refs')?.value || '';
+  state.capsules      = $('#ta-caps')?.value || '';
+
+  // chapitres (UI -> state)
   const nodes=$$('#chapters .item');
   if(nodes.length){
     state.chapters = nodes.map((node,i)=>({
@@ -267,7 +265,7 @@ function saveLocal(){
   if(STORAGE){
     STORAGE.setItem(KEY, JSON.stringify(state));
     state.dirty=false;
-    $('#pill-dirty').textContent='sauvegardé (local)';
+    $('#pill-dirty')?.textContent='sauvegardé (local)';
   }else{
     // Fallback : sauvegarde fichier
     const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
@@ -276,7 +274,7 @@ function saveLocal(){
     a.download='article-studio-autosave.json';
     a.click(); URL.revokeObjectURL(a.href);
     state.dirty=false;
-    $('#pill-dirty').textContent='sauvegardé (fichier)';
+    $('#pill-dirty')?.textContent='sauvegardé (fichier)';
   }
 }
 function loadLocal(){
@@ -312,7 +310,7 @@ function loadLocal(){
             layout:'equal'
           }, data);
           renderAllFromState();
-          $('#pill-dirty').textContent='chargé (fichier)';
+          $('#pill-dirty')?.textContent='chargé (fichier)';
         }catch{ alert('Fichier JSON invalide'); }
       };
       fr.readAsText(f);
@@ -396,13 +394,12 @@ insertButtons.forEach(b=>{
 });
 
 /* --- Inputs live -> dirty --- */
-[ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption,inpIntroTitle,selWrap ].forEach(el=>{
-  el.addEventListener('input',debounce(()=>{ markDirty(); },250));
-});
-chkIntro.addEventListener('change',()=>{state.introEnabled=chkIntro.checked; markDirty()});
+;[ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption,inpIntroTitle,selWrap ]
+  .forEach(el=>{ el?.addEventListener('input',debounce(()=>{ markDirty(); },250)) });
+chkIntro?.addEventListener('change',()=>{state.introEnabled=chkIntro.checked; markDirty()});
 subtitleRadios.forEach(r=>r.addEventListener('change',()=>{state.subtitleMode=r.value==='p'?'p':'data'; markDirty()}));
-chkToc.addEventListener('change',()=>{state.toc=chkToc.checked; markDirty()});
-chkTools.addEventListener('change',()=>{state.tools=chkTools.checked; markDirty()});
+chkToc?.addEventListener('change',()=>{state.toc=chkToc.checked; markDirty()});
+chkTools?.addEventListener('change',()=>{state.tools=chkTools.checked; markDirty()});
 
 /* --- Compteurs --- */
 function updateCounters(){
@@ -435,6 +432,8 @@ function chapterItem(ch){
   elTitle.addEventListener('input',debounce(()=>{$('.ghost',root).textContent=elTitle.value||'(sans titre)'; markDirty()},300));
   elId.addEventListener('input',debounce(()=>{markDirty()},300));
   elHtml.addEventListener('input',debounce(()=>{updateCounters(); syncCounter(); markDirty()},300));
+  // NEW: capter le coller
+  elHtml.addEventListener('paste', ()=>{ setTimeout(()=>{ updateCounters(); markDirty(); buildHTML(); },0) });
   root.addEventListener('click',ev=>{
     const act=ev.target?.dataset?.act; if(!act) return;
     const i=state.chapters.findIndex(x=>x.id===ch.id);
@@ -447,12 +446,9 @@ function chapterItem(ch){
   syncCounter(); return root;
 }
 function renumberChapters(){state.chapters.forEach((c,i)=>c.n=i+1)}
-function renderChapters(){
-  chaptersEl.innerHTML='';
-  state.chapters.forEach(ch=>chaptersEl.appendChild(chapterItem(ch)));
-}
+function renderChapters(){ chaptersEl.innerHTML=''; state.chapters.forEach(ch=>chaptersEl.appendChild(chapterItem(ch))) }
 function addChapter(){const n=state.chapters.length+1; const ch={n,id:'section-'+n,title:'',html:''}; state.chapters.push(ch); renderChapters(); markDirty()}
-$('#btn-add-chapter').addEventListener('click',addChapter);
+btnAddChapter?.addEventListener('click',addChapter);
 
 /* --- Médias --- */
 function imageItem(img,idx){
@@ -484,12 +480,12 @@ function imageItem(img,idx){
   return root;
 }
 function renderImages(){imagesEl.innerHTML=''; state.media.images.forEach((im,i)=>imagesEl.appendChild(imageItem(im,i)))}
-btnAddImage.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
+btnAddImage?.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
 
 /* --- Toolbar mise en forme --- */
 let activeTextArea=null;
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
-$('#formatbar').addEventListener('click',e=>{
+$('#formatbar')?.addEventListener('click',e=>{
   const cmd=e.target?.dataset?.format||e.target?.parentElement?.dataset?.format; if(!cmd||!activeTextArea) return;
   const el=activeTextArea;
   const W={
@@ -507,18 +503,30 @@ function wrap(el,before,after){
   el.dispatchEvent(new Event('input'));
 }
 
-/* --- Conversion retours à la ligne --- */
+/* --- Détection de blocs HTML + conversion wrap --- */
+function isHtmlBlock(chunk){
+  const b=(chunk||'').trim();
+  if(!b) return false;
+  if(!/<[a-zA-Z]/.test(b)) return false;
+  return /<(h[1-6]|p|ul|ol|li|blockquote|table|thead|tbody|tr|th|td|figure|img|section|article|nav|div|pre|code|hr|br)\b/i.test(b);
+}
 function convertByWrapMode(s, mode){
-  const raw=(s||'').replace(/\r/g,'').trim();
+  const raw=(s||'').replace(/\r/g,'').trimEnd();
   if(!raw) return '';
-  if(hasHtmlTags(raw)) return raw; // respecter l'HTML saisi
-  if(mode==='p'){
-    return raw.split(/\n+/).map(l=>l.trim()).filter(Boolean).map(l=>`<p>${escapeHtml(l)}</p>`).join('\n');
-  }else if(mode==='br'){
-    return escapeHtml(raw).replace(/\n/g,'<br>\n');
-  }else{ // none
-    return escapeHtml(raw);
-  }
+  // Split en "blocs" séparés par ≥ 2 sauts de ligne
+  const chunks = raw.split(/\n{2,}/);
+  const rendered = chunks.map(chunk=>{
+    if(isHtmlBlock(chunk)) return chunk.trim(); // préserver le HTML saisi
+    if(mode==='p'){
+      return chunk.split(/\n/).map(l=>l.trim()).filter(Boolean)
+                  .map(l=>`<p>${escapeHtml(l)}</p>`).join('\n');
+    }else if(mode==='br'){
+      return escapeHtml(chunk).replace(/\n/g,'<br>\n');
+    }else{
+      return escapeHtml(chunk);
+    }
+  });
+  return rendered.join('\n\n');
 }
 
 /* --- Build HTML --- */
@@ -528,165 +536,8 @@ function buildHTML(){
   // ids uniques pour H2
   const seen=new Set();
   state.chapters.forEach(ch=>{
-    let base=slugify(ch.title||ch.id||'section'), id=base, k=2;
-    while(seen.has(id)) id=`${base}-${k++}`;
-    ch.id=id; seen.add(id);
-  });
+    let base=slugify(ch.title||
 
-  // H1
-  const h1 = state.subtitleMode==='data'
-    ? `<h1${state.subtitle?` data-subtitle="${escapeAttr(state.subtitle)}"`:''}>${escapeHtml(state.title||'Mon titre')}</h1>`
-    : `<h1>${escapeHtml(state.title||'Mon titre')}</h1>\n  ${state.subtitle?`<p class="subtitle">${escapeHtml(state.subtitle)}</p>`:''}`;
-
-  // Intro
-  let introBlock='';
-  if(state.introEnabled){
-    const t=(state.introTitle||'Introduction').trim()||'Introduction';
-    const id = slugify(t||'introduction') || 'introduction';
-    const bodyHTML = convertByWrapMode(state.intro||'', state.wrapMode);
-    introBlock = `  <h2 id="${id}">${escapeHtml(t)}</h2>\n${bodyHTML?indent(bodyHTML,2)+'\n':''}\n`;
-  }
-
-  // TOC
-  let toc='';
-  if(state.toc && state.chapters.length){
-    const links=state.chapters.map(ch=>`      <a href="#${ch.id}">${escapeHtml(ch.title||ch.id)}</a>`).join(' •\n');
-    toc = `  <section data-chapter="sommaire" id="sommaire">
-    <h2>Sommaire</h2>
-    <nav class="article-toc">
-${links}
-    </nav>
-  </section>\n\n`;
-  }
-
-  // Chapitres
-  const chs = state.chapters.map(ch=>{
-    const bodyHTML = convertByWrapMode(ch.html||'', state.wrapMode) || '<p>… contenu …</p>';
-    return `  <h2 id="${ch.id}">${escapeHtml(ch.title||('Chapitre '+ch.n))}</h2>
-${indent(bodyHTML,2)}`;
-  }).join('\n\n');
-
-  // Slot tools (optionnel)
-  const toolsBlock = state.tools ? '  <section data-part="tools"></section>\n\n' : '';
-
-  const article =
-`<article data-article>
-  <section data-part="title" class="title-chip">
-    ${h1}
-  </section>
-
-${toolsBlock}${introBlock}${toc}${chs}
-</article>`;
-
-  // Médias (optionnels)
-  let media='';
-  if((state.media.images&&state.media.images.length) || (state.media.caption||'').trim()){
-    const imgs=(state.media.images||[]).map(im=>{
-      const main=im.main?' data-main':''; const alt=escapeAttr(im.alt||''); const src=escapeAttr(im.src||'');
-      return `    <img src="${src}" alt="${alt}"${main}>`;
-    }).join('\n');
-    const cap=(state.media.caption||'').trim()?`\n    <figcaption>${escapeHtml(state.media.caption.trim())}</figcaption>`:'';
-    media = `<section data-part="media">
-  <figure>
-${imgs}${cap}
-  </figure>
-</section>`;
-  }
-
-  // Extras / refs / caps (optionnels)
-  const extras = (state.extras||'').trim()? `<section data-part="extras">\n${indent(state.extras.trim(),2)}\n</section>`:'';
-  const refs   = (state.references||'').trim()? `<section data-part="references">\n${indent(state.references.trim(),2)}\n</section>`:'';
-  const caps   = (state.capsules||'').trim()? `<section data-part="capsules">\n${indent(state.capsules.trim(),2)}\n</section>`:'';
-
-  // Garde CSS : cache tools quand il est vide (apparait dès que le viewer injecte)
-  const guardCss = `<style>[data-article] [data-part="tools"]:not(:has(*)){display:none}</style>`;
-
-  const full =
-`<!-- =========================================================
-  ARTICLE écrit par Vincero — édité sur la plateforme Article Studio v2 (Codex Mental)
-  ========================================================= -->
-${guardCss}
-${article}
-
-${media}
-${extras}
-${refs}
-${caps}
-`;
-  out.textContent=full; return full;
-}
-
-/* --- Download --- */
-function downloadHTML(){
-  const html=buildHTML();
-  const blob=new Blob([html],{type:'text/html'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=(slugify(state.title||'article')||'article')+'.html';
-  a.click(); URL.revokeObjectURL(a.href);
-}
-
-/* --- Rendu / boot --- */
-function renderAllFromState(){
-  // afficher les blocs
-  $('#block-title').hidden=false; $('#block-intro').hidden=false; $('#block-toc').hidden=false; $('#block-chapters').hidden=false; $('#block-media').hidden=false;
-  $('#block-extras').hidden=false; $('#block-refs').hidden=false; $('#block-caps').hidden=false;
-
-  inpTitle.value=state.title||''; inpSubtitle.value=state.subtitle||'';
-  (state.subtitleMode==='p'?subtitleRadios[1]:subtitleRadios[0]).checked=true;
-  selWrap.value=state.wrapMode||'p';
-  chkTools.checked=!!state.tools;
-
-  chkIntro.checked=!!state.introEnabled; inpIntroTitle.value=state.introTitle||''; taIntro.value=state.intro||'';
-  chkToc.checked=!!state.toc;
-
-  // Recrée l’UI des chapitres
-  chaptersEl.innerHTML='';
-  (state.chapters||[]).forEach(ch=>chaptersEl.appendChild(chapterItem(ch)));
-
-  imagesEl.innerHTML=''; state.media.images=(state.media.images||[]); renderImages(); inpCaption.value=state.media.caption||'';
-  taExtras.value=state.extras||''; taRefs.value=state.references||''; taCaps.value=state.capsules||'';
-
-  setLayout(state.layout||'equal');
-  updateCounters(); buildHTML();
-
-  // Indiquer l'état autosave
-  if(STORAGE){
-    $('#pill-save').textContent='autosave 3 min (local)';
-  }else{
-    $('#pill-save').textContent='autosave désactivé (stockage bloqué)';
-  }
-}
-
-/* --- Events boutons --- */
-btnSave.addEventListener('click',saveLocal);
-btnLoad.addEventListener('click',loadLocal);
-btnExport.addEventListener('click',exportJSON);
-btnImport.addEventListener('click',()=>fileImport.click());
-fileImport.addEventListener('change',e=>{if(e.target.files?.[0]) importJSON(e.target.files[0])});
-btnBuild.addEventListener('click',buildHTML);
-btnDownload.addEventListener('click',downloadHTML);
-
-/* --- Raccourcis --- */
-document.addEventListener('keydown',e=>{
-  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveLocal() }
-  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='enter'){ e.preventDefault(); buildHTML() }
-  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='b' && activeTextArea){ e.preventDefault(); wrap(activeTextArea,'<strong>','</strong>') }
-  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='i' && activeTextArea){ e.preventDefault(); wrap(activeTextArea,'<em>','</em>') }
-  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='u' && activeTextArea){ e.preventDefault(); wrap(activeTextArea,'<u>','</u>') }
-  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k' && activeTextArea){ e.preventDefault(); const href=prompt('URL du lien :','https://'); if(href) wrap(activeTextArea,`<a href="${href}">`,'</a>') }
-});
-
-/* --- Autosave (3 min) seulement si storage local dispo --- */
-if(STORAGE){
-  setInterval(()=>{ if(state.dirty) saveLocal() },180000);
-}else{
-  // rien
-}
-
-/* --- Boot --- */
-renderAllFromState();
-</script>
 
 </body>
 </html>
