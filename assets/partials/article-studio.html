@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Article Studio v2 — Codex Mental</title>
+<title>Article Studio v3 — Codex Mental</title>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="%23121739"/><text x="50%" y="62%" font-size="76" text-anchor="middle" fill="%2386c7ff" font-family="Arial, Helvetica, sans-serif">A</text></svg>'>
 <style>
   :root{
@@ -25,14 +25,11 @@
   .btn{background:#121739;border:1px solid var(--line);color:var(--ink);padding:.45rem .7rem;border-radius:10px;cursor:pointer}
   .btn:hover{filter:brightness(1.05)}
   .btn.good{background:rgba(74,210,149,.10);border-color:rgba(74,210,149,.5)}
-  .btn.small{padding:.35rem .55rem;font-size:.9rem}
+  .btn.bad{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.5)}
+  .btn.small{padding:.35rem .6rem;font-size:.9rem}
 
-  /* Layout responsive + modes */
-  .wrap{display:grid; gap:14px; padding:14px; height:calc(100% - 58px); transition:grid-template-columns .25s ease}
-  body[data-layout="equal"]  .wrap{grid-template-columns:1fr 1fr}
-  body[data-layout="left"]   .wrap{grid-template-columns:minmax(560px,2fr) minmax(420px,1fr)}
-  body[data-layout="right"]  .wrap{grid-template-columns:minmax(420px,1fr) minmax(560px,2fr)}
-  .btn.toggle[aria-pressed="true"]{outline:2px solid var(--accent); background:rgba(134,199,255,.15)}
+  .wrap{display:grid; gap:14px; padding:14px; height:calc(100% - 58px)}
+  .wrap{grid-template-columns:minmax(540px,1.2fr) minmax(520px,1fr)}
 
   .panel{border:1px solid var(--line);border-radius:var(--radius);background:#0c1125;min-height:0;display:flex;flex-direction:column}
   .panel h2{font-size:1rem;margin:0;padding:10px 12px;border-bottom:1px solid var(--line);color:#cfe3ff}
@@ -44,31 +41,24 @@
   input[type="text"],input[type="url"],textarea,select{width:100%;background:#0a0f22;color:#e9efff;border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;font:inherit}
   textarea{min-height:110px;resize:vertical}
   .hint{color:var(--muted);font-size:.9rem}
-  .fieldset{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:10px 0}
+  .fieldset{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:12px 0;background:#0b1230}
   .fieldset .legend{font-size:.95rem;color:#cfe3ff;margin-bottom:8px}
-  .chapters .item,.images .item{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;background:#0b1230}
-  .item .head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .item .head .title{font-weight:600;color:#dbe7ff}
-  .item .head .ghost{color:#a9b5d1;font-size:.9rem}
+  .block{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:12px;background:#0b1130}
+  .block .head{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+  .block .title{font-weight:600;color:#dbe7ff}
   .head .controls{margin-left:auto;display:flex;gap:6px}
-  .id-inline{display:flex;gap:8px;align-items:center}
-  .id-inline input{width:260px}
-  .images .grid{display:grid;gap:8px}
-  .images .item .grid{grid-template-columns:1fr 1fr 120px 90px auto}
-  .checkbox{display:flex;align-items:center;gap:6px;color:var(--muted)}
-  .counter{font-size:.85rem;color:var(--muted);text-align:right}
+  .inline{display:flex;gap:8px;align-items:center}
   .code{white-space:pre;font-family:var(--mono);font-size:.92rem;line-height:1.4;background:#050814;padding:12px;border-radius:10px;overflow:auto;min-height:100%;border:1px solid var(--line)}
-  .status{display:flex;gap:10px;align-items:center;margin:0 12px 12px}
   .pill{padding:.2rem .55rem;border-radius:999px;border:1px solid var(--line);color:#a9b5d1;background:#0b1130;font-size:.85rem}
+  .status{display:flex;gap:10px;align-items:center;margin:12px 0}
+  .muted{color:var(--muted)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 </style>
 </head>
-<body data-layout="equal">
+<body>
 <header class="appbar">
-  <div class="title">🧰 Article Studio</div>
+  <div class="title">🧰 Article Studio v3</div>
   <div class="spacer"></div>
-  <button id="btn-layout-left"  class="btn small toggle" title="Focus Édition (Ctrl+Alt+←)">⇤ Édition</button>
-  <button id="btn-layout-eq"    class="btn small toggle" title="50/50 (Ctrl+Alt+0)">50/50</button>
-  <button id="btn-layout-right" class="btn small toggle" title="Focus Aperçu (Ctrl+Alt+→)">Aperçu ⇥</button>
   <button id="btn-save" class="btn">Sauver</button>
   <button id="btn-load" class="btn">Charger</button>
   <button id="btn-export" class="btn">Export JSON</button>
@@ -80,98 +70,28 @@
 
 <div class="wrap">
   <section class="panel">
-    <h2>Édition assistée</h2>
+    <h2>Édition (démarrage vide → ajoute tes blocs)</h2>
     <div class="content">
       <div class="insertbar">
-        <button class="btn small" data-insert="title">+ Titre</button>
-        <button class="btn small" data-insert="intro">+ Intro</button>
-        <button class="btn small" data-insert="toc">+ Sommaire auto</button>
-        <button class="btn small" data-insert="chapter">+ Chapitre</button>
-        <button class="btn small" data-insert="media">+ Médias</button>
-        <button class="btn small" data-insert="extras">+ Extras</button>
-        <button class="btn small" data-insert="refs">+ Références</button>
-        <button class="btn small" data-insert="caps">+ Capsules</button>
+        <button class="btn small" data-add="title">+ Titre</button>
+        <button class="btn small" data-add="intro">+ Intro</button>
+        <button class="btn small" data-add="toc">+ Sommaire</button>
+        <button class="btn small" data-add="section">+ Section</button>
+        <button class="btn small" data-add="media">+ Médias</button>
+        <button class="btn small" data-add="note">+ Note</button>
+        <button class="btn small" data-add="hr">+ Séparateur</button>
+        <button class="btn small" data-add="extras">+ Extras</button>
+        <button class="btn small" data-add="refs">+ Références</button>
+        <button class="btn small" data-add="caps">+ Capsules</button>
       </div>
 
-      <div class="toolbar" id="formatbar">
-        <span class="hint">Mise en forme (zone texte active) :</span>
-        <button class="btn small" data-format="em"><i>I</i></button>
-        <button class="btn small" data-format="strong"><b>B</b></button>
-        <button class="btn small" data-format="u"><u>U</u></button>
-        <button class="btn small" data-format="code"><span style="font-family:var(--mono)">code</span></button>
-        <button class="btn small" data-format="link">Lien</button>
-        <button class="btn small" data-format="ul">• Liste</button>
-        <button class="btn small" data-format="ol">1. Liste</button>
-        <button class="btn small" data-format="quote">« Citation »</button>
-        <!-- bonus utiles -->
-        <button class="btn small" data-format="hr">— hr —</button>
-        <button class="btn small" data-format="sup">x<sup>2</sup></button>
-        <button class="btn small" data-format="sub">H<sub>2</sub>O</button>
-      </div>
-
-      <!-- Title -->
-      <div id="block-title" class="fieldset" hidden>
-        <div class="legend">Titre (H1) + Sous-titre (optionnel)</div>
-        <div class="row"><label for="inp-title">Titre</label><input id="inp-title" type="text" placeholder="Mon titre"></div>
-        <div class="row"><label for="inp-subtitle">Sous-titre</label><input id="inp-subtitle" type="text" placeholder="Sous-titre (optionnel)"></div>
-        <div class="row">
-          <label>Mode sous-titre</label>
-          <div>
-            <label class="checkbox"><input type="radio" name="subtitleMode" value="data" checked> data-subtitle sur le H1</label>
-            <label class="checkbox"><input type="radio" name="subtitleMode" value="p"> &lt;p class="subtitle"&gt;</label>
-          </div>
-        </div>
-        <div class="row"><label>Outils / partage</label><label class="checkbox"><input type="checkbox" id="chk-tools" checked> Inclure le slot « tools »</label></div>
-        <div class="row">
-          <label>Retours à la ligne</label>
-          <select id="sel-wrap">
-            <option value="p" selected>Paragraphe &lt;p&gt;</option>
-            <option value="br">Saut de ligne &lt;br&gt;</option>
-            <option value="none">Aucun (laisser tel quel)</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Intro -->
-      <div id="block-intro" class="fieldset" hidden>
-        <div class="legend">Introduction (H2 optionnel + contenu)</div>
-        <div class="row"><label>Inclure l’intro</label><label class="checkbox"><input type="checkbox" id="chk-intro"> Ajouter une introduction</label></div>
-        <div class="row"><label for="inp-intro-title">Titre de l’intro</label><input id="inp-intro-title" type="text" placeholder="Introduction"></div>
-        <textarea id="ta-intro" placeholder="… intro …"></textarea>
-        <div class="counter" data-for="ta-intro"></div>
-      </div>
-
-      <!-- TOC -->
-      <div id="block-toc" class="fieldset" hidden>
-        <div class="legend">Sommaire automatique</div>
-        <label class="checkbox"><input type="checkbox" id="chk-toc" checked> Générer une carte « Sommaire »</label>
-      </div>
-
-      <!-- Chapters -->
-      <div id="block-chapters" class="fieldset" hidden>
-        <div class="legend">Chapitres (H2 simples)</div>
-        <div class="chapters" id="chapters"></div>
-        <button class="btn small" id="btn-add-chapter">+ Ajouter un chapitre</button>
-      </div>
-
-      <!-- Media -->
-      <div id="block-media" class="fieldset" hidden>
-        <div class="legend">Médias (figure)</div>
-        <div class="images" id="images"></div>
-        <div class="row"><label>Figcaption</label><input id="inp-caption" type="text" placeholder="Quelques images liées à l’article."></div>
-        <button class="btn small" id="btn-add-image">+ Ajouter une image</button>
-        <div class="hint">Astuce : coche une image « principale » (data-main). Ordre réordonnable avec ↑↓.</div>
-      </div>
-
-      <!-- Extras / References / Capsules -->
-      <div id="block-extras" class="fieldset" hidden><div class="legend">Extras</div><textarea id="ta-extras" placeholder="…"></textarea><div class="counter" data-for="ta-extras"></div></div>
-      <div id="block-refs" class="fieldset" hidden><div class="legend">Références</div><textarea id="ta-refs" placeholder="…"></textarea><div class="counter" data-for="ta-refs"></div></div>
-      <div id="block-caps" class="fieldset" hidden><div class="legend">Capsules</div><textarea id="ta-caps" placeholder="…"></textarea><div class="counter" data-for="ta-caps"></div></div>
+      <div id="blocks"></div>
 
       <div class="status">
         <div id="pill-save" class="pill">autosave 3 min • Ctrl+S</div>
         <div id="pill-dirty" class="pill">brouillon non sauvegardé</div>
       </div>
+      <p class="muted">Astuce : dans une Section, tu peux insérer des images <em>inline</em> avec le bouton dédié — elles apparaîtront au milieu du texte (sans carte en arrière‑plan). Le bloc « Médias » sert à une galerie (en‑tête) ou à une figure autonome.</p>
     </div>
   </section>
 
@@ -184,360 +104,253 @@
 </div>
 
 <script>
-/* =========================================================
-   Article Studio v2 — Script (corrigé complet)
-   ========================================================= */
-
-/* --- Utils DOM --- */
+// ======================= Core =======================
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const debounce=(fn,ms=600)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+const debounce=(fn,ms=500)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+const slugify=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'section';
 
-/* --- Storage adapter: localStorage si dispo, sinon null (fallback fichier) --- */
-const KEY   ='cm-article-studio-v2b';
-const KEY_UI='cm-article-studio-layout';
-const STORAGE = (() => {
-  try {
-    const t='__cm_test__';
-    window.localStorage.setItem(t,'1');
-    window.localStorage.removeItem(t);
-    return window.localStorage; // OK
-  } catch (e) {
-    console.warn('localStorage indisponible :', e);
-    return null;               // fallback fichier
-  }
-})();
+const KEY='cm-article-studio-v3';
+let state={ blocks:[], updatedAt:Date.now(), dirty:false };
 
-/* --- Helpers généraux --- */
-function slugify(str){return (str||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'section'}
-function escapeHtml(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
-function escapeAttr(s=''){return s.replace(/"/g,'&quot;')}
-function indent(s,sp=2){const pad=' '.repeat(sp); return s.split('\n').map(l=>pad+l).join('\n')}
+function markDirty(){state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées'}
 
-/* --- État --- */
-const state={
-  title:'',subtitle:'',subtitleMode:'data',
-  wrapMode:'p',                // 'p' | 'br' | 'none'
-  tools:true, toc:true,
-  introEnabled:false,introTitle:'',intro:'',
-  chapters:[],                 // {n,id,title,html}
-  media:{images:[],caption:''},// {src,alt,main}
-  extras:'',references:'',capsules:'',
-  updatedAt:Date.now(),dirty:false,
-  layout: (STORAGE ? STORAGE.getItem(KEY_UI) : null) || 'equal'
-};
-function markDirty(){state.dirty=true; $('#pill-dirty')?.textContent='modifications non sauvegardées'}
-
-/* --- Synchro UI -> state (à appeler avant save/export/build) --- */
-function syncFromInputs(){
-  state.title       = $('#inp-title')?.value || '';
-  state.subtitle    = $('#inp-subtitle')?.value || '';
-  state.subtitleMode= ($$('input[name="subtitleMode"]:checked')[0]?.value==='p') ? 'p' : 'data';
-  state.wrapMode    = $('#sel-wrap')?.value || 'p';
-  state.tools       = $('#chk-tools')?.checked ?? true;
-
-  state.introEnabled= $('#chk-intro')?.checked ?? false;
-  state.introTitle  = $('#inp-intro-title')?.value || '';
-  state.intro       = $('#ta-intro')?.value || '';
-  state.toc         = $('#chk-toc')?.checked ?? true;
-
-  state.media.caption = $('#inp-caption')?.value || '';
-  state.extras        = $('#ta-extras')?.value || '';
-  state.references    = $('#ta-refs')?.value || '';
-  state.capsules      = $('#ta-caps')?.value || '';
-
-  // chapitres (UI -> state)
-  const nodes=$$('#chapters .item');
-  if(nodes.length){
-    state.chapters = nodes.map((node,i)=>({
-      n:i+1,
-      id:$('.ch-id',node).value || slugify($('.ch-title',node).value||('section-'+(i+1))),
-      title:$('.ch-title',node).value||'',
-      html:$('.ch-html',node).value||''
-    }));
-  }
-}
-
-/* --- Persistence: local -> fichier fallback --- */
-function saveLocal(){
-  syncFromInputs();
-  state.updatedAt=Date.now();
-  if(STORAGE){
-    STORAGE.setItem(KEY, JSON.stringify(state));
-    state.dirty=false;
-    $('#pill-dirty')?.textContent='sauvegardé (local)';
-  }else{
-    // Fallback : sauvegarde fichier
-    const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(b);
-    a.download='article-studio-autosave.json';
-    a.click(); URL.revokeObjectURL(a.href);
-    state.dirty=false;
-    $('#pill-dirty')?.textContent='sauvegardé (fichier)';
-  }
-}
-function loadLocal(){
-  if(STORAGE){
-    const raw=STORAGE.getItem(KEY);
-    if(!raw){ alert('Aucun brouillon local.'); return; }
-    try{
-      const loaded=JSON.parse(raw)||{};
-      Object.assign(state,{
-        title:'',subtitle:'',subtitleMode:'data',
-        wrapMode:'p',tools:true,toc:true,
-        introEnabled:false,introTitle:'',intro:'',
-        chapters:[],media:{images:[],caption:''},
-        extras:'',references:'',capsules:'',
-        layout:'equal'
-      }, loaded);
-      renderAllFromState();
-    }catch(e){ alert('Brouillon local corrompu.'); }
-  }else{
-    // Fallback : ouverture d'un fichier JSON
-    fileImport.onchange=(e)=>{
-      const f=e.target.files?.[0]; if(!f) return;
-      const fr=new FileReader();
-      fr.onload=()=>{
-        try{
-          const data=JSON.parse(fr.result);
-          Object.assign(state,{
-            title:'',subtitle:'',subtitleMode:'data',
-            wrapMode:'p',tools:true,toc:true,
-            introEnabled:false,introTitle:'',intro:'',
-            chapters:[],media:{images:[],caption:''},
-            extras:'',references:'',capsules:'',
-            layout:'equal'
-          }, data);
-          renderAllFromState();
-          $('#pill-dirty')?.textContent='chargé (fichier)';
-        }catch{ alert('Fichier JSON invalide'); }
-      };
-      fr.readAsText(f);
-      e.target.value='';
-    };
-    fileImport.click();
-  }
-}
-function exportJSON(){
-  syncFromInputs();
-  const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='article-studio.json'; a.click(); URL.revokeObjectURL(a.href);
-}
-function importJSON(file){
-  const fr=new FileReader();
-  fr.onload=()=>{
-    try{
-      const data=JSON.parse(fr.result);
-      Object.assign(state,{
-        title:'',subtitle:'',subtitleMode:'data',
-        wrapMode:'p',tools:true,toc:true,
-        introEnabled:false,introTitle:'',intro:'',
-        chapters:[],media:{images:[],caption:''},
-        extras:'',references:'',capsules:'',
-        layout:'equal'
-      }, data);
-      renderAllFromState(); saveLocal();
-    }catch{ alert('Fichier JSON invalide'); }
-  };
-  fr.readAsText(file);
-}
-
-/* --- UI refs --- */
-const out=$('#out');
-const insertButtons=$$('.insertbar .btn');
-const btnSave=$('#btn-save'),btnLoad=$('#btn-load'),btnExport=$('#btn-export'),btnImport=$('#btn-import'),fileImport=$('#file-import');
-const btnBuild=$('#btn-build'),btnDownload=$('#btn-download');
-const btnLayoutLeft=$('#btn-layout-left'), btnLayoutEq=$('#btn-layout-eq'), btnLayoutRight=$('#btn-layout-right');
-const blkTitle=$('#block-title'), inpTitle=$('#inp-title'), inpSubtitle=$('#inp-subtitle'), subtitleRadios=$$('input[name="subtitleMode"]');
-const blkIntro=$('#block-intro'), chkIntro=$('#chk-intro'), inpIntroTitle=$('#inp-intro-title'), taIntro=$('#ta-intro');
-const blkToc=$('#block-toc'), chkToc=$('#chk-toc');
-const blkChapters=$('#block-chapters'), chaptersEl=$('#chapters'), btnAddChapter=$('#btn-add-chapter');
-const blkMedia=$('#block-media'), imagesEl=$('#images'), btnAddImage=$('#btn-add-image'), inpCaption=$('#inp-caption');
-const taExtras=$('#ta-extras'), taRefs=$('#ta-refs'), taCaps=$('#ta-caps');
-const selWrap=$('#sel-wrap'), chkTools=$('#chk-tools');
-
-/* --- Layout handling --- */
-function setLayout(mode){
-  if(!['left','equal','right'].includes(mode)) mode='equal';
-  state.layout=mode;
-  document.body.setAttribute('data-layout', mode);
-  if(STORAGE) STORAGE.setItem(KEY_UI, mode);
-  [btnLayoutLeft, btnLayoutEq, btnLayoutRight].forEach(b=>b?.setAttribute('aria-pressed','false'));
-  ({left:btnLayoutLeft, equal:btnLayoutEq, right:btnLayoutRight}[mode])?.setAttribute('aria-pressed','true');
-}
-btnLayoutLeft.addEventListener('click',  ()=>setLayout('left'));
-btnLayoutEq.addEventListener('click',    ()=>setLayout('equal'));
-btnLayoutRight.addEventListener('click', ()=>setLayout('right'));
-document.addEventListener('keydown',(e)=>{
-  const k=e.key.toLowerCase();
-  if((e.ctrlKey||e.metaKey) && e.altKey){
-    if(k==='arrowleft'){ e.preventDefault(); setLayout('left') }
-    if(k==='0'){        e.preventDefault(); setLayout('equal') }
-    if(k==='arrowright'){e.preventDefault(); setLayout('right') }
-  }
-});
-
-/* --- Palette d'insertion --- */
-insertButtons.forEach(b=>{
-  b.addEventListener('click',()=>{
-    const t=b.dataset.insert;
-    if(t==='title'){blkTitle.hidden=false;inpTitle.focus()}
-    if(t==='intro'){blkIntro.hidden=false;taIntro.focus()}
-    if(t==='toc'){blkToc.hidden=false}
-    if(t==='chapter'){blkChapters.hidden=false;addChapter()}
-    if(t==='media'){blkMedia.hidden=false}
-    if(t==='extras'){ $('#block-extras').hidden=false; taExtras.focus()}
-    if(t==='refs'){ $('#block-refs').hidden=false; taRefs.focus()}
-    if(t==='caps'){ $('#block-caps').hidden=false; taCaps.focus()}
-  });
-});
-
-/* --- Inputs live -> dirty --- */
-;[ inpTitle,inpSubtitle,taIntro,taExtras,taRefs,taCaps,inpCaption,inpIntroTitle,selWrap ]
-  .forEach(el=>{ el?.addEventListener('input',debounce(()=>{ markDirty(); },250)) });
-chkIntro?.addEventListener('change',()=>{state.introEnabled=chkIntro.checked; markDirty()});
-subtitleRadios.forEach(r=>r.addEventListener('change',()=>{state.subtitleMode=r.value==='p'?'p':'data'; markDirty()}));
-chkToc?.addEventListener('change',()=>{state.toc=chkToc.checked; markDirty()});
-chkTools?.addEventListener('change',()=>{state.tools=chkTools.checked; markDirty()});
-
-/* --- Compteurs --- */
-function updateCounters(){
-  $$('.counter').forEach(c=>{
-    const id=c.getAttribute('data-for'); const el=document.getElementById(id);
-    const len=(el?.value||'').length; const words=(el?.value||'').trim().split(/\s+/).filter(Boolean).length;
-    c.textContent=`${words} mots • ${len} caractères`;
-  });
-}
-
-/* --- Chapitres --- */
-function chapterItem(ch){
-  const root=document.createElement('div'); root.className='item'; root.dataset.id=ch.id;
-  root.innerHTML=`
-    <div class="head">
-      <div class="title">Chapitre ${ch.n} — <span class="ghost">${ch.title||'(sans titre)'}</span></div>
-      <div class="controls">
-        <button class="btn small" data-act="up">↑</button>
-        <button class="btn small" data-act="down">↓</button>
-        <button class="btn small" data-act="dup">Dupliquer</button>
-        <button class="btn small bad" data-act="del">Supprimer</button>
-      </div>
-    </div>
-    <div class="row"><label>Titre H2</label><input type="text" class="ch-title" placeholder="Titre du chapitre" value="${ch.title||''}"></div>
-    <div class="row id-inline"><label>ID (ancre)</label><input type="text" class="ch-id" value="${ch.id}"><button class="btn small" data-act="slug">Slug</button></div>
-    <textarea class="ch-html" placeholder="… contenu …">${ch.html||''}</textarea>
-    <div class="counter"></div>`;
-  const elTitle=$('.ch-title',root), elId=$('.ch-id',root), elHtml=$('.ch-html',root), counter=$('.counter',root);
-  const syncCounter=()=>{counter.textContent=`${(elHtml.value.trim().split(/\s+/).filter(Boolean).length)} mots`};
-  elTitle.addEventListener('input',debounce(()=>{$('.ghost',root).textContent=elTitle.value||'(sans titre)'; markDirty()},300));
-  elId.addEventListener('input',debounce(()=>{markDirty()},300));
-  elHtml.addEventListener('input',debounce(()=>{updateCounters(); syncCounter(); markDirty()},300));
-  // NEW: capter le coller
-  elHtml.addEventListener('paste', ()=>{ setTimeout(()=>{ updateCounters(); markDirty(); buildHTML(); },0) });
-  root.addEventListener('click',ev=>{
-    const act=ev.target?.dataset?.act; if(!act) return;
-    const i=state.chapters.findIndex(x=>x.id===ch.id);
-    if(act==='slug'){ elId.value=slugify(elTitle.value||ch.id); markDirty() }
-    if(act==='up'   && i>0){ const t=state.chapters[i-1]; state.chapters[i-1]=state.chapters[i]; state.chapters[i]=t; renderChapters(); markDirty() }
-    if(act==='down' && i<state.chapters.length-1){ const t=state.chapters[i+1]; state.chapters[i+1]=state.chapters[i]; state.chapters[i]=t; renderChapters(); markDirty() }
-    if(act==='dup'){ const d={n:ch.n+1,id:(ch.id||'section')+'-copy',title:(ch.title||'')+' (copie)',html:ch.html||''}; state.chapters.splice(i+1,0,d); renumberChapters(); renderChapters(); markDirty() }
-    if(act==='del'){ if(confirm('Supprimer ce chapitre ?')){ state.chapters=state.chapters.filter((_,k)=>k!==i); renumberChapters(); renderChapters(); markDirty() } }
-  });
-  syncCounter(); return root;
-}
-function renumberChapters(){state.chapters.forEach((c,i)=>c.n=i+1)}
-function renderChapters(){ chaptersEl.innerHTML=''; state.chapters.forEach(ch=>chaptersEl.appendChild(chapterItem(ch))) }
-function addChapter(){const n=state.chapters.length+1; const ch={n,id:'section-'+n,title:'',html:''}; state.chapters.push(ch); renderChapters(); markDirty()}
-btnAddChapter?.addEventListener('click',addChapter);
-
-/* --- Médias --- */
-function imageItem(img,idx){
-  const root=document.createElement('div'); root.className='item';
-  root.innerHTML=`
-    <div class="head">
-      <div class="title">Image ${idx+1}</div>
-      <div class="controls">
-        <button class="btn small" data-act="up">↑</button>
-        <button class="btn small" data-act="down">↓</button>
-        <button class="btn small bad" data-act="del">Supprimer</button>
-      </div>
-    </div>
-    <div class="grid">
-      <input type="url" class="im-src" placeholder="/img/..." value="${img.src||''}">
-      <input type="text" class="im-alt" placeholder="Texte alternatif" value="${img.alt||''}">
-      <label class="checkbox"><input type="checkbox" class="im-main" ${img.main?'checked':''}> data-main</label>
-      <div class="hint">(${idx+1})</div><div></div>
-    </div>`;
-  const elSrc=$('.im-src',root), elAlt=$('.im-alt',root), elMain=$('.im-main',root);
-  const sync=debounce(()=>{img.src=elSrc.value; img.alt=elAlt.value; img.main=elMain.checked; markDirty()},250);
-  elSrc.addEventListener('input',sync); elAlt.addEventListener('input',sync); elMain.addEventListener('change',sync);
-  root.addEventListener('click',ev=>{
-    const act=ev.target?.dataset?.act; if(!act) return; const i=state.media.images.indexOf(img);
-    if(act==='up'&&i>0){const t=state.media.images[i-1]; state.media.images[i-1]=img; state.media.images[i]=t; renderImages(); markDirty()}
-    if(act==='down'&&i<state.media.images.length-1){const t=state.media.images[i+1]; state.media.images[i+1]=img; state.media.images[i]=t; renderImages(); markDirty()}
-    if(act==='del'){state.media.images.splice(i,1); renderImages(); markDirty()}
-  });
-  return root;
-}
-function renderImages(){imagesEl.innerHTML=''; state.media.images.forEach((im,i)=>imagesEl.appendChild(imageItem(im,i)))}
-btnAddImage?.addEventListener('click',()=>{state.media.images.push({src:'',alt:'',main:false}); renderImages(); markDirty()});
-
-/* --- Toolbar mise en forme --- */
-let activeTextArea=null;
-document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') activeTextArea=e.target });
-$('#formatbar')?.addEventListener('click',e=>{
-  const cmd=e.target?.dataset?.format||e.target?.parentElement?.dataset?.format; if(!cmd||!activeTextArea) return;
-  const el=activeTextArea;
-  const W={
-    em:['<em>','</em>'],strong:['<strong>','</strong>'],u:['<u>','</u>'],code:['<code>','</code>'],quote:['<blockquote>','</blockquote>'],
-    ul:['\n<ul>\n<li>','</li>\n</ul>\n'],ol:['\n<ol>\n<li>','</li>\n</ol>\n'],
-    hr:['\n<hr>\n',''],sup:['<sup>','</sup>'],sub:['<sub>','</sub>']
-  };
-  if(cmd==='link'){const href=prompt('URL du lien :','https://'); if(href){wrap(el,`<a href="${href}">`,'</a>')} return}
-  const [b,a]=W[cmd]||['','']; wrap(el,b,a);
-});
-function wrap(el,before,after){
-  el.focus(); const s=el.selectionStart,e=el.selectionEnd,txt=el.value; const sel=txt.slice(s,e);
-  el.value=txt.slice(0,s)+before+sel+after+txt.slice(e);
-  el.setSelectionRange(s+before.length,s+before.length+sel.length);
-  el.dispatchEvent(new Event('input'));
-}
-
-/* --- Détection de blocs HTML + conversion wrap --- */
-function isHtmlBlock(chunk){
-  const b=(chunk||'').trim();
-  if(!b) return false;
-  if(!/<[a-zA-Z]/.test(b)) return false;
-  return /<(h[1-6]|p|ul|ol|li|blockquote|table|thead|tbody|tr|th|td|figure|img|section|article|nav|div|pre|code|hr|br)\b/i.test(b);
-}
-function convertByWrapMode(s, mode){
-  const raw=(s||'').replace(/\r/g,'').trimEnd();
-  if(!raw) return '';
-  // Split en "blocs" séparés par ≥ 2 sauts de ligne
-  const chunks = raw.split(/\n{2,}/);
-  const rendered = chunks.map(chunk=>{
-    if(isHtmlBlock(chunk)) return chunk.trim(); // préserver le HTML saisi
-    if(mode==='p'){
-      return chunk.split(/\n/).map(l=>l.trim()).filter(Boolean)
-                  .map(l=>`<p>${escapeHtml(l)}</p>`).join('\n');
-    }else if(mode==='br'){
-      return escapeHtml(chunk).replace(/\n/g,'<br>\n');
-    }else{
-      return escapeHtml(chunk);
+// ======================= Blocks =======================
+const Blocks={
+  title:{
+    create:()=>({type:'title',title:'Mon titre',subtitle:'',subtitleMode:'data',tools:true,wrap:'p'}),
+    render:(b,idx)=>{
+      const el=document.createElement('div'); el.className='block';
+      el.innerHTML=`<div class="head"><div class="title">Titre (H1)</div>
+        <div class="controls">
+          <button class="btn small" data-act="up">↑</button>
+          <button class="btn small" data-act="down">↓</button>
+          <button class="btn small bad" data-act="del">Supprimer</button>
+        </div></div>
+        <div class="row"><label>Titre</label><input type="text" class="inp-title" value="${b.title}"></div>
+        <div class="row"><label>Sous‑titre</label><input type="text" class="inp-sub" value="${b.subtitle}"></div>
+        <div class="row"><label>Mode sous‑titre</label>
+          <div class="inline"><label class="inline"><input type="radio" name="st-${idx}" value="data" ${b.subtitleMode==='data'?'checked':''}> data-subtitle</label>
+          <label class="inline"><input type="radio" name="st-${idx}" value="p" ${b.subtitleMode==='p'?'checked':''}> &lt;p class="subtitle"&gt;</label></div>
+        </div>
+        <div class="row"><label>Slot outils</label><label class="inline"><input type="checkbox" class="chk-tools" ${b.tools?'checked':''}> Inclure &lt;section data-part="tools"&gt;</label></div>
+        <div class="row"><label>Retours à la ligne</label>
+          <select class="sel-wrap"><option value="p" ${b.wrap==='p'?'selected':''}>Paragraphe &lt;p&gt;</option><option value="br" ${b.wrap==='br'?'selected':''}>Saut &lt;br&gt;</option><option value="none" ${b.wrap==='none'?'selected':''}>Aucun</option></select>
+        </div>`;
+      $('.inp-title',el).addEventListener('input',e=>{b.title=e.target.value; markDirty(); build()});
+      $('.inp-sub',el).addEventListener('input',e=>{b.subtitle=e.target.value; markDirty(); build()});
+      $$(`input[name="st-${idx}"]`,el).forEach(r=>r.addEventListener('change',e=>{b.subtitleMode=e.target.value; markDirty(); build()}));
+      $('.chk-tools',el).addEventListener('change',e=>{b.tools=e.target.checked; markDirty(); build()});
+      $('.sel-wrap',el).addEventListener('change',e=>{b.wrap=e.target.value; markDirty(); build()});
+      attachControls(el,b);
+      return el;
+    },
+    export:(b)=>{
+      const sub=b.subtitle? (b.subtitleMode==='data'?`\n    <h2 data-subtitle>${escapeHTML(b.subtitle)}</h2>`:`\n    <p class="subtitle">${escapeHTML(b.subtitle)}</p>`) : '';
+      const tools=b.tools?`\n    <section data-part="tools"></section>`:'';
+      return `<section data-part="title" class="title-chip>\n    <h1${b.wrap==='p'?'':' '}>
+    </h1>\n  </section>`; // replaced by builder
     }
-  });
-  return rendered.join('\n\n');
+  },
+  intro:{
+    create:()=>({type:'intro',title:'Introduction',html:''}),
+    render:(b)=>{
+      const el=document.createElement('div'); el.className='block';
+      el.innerHTML=`<div class="head"><div class="title">Introduction</div>
+        <div class="controls"><button class="btn small" data-act="up">↑</button><button class="btn small" data-act="down">↓</button><button class="btn small bad" data-act="del">Supprimer</button></div></div>
+        <div class="row"><label>Titre H2</label><input type="text" class="inp-title" value="${b.title}"></div>
+        <textarea class="ta-html" placeholder="… intro …">${b.html}</textarea>`;
+      $('.inp-title',el).addEventListener('input',e=>{b.title=e.target.value; markDirty(); build()});
+      $('.ta-html',el).addEventListener('input',debounce(e=>{b.html=e.target.value; markDirty(); build()}));
+      attachControls(el,b); return el;
+    }
+  },
+  toc:{
+    create:()=>({type:'toc',enabled:true,label:'🗂️ Sommaire'}),
+    render:(b)=>{
+      const el=document.createElement('div'); el.className='block';
+      el.innerHTML=`<div class="head"><div class="title">Sommaire automatique</div>
+        <div class="controls"><button class="btn small" data-act="up">↑</button><button class="btn small" data-act="down">↓</button><button class="btn small bad" data-act="del">Supprimer</button></div></div>
+        <label class="inline"><input type="checkbox" class="chk" ${b.enabled?'checked':''}> Générer la carte Sommaire</label>`;
+      $('.chk',el).addEventListener('change',e=>{b.enabled=e.target.checked; markDirty(); build()});
+      attachControls(el,b); return el;
+    }
+  },
+  section:{
+    create:()=>({type:'section',title:'Titre de section',id:'',html:''}),
+    render:(b)=>{
+      const el=document.createElement('div'); el.className='block';
+      el.innerHTML=`<div class="head"><div class="title">Section (H2)</div>
+        <div class="controls"><button class="btn small" data-act="up">↑</button><button class="btn small" data-act="down">↓</button><button class="btn small" data-act="dup">Dupliquer</button><button class="btn small bad" data-act="del">Supprimer</button></div></div>
+        <div class="row"><label>Titre H2</label><input type="text" class="inp-title" value="${b.title}"></div>
+        <div class="row inline"><label>ID (ancre)</label><input type="text" class="inp-id" value="${b.id}"><button class="btn small" data-act="slug">Slug</button><button class="btn small" data-act="img">+ Image (inline)</button></div>
+        <textarea class="ta-html" placeholder="… contenu …">${b.html}</textarea>`;
+      $('.inp-title',el).addEventListener('input',e=>{b.title=e.target.value; markDirty(); build()});
+      $('.inp-id',el).addEventListener('input',e=>{b.id=e.target.value; markDirty(); build()});
+      $('.ta-html',el).addEventListener('input',debounce(e=>{b.html=e.target.value; markDirty(); build()}));
+      el.addEventListener('click',ev=>{
+        const a=ev.target.dataset.act; if(!a) return; if(a==='slug'){ $('.inp-id',el).value=b.id=slugify($('.inp-title',el).value||b.id||'section'); markDirty(); build(); }
+        if(a==='img'){ insertInlineImage($('.ta-html',el)); }
+      });
+      attachControls(el,b); return el;
+    }
+  },
+  media:{
+    create:()=>({type:'media',mode:'header',caption:'',images:[{src:'',alt:'',main:true}]}),
+    render:(b)=>{
+      const el=document.createElement('div'); el.className='block';
+      el.innerHTML=`<div class="head"><div class="title">Médias</div>
+        <div class="controls"><button class="btn small" data-act="up">↑</button><button class="btn small" data-act="down">↓</button><button class="btn small bad" data-act="del">Supprimer</button></div></div>
+        <div class="row"><label>Placement</label>
+          <select class="sel-mode"><option value="header" ${b.mode==='header'?'selected':''}>Section data-part="media" (sous le titre)</option><option value="inline" ${b.mode==='inline'?'selected':''}>Figure autonome (où placé)</option></select>
+        </div>
+        <div class="row"><label>Légende (figcaption)</label><input type="text" class="inp-cap" value="${b.caption}"></div>
+        <div class="fieldset"><div class="legend">Images</div><div class="imgs"></div><button class="btn small" data-act="add">+ Ajouter une image</button></div>`;
+      $('.sel-mode',el).addEventListener('change',e=>{b.mode=e.target.value; markDirty(); build()});
+      $('.inp-cap',el).addEventListener('input',e=>{b.caption=e.target.value; markDirty(); build()});
+      const list=$('.imgs',el);
+      function renderImgs(){
+        list.innerHTML='';
+        b.images.forEach((im,i)=>{
+          const row=document.createElement('div'); row.className='grid2';
+          row.innerHTML=`<input type="url" placeholder="/img/..." value="${im.src}"><input type="text" placeholder="alt" value="${im.alt}"><label class="inline"><input type="checkbox" ${im.main?'checked':''}> data-main</label><span class="muted">#${i+1}</span>`;
+          const [src,alt,main]=row.querySelectorAll('input');
+          src.addEventListener('input',e=>{im.src=e.target.value; markDirty(); build()});
+          alt.addEventListener('input',e=>{im.alt=e.target.value; markDirty(); build()});
+          main.addEventListener('change',e=>{im.main=e.target.checked; markDirty(); build()});
+          list.appendChild(row);
+        });
+      }
+      renderImgs();
+      el.addEventListener('click',ev=>{ if(ev.target.dataset.act==='add'){ b.images.push({src:'',alt:'',main:false}); renderImgs(); markDirty(); } });
+      attachControls(el,b); return el;
+    }
+  },
+  note:{
+    create:()=>({type:'note',title:'🔎 Note',html:''}),
+    render:(b)=>{
+      const el=document.createElement('div'); el.className='block';
+      el.innerHTML=`<div class="head"><div class="title">Note (encart pliable)</div>
+        <div class="controls"><button class="btn small" data-act="up">↑</button><button class="btn small" data-act="down">↓</button><button class="btn small bad" data-act="del">Supprimer</button></div></div>
+        <div class="row"><label>Titre</label><input type="text" class="inp-title" value="${b.title}"></div>
+        <textarea class="ta-html" placeholder="… contenu …">${b.html}</textarea>`;
+      $('.inp-title',el).addEventListener('input',e=>{b.title=e.target.value; markDirty(); build()});
+      $('.ta-html',el).addEventListener('input',debounce(e=>{b.html=e.target.value; markDirty(); build()}));
+      attachControls(el,b); return el;
+    }
+  },
+  hr:{
+    create:()=>({type:'hr'}),
+    render:(b)=>{ const el=document.createElement('div'); el.className='block'; el.innerHTML=`<div class="head"><div class="title">Séparateur</div><div class="controls"><button class="btn small" data-act="up">↑</button><button class="btn small" data-act="down">↓</button><button class="btn small bad" data-act="del">Supprimer</button></div></div><div class="muted">— &lt;hr&gt; —</div>`; attachControls(el,b); return el; }
+  },
+  extras:{ create:()=>({type:'extras',html:''}), render:(b)=>blockText('Extras',b) },
+  refs:{   create:()=>({type:'refs',html:''}),   render:(b)=>blockText('Références',b) },
+  caps:{   create:()=>({type:'caps',html:''}),   render:(b)=>blockText('Capsules',b) },
+};
+
+function blockText(label,b){
+  const el=document.createElement('div'); el.className='block';
+  el.innerHTML=`<div class="head"><div class="title">${label}</div>
+    <div class="controls"><button class="btn small" data-act="up">↑</button><button class="btn small" data-act="down">↓</button><button class="btn small bad" data-act="del">Supprimer</button></div></div>
+    <textarea class="ta-html" placeholder="…">${b.html||''}</textarea>`;
+  $('.ta-html',el).addEventListener('input',debounce(e=>{b.html=e.target.value; markDirty(); build()}));
+  attachControls(el,b); return el;
 }
 
-/* --- Build HTML --- */
-function buildHTML(){
-  syncFromInputs();
+function attachControls(el,b){
+  el.addEventListener('click',ev=>{
+    const act=ev.target.dataset.act; if(!act) return; const i=state.blocks.indexOf(b);
+    if(act==='up' && i>0){ const t=state.blocks[i-1]; state.blocks[i-1]=b; state.blocks[i]=t; render(); markDirty(); return; }
+    if(act==='down' && i<state.blocks.length-1){ const t=state.blocks[i+1]; state.blocks[i+1]=b; state.blocks[i]=t; render(); markDirty(); return; }
+    if(act==='dup'){ const copy=JSON.parse(JSON.stringify(b)); state.blocks.splice(i+1,0,copy); render(); markDirty(); return; }
+    if(act==='del'){ if(confirm('Supprimer ce bloc ?')){ state.blocks.splice(i,1); render(); markDirty(); return; } }
+  });
+}
 
-  // ids uniques pour H2
-  const seen=new Set();
-  state.chapters.forEach(ch=>{
-    let base=slugify(ch.title||
+function addBlock(type){ const def=Blocks[type]; if(!def){alert('Type inconnu');return;} state.blocks.push(def.create()); render(); markDirty(); }
 
+// ======================= UI & Build =======================
+const listEl=$('#blocks');
+const out=$('#out');
+$$('.insertbar [data-add]').forEach(b=>b.addEventListener('click',()=>addBlock(b.dataset.add)));
 
+function render(){ listEl.innerHTML=''; state.blocks.forEach((b)=>{ const el=Blocks[b.type].render(b,state.blocks.indexOf(b)); listEl.appendChild(el); }); build(); }
+
+function escapeHTML(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function nl2html(s,mode){ if(mode==='p') return s.split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('\n'); if(mode==='br') return s.replace(/\n/g,'<br>'); return s; }
+
+function insertInlineImage(textarea){
+  const tpl=`\n<figure>\n  <img src="/img/..." alt="…">\n  <figcaption>…</figcaption>\n</figure>\n`;
+  const {selectionStart:ss, selectionEnd:se, value:v}=textarea; textarea.value=v.slice(0,ss)+tpl+v.slice(se); textarea.dispatchEvent(new Event('input'));
+}
+
+function build(){
+  // Build article per nouveau modèle: <article data-article> avec H2 pour sections.
+  let html=[];
+  html.push('<article data-article>');
+
+  // Title block unique (si présent)
+  const t=state.blocks.find(b=>b.type==='title');
+  if(t){
+    const sub=t.subtitle? (t.subtitleMode==='data'?`\n    <h2 data-subtitle>${escapeHTML(t.subtitle)}</h2>`:`\n    <p class="subtitle">${escapeHTML(t.subtitle)}</p>`):'';
+    const tools=t.tools?`\n    <section data-part="tools"></section>`:'';
+    html.push(`  <section data-part="title" class="title-chip">\n    <h1>${escapeHTML(t.title||'')}</h1>${sub}\n  </section>${tools}`);
+  }
+
+  // Other blocks in order
+  state.blocks.forEach(b=>{
+    if(b.type==='title') return; // déjà exporté
+    if(b.type==='intro'){
+      html.push(`  <h2>${escapeHTML(b.title||'Introduction')}</h2>\n  ${nl2html(escapeHTML(b.html||''),'p')}`);
+    }
+    if(b.type==='toc' && b.enabled){
+      html.push(`  <section class="viewer-block note-card">\n    <details class="note-collapsible">\n      <summary>\n        <h2 class="note-title">🗂️ Sommaire <span class="chev">›</span></h2>\n      </summary>\n      <div class="note-body">\n        <nav class="article-toc"><ol><!-- rempli côté viewer --></ol></nav>\n        <p style="margin-top:.5rem"><small>Astuce : clique sur le <b>#</b> d’un titre pour copier un lien direct vers la section.</small></p>\n      </div>\n    </details>\n  </section>`);
+    }
+    if(b.type==='section'){
+      const id=b.id?` id="${escapeHTML(b.id)}"`:'';
+      html.push(`  <h2${id}>${escapeHTML(b.title||'Section')}</h2>\n  ${nl2html(escapeHTML(b.html||''),'p')}`);
+    }
+    if(b.type==='media'){
+      const imgs=b.images.map(im=>`\n        <img src="${escapeHTML(im.src||'')}" alt="${escapeHTML(im.alt||'')}"${im.main?' data-main':''}>`).join('');
+      const fig=`<figure>${imgs}${b.caption?`\n        <figcaption>${escapeHTML(b.caption)}</figcaption>`:''}\n      </figure>`;
+      if(b.mode==='header') html.push(`  <section data-part="media">\n    ${fig}\n  </section>`);
+      else html.push('  '+fig.replace(/\n/g,'\n  '));
+    }
+    if(b.type==='note'){
+      html.push(`  <details class="note-collapsible">\n    <summary><h3 class="note-title">${escapeHTML(b.title||'🔎 Note')} <span class="chev">›</span></h3></summary>\n    <div class="note-body">${nl2html(escapeHTML(b.html||''),'p')}</div>\n  </details>`);
+    }
+    if(b.type==='hr'){ html.push('  <hr>'); }
+    if(b.type==='extras'){ html.push(`</article>\n\n<section data-part="extras">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article> <!-- reprise si on ajoute d\'autres blocs article ensuite -->`); }
+    if(b.type==='refs'){ html.push(`</article>\n\n<section data-part="references">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article>`); }
+    if(b.type==='caps'){ html.push(`</article>\n\n<section data-part="capsules">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article>`); }
+  });
+
+  html.push('</article>');
+  out.textContent=html.join('\n');
+}
+
+// ======================= Storage & IO =======================
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); state.dirty=false; $('#pill-dirty').textContent='sauvegardé (local)'; }
+function load(){ const raw=localStorage.getItem(KEY); if(!raw) return alert('Aucun brouillon'); try{ state=Object.assign({blocks:[]}, JSON.parse(raw)); render(); }catch{ alert('Brouillon corrompu'); } }
+$('#btn-save').addEventListener('click',save);
+$('#btn-load').addEventListener('click',load);
+
+document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){ e.preventDefault(); save(); } });
+setInterval(()=>{ if(state.dirty) save(); }, 180000);
+
+$('#btn-export').addEventListener('click',()=>{
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'})); a.download='article-studio-v3.json'; a.click(); URL.revokeObjectURL(a.href);
+});
+$('#btn-import').addEventListener('click',()=>$('#file-import').click());
+$('#file-import').addEventListener('change',e=>{ const f=e.target.files?.[0]; if(!f) return; const fr=new FileReader(); fr.onload=()=>{ try{ state=Object.assign({blocks:[]}, JSON.parse(fr.result)); render(); save(); }catch{ alert('JSON invalide'); } }; fr.readAsText(f); e.target.value=''; });
+
+$('#btn-build').addEventListener('click',build);
+$('#btn-download').addEventListener('click',()=>{
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([out.textContent],{type:'text/html'})); a.download='article-construit.html'; a.click(); URL.revokeObjectURL(a.href);
+});
+
+// boot
+render();
+</script>
 </body>
 </html>
