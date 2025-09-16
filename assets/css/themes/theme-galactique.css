@@ -14,6 +14,8 @@ body.theme-galactique {
   --bloc-shadow: rgba(179, 136, 255, 0.08);
   --bloc-shadow-hover: rgba(200, 160, 255, 0.2);
 
+  --h3-color: #d1b3ff; /* lavande clair vs H2 (#b388ff) */  
+
   --menu-bg: rgba(25, 10, 35, 0.5);
   --menu-card-bg: rgba(50, 20, 80, 0.6);
   --text-shadow: rgba(179, 136, 255, 0.3);
@@ -103,3 +105,4 @@ body.theme-galactique .tabs .tab.active {
   background: var(--accent-primary, #b388ff);
   color: #fff;
 }
+
