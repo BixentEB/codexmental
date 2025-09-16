@@ -34,6 +34,15 @@ body.theme-solaire {
   --share-border: rgba(255, 190, 100, 0.4);
   --share-hover: rgba(255, 200, 100, 0.25);
 
+  /* TOC (Sommaire) + liens */
+  --toc-bg:        rgba(210, 140, 20, 0.18);   /* fond plus foncé que --bloc-bg */
+  --toc-border:    rgba(210, 140, 20, 0.45);
+  --toc-shadow:    rgba(210, 140, 20, 0.18);
+  --toc-title:     #b45309;                    /* titre plus sombre */
+  --toc-text:      #5a3600;                    /* texte/brèves + bullets */
+  --toc-link:      #6d4706;                    /* liens par défaut */
+  --toc-link-hover:#ff6f00;                    /* survol contrasté */
+
   --text-accent: #ff6f00;
 }
 
@@ -182,4 +191,34 @@ body.theme-solaire #mobile-menu button[onclick*="theme-sky"]:hover {
   color: #1f3752;
 }
 
+/* Carte "Sommaire" (TOC) plus lisible en thème Solaire */
+body.theme-solaire #article-viewer .article-toc {
+  background: var(--toc-bg, var(--bloc-bg));
+  border: 1px solid var(--toc-border, var(--bloc-border));
+  box-shadow: 0 4px 16px var(--toc-shadow, var(--bloc-shadow));
+  color: var(--toc-text, var(--text-primary));
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+}
 
+/* Titre Sommaire (le H2 juste avant la nav) */
+body.theme-solaire #article-viewer h2 + .article-toc,
+body.theme-solaire #article-viewer .article-toc h2,
+body.theme-solaire #article-viewer .article-toc .title {
+  color: var(--toc-title, var(--text-secondary));
+}
+
+/* Liens de la liste */
+body.theme-solaire #article-viewer .article-toc a {
+  color: var(--toc-link, var(--text-primary));
+  text-decoration: none;
+}
+body.theme-solaire #article-viewer .article-toc a:hover {
+  color: var(--toc-link-hover, var(--link-color));
+  text-decoration: underline;
+}
+
+/* Puces + petits points "•" éventuels */
+body.theme-solaire #article-viewer .article-toc li {
+  color: var(--toc-text, var(--text-primary));
+}
