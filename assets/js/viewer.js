@@ -1,13 +1,3 @@
-// viewer.js — Codex Mental (Blog + Atelier) — build 2025-09-15
-// Corrections clés :
-// • Lecture titre + sous-titre via <h1 data-subtitle="…"> (on n’utilise plus un <h2> voisin)
-// • Suppression de tous les <h1> du corps + de #article-tools résiduels (anti-doublon)
-// • Ignore un <h2> identique au <h1> (anti-doublon)
-// • Sélection robuste du body (préfère <article data-article>, sinon l’<article> “le plus riche”)
-// • Conversion auto H2 → <section data-chapter> si article “simple”, même si wrappeurs (ex. .bloc-full)
-// • parseBodyOrdered : ignore les commentaires HTML (évite le “bloc vide”)
-// • setBlockHTML : masque totalement l’intro si vide (après strip des commentaires)
-
 // viewer.js — Codex Mental (Blog + Atelier) — build 2025-09-16
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -183,6 +173,14 @@ function loadContent(viewerEl, url){
       setBlockHTML('article-extras',     getOuterIfFilled(part('extras')     || doc.querySelector('.extras')));
       setBlockHTML('article-references', getOuterIfFilled(part('references') || doc.querySelector('.references, footer.references')));
       setBlockHTML('article-capsules',   getOuterIfFilled(part('capsules')   || doc.querySelector('.capsules')));
+
+      /* ----- Typo FR : fine insécable avant : ; ? ! et » ----- */
+      try {
+        const bodyEl = document.getElementById('article-body');
+        fixFrenchPunctuation(bodyEl);
+      } catch (e) {
+        console.warn('fixFrenchPunctuation skipped:', e);
+      }
 
       requestAnimationFrame(() => viewerEl.style.opacity = '1');
     })
@@ -426,7 +424,34 @@ function getOuterIfFilled(el){
   return clean ? html : '';
 }
 
+/* ——— Typo FR : fine insécable avant : ; ? ! et » ——— */
+function fixFrenchPunctuation(container) {
+  if (!container || container.nodeType !== 1) return;
 
+  const SKIP_TAG = /^(SCRIPT|STYLE|CODE|PRE|TEXTAREA|KBD|SAMP)$/i;
+  const NNBSP = '\u202F'; // fine insécable
+
+  const walker = document.createTreeWalker(
+    container,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode(node) {
+        const p = node.parentNode;
+        if (!p || SKIP_TAG.test(p.nodeName)) return NodeFilter.FILTER_REJECT;
+        if (p.closest && p.closest('.no-french-fix')) return NodeFilter.FILTER_REJECT;
+        if (!/ (\:|\;|\?|\!|»)/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    },
+    false
+  );
+
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  for (const n of nodes) {
+    n.nodeValue = n.nodeValue.replace(/ (\:|\;|\?|\!|»)/g, NNBSP + '$1');
+  }
+}
 
 /* ───────────────────────────── Ancres # ──────────────────────────────────── */
 function initChapterAnchors(container){
