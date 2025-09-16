@@ -13,6 +13,8 @@ body.theme-stellaire {
   --bloc-border: rgba(255, 255, 255, 0.15);
   --bloc-shadow: rgba(0, 0, 0, 0.2);
   --bloc-shadow-hover: rgba(255, 255, 255, 0.25);
+   
+  --h3-color: #4eaaff; /* plus clair que H2 (#77caff) */
 
   --menu-bg: rgba(10, 10, 30, 0.5);
   --menu-card-bg: rgba(30, 30, 60, 0.65);
@@ -150,8 +152,4 @@ body.theme-stellaire .tabs .tab {
 body.theme-stellaire .tabs .tab.active {
   background: var(--accent-primary, #77caff);
   color: #000; /* texte noir pour contraste maximal */
-}
-
-body.theme-stellaire #article-body h3 {
-  color: #4eaaff; /* bleu clair distinct des h2 (#77caff) */
 }
