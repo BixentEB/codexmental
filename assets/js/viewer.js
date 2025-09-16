@@ -71,7 +71,15 @@ function loadContent(viewerEl, url){
   setBlockHTML('article-capsules','');
 
   fetch(url)
-    .then(r => { if(!r.ok) throw new Error(url); return r.text(); })
+    .then(async (r) => {
+      if (!r.ok) {
+        const err = new Error('HTTP_' + r.status);
+        err.status = r.status;
+        err.url = url;
+        throw err;
+      }
+      return r.text();
+    })
     .then(html => {
       viewerEl.style.opacity = '0';
       clearForeignChildren(viewerEl);
@@ -85,7 +93,12 @@ function loadContent(viewerEl, url){
         doc.querySelector('section[data-part="title"]') ||
         doc.querySelector('[data-chapter], h2')
       );
-      if (!hasArticleMarkers) throw new Error(url);
+      if (!hasArticleMarkers) {
+        const err = new Error('HTTP_404');
+        err.status = 404;
+        err.url = url;
+        throw err;
+      }
 
       /* ----- TITRE ----- */
       const titleSection = part('title');
@@ -186,12 +199,34 @@ function loadContent(viewerEl, url){
     })
     .catch(err => {
       console.error(err);
+
+      // ⚠️ important : retirer les anciens chapitres / notes
+      removeDynamicItems(viewerEl);
+
+      // vider les slots standards
       setBlockHTML('article-title','');
       setBlockHTML('article-media','');
-      setBlockHTML('article-body', `<p class="erreur">Erreur chargement : ${escapeHTML(String(err))}</p>`);
       setBlockHTML('article-extras','');
       setBlockHTML('article-references','');
       setBlockHTML('article-capsules','');
+
+      // message friendly selon Blog/Atelier
+      const isBlogUrl = url.includes('/blog/');
+      const friendly =
+        (err.status === 404 || String(err.message||'').startsWith('HTTP_404'))
+          ? (isBlogUrl
+              ? `<div class="pending">
+                   <h3>📝 Article en cours d’écriture</h3>
+                   <p>Cette page n’est pas encore disponible. Elle arrive bientôt&nbsp;!</p>
+                 </div>`
+              : `<div class="pending">
+                   <h3>🛠️ Projet en cours de préparation</h3>
+                   <p>Cette page n’est pas encore disponible. Elle arrive bientôt&nbsp;!</p>
+                 </div>`)
+          : `<p class="erreur">Erreur chargement : ${escapeHTML(String(err))}</p>`;
+
+      setBlockHTML('article-body', friendly);
+
       viewerEl.style.opacity = '1';
     });
 }
@@ -430,6 +465,7 @@ function fixFrenchPunctuation(container) {
 
   const SKIP_TAG = /^(SCRIPT|STYLE|CODE|PRE|TEXTAREA|KBD|SAMP)$/i;
   const NNBSP = '\u202F'; // fine insécable
+  const NBSP  = '\u00A0';
 
   const walker = document.createTreeWalker(
     container,
@@ -439,7 +475,8 @@ function fixFrenchPunctuation(container) {
         const p = node.parentNode;
         if (!p || SKIP_TAG.test(p.nodeName)) return NodeFilter.FILTER_REJECT;
         if (p.closest && p.closest('.no-french-fix')) return NodeFilter.FILTER_REJECT;
-        if (!/ (\:|\;|\?|\!|»)/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+        // on ne traite que les textes où il y a quelque chose à faire
+        if (!/[\u00A0\u202F :;?!»«]/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }
     },
@@ -448,8 +485,19 @@ function fixFrenchPunctuation(container) {
 
   const nodes = [];
   while (walker.nextNode()) nodes.push(walker.currentNode);
+
   for (const n of nodes) {
-    n.nodeValue = n.nodeValue.replace(/ (\:|\;|\?|\!|»)/g, NNBSP + '$1');
+    let s = n.nodeValue;
+
+    // 1) Espace fine insécable avant : ; ? ! »
+    s = s.replace(/[\u00A0\u202F ]([:;?!»])/g, NNBSP + '$1');
+
+    // 2) Guillemets français « … » : fine insécable à l’intérieur
+    s = s
+      .replace(/«\s*/g, '«' + NNBSP)
+      .replace(/\s*»/g, NNBSP + '»');
+
+    n.nodeValue = s;
   }
 }
 
