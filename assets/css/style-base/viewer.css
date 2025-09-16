@@ -143,6 +143,12 @@
   font-size: .9rem;
 }
 
+/* Titres H3 dans le viewer (pilotés par variables de thème) */
+#article-body h3,
+#article-viewer h3 {
+  color: var(--h3-color, var(--text-secondary));
+}
+
 /* === MEDIA — HERO + RUBAN DE VIGNETTES (remplacement ciblé) =============== */
 
 /* bloc media sans carte */
