@@ -587,6 +587,32 @@ html{ scroll-behavior: smooth; }
 #article-viewer .article-toc ol { margin:.25rem 0; padding-left:1.25rem; }
 #article-viewer .article-toc li { margin:.15rem 0; }
 
+/* -- TYPOGRAPHIE -------------------------------------------------------------- */
+
+/* Titres: meilleures césures visuelles */
+#article-viewer h1, 
+#article-viewer h2 {
+  text-wrap: balance;            /* Chrome/Edge/Safari récents */
+}
+
+/* Paragraphes “jolis” (utilise cette classe où tu veux) */
+.justify-pretty {
+  text-align: justify;
+  text-wrap: pretty;             /* réduit les “trous” */
+  text-justify: inter-word;      /* fallback */
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;                 /* nécessite lang="fr" sur le conteneur */
+  overflow-wrap: anywhere;       /* évite les grands blancs si un mot est long */
+}
+
+/* Variante: auto en desktop, aligné à gauche en mobile */
+@media (max-width: 768px){
+  .justify-pretty {
+    text-align: left;            /* sur mobile, la justification est souvent moche */
+  }
+}
+
 
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
