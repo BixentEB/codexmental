@@ -623,6 +623,29 @@ p.jp {
 }
 @media (max-width: 768px){ p.jp { text-align:left; } }
 
+/* active la justification uniquement pour les <p> à l’intérieur */
+.jp-scope p {
+  text-align: justify;
+  text-wrap: pretty;
+  text-justify: inter-word;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 768px){ .jp-scope p { text-align:left; } }
+
+/* active partout dans le contenu d’article */
+#article-viewer .chapter-content p {
+  text-align: justify;
+  text-wrap: pretty;
+  text-justify: inter-word;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 768px){
+  #article-viewer .chapter-content p { text-align:left; }
+}
+
+
 
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
