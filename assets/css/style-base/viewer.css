@@ -613,6 +613,16 @@ html{ scroll-behavior: smooth; }
   }
 }
 
+/* utilitaire : justification “propre” pour un paragraphe */
+p.jp {
+  text-align: justify;
+  text-wrap: pretty;
+  text-justify: inter-word;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 768px){ p.jp { text-align:left; } }
+
 
 /* -- Responsive -------------------------------------------------------------- */
 @media (max-width: 900px){
