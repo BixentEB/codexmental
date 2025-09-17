@@ -12,14 +12,15 @@
     --ok:#4ad295; --warn:#ffbe55; --bad:#ff6b6b; --radius:14px;
     --mono:ui-monospace,Menlo,Consolas,"Liberation Mono",monospace;
     --sans:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    --appbar-h:58px; /* hauteur barre du haut */
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--ink);font-family:var(--sans);line-height:1.45}
 
-  header.appbar{position:sticky;top:0;z-index:10;backdrop-filter:saturate(1.1) blur(8px);
+  header.appbar{position:sticky;top:0;z-index:30;backdrop-filter:saturate(1.1) blur(8px);
     background:linear-gradient(90deg,rgba(134,199,255,.12),transparent 35%,transparent 65%,rgba(178,140,255,.10));
-    border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;padding:10px 14px;flex-wrap:wrap}
+    border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;padding:10px 14px;flex-wrap:wrap;height:var(--appbar-h)}
   header .title{font-weight:700}
   header .spacer{flex:1}
   .btn{background:#121739;border:1px solid var(--line);color:var(--ink);padding:.45rem .7rem;border-radius:10px;cursor:pointer}
@@ -28,32 +29,37 @@
   .btn.bad{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.5)}
   .btn.small{padding:.35rem .6rem;font-size:.9rem}
 
-  .wrap{display:grid; gap:14px; padding:14px; height:calc(100% - 58px)}
+  .wrap{display:grid;gap:14px;padding:14px;height:calc(100% - var(--appbar-h))}
   .wrap{grid-template-columns:minmax(540px,1.2fr) minmax(520px,1fr)}
 
-  .panel{border:1px solid var(--line);border-radius:var(--radius);background:#0c1125;min-height:0;display:flex;flex-direction:column}
+  .panel{border:1px solid var(--line);border-radius:14px;background:#0c1125;min-height:0;display:flex;flex-direction:column}
   .panel h2{font-size:1rem;margin:0;padding:10px 12px;border-bottom:1px solid var(--line);color:#cfe3ff}
   .panel .content{padding:12px;overflow:auto;min-height:0;flex:1}
 
-  .insertbar,.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  /* >>> Toolbars (ajout) */
+  .tooldock{position:sticky;top:calc(var(--appbar-h) + 6px);z-index:20;
+    background:linear-gradient(180deg,rgba(13,17,39,.9),rgba(13,17,39,.85));
+    backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;
+    padding:8px;margin-bottom:10px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0}
+  .toolbar:first-child{margin-top:0}
+
   .row{display:grid;grid-template-columns:180px 1fr;gap:10px;align-items:start;margin-bottom:10px}
   .row label{color:var(--muted)}
   input[type="text"],input[type="url"],textarea,select{width:100%;background:#0a0f22;color:#e9efff;border:1px solid var(--line);border-radius:10px;padding:.6rem .7rem;font:inherit}
   textarea{min-height:110px;resize:vertical}
-  .hint{color:var(--muted);font-size:.9rem}
   .fieldset{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:12px 0;background:#0b1230}
-  .fieldset .legend{font-size:.95rem;color:#cfe3ff;margin-bottom:8px}
   .block{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:12px;background:#0b1130}
   .block .head{display:flex;gap:8px;align-items:center;margin-bottom:8px}
-  .block .title{font-weight:600;color:#dbe7ff}
   .head .controls{margin-left:auto;display:flex;gap:6px}
   .inline{display:flex;gap:8px;align-items:center}
   .code{white-space:pre;font-family:var(--mono);font-size:.92rem;line-height:1.4;background:#050814;padding:12px;border-radius:10px;overflow:auto;min-height:100%;border:1px solid var(--line)}
   .pill{padding:.2rem .55rem;border-radius:999px;border:1px solid var(--line);color:#a9b5d1;background:#0b1130;font-size:.85rem}
   .status{display:flex;gap:10px;align-items:center;margin:12px 0}
-  .muted{color:var(--muted)}
+  .muted{color:#a9b5d1}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 </style>
+
 </head>
 <body>
 <header class="appbar">
@@ -72,20 +78,42 @@
   <section class="panel">
     <h2>Édition (démarrage vide → ajoute tes blocs)</h2>
     <div class="content">
-      <div class="insertbar">
-        <button class="btn small" data-add="title">+ Titre</button>
-        <button class="btn small" data-add="intro">+ Intro</button>
-        <button class="btn small" data-add="toc">+ Sommaire</button>
-        <button class="btn small" data-add="section">+ Section</button>
-        <button class="btn small" data-add="media">+ Médias</button>
-        <button class="btn small" data-add="note">+ Note</button>
-        <button class="btn small" data-add="hr">+ Séparateur</button>
-        <button class="btn small" data-add="extras">+ Extras</button>
-        <button class="btn small" data-add="refs">+ Références</button>
-        <button class="btn small" data-add="caps">+ Capsules</button>
-      </div>
+    <div class="tooldock">
+  <div class="toolbar" id="toolbar-add">
+    <button class="btn small" data-add="title">+ Titre</button>
+    <button class="btn small" data-add="intro">+ Intro</button>
+    <button class="btn small" data-add="toc">+ Sommaire</button>
+    <button class="btn small" data-add="section">+ Section</button>
+    <button class="btn small" data-add="media">+ Médias</button>
+    <button class="btn small" data-add="note">+ Note</button>
+    <button class="btn small" data-add="hr">+ Séparateur</button>
+    <button class="btn small" data-add="extras">+ Extras</button>
+    <button class="btn small" data-add="refs">+ Références</button>
+    <button class="btn small" data-add="caps">+ Capsules</button>
+  </div>
 
-      <div id="blocks"></div>
+  <!-- Nouvelle barre : mise en forme -->
+  <div class="toolbar" id="toolbar-format">
+    <button class="btn small" data-cmd="bold"><b>B</b></button>
+    <button class="btn small" data-cmd="italic"><i>I</i></button>
+    <button class="btn small" data-cmd="underline"><u>U</u></button>
+    <button class="btn small" data-cmd="code">code</button>
+    <button class="btn small" data-cmd="h3">H3</button>
+    <button class="btn small" data-cmd="h4">H4</button>
+    <button class="btn small" data-cmd="small">small</button>
+    <button class="btn small" data-cmd="mark">mark</button>
+    <button class="btn small" data-cmd="ul">• Liste</button>
+    <button class="btn small" data-cmd="ol">1. Liste</button>
+    <button class="btn small" data-cmd="quote">« Citation »</button>
+    <button class="btn small" data-cmd="hr">— hr —</button>
+    <button class="btn small" data-cmd="link">Lien</button>
+    <button class="btn small" data-cmd="sub">x<sub>2</sub></button>
+    <button class="btn small" data-cmd="sup">x<sup>2</sup></button>
+  </div>
+</div>
+
+<div id="blocks"></div>
+
 
       <div class="status">
         <div id="pill-save" class="pill">autosave 3 min • Ctrl+S</div>
@@ -113,7 +141,66 @@ const slugify=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLower
 const KEY='cm-article-studio-v3';
 let state={ blocks:[], updatedAt:Date.now(), dirty:false };
 
-function markDirty(){state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées'}
+function markDirty(){ state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées' }
+
+// ======================= Helpers formatage (nouveau) =======================
+let lastTA=null; // dernière zone texte active
+document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') lastTA=e.target; });
+
+function wrapSelection(ta,before,after=''){
+  if(!ta) return;
+  const s=ta.selectionStart, e=ta.selectionEnd, v=ta.value;
+  const sel=v.slice(s,e)||'';
+  const ins=before+sel+after;
+  ta.value=v.slice(0,s)+ins+v.slice(e);
+  const caret=s+ins.length;
+  ta.focus(); ta.setSelectionRange(caret, caret);
+  ta.dispatchEvent(new Event('input'));
+}
+function insertBlock(ta,html){
+  if(!ta) return;
+  const s=ta.selectionStart, e=ta.selectionEnd, v=ta.value;
+  const ins = `\n${html}\n`;
+  ta.value=v.slice(0,e)+ins+v.slice(e);
+  const caret=e+ins.length;
+  ta.focus(); ta.setSelectionRange(caret, caret);
+  ta.dispatchEvent(new Event('input'));
+}
+function listify(ta,type){
+  if(!ta) return;
+  const v=ta.value, s=ta.selectionStart, e=ta.selectionEnd;
+  const before=v.lastIndexOf('\n', s-1)+1;
+  const after=v.indexOf('\n', e); const end = after===-1? v.length: after;
+  const lines=v.slice(before,end).split(/\n/);
+  const li=lines.map(l=>`  <li>${l.replace(/^\s*([-*]|\d+\.)\s*/,'')}</li>`).join('\n');
+  const wrap=`<${type}>\n${li}\n</${type}>`;
+  ta.value = v.slice(0,before)+wrap+v.slice(end);
+  const caret=before+wrap.length;
+  ta.focus(); ta.setSelectionRange(caret, caret);
+  ta.dispatchEvent(new Event('input'));
+}
+// Branche la barre de formatage
+$('#toolbar-format')?.addEventListener('click',ev=>{
+  const btn = ev.target.closest('button'); if(!btn) return;
+  const cmd = btn.dataset.cmd; ev.preventDefault();
+  switch(cmd){
+    case 'bold':   wrapSelection(lastTA,'<strong>','</strong>'); break;
+    case 'italic': wrapSelection(lastTA,'<em>','</em>'); break;
+    case 'underline': wrapSelection(lastTA,'<u>','</u>'); break;
+    case 'code':   wrapSelection(lastTA,'<code>','</code>'); break;
+    case 'h3':     insertBlock(lastTA,'<h3>Titre de niveau 3</h3>'); break;
+    case 'h4':     insertBlock(lastTA,'<h4>Titre de niveau 4</h4>'); break;
+    case 'small':  wrapSelection(lastTA,'<small>','</small>'); break;
+    case 'mark':   wrapSelection(lastTA,'<mark>','</mark>'); break;
+    case 'ul':     listify(lastTA,'ul'); break;
+    case 'ol':     listify(lastTA,'ol'); break;
+    case 'quote':  wrapSelection(lastTA,'<blockquote>','</blockquote>'); break;
+    case 'hr':     insertBlock(lastTA,'<hr>'); break;
+    case 'link':   wrapSelection(lastTA,'<a href="https://">','</a>'); break;
+    case 'sub':    wrapSelection(lastTA,'<sub>','</sub>'); break;
+    case 'sup':    wrapSelection(lastTA,'<sup>','</sup>'); break;
+  }
+});
 
 // ======================= Blocks =======================
 const Blocks={
@@ -128,8 +215,8 @@ const Blocks={
           <button class="btn small bad" data-act="del">Supprimer</button>
         </div></div>
         <div class="row"><label>Titre</label><input type="text" class="inp-title" value="${b.title}"></div>
-        <div class="row"><label>Sous‑titre</label><input type="text" class="inp-sub" value="${b.subtitle}"></div>
-        <div class="row"><label>Mode sous‑titre</label>
+        <div class="row"><label>Sous-titre</label><input type="text" class="inp-sub" value="${b.subtitle}"></div>
+        <div class="row"><label>Mode sous-titre</label>
           <div class="inline"><label class="inline"><input type="radio" name="st-${idx}" value="data" ${b.subtitleMode==='data'?'checked':''}> data-subtitle</label>
           <label class="inline"><input type="radio" name="st-${idx}" value="p" ${b.subtitleMode==='p'?'checked':''}> &lt;p class="subtitle"&gt;</label></div>
         </div>
@@ -144,12 +231,6 @@ const Blocks={
       $('.sel-wrap',el).addEventListener('change',e=>{b.wrap=e.target.value; markDirty(); build()});
       attachControls(el,b);
       return el;
-    },
-    export:(b)=>{
-      const sub=b.subtitle? (b.subtitleMode==='data'?`\n    <h2 data-subtitle>${escapeHTML(b.subtitle)}</h2>`:`\n    <p class="subtitle">${escapeHTML(b.subtitle)}</p>`) : '';
-      const tools=b.tools?`\n    <section data-part="tools"></section>`:'';
-      return `<section data-part="title" class="title-chip>\n    <h1${b.wrap==='p'?'':' '}>
-    </h1>\n  </section>`; // replaced by builder
     }
   },
   intro:{
@@ -189,7 +270,8 @@ const Blocks={
       $('.inp-id',el).addEventListener('input',e=>{b.id=e.target.value; markDirty(); build()});
       $('.ta-html',el).addEventListener('input',debounce(e=>{b.html=e.target.value; markDirty(); build()}));
       el.addEventListener('click',ev=>{
-        const a=ev.target.dataset.act; if(!a) return; if(a==='slug'){ $('.inp-id',el).value=b.id=slugify($('.inp-title',el).value||b.id||'section'); markDirty(); build(); }
+        const a=ev.target.dataset.act; if(!a) return;
+        if(a==='slug'){ $('.inp-id',el).value=b.id=slugify($('.inp-title',el).value||b.id||'section'); markDirty(); build(); }
         if(a==='img'){ insertInlineImage($('.ta-html',el)); }
       });
       attachControls(el,b); return el;
@@ -267,21 +349,36 @@ function attachControls(el,b){
   });
 }
 
-function addBlock(type){ const def=Blocks[type]; if(!def){alert('Type inconnu');return;} state.blocks.push(def.create()); render(); markDirty(); }
+function addBlock(type){
+  const def=Blocks[type]; if(!def){alert('Type inconnu');return;}
+  state.blocks.push(def.create()); render(); markDirty();
+}
 
 // ======================= UI & Build =======================
 const listEl=$('#blocks');
 const out=$('#out');
-$$('.insertbar [data-add]').forEach(b=>b.addEventListener('click',()=>addBlock(b.dataset.add)));
 
-function render(){ listEl.innerHTML=''; state.blocks.forEach((b)=>{ const el=Blocks[b.type].render(b,state.blocks.indexOf(b)); listEl.appendChild(el); }); build(); }
+// boutons d'ajout (nouveau sélecteur)
+$$('#toolbar-add [data-add]').forEach(b=>b.addEventListener('click',()=>addBlock(b.dataset.add)));
+
+function render(){
+  listEl.innerHTML='';
+  state.blocks.forEach((b)=>{ const el=Blocks[b.type].render(b,state.blocks.indexOf(b)); listEl.appendChild(el); });
+  build();
+}
 
 function escapeHTML(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
-function nl2html(s,mode){ if(mode==='p') return s.split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('\n'); if(mode==='br') return s.replace(/\n/g,'<br>'); return s; }
+function nl2html(s,mode){
+  if(mode==='p') return s.split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('\n');
+  if(mode==='br') return s.replace(/\n/g,'<br>');
+  return s;
+}
 
 function insertInlineImage(textarea){
   const tpl=`\n<figure>\n  <img src="/img/..." alt="…">\n  <figcaption>…</figcaption>\n</figure>\n`;
-  const {selectionStart:ss, selectionEnd:se, value:v}=textarea; textarea.value=v.slice(0,ss)+tpl+v.slice(se); textarea.dispatchEvent(new Event('input'));
+  const {selectionStart:ss, selectionEnd:se, value:v}=textarea;
+  textarea.value=v.slice(0,ss)+tpl+v.slice(se);
+  textarea.dispatchEvent(new Event('input'));
 }
 
 function build(){
@@ -304,7 +401,7 @@ function build(){
       html.push(`  <h2>${escapeHTML(b.title||'Introduction')}</h2>\n  ${nl2html(escapeHTML(b.html||''),'p')}`);
     }
     if(b.type==='toc' && b.enabled){
-      html.push(`  <section class="viewer-block note-card">\n    <details class="note-collapsible">\n      <summary>\n        <h2 class="note-title">🗂️ Sommaire <span class="chev">›</span></h2>\n      </summary>\n      <div class="note-body">\n        <nav class="article-toc"><ol><!-- rempli côté viewer --></ol></nav>\n        <p style="margin-top:.5rem"><small>Astuce : clique sur le <b>#</b> d’un titre pour copier un lien direct vers la section.</small></p>\n      </div>\n    </details>\n  </section>`);
+      html.push(`  <section class="viewer-block note-card">\n    <details class="note-collapsible">\n      <summary>\n        <h2 class="note-title">🗂️ Sommaire <span class="chev">›</span></h2>\n      </summary>\n      <div class="note-body">\n        <nav class="article-toc"><ol><!-- rempli côté viewer --></ol></nav>\n        <p style="margin-top:.5rem"><small>Astuce : clique sur le <b>#</b> d’un titre pour copier un lien direct vers la section.</small></p>\n      </div>\n    </details>\n  </section>`);
     }
     if(b.type==='section'){
       const id=b.id?` id="${escapeHTML(b.id)}"`:'';
@@ -320,7 +417,7 @@ function build(){
       html.push(`  <details class="note-collapsible">\n    <summary><h3 class="note-title">${escapeHTML(b.title||'🔎 Note')} <span class="chev">›</span></h3></summary>\n    <div class="note-body">${nl2html(escapeHTML(b.html||''),'p')}</div>\n  </details>`);
     }
     if(b.type==='hr'){ html.push('  <hr>'); }
-    if(b.type==='extras'){ html.push(`</article>\n\n<section data-part="extras">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article> <!-- reprise si on ajoute d\'autres blocs article ensuite -->`); }
+    if(b.type==='extras'){ html.push(`</article>\n\n<section data-part="extras">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article> <!-- reprise si on ajoute d'autres blocs article ensuite -->`); }
     if(b.type==='refs'){ html.push(`</article>\n\n<section data-part="references">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article>`); }
     if(b.type==='caps'){ html.push(`</article>\n\n<section data-part="capsules">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article>`); }
   });
@@ -352,5 +449,6 @@ $('#btn-download').addEventListener('click',()=>{
 // boot
 render();
 </script>
+
 </body>
 </html>
