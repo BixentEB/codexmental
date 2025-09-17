@@ -7,18 +7,14 @@
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="%23121739"/><text x="50%" y="62%" font-size="76" text-anchor="middle" fill="%2386c7ff" font-family="Arial, Helvetica, sans-serif">A</text></svg>'>
 <style>
   /* colle la tooldock sous le bandeau (appbar) */
-:root { --appbar-h: 58px; } /* ajuste si besoin */
-.tooldock{
-  position: sticky;
-  top: calc(var(--appbar-h) + 6px); /* pile sous le bandeau */
-  z-index: 20;
-  background: linear-gradient(180deg, rgba(13,17,39,.9), rgba(13,17,39,.85));
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 8px;
-  margin: 8px 12px 10px; /* un peu d’air */
-}
+  :root{
+    --bg:#0f1220; --bg2:#12162a; --ink:#e9efff; --muted:#a9b5d1;
+    --accent:#86c7ff; --accent2:#b28cff; --line:#22315a;
+    --ok:#4ad295; --warn:#ffbe55; --bad:#ff6b6b; --radius:14px;
+    --mono:ui-monospace,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    --appbar-h:58px; /* hauteur barre du haut */
+  }
 
   *{box-sizing:border-box}
   html,body{height:100%}
