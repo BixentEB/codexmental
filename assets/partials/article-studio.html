@@ -62,12 +62,12 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
  .block.collapsed .row,
-.block.collapsed .fieldset,
-.block.collapsed textarea { display:none; }
-.block.collapsed { padding-bottom:6px; }
-.block .head { cursor:default; }
-.block .head .title { cursor:pointer; }
-.block.collapsed .head .title::after { content:" (replié)"; color:var(--muted); font-weight:400; }
+ .block.collapsed .fieldset,
+ .block.collapsed textarea { display:none; }
+ .block.collapsed { padding-bottom:6px; }
+ .block .head { cursor:default; }
+ .block .head .title { cursor:pointer; }
+ .block.collapsed .head .title::after { content:" (replié)"; color:var(--muted); font-weight:400; }
 
 </style>
 
@@ -101,10 +101,6 @@
     <button class="btn small" data-add="extras">+ Extras</button>
     <button class="btn small" data-add="refs">+ Références</button>
     <button class="btn small" data-add="caps">+ Capsules</button>
-    <button class="btn small" data-cmd="callout-info">ℹ️ Info</button>
-    <button class="btn small" data-cmd="callout-warn">⚠️ Avert.</button>
-    <button class="btn small" data-cmd="callout-ok">✅ OK</button>
-
   </div>
 
   <!-- Nouvelle barre : mise en forme -->
@@ -124,6 +120,10 @@
     <button class="btn small" data-cmd="link">Lien</button>
     <button class="btn small" data-cmd="sub">x<sub>2</sub></button>
     <button class="btn small" data-cmd="sup">x<sup>2</sup></button>
+        <br>
+    <button class="btn small" data-cmd="callout-info">ℹ️ Info</button>
+    <button class="btn small" data-cmd="callout-warn">⚠️ Avert.</button>
+    <button class="btn small" data-cmd="callout-ok">✅ OK</button>
   </div>
 </div>
     
