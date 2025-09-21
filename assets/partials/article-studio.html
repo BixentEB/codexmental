@@ -141,15 +141,29 @@
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const debounce=(fn,ms=500)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
-const slugify=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'section';
+
+// --- Slug helpers (unicité) ---
+const slugifyBase = s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'section';
+function uniqueSlug(base, exceptBlock){
+  const wanted = slugifyBase(base);
+  const existing = new Set(
+    state.blocks
+      .filter(x=>x.type==='section' && x!==exceptBlock && x.id)
+      .map(x=>x.id)
+  );
+  if(!existing.has(wanted)) return wanted;
+  let i=2; while(existing.has(`${wanted}-${i}`)) i++;
+  return `${wanted}-${i}`;
+}
 
 const KEY='cm-article-studio-v3';
 let state={ blocks:[], updatedAt:Date.now(), dirty:false };
 
 function markDirty(){ state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées' }
 
-// ======================= Helpers formatage (nouveau) =======================
-let lastTA=null; // dernière zone texte active
+// ======================= Helpers formatage =======================
+let lastTA=null; // textarea active
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') lastTA=e.target; });
 
 function wrapSelection(ta,before,after=''){
@@ -184,7 +198,8 @@ function listify(ta,type){
   ta.focus(); ta.setSelectionRange(caret, caret);
   ta.dispatchEvent(new Event('input'));
 }
-// Branche la barre de formatage
+
+// Barre de formatage (boutons)
 $('#toolbar-format')?.addEventListener('click',ev=>{
   const btn = ev.target.closest('button'); if(!btn) return;
   const cmd = btn.dataset.cmd; ev.preventDefault();
@@ -204,7 +219,51 @@ $('#toolbar-format')?.addEventListener('click',ev=>{
     case 'link':   wrapSelection(lastTA,'<a href="https://">','</a>'); break;
     case 'sub':    wrapSelection(lastTA,'<sub>','</sub>'); break;
     case 'sup':    wrapSelection(lastTA,'<sup>','</sup>'); break;
+
+    // callouts optionnels (si tu ajoutes les boutons)
+    case 'callout-info':
+      insertBlock(lastTA,
+`<section class="viewer-block note-card">
+  <details class="note-collapsible" open>
+    <summary><h3 class="note-title">ℹ️ Info <span class="chev">›</span></h3></summary>
+    <div class="note-body"><p>Texte d'information…</p></div>
+  </details>
+</section>`); break;
+    case 'callout-warn':
+      insertBlock(lastTA,
+`<section class="viewer-block note-card warn">
+  <details class="note-collapsible" open>
+    <summary><h3 class="note-title">⚠️ Avertissement <span class="chev">›</span></h3></summary>
+    <div class="note-body"><p>Contenu d'avertissement…</p></div>
+  </details>
+</section>`); break;
+    case 'callout-ok':
+      insertBlock(lastTA,
+`<section class="viewer-block note-card ok">
+  <details class="note-collapsible" open>
+    <summary><h3 class="note-title">✅ Bon à savoir <span class="chev">›</span></h3></summary>
+    <div class="note-body"><p>Contenu positif…</p></div>
+  </details>
+</section>`); break;
   }
+});
+
+// Raccourcis clavier (Ctrl/⌘) dans les textareas
+document.addEventListener('keydown',(e)=>{
+  if(!lastTA) return;
+  const mod = e.ctrlKey || e.metaKey;
+  if(!mod) return;
+  const shift = e.shiftKey;
+  const k = e.key.toLowerCase();
+  if(k==='s') return; // laisser Ctrl+S pour sauver
+
+  if(k==='b'){ e.preventDefault(); wrapSelection(lastTA,'<strong>','</strong>'); }
+  else if(k==='i'){ e.preventDefault(); wrapSelection(lastTA,'<em>','</em>'); }
+  else if(k==='u'){ e.preventDefault(); wrapSelection(lastTA,'<u>','</u>'); }
+  else if(k==='k'){ e.preventDefault(); wrapSelection(lastTA,'<a href="https://">','</a>'); }
+  else if(k==='l' && !shift){ e.preventDefault(); listify(lastTA,'ul'); }   // Ctrl+L = puces
+  else if(k==='7' && shift){ e.preventDefault(); listify(lastTA,'ol'); }    // Ctrl+Shift+7 = numérotée
+  else if(k==='q' && shift){ e.preventDefault(); wrapSelection(lastTA,'<blockquote>','</blockquote>'); }
 });
 
 // ======================= Blocks =======================
@@ -276,7 +335,12 @@ const Blocks={
       $('.ta-html',el).addEventListener('input',debounce(e=>{b.html=e.target.value; markDirty(); build()}));
       el.addEventListener('click',ev=>{
         const a=ev.target.dataset.act; if(!a) return;
-        if(a==='slug'){ $('.inp-id',el).value=b.id=slugify($('.inp-title',el).value||b.id||'section'); markDirty(); build(); }
+        if(a==='slug'){
+          const base = $('.inp-title',el).value || b.id || 'section';
+          b.id = uniqueSlug(base, b);
+          $('.inp-id',el).value = b.id;
+          markDirty(); build();
+        }
         if(a==='img'){ insertInlineImage($('.ta-html',el)); }
       });
       attachControls(el,b); return el;
@@ -363,7 +427,7 @@ function addBlock(type){
 const listEl=$('#blocks');
 const out=$('#out');
 
-// boutons d'ajout (nouveau sélecteur)
+// boutons d'ajout
 $$('#toolbar-add [data-add]').forEach(b=>b.addEventListener('click',()=>addBlock(b.dataset.add)));
 
 function render(){
