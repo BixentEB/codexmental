@@ -157,18 +157,15 @@ const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
 const debounce=(fn,ms=500)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
 
 // --- Slug helpers (unicité) ---
-const slugifyBase = s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-  .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'section';
+const slugifyBase=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')||'section';
 function uniqueSlug(base, exceptBlock){
-  const wanted = slugifyBase(base);
-  const existing = new Set(
-    state.blocks
-      .filter(x=>x.type==='section' && x!==exceptBlock && x.id)
-      .map(x=>x.id)
+  const wanted=slugifyBase(base);
+  const existing=new Set(
+    state.blocks.filter(x=>x.type==='section'&&x!==exceptBlock&&x.id).map(x=>x.id)
   );
   if(!existing.has(wanted)) return wanted;
-  let i=2; while(existing.has(`${wanted}-${i}`)) i++;
-  return `${wanted}-${i}`;
+  let i=2; while(existing.has(`${wanted}-${i}`)) i++; return `${wanted}-${i}`;
 }
 
 const KEY='cm-article-studio-v3';
@@ -177,7 +174,7 @@ let state={ blocks:[], updatedAt:Date.now(), dirty:false };
 function markDirty(){ state.dirty=true; $('#pill-dirty').textContent='modifications non sauvegardées' }
 
 // ======================= Helpers formatage =======================
-let lastTA=null; // textarea active
+let lastTA=null;
 document.addEventListener('focusin',e=>{ if(e.target.tagName==='TEXTAREA') lastTA=e.target; });
 
 function wrapSelection(ta,before,after=''){
@@ -213,24 +210,24 @@ function listify(ta,type){
   ta.dispatchEvent(new Event('input'));
 }
 
-// --- Gestionnaire commun pour tous les boutons [data-cmd] de la tooldock ---
+// --- Gestionnaire commun boutons [data-cmd] ---
 function execCmd(cmd){
   switch(cmd){
-    case 'bold':   return wrapSelection(lastTA,'<strong>','</strong>');
+    case 'bold': return wrapSelection(lastTA,'<strong>','</strong>');
     case 'italic': return wrapSelection(lastTA,'<em>','</em>');
     case 'underline': return wrapSelection(lastTA,'<u>','</u>');
-    case 'code':   return wrapSelection(lastTA,'<code>','</code>');
-    case 'h3':     return insertBlock(lastTA,'<h3>Titre de niveau 3</h3>');
-    case 'h4':     return insertBlock(lastTA,'<h4>Titre de niveau 4</h4>');
-    case 'small':  return wrapSelection(lastTA,'<small>','</small>');
-    case 'mark':   return wrapSelection(lastTA,'<mark>','</mark>');
-    case 'ul':     return listify(lastTA,'ul');
-    case 'ol':     return listify(lastTA,'ol');
-    case 'quote':  return wrapSelection(lastTA,'<blockquote>','</blockquote>');
-    case 'hr':     return insertBlock(lastTA,'<hr>');
-    case 'link':   return wrapSelection(lastTA,'<a href="https://">','</a>');
-    case 'sub':    return wrapSelection(lastTA,'<sub>','</sub>');
-    case 'sup':    return wrapSelection(lastTA,'<sup>','</sup>');
+    case 'code': return wrapSelection(lastTA,'<code>','</code>');
+    case 'h3': return insertBlock(lastTA,'<h3>Titre niveau 3</h3>');
+    case 'h4': return insertBlock(lastTA,'<h4>Titre niveau 4</h4>');
+    case 'small': return wrapSelection(lastTA,'<small>','</small>');
+    case 'mark': return wrapSelection(lastTA,'<mark>','</mark>');
+    case 'ul': return listify(lastTA,'ul');
+    case 'ol': return listify(lastTA,'ol');
+    case 'quote': return wrapSelection(lastTA,'<blockquote>','</blockquote>');
+    case 'hr': return insertBlock(lastTA,'<hr>');
+    case 'link': return wrapSelection(lastTA,'<a href="https://">','</a>');
+    case 'sub': return wrapSelection(lastTA,'<sub>','</sub>');
+    case 'sup': return wrapSelection(lastTA,'<sup>','</sup>');
     case 'callout-info':
       return insertBlock(lastTA,
 `<section class="viewer-block note-card">
@@ -257,31 +254,44 @@ function execCmd(cmd){
 </section>`);
   }
 }
-
 document.querySelector('.tooldock')?.addEventListener('click',(ev)=>{
-  const btn = ev.target.closest('[data-cmd]');
-  if(!btn) return;
-  ev.preventDefault();
-  execCmd(btn.dataset.cmd);
+  const btn=ev.target.closest('[data-cmd]'); if(!btn) return;
+  ev.preventDefault(); execCmd(btn.dataset.cmd);
 });
 
 // --- Hotkeys (Ctrl/⌘) dans les textareas ---
 document.addEventListener('keydown',(e)=>{
   if(!lastTA) return;
-  const mod = e.ctrlKey || e.metaKey;
-  if(!mod) return;
-  const shift = e.shiftKey;
-  const k = e.key.toLowerCase();
-  if(k==='s') return; // laisser Ctrl+S pour sauver
-
+  const mod = e.ctrlKey || e.metaKey; if(!mod) return;
+  const shift = e.shiftKey; const k = e.key.toLowerCase();
+  if(k==='s') return; // laisse Ctrl+S au système
   if(k==='b'){ e.preventDefault(); wrapSelection(lastTA,'<strong>','</strong>'); }
   else if(k==='i'){ e.preventDefault(); wrapSelection(lastTA,'<em>','</em>'); }
   else if(k==='u'){ e.preventDefault(); wrapSelection(lastTA,'<u>','</u>'); }
   else if(k==='k'){ e.preventDefault(); wrapSelection(lastTA,'<a href="https://">','</a>'); }
-  else if(k==='l' && !shift){ e.preventDefault(); listify(lastTA,'ul'); }   // Ctrl+L = puces
-  else if(k==='7' && shift){ e.preventDefault(); listify(lastTA,'ol'); }    // Ctrl+Shift+7 = numérotée
+  else if(k==='l' && !shift){ e.preventDefault(); listify(lastTA,'ul'); }
+  else if(k==='7' && shift){ e.preventDefault(); listify(lastTA,'ol'); }
   else if(k==='q' && shift){ e.preventDefault(); wrapSelection(lastTA,'<blockquote>','</blockquote>'); }
 });
+
+// ======================= Compteur mots =======================
+function stripTags(x=''){ return String(x).replace(/<[^>]*>/g,' '); }
+function countWords(text=''){
+  const m = stripTags(text).toLowerCase().match(/[a-zàâäçéèêëîïôöùûüÿœ0-9]+/gi);
+  return m ? m.length : 0;
+}
+function updateStats(){
+  let buf=''; state.blocks.forEach(b=>{
+    if(b.type==='title'){ buf+=' '+(b.title||'')+' '+(b.subtitle||''); }
+    if(b.type==='intro'){ buf+=' '+(b.title||'')+' '+(b.html||''); }
+    if(b.type==='section'){ buf+=' '+(b.title||'')+' '+(b.html||''); }
+    if(b.type==='note'){ buf+=' '+(b.title||'')+' '+(b.html||''); }
+    if(['extras','refs','caps'].includes(b.type)){ buf+=' '+(b.html||''); }
+  });
+  const words=countWords(buf);
+  const mins=Math.max(1,Math.ceil(words/200));
+  $('#pill-stats')?.textContent=`${words} mots • ~${mins} min`;
+}
 
 // ======================= Blocks =======================
 const Blocks={
@@ -443,21 +453,27 @@ function addBlock(type){
 // ======================= UI & Build =======================
 const listEl=$('#blocks');
 const out=$('#out');
-
-// boutons d'ajout
 $$('#toolbar-add [data-add]').forEach(b=>b.addEventListener('click',()=>addBlock(b.dataset.add)));
+
+function escapeHTML(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function nl2html(s){ return s.split(/\n{2,}/).map(p=>`<p>${escapeHTML(p).replace(/\n/g,'<br>')}</p>`).join('\n'); }
+
+// NEW: Texte enrichi — si un bloc commence par une balise HTML, on le laisse tel quel,
+// sinon on le transforme en <p>…<br>. Permet d’insérer <figure>, callouts, etc.
+function paragraphizeRich(s=''){
+  const parts = String(s).split(/\n{2,}/);
+  return parts.map(chunk=>{
+    const trimmed = chunk.trim();
+    if(!trimmed) return '';
+    if(/^\s*</.test(trimmed)) return trimmed;           // bloc HTML : garder tel quel
+    return `<p>${escapeHTML(trimmed).replace(/\n/g,'<br>')}</p>`;
+  }).join('\n');
+}
 
 function render(){
   listEl.innerHTML='';
   state.blocks.forEach((b)=>{ const el=Blocks[b.type].render(b,state.blocks.indexOf(b)); listEl.appendChild(el); });
   build();
-}
-
-function escapeHTML(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
-function nl2html(s,mode){
-  if(mode==='p') return s.split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('\n');
-  if(mode==='br') return s.replace(/\n/g,'<br>');
-  return s;
 }
 
 function insertInlineImage(textarea){
@@ -467,34 +483,11 @@ function insertInlineImage(textarea){
   textarea.dispatchEvent(new Event('input'));
 }
 
-// -------- Compteur mots / temps de lecture --------
-function stripTags(x=''){ return String(x).replace(/<[^>]*>/g,' '); }
-function countWords(text=''){
-  const m = stripTags(text).toLowerCase().match(/[a-zàâäçéèêëîïôöùûüÿœ0-9]+/gi);
-  return m ? m.length : 0;
-}
-function updateStats(){
-  let buf = '';
-  state.blocks.forEach(b=>{
-    if(b.type==='title'){ buf += ' ' + (b.title||'') + ' ' + (b.subtitle||''); }
-    if(b.type==='intro'){ buf += ' ' + (b.title||'') + ' ' + (b.html||''); }
-    if(b.type==='section'){ buf += ' ' + (b.title||'') + ' ' + (b.html||''); }
-    if(b.type==='note'){ buf += ' ' + (b.title||'') + ' ' + (b.html||''); }
-    if(b.type==='extras' || b.type==='refs' || b.type==='caps'){ buf += ' ' + (b.html||''); }
-  });
-  const words = countWords(buf);
-  const mins = Math.max(1, Math.ceil(words / 200));
-  const chip = $('#pill-stats');
-  if(chip) chip.textContent = `${words} mots • ~${mins} min`;
-}
-// ---------------------------------------------------
-
 function build(){
-  // Build article per nouveau modèle: <article data-article> avec H2 pour sections.
   let html=[];
   html.push('<article data-article>');
 
-  // Title block unique (si présent)
+  // Title
   const t=state.blocks.find(b=>b.type==='title');
   if(t){
     const sub=t.subtitle? (t.subtitleMode==='data'?`\n    <h2 data-subtitle>${escapeHTML(t.subtitle)}</h2>`:`\n    <p class="subtitle">${escapeHTML(t.subtitle)}</p>`):'';
@@ -502,18 +495,18 @@ function build(){
     html.push(`  <section data-part="title" class="title-chip">\n    <h1>${escapeHTML(t.title||'')}</h1>${sub}\n  </section>${tools}`);
   }
 
-  // Other blocks in order
+  // Other blocks
   state.blocks.forEach(b=>{
-    if(b.type==='title') return; // déjà exporté
+    if(b.type==='title') return;
     if(b.type==='intro'){
-      html.push(`  <h2>${escapeHTML(b.title||'Introduction')}</h2>\n  ${nl2html(escapeHTML(b.html||''),'p')}`);
+      html.push(`  <h2>${escapeHTML(b.title||'Introduction')}</h2>\n  ${paragraphizeRich(b.html)}`);
     }
     if(b.type==='toc' && b.enabled){
       html.push(`  <section class="viewer-block note-card">\n    <details class="note-collapsible">\n      <summary>\n        <h2 class="note-title">🗂️ Sommaire <span class="chev">›</span></h2>\n      </summary>\n      <div class="note-body">\n        <nav class="article-toc"><ol><!-- rempli côté viewer --></ol></nav>\n        <p style="margin-top:.5rem"><small>Astuce : clique sur le <b>#</b> d’un titre pour copier un lien direct vers la section.</small></p>\n      </div>\n    </details>\n  </section>`);
     }
     if(b.type==='section'){
       const id=b.id?` id="${escapeHTML(b.id)}"`:'';
-      html.push(`  <h2${id}>${escapeHTML(b.title||'Section')}</h2>\n  ${nl2html(escapeHTML(b.html||''),'p')}`);
+      html.push(`  <h2${id}>${escapeHTML(b.title||'Section')}</h2>\n  ${paragraphizeRich(b.html)}`);
     }
     if(b.type==='media'){
       const imgs=b.images.map(im=>`\n        <img src="${escapeHTML(im.src||'')}" alt="${escapeHTML(im.alt||'')}"${im.main?' data-main':''}>`).join('');
@@ -522,18 +515,17 @@ function build(){
       else html.push('  '+fig.replace(/\n/g,'\n  '));
     }
     if(b.type==='note'){
-      html.push(`  <details class="note-collapsible">\n    <summary><h3 class="note-title">${escapeHTML(b.title||'🔎 Note')} <span class="chev">›</span></h3></summary>\n    <div class="note-body">${nl2html(escapeHTML(b.html||''),'p')}</div>\n  </details>`);
+      html.push(`  <details class="note-collapsible">\n    <summary><h3 class="note-title">${escapeHTML(b.title||'🔎 Note')} <span class="chev">›</span></h3></summary>\n    <div class="note-body">${paragraphizeRich(b.html)}</div>\n  </details>`);
     }
     if(b.type==='hr'){ html.push('  <hr>'); }
-    if(b.type==='extras'){ html.push(`</article>\n\n<section data-part="extras">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article> <!-- reprise si on ajoute d'autres blocs article ensuite -->`); }
-    if(b.type==='refs'){ html.push(`</article>\n\n<section data-part="references">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article>`); }
-    if(b.type==='caps'){ html.push(`</article>\n\n<section data-part="capsules">\n  ${nl2html(escapeHTML(b.html||''),'p')}\n</section>\n<article data-article>`); }
+    if(b.type==='extras'){ html.push(`</article>\n\n<section data-part="extras">\n  ${paragraphizeRich(b.html)}\n</section>\n<article data-article>`); }
+    if(b.type==='refs'){ html.push(`</article>\n\n<section data-part="references">\n  ${paragraphizeRich(b.html)}\n</section>\n<article data-article>`); }
+    if(b.type==='caps'){ html.push(`</article>\n\n<section data-part="capsules">\n  ${paragraphizeRich(b.html)}\n</section>\n<article data-article>`); }
   });
 
   html.push('</article>');
   out.textContent=html.join('\n');
 
-  // MAJ du compteur
   updateStats();
 }
 
@@ -560,7 +552,6 @@ $('#btn-download').addEventListener('click',()=>{
 // boot
 render();
 </script>
-
 
 </body>
 </html>
