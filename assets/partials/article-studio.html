@@ -213,56 +213,59 @@ function listify(ta,type){
   ta.dispatchEvent(new Event('input'));
 }
 
-// Barre de formatage (boutons)
-$('#toolbar-format')?.addEventListener('click',ev=>{
-  const btn = ev.target.closest('button'); if(!btn) return;
-  const cmd = btn.dataset.cmd; ev.preventDefault();
+// --- Gestionnaire commun pour tous les boutons [data-cmd] de la tooldock ---
+function execCmd(cmd){
   switch(cmd){
-    case 'bold':   wrapSelection(lastTA,'<strong>','</strong>'); break;
-    case 'italic': wrapSelection(lastTA,'<em>','</em>'); break;
-    case 'underline': wrapSelection(lastTA,'<u>','</u>'); break;
-    case 'code':   wrapSelection(lastTA,'<code>','</code>'); break;
-    case 'h3':     insertBlock(lastTA,'<h3>Titre de niveau 3</h3>'); break;
-    case 'h4':     insertBlock(lastTA,'<h4>Titre de niveau 4</h4>'); break;
-    case 'small':  wrapSelection(lastTA,'<small>','</small>'); break;
-    case 'mark':   wrapSelection(lastTA,'<mark>','</mark>'); break;
-    case 'ul':     listify(lastTA,'ul'); break;
-    case 'ol':     listify(lastTA,'ol'); break;
-    case 'quote':  wrapSelection(lastTA,'<blockquote>','</blockquote>'); break;
-    case 'hr':     insertBlock(lastTA,'<hr>'); break;
-    case 'link':   wrapSelection(lastTA,'<a href="https://">','</a>'); break;
-    case 'sub':    wrapSelection(lastTA,'<sub>','</sub>'); break;
-    case 'sup':    wrapSelection(lastTA,'<sup>','</sup>'); break;
-
-    // callouts optionnels (si tu ajoutes les boutons)
+    case 'bold':   return wrapSelection(lastTA,'<strong>','</strong>');
+    case 'italic': return wrapSelection(lastTA,'<em>','</em>');
+    case 'underline': return wrapSelection(lastTA,'<u>','</u>');
+    case 'code':   return wrapSelection(lastTA,'<code>','</code>');
+    case 'h3':     return insertBlock(lastTA,'<h3>Titre de niveau 3</h3>');
+    case 'h4':     return insertBlock(lastTA,'<h4>Titre de niveau 4</h4>');
+    case 'small':  return wrapSelection(lastTA,'<small>','</small>');
+    case 'mark':   return wrapSelection(lastTA,'<mark>','</mark>');
+    case 'ul':     return listify(lastTA,'ul');
+    case 'ol':     return listify(lastTA,'ol');
+    case 'quote':  return wrapSelection(lastTA,'<blockquote>','</blockquote>');
+    case 'hr':     return insertBlock(lastTA,'<hr>');
+    case 'link':   return wrapSelection(lastTA,'<a href="https://">','</a>');
+    case 'sub':    return wrapSelection(lastTA,'<sub>','</sub>');
+    case 'sup':    return wrapSelection(lastTA,'<sup>','</sup>');
     case 'callout-info':
-      insertBlock(lastTA,
+      return insertBlock(lastTA,
 `<section class="viewer-block note-card">
   <details class="note-collapsible" open>
     <summary><h3 class="note-title">ℹ️ Info <span class="chev">›</span></h3></summary>
     <div class="note-body"><p>Texte d'information…</p></div>
   </details>
-</section>`); break;
+</section>`);
     case 'callout-warn':
-      insertBlock(lastTA,
+      return insertBlock(lastTA,
 `<section class="viewer-block note-card warn">
   <details class="note-collapsible" open>
     <summary><h3 class="note-title">⚠️ Avertissement <span class="chev">›</span></h3></summary>
     <div class="note-body"><p>Contenu d'avertissement…</p></div>
   </details>
-</section>`); break;
+</section>`);
     case 'callout-ok':
-      insertBlock(lastTA,
+      return insertBlock(lastTA,
 `<section class="viewer-block note-card ok">
   <details class="note-collapsible" open>
     <summary><h3 class="note-title">✅ Bon à savoir <span class="chev">›</span></h3></summary>
     <div class="note-body"><p>Contenu positif…</p></div>
   </details>
-</section>`); break;
+</section>`);
   }
+}
+
+document.querySelector('.tooldock')?.addEventListener('click',(ev)=>{
+  const btn = ev.target.closest('[data-cmd]');
+  if(!btn) return;
+  ev.preventDefault();
+  execCmd(btn.dataset.cmd);
 });
 
-// Raccourcis clavier (Ctrl/⌘) dans les textareas
+// --- Hotkeys (Ctrl/⌘) dans les textareas ---
 document.addEventListener('keydown',(e)=>{
   if(!lastTA) return;
   const mod = e.ctrlKey || e.metaKey;
@@ -464,6 +467,28 @@ function insertInlineImage(textarea){
   textarea.dispatchEvent(new Event('input'));
 }
 
+// -------- Compteur mots / temps de lecture --------
+function stripTags(x=''){ return String(x).replace(/<[^>]*>/g,' '); }
+function countWords(text=''){
+  const m = stripTags(text).toLowerCase().match(/[a-zàâäçéèêëîïôöùûüÿœ0-9]+/gi);
+  return m ? m.length : 0;
+}
+function updateStats(){
+  let buf = '';
+  state.blocks.forEach(b=>{
+    if(b.type==='title'){ buf += ' ' + (b.title||'') + ' ' + (b.subtitle||''); }
+    if(b.type==='intro'){ buf += ' ' + (b.title||'') + ' ' + (b.html||''); }
+    if(b.type==='section'){ buf += ' ' + (b.title||'') + ' ' + (b.html||''); }
+    if(b.type==='note'){ buf += ' ' + (b.title||'') + ' ' + (b.html||''); }
+    if(b.type==='extras' || b.type==='refs' || b.type==='caps'){ buf += ' ' + (b.html||''); }
+  });
+  const words = countWords(buf);
+  const mins = Math.max(1, Math.ceil(words / 200));
+  const chip = $('#pill-stats');
+  if(chip) chip.textContent = `${words} mots • ~${mins} min`;
+}
+// ---------------------------------------------------
+
 function build(){
   // Build article per nouveau modèle: <article data-article> avec H2 pour sections.
   let html=[];
@@ -507,6 +532,9 @@ function build(){
 
   html.push('</article>');
   out.textContent=html.join('\n');
+
+  // MAJ du compteur
+  updateStats();
 }
 
 // ======================= Storage & IO =======================
@@ -532,6 +560,7 @@ $('#btn-download').addEventListener('click',()=>{
 // boot
 render();
 </script>
+
 
 </body>
 </html>
