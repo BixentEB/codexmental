@@ -60,6 +60,15 @@
   .status{display:flex;gap:10px;align-items:center;margin:12px 0}
   .muted{color:#a9b5d1}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+ .block.collapsed .row,
+.block.collapsed .fieldset,
+.block.collapsed textarea { display:none; }
+.block.collapsed { padding-bottom:6px; }
+.block .head { cursor:default; }
+.block .head .title { cursor:pointer; }
+.block.collapsed .head .title::after { content:" (replié)"; color:var(--muted); font-weight:400; }
+
 </style>
 
 </head>
@@ -79,6 +88,7 @@
 <div class="wrap">
   <section class="panel">
     <h2>Édition (démarrage vide → ajoute tes blocs)</h2>
+    <div id="pill-stats" class="pill">0 mots • ~0 min</div>
 <div class="tooldock">
   <div class="toolbar" id="toolbar-add">
     <button class="btn small" data-add="title">+ Titre</button>
@@ -91,6 +101,10 @@
     <button class="btn small" data-add="extras">+ Extras</button>
     <button class="btn small" data-add="refs">+ Références</button>
     <button class="btn small" data-add="caps">+ Capsules</button>
+    <button class="btn small" data-cmd="callout-info">ℹ️ Info</button>
+    <button class="btn small" data-cmd="callout-warn">⚠️ Avert.</button>
+    <button class="btn small" data-cmd="callout-ok">✅ OK</button>
+
   </div>
 
   <!-- Nouvelle barre : mise en forme -->
