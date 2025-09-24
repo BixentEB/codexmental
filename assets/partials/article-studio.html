@@ -226,7 +226,6 @@ function execCmd(cmd){
     case 'link': return wrapSelection(lastTA,'<a href="https://">','</a>');
     case 'sub': return wrapSelection(lastTA,'<sub>','</sub>');
     case 'sup': return wrapSelection(lastTA,'<sup>','</sup>');
-    // NOTE : plus d’insertion de callout ici (désormais un bloc dédié)
   }
 }
 document.querySelector('.tooldock')?.addEventListener('click',(ev)=>{
@@ -266,7 +265,8 @@ function updateStats(){
   });
   const words=countWords(buf);
   const mins=Math.max(1,Math.ceil(words/200));
-  $('#pill-stats')?.textContent=`${words} mots • ~${mins} min`;
+  const chip=document.getElementById('pill-stats');
+  if(chip) chip.textContent=`${words} mots • ~${mins} min`;
 }
 
 // ======================= Blocks =======================
@@ -479,7 +479,6 @@ function addBlock(type){
 const listEl=$('#blocks');
 const out=$('#out');
 
-// Ajout des boutons + (pense à ajouter le bouton + Callout dans ton HTML : data-add="callout")
 $$('#toolbar-add [data-add]').forEach(b=>b.addEventListener('click',()=>addBlock(b.dataset.add)));
 
 function escapeHTML(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
@@ -596,6 +595,7 @@ $('#btn-download').addEventListener('click',()=>{
 // boot
 render();
 </script>
+
 
 
 </body>
