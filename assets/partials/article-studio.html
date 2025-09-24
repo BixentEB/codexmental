@@ -233,13 +233,14 @@ document.querySelector('.tooldock')?.addEventListener('click',(ev)=>{
   ev.preventDefault(); execCmd(btn.dataset.cmd);
 });
 
-// Branche TOUT bouton ayant [data-add], où qu'il soit dans la page
-document.addEventListener('click',(ev)=>{
-  const btn = ev.target.closest('[data-add]');
-  if(!btn) return;
+// Un seul écouteur global pour tous les boutons [data-add] (évite les doublons)
+document.addEventListener('click', (ev)=>{
+  const btn = ev.target.closest('button[data-add]');
+  if (!btn) return;
   ev.preventDefault();
   addBlock(btn.dataset.add);
 });
+
 
 // --- Hotkeys (Ctrl/⌘) dans les textareas ---
 document.addEventListener('keydown',(e)=>{
