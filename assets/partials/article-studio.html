@@ -487,8 +487,6 @@ function addBlock(type){
 const listEl=$('#blocks');
 const out=$('#out');
 
-$$('#toolbar-add [data-add]').forEach(b=>b.addEventListener('click',()=>addBlock(b.dataset.add)));
-
 function escapeHTML(s=''){return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 
 // Texte enrichi : garde les blocs HTML bruts, sinon <p>…<br>
