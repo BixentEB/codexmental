@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coach — Plan & Suivi</title>
+  <link rel="stylesheet" href="coach.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <div class="title">
+        <div class="logo" aria-hidden="true" title="Entraînement">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M8 12h8" stroke="#0b0f14" stroke-width="2" stroke-linecap="round"/>
+            <rect x="2" y="9" width="4" height="6" rx="1.5" fill="#0b0f14"/>
+            <rect x="18" y="9" width="4" height="6" rx="1.5" fill="#0b0f14"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Plan d'entraînement & Suivi — Vincent</h1>
+          <p class="sub">Construis ta séance (full‑body ou ciblée), choisis des alternatives, et suis tes séries, reps, temps de repos, charge et difficulté (RPE 0–10).</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="ctrl">
+          <label for="mode">Type de séance</label>
+          <select id="mode">
+            <option value="full">Full‑Body</option>
+            <option value="upper">Haut du corps</option>
+            <option value="lower">Bas du corps</option>
+            <option value="warm">Échauffement</option>
+            <option value="stretch">Étirements</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label for="nbExo">Nb d’exercices</label>
+          <input id="nbExo" type="number" min="1" max="12" value="6" />
+        </div>
+        <div class="ctrl">
+          <label for="sets">Séries par exo</label>
+          <input id="sets" type="number" min="1" max="5" value="3" />
+        </div>
+        <div class="ctrl">
+          <label for="reps">Répétitions moy.</label>
+          <input id="reps" type="number" min="1" max="20" value="10" />
+        </div>
+        <div class="ctrl">
+          <label for="rest">Repos (s)</label>
+          <input id="rest" type="number" min="15" max="240" value="75" />
+        </div>
+        <div class="ctrl">
+          <label for="space">Espace</label>
+          <select id="space">
+            <option value="standard">Standard</option>
+            <option value="faible">Faible place</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label for="equip">Équipement</label>
+          <select id="equip">
+            <option value="all">Tout</option>
+            <option value="poids_corps">Sans matériel</option>
+            <option value="haltères">Haltères</option>
+            <option value="barre">Barre</option>
+            <option value="banc">Banc</option>
+          </select>
+        </div>
+        <button id="btnBuild" class="btn">Générer</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="block">
+        <header>
+          <h2>Exercices proposés</h2>
+          <div class="meta">Clique pour ouvrir une fiche. Utilise « Remplacer » pour choisir une alternative.</div>
+        </header>
+        <div id="exerciseList" class="list"></div>
+      </section>
+
+      <section class="block">
+        <header>
+          <h2>Récap séance</h2>
+          <div class="meta">Durée estimée, volume, RPE moyen. Tes saisies sont enregistrées localement.</div>
+        </header>
+        <div class="summary">
+          <div class="kpis">
+            <div class="kpi"><div class="kpi-v" id="kDur">—</div><div class="kpi-l">Durée estimée</div></div>
+            <div class="kpi"><div class="kpi-v" id="kVol">—</div><div class="kpi-l">Volume total</div></div>
+            <div class="kpi"><div class="kpi-v" id="kRpe">—</div><div class="kpi-l">RPE moyen</div></div>
+          </div>
+          <div class="summary-actions">
+            <button id="btnSave" class="btn">Valider la séance</button>
+            <button id="btnCsv" class="btn ghost">Exporter CSV</button>
+            <button id="btnReset" class="btn danger">Réinitialiser</button>
+          </div>
+          <div id="log" class="log"></div>
+        </div>
+      </section>
+    </main>
+
+    <p class="footer-note">Astuce : si un exo est impossible (place, douleur, matos), clique « Remplacer » et choisis une alternative adaptée. Tes préférences sont mémorisées.</p>
+  </div>
+
+  <script src="coach.js" defer></script>
+</body>
+</html>
