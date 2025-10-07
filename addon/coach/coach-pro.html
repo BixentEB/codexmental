@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Coach — Plan & Suivi</title>
-  <link rel="icon" href="/addon/coach/img/muscle.png" sizes="96x96">
   <link rel="stylesheet" href="coach.css">
 </head>
 <body>
@@ -68,14 +67,22 @@
             <option value="banc">Banc</option>
           </select>
         </div>
+        
         <div class="ctrl">
-          <label for="order">Organisation</label>
-          <select id="order">
-            <option value="balanced">Équilibrée (par défaut)</option>
-            <option value="min_switch">Min. changements de setup</option>
-            <option value="pushpull">Push → Pull → Accessoires</option>
-          </select>
+          <label for="zones">Zones</label>
+          <div id="zones" class="zones">
+            <label><input type="checkbox" value="upper" checked> Haut</label>
+            <label><input type="checkbox" value="lower" checked> Bas</label>
+            <label><input type="checkbox" value="core" checked> Core/Abdos</label>
+            <label><input type="checkbox" value="warm"> Échauff.</label>
+            <label><input type="checkbox" value="stretch"> Étirements</label>
+          </div>
         </div>
+        <div class="ctrl">
+          <label>&nbsp;</label>
+          <label class="toggle"><input id="plateLite" type="checkbox"> Mode débutant / peu de disques</label>
+        </div>
+
         <button id="btnBuild" class="btn">Générer</button>
       </div>
     </header>

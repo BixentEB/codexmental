@@ -72,3 +72,7 @@ details[open] summary .plus{transform:rotate(45deg)}
   .block{break-inside:avoid;box-shadow:none;border-color:#e5e7eb}
   .card{background:#fff;border-color:#e5e7eb}
 }
+
+.zones{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.zones label{display:flex;gap:6px;align-items:center;color:var(--text);font-size:13px}
+.toggle{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--text)}
