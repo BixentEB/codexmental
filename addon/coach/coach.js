@@ -1,6 +1,6 @@
 // --- Données d'exercices (cat, equip, space, alternatives) ---
 const EXO_DB = [
-  { id:'bench', name:'Développé couché — barre', cat:'upper', equip:'barre', space:'standard',
+  { id:'bench', name:'Développé couché — barre', cat:'upper', equip:'barre', space:'standard', station:'barre+banc+disques',
     sets:3, reps:'8-12', rest:75, timePerRep:3,
     tips:'Trajectoire légère diagonale vers le bas des pecs. Omoplates serrées, pieds ancrés.',
     alt:[
@@ -9,7 +9,7 @@ const EXO_DB = [
       {id:'dip_chair', name:'Dips entre chaises', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'fly', name:'Écartés haltères — banc', cat:'upper', equip:'haltères', space:'standard',
+  { id:'fly', name:'Écartés haltères — banc', cat:'upper', equip:'haltères', space:'standard', station:'haltères+banc',
     sets:3, reps:'10-12', rest:60, timePerRep:3,
     tips:'Amplitude contrôlée, coudes souples. Option : papillon du banc.',
     alt:[
@@ -17,7 +17,7 @@ const EXO_DB = [
       {id:'pushup_wide', name:'Pompes larges', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'row', name:'Rowing barre penché', cat:'upper', equip:'barre', space:'standard',
+  { id:'row', name:'Rowing barre penché', cat:'upper', equip:'barre', space:'standard', station:'barre+disques (debout)',
     sets:3, reps:'10-12', rest:75, timePerRep:3,
     tips:'Buste ~45°, tire vers l’ombilic, omoplates qui se rapprochent.',
     alt:[
@@ -25,7 +25,7 @@ const EXO_DB = [
       {id:'inverted_row', name:'Tirage sous table (inversé)', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'ohp', name:'Développé militaire — assis', cat:'upper', equip:'haltères', space:'standard',
+  { id:'ohp', name:'Développé militaire — assis', cat:'upper', equip:'haltères', space:'standard', station:'haltères+banc',
     sets:3, reps:'8-12', rest:75, timePerRep:3,
     tips:'Tronc gainé, ne casse pas les poignets, redescends sous contrôle.',
     alt:[
@@ -33,7 +33,7 @@ const EXO_DB = [
       {id:'landmine_press', name:'Presse à terre (barre coin)', equip:'barre', space:'faible'}
     ]
   },
-  { id:'curl', name:'Curl biceps (barre ou haltères)', cat:'upper', equip:'haltères', space:'faible',
+  { id:'curl', name:'Curl biceps (barre ou haltères)', cat:'upper', equip:'haltères', space:'faible', station:'haltères (debout)',
     sets:3, reps:'10-12', rest:60, timePerRep:3,
     tips:'Coudes près du corps, pas d’élan. Excentrique contrôlée.',
     alt:[
@@ -41,15 +41,15 @@ const EXO_DB = [
       {id:'towel_curl', name:'Curl isométrique serviette', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'skull', name:'Triceps : barre front', cat:'upper', equip:'barre', space:'standard',
+  { id:'skull', name:'Triceps : barre front', cat:'upper', equip:'barre', space:'standard', station:'barre+banc+disques',
     sets:3, reps:'10-12', rest:60, timePerRep:3,
     tips:'Coudes fixes, descends derrière le front puis extension complète.',
     alt:[
       {id:'bench_dip', name:'Dips banc', equip:'banc', space:'faible'},
-      {id:'oh_triceps', name:'Triceps au‑dessus tête — haltère', equip:'haltères', space:'faible'}
+      {id:'oh_triceps', name:'Triceps au-dessus tête — haltère', equip:'haltères', space:'faible'}
     ]
   },
-  { id:'plank', name:'Gainage planche', cat:'upper', equip:'poids_corps', space:'faible',
+  { id:'plank', name:'Gainage planche', cat:'upper', equip:'poids_corps', space:'faible', station:'poids du corps (tapis)',
     sets:3, reps:'30-45s', rest:45, timePerRep:1,
     tips:'Coudes sous épaules, bassin neutre.',
     alt:[
@@ -57,7 +57,7 @@ const EXO_DB = [
     ]
   },
   // Lower
-  { id:'squat', name:'Squat (barre ou poids du corps)', cat:'lower', equip:'barre', space:'standard',
+  { id:'squat', name:'Squat (barre ou poids du corps)', cat:'lower', equip:'barre', space:'standard', station:'barre+disques (debout)',
     sets:3, reps:'10-15', rest:75, timePerRep:3,
     tips:'Descends en poussant les hanches en arrière, genoux suivent la pointe.',
     alt:[
@@ -65,7 +65,7 @@ const EXO_DB = [
       {id:'chair_squat', name:'Squat à la chaise', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'lunge', name:'Fentes avant — haltères', cat:'lower', equip:'haltères', space:'standard',
+  { id:'lunge', name:'Fentes avant — haltères', cat:'lower', equip:'haltères', space:'standard', station:'haltères (debout)',
     sets:3, reps:'10/jamb', rest:60, timePerRep:3,
     tips:'Grand pas, torse vertical, pousse dans le talon avant.',
     alt:[
@@ -73,7 +73,7 @@ const EXO_DB = [
       {id:'step_up', name:'Montées sur marche', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'legext', name:'Extension jambes — levier du banc', cat:'lower', equip:'banc', space:'standard',
+  { id:'legext', name:'Extension jambes — levier du banc', cat:'lower', equip:'banc', space:'standard', station:'banc (levier)',
     sets:3, reps:'12-15', rest:60, timePerRep:3,
     tips:'Tends sans verrouiller. Pause 1s en haut, redescends en 3s.',
     alt:[
@@ -81,7 +81,7 @@ const EXO_DB = [
       {id:'wall_sit', name:'Chaise au mur (isométrique)', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'rdl', name:'Soulevé de terre jambes tendues', cat:'lower', equip:'barre', space:'standard',
+  { id:'rdl', name:'Soulevé de terre jambes tendues', cat:'lower', equip:'barre', space:'standard', station:'barre+disques (debout)',
     sets:3, reps:'12', rest:75, timePerRep:3,
     tips:'Charnière de hanches, barre proche des jambes, dos plat.',
     alt:[
@@ -89,19 +89,19 @@ const EXO_DB = [
       {id:'hip_hinge', name:'Hip hinge au bâton', equip:'poids_corps', space:'faible'}
     ]
   },
-  { id:'hip', name:'Hip Thrust / Pont fessier — barre', cat:'lower', equip:'barre', space:'standard',
+  { id:'hip', name:'Hip Thrust / Pont fessier — barre', cat:'lower', equip:'barre', space:'standard', station:'barre+banc+disques',
     sets:3, reps:'12', rest:60, timePerRep:3,
-    tips:'Aligne épaules‑hanches‑genoux, tension continue.',
+    tips:'Aligne épaules-hanches-genoux, tension continue.',
     alt:[
       {id:'glute_bridge', name:'Pont fessier au sol', equip:'poids_corps', space:'faible'},
       {id:'single_glute', name:'Pont fessier une jambe', equip:'poids_corps', space:'faible'}
     ]
   },
   // Warm / Stretch (quelques entrées)
-  { id:'jj', name:'Jumping jacks', cat:'warm', equip:'poids_corps', space:'faible', sets:2, reps:'30s', rest:30, timePerRep:1, tips:'Impact léger, genoux souples.', alt:[] },
-  { id:'mob', name:'Mobilité épaules & hanches', cat:'warm', equip:'poids_corps', space:'faible', sets:1, reps:'1-2min', rest:0, timePerRep:1, tips:'Recherche la fluidité.', alt:[] },
-  { id:'chest_st', name:'Étirement pectoraux au mur', cat:'stretch', equip:'poids_corps', space:'faible', sets:1, reps:'20-30s', rest:0, timePerRep:1, tips:'Ouvre doucement la poitrine.', alt:[] },
-  { id:'hams_st', name:'Ischios — assis', cat:'stretch', equip:'poids_corps', space:'faible', sets:1, reps:'20-30s', rest:0, timePerRep:1, tips:'Dos long, penche depuis les hanches.', alt:[] },
+  { id:'jj', name:'Jumping jacks', cat:'warm', equip:'poids_corps', space:'faible', station:'poids du corps (tapis)', sets:2, reps:'30s', rest:30, timePerRep:1, tips:'Impact léger, genoux souples.', alt:[] },
+  { id:'mob', name:'Mobilité épaules & hanches', cat:'warm', equip:'poids_corps', space:'faible', station:'poids du corps (tapis)', sets:1, reps:'1-2min', rest:0, timePerRep:1, tips:'Recherche la fluidité.', alt:[] },
+  { id:'chest_st', name:'Étirement pectoraux au mur', cat:'stretch', equip:'poids_corps', space:'faible', station:'poids du corps (tapis)', sets:1, reps:'20-30s', rest:0, timePerRep:1, tips:'Ouvre doucement la poitrine.', alt:[] },
+  { id:'hams_st', name:'Ischios — assis', cat:'stretch', equip:'poids_corps', space:'faible', station:'poids du corps (tapis)', sets:1, reps:'20-30s', rest:0, timePerRep:1, tips:'Dos long, penche depuis les hanches.', alt:[] },
 ];
 
 // --- Helpers ---
@@ -231,6 +231,46 @@ function getFormVals(form){
   };
 }
 function clamp(n,min,max){ return Math.min(max, Math.max(min, n)); }
+function orderPlan(list, strategy, mode){
+  if(strategy==='balanced'){
+    return list;
+  }
+  if(strategy==='min_switch'){
+    const prio = [
+      'barre+banc+disques',
+      'haltères+banc',
+      'barre+disques (debout)',
+      'banc (levier)',
+      'haltères (debout)',
+      'poids du corps (tapis)'
+    ];
+    const idx = s => {
+      const i = prio.indexOf(s||'');
+      return i === -1 ? 999 : i;
+    };
+    return list.slice().sort((a,b)=>{
+      const da = idx(a.station), db = idx(b.station);
+      if(da!==db) return da-db;
+      const pushNames = ['Développé','Écartés','Hip Thrust','Extension'];
+      const isPush = x => pushNames.some(k=> (x.name||'').includes(k));
+      if(isPush(a) !== isPush(b)) return isPush(a) ? -1 : 1;
+      return 0;
+    });
+  }
+  if(strategy==='pushpull'){
+    const pushK = ['Développé','Écartés','Pompes','Hip Thrust','Extension'];
+    const pullK = ['Rowing','Soulevé','Curl','Tirage','Good Morning','Gainage'];
+    const score = (x)=> (pushK.some(k=>x.name.includes(k))?0 : (pullK.some(k=>x.name.includes(k))?1:2));
+    return list.slice().sort((a,b)=>{
+      const da=score(a), db=score(b);
+      if(da!==db) return da-db;
+      if(a.station!==b.station) return (a.station||'').localeCompare(b.station||'');
+      return 0;
+    });
+  }
+  return list;
+}
+
 
 function buildPlan(){
   const mode = $('#mode').value;
@@ -241,6 +281,7 @@ function buildPlan(){
   const space = $('#space').value;
   const equip = $('#equip').value;
 
+    const order = $('#order').value;
   // pick pool by mode then filter by constraints then slice nb unique
   let pool = pickByMode(mode);
   pool = filterByConstraints(pool, equip, space);
@@ -256,9 +297,9 @@ function buildPlan(){
       else if(low.length) plan.push(low.shift());
       i++;
     }
-    renderPlan(plan, sets, reps, rest);
+    renderPlan(orderPlan(plan, order, mode), sets, reps, rest);
   } else {
-    renderPlan(pool.slice(0,nb), sets, reps, rest);
+    renderPlan(orderPlan(pool.slice(0,nb), order, mode), sets, reps, rest);
   }
 }
 
