@@ -216,7 +216,7 @@ function computeQuotas(total, enabled, manual, autoSplit){
 function pickN(lst, n){ return lst.slice(0, Math.max(0,n)); }
 
 function buildAll(){
-  const nbTotal = clamp(parseInt($('#nbExo').value,10),3,20);
+  // paramètres généraux
   const sets = clamp(parseInt($('#sets').value,10),1,5);
   const reps = clamp(parseInt($('#reps').value,10),1,30);
   const rest = clamp(parseInt($('#rest').value,10),15,240);
@@ -227,12 +227,11 @@ function buildAll(){
   const autoSplit = $('#autoSplit').checked;
   const mode = $('#mode').value;
 
+  // blocs cochés
   const enabled = new Set([...$$('#zones input:checked')].map(i=>i.value));
-  if(mode!=='full'){ // mode ciblé = un seul bloc
-    enabled.clear(); enabled.add(mode);
-  }
+  if(mode!=='full'){ enabled.clear(); enabled.add(mode); }
 
-  // quotas manuels (depuis les spans)
+  // quotas "visuels" actuels (les spans)
   const manual = {
     warm: parseInt($('#q-warm').textContent,10),
     upper: parseInt($('#q-upper').textContent,10),
@@ -240,6 +239,22 @@ function buildAll(){
     core: parseInt($('#q-core').textContent,10),
     stretch: parseInt($('#q-stretch').textContent,10),
   };
+
+  // total demandé en haut (informatif si autoSplit désactivé)
+  let nbTotal = clamp(parseInt($('#nbExo').value,10), 0, 999);
+
+  // somme réelle des quotas activés
+  const sumManual = Object.entries(manual)
+    .filter(([k])=> enabled.has(k))
+    .reduce((a,[,v])=>a+v,0);
+
+  // si répartition auto désactivée : pas de rescale, on aligne juste l'affichage du total
+  if(!autoSplit){
+    nbTotal = sumManual;
+    $('#nbExo').value = String(nbTotal);
+  }
+
+  // calcule quotas finaux
   const q = computeQuotas(nbTotal, enabled, manual, autoSplit);
 
   // visibilité des sections selon quotas/enabled
@@ -288,11 +303,15 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   // boutons quotas +/-
   $$('.mini').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      const op = btn.dataset.q[0];            // '+' ou '-'
-      const cat = btn.dataset.q.slice(1);     // 'warm' | 'upper' | ...
+      // désactive la répartition auto dès qu’on personnalise un bloc
+      $('#autoSplit').checked = false;
+
+      const op = btn.dataset.q[0];         // '+' ou '-'
+      const cat = btn.dataset.q.slice(1);  // 'warm' | 'upper' | ...
       const span = $('#q-'+cat);
       const v = parseInt(span.textContent,10);
-      span.textContent = String(clamp(v + (op==='+'?1:-1), 0, 12));
+      span.textContent = String(clamp(v + (op==='+'?1:-1), 0, 20));
+
       buildAll();
     });
   });
