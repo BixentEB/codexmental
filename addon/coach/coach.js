@@ -1,6 +1,13 @@
-// --- Données d'exercices (cat, equip, space, alternatives) ---
+// ------------------------------
+// Helpers
+// ------------------------------
+const $ = (q,root=document)=>root.querySelector(q);
+const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+function clamp(n,min,max){ return Math.min(max, Math.max(min, n)); }
 
-// --- Chargement DB externe ---
+// ------------------------------
+// External DB loader (with fallback)
+// ------------------------------
 const EXO_FALLBACK = [
   { id:'bench', name:'Développé couché — barre', cat:'upper', equip:'barre', space:'standard', station:'barre+banc+disques', sets:3, reps:'8-12', rest:75, timePerRep:3, tips:'Omoplates serrées.', alt:['pushup','db_press'] },
   { id:'row', name:'Rowing barre penché', cat:'upper', equip:'barre', space:'standard', station:'barre+disques (debout)', sets:3, reps:'10-12', rest:75, timePerRep:3, tips:'Buste ~45°.', alt:['db_row'] },
@@ -13,67 +20,94 @@ async function loadDB(){
   try{
     const res = await fetch('exercises.json', {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
-    EXO_DB = await res.json();
+    const data = await res.json();
+    if(Array.isArray(data) && data.length) EXO_DB = data;
   }catch(e){
     console.warn('exercises.json non disponible, fallback utilisé', e);
+    EXO_DB = EXO_FALLBACK;
   }
 }
-
-
-// --- Helpers ---
-const $ = (q,root=document)=>root.querySelector(q);
-
 function byId(id){ return EXO_DB.find(x=>x.id===id); }
 
+// ------------------------------
+// Ordering strategies
+// ------------------------------
+function orderPlan(list, strategy, mode){
+  if(strategy==='balanced') return list;
 
-function pickByMode(mode){
-  if(mode==='full') return EXO_DB.filter(x=>x.cat==='upper' || x.cat==='lower').slice(0);
-  return EXO_DB.filter(x=>x.cat===mode);
-}
-
-function filterByConstraints(list, equip, space, zones, plateLite){
-  let L = list.filter(x=> zones.has(x.cat));
-  L = L.filter(x=>(equip==='all' || x.equip===equip || ((x.alt||[]).map(byId).filter(Boolean)).some(a=>a.equip===equip)));
-  L = L.filter(x=> (space===x.space || space==='standard' || x.space==='faible'));
-  if(plateLite){
-    const penalty = s => s==='barre+banc+disques'?3 : (s&&s.includes('barre+disques')?2 : 0);
-    L = L.slice().sort((a,b)=> penalty(a.station)-penalty(b.station));
+  if(strategy==='min_switch'){
+    const prio = [
+      'barre+banc+disques',
+      'haltères+banc',
+      'barre+disques (debout)',
+      'banc (levier)',
+      'haltères (debout)',
+      'poids du corps (tapis)'
+    ];
+    const idx = s => { const i = prio.indexOf(s||''); return i === -1 ? 999 : i; };
+    return list.slice().sort((a,b)=>{
+      const da = idx(a.station), db = idx(b.station);
+      if(da!==db) return da-db;
+      const pushNames = ['Développé','Écartés','Hip Thrust','Extension'];
+      const isPush = x => pushNames.some(k=> (x.name||'').includes(k));
+      if(isPush(a) !== isPush(b)) return isPush(a) ? -1 : 1;
+      return 0;
+    });
   }
-  return L;
+
+  if(strategy==='pushpull'){
+    const pushK = ['Développé','Écartés','Pompes','Hip Thrust','Extension'];
+    const pullK = ['Rowing','Soulevé','Curl','Tirage','Good Morning','Gainage'];
+    const score = (x)=> (pushK.some(k=>x.name.includes(k))?0 : (pullK.some(k=>x.name.includes(k))?1:2));
+    return list.slice().sort((a,b)=>{
+      const da=score(a), db=score(b);
+      if(da!==db) return da-db;
+      if(a.station!==b.station) return (a.station||'').localeCompare(b.station||'');
+      return 0;
+    });
+  }
+  return list;
 }
 
-
+// ------------------------------
+// Duration & misc helpers
+// ------------------------------
 function estimateDurationSec(plan, sets, reps, rest){
-  // reps might be range like "8-12" or "30s"; simplify
   let repN = parseInt(String(reps).split(/[-/s]/)[0],10);
   if(Number.isNaN(repN)) repN = 10;
   let total = 0;
   for(const ex of plan){
     const tRep = ex.timePerRep || 3;
     const s = sets;
-    const perSet = (repN * tRep) + 30 /*setup approx*/ + rest;
+    const perSet = (repN * tRep) + 30 + rest; // +30s setup
     total += s * perSet;
   }
   return Math.round(total);
 }
+function fmtTime(sec){ const m = Math.floor(sec/60), s= sec%60; return `${m}m ${String(s).padStart(2,'0')}s`; }
 
-function fmtTime(sec){
-  const m = Math.floor(sec/60), s= sec%60;
-  return `${m}m ${String(s).padStart(2,'0')}s`;
+// ------------------------------
+// Persistence
+// ------------------------------
+const KEY = 'coach_session_v1';
+function loadAll(){ try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; } }
+function saveAll(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); }
+function saveEntry(id, name, vals){
+  const all = loadAll();
+  const row = {
+    ts: new Date().toISOString(),
+    id, name,
+    sets: vals.sets, reps: vals.reps, rest: vals.rest,
+    kg: vals.kg, rpe: vals.rpe,
+    volume: vals.kg * vals.reps * vals.sets
+  };
+  all.push(row);
+  saveAll(all);
 }
 
-function numberInput(min, max, val, step=1){
-  const i = document.createElement('input');
-  i.type='number'; i.min=min; i.max=max; i.value=val; i.step=step;
-  i.className='';
-  return i;
-}
-
-// --- UI Build ---
-const listEl = $('#exerciseList');
-const kDur = $('#kDur'), kVol=$('#kVol'), kRpe=$('#kRpe');
-const logEl = $('#log');
-
+// ------------------------------
+// UI builders
+// ------------------------------
 function buildCard(ex){
   const det = document.createElement('details');
   det.className='card';
@@ -88,7 +122,7 @@ function buildCard(ex){
       <div class="row">
         <div class="tips">${ex.tips||''}</div>
         <div class="alt" role="group" aria-label="Alternatives">
-          ${ex.alt.map(a=>`<button class="chip" data-replace="${a.id}">${a.name}</button>`).join('') || '<span class="tips">Aucune alternative listée</span>'}
+          ${(ex.alt||[]).map(aid=>{ const a=typeof aid==='string'?byId(aid):aid; return a?`<button class="chip" data-replace="${a.id}">${a.name}</button>`:''; }).join('') || '<span class="tips">Aucune alternative listée</span>'}
         </div>
       </div>
       <form class="form" onsubmit="return false">
@@ -103,48 +137,41 @@ function buildCard(ex){
             <button class="btn act-add">Valider exo</button>
           </div>
         </div>
-        <div class="tips js-est">Durée estimée pour cet exo : — • Volume : —</div>
+        <div class="tips js-est">Durée estimée pour cet exo : — • Volume : —</div>
       </form>
     </div>
   `;
-  // interactions
   det.addEventListener('click', (e)=>{
     const btn = e.target.closest('[data-replace]');
     if(btn){
       const replId = btn.dataset.replace;
-      const alt = EXO_DB.find(x=>x.id===replId);
+      const alt = byId(replId);
       if(alt){
-        // Remplacer le titre + badge + meta dans la carte courante
         det.querySelector('.name').textContent = alt.name;
         det.querySelector('.badge').textContent = `${alt.sets} × ${alt.reps}`;
         det.dataset.id = alt.id;
         det.querySelector('.tips').textContent = alt.tips || '';
-        // rebuild alternatives list of the new exercise
-        det.querySelector('.alt').innerHTML = alt.alt.map(a=>`<button class="chip" data-replace="${a.id}">${a.name}</button>`).join('') || '<span class="tips">Aucune alternative listée</span>';
-        // reset form defaults
+        det.querySelector('.alt').innerHTML = (alt.alt||[]).map(aid=>{ const a=byId(aid); return a?`<button class="chip" data-replace="${a.id}">${a.name}</button>`:''; }).join('') || '<span class="tips">Aucune alternative listée</span>';
         det.querySelector('input[name=sets]').value = alt.sets;
         det.querySelector('input[name=reps]').value = parseInt(String(alt.reps),10)||10;
         det.querySelector('input[name=rest]').value = alt.rest;
-        det.querySelector('.js-est').textContent = 'Durée estimée pour cet exo : — • Volume : —';
+        det.querySelector('.js-est').textContent = 'Durée estimée pour cet exo : — • Volume : —';
       }
       e.preventDefault();
     }
   });
-
   const form = det.querySelector('form');
   form.querySelector('.act-calc').addEventListener('click', ()=>{
     const v = getFormVals(form);
     const t = estimateDurationSec([ex], v.sets, v.reps, v.rest);
     const vol = v.kg * v.reps * v.sets;
-    det.querySelector('.js-est').textContent = `Durée estimée pour cet exo : ${fmtTime(t)} • Volume : ${vol} kg·rep • RPE ${v.rpe}`;
+    det.querySelector('.js-est').textContent = `Durée estimée pour cet exo : ${fmtTime(t)} • Volume : ${vol} kg·rep • RPE ${v.rpe}`;
   });
   form.querySelector('.act-add').addEventListener('click', ()=>{
     const v = getFormVals(form);
     saveEntry(det.dataset.id, det.querySelector('.name').textContent, v);
-    toast(`Enregistré : ${det.querySelector('.name').textContent} (${v.sets}×${v.reps} @ ${v.kg}kg, RPE ${v.rpe})`);
     updateSummary();
   });
-
   return det;
 }
 
@@ -157,80 +184,44 @@ function getFormVals(form){
     rpe: clamp(parseFloat(form.rpe.value)||0,0,10)
   };
 }
-function clamp(n,min,max){ return Math.min(max, Math.max(min, n)); }
 
-function buildPlan(){
-  const mode = $('#mode').value;
-  const nb = clamp(parseInt($('#nbExo').value,10),1,12);
-  const zonesSel = new Set([...$$('#zones input:checked')].map(i=>i.value));
-  if(zonesSel.size===0){ zonesSel.add('upper'); zonesSel.add('lower'); }
-  const plateLite = $('#plateLite')?.checked || false;
-  const sets = clamp(parseInt($('#sets').value,10),1,5);
-  const reps = clamp(parseInt($('#reps').value,10),1,30);
-  const rest = clamp(parseInt($('#rest').value,10),15,240);
-  const space = $('#space').value;
-  const equip = $('#equip').value;
-
-  // pick pool by mode then filter by constraints then slice nb unique
-  let pool = pickByMode(mode);
-  pool = filterByConstraints(pool, equip, space, zonesSel, plateLite);
-
-  // Ensure representation of both chains in full‑body
-  if(mode==='full'){
-    const upp = pool.filter(x=>x.cat==='upper');
-    const low = pool.filter(x=>x.cat==='lower');
-    const plan = [];
-    let i=0;
-    while(plan.length<nb && (upp.length || low.length)){
-      if(i%2===0 && upp.length) plan.push(upp.shift());
-      else if(low.length) plan.push(low.shift());
-      i++;
-    }
-    renderPlan(plan, sets, reps, rest);
-  } else {
-    renderPlan(pool.slice(0,nb), sets, reps, rest);
+// ------------------------------
+// Filters
+// ------------------------------
+function pickByMode(mode){
+  if(mode==='full') return EXO_DB.filter(x=>x.cat==='upper' || x.cat==='lower' || x.cat==='core').slice(0);
+  return EXO_DB.filter(x=>x.cat===mode);
+}
+function filterByConstraints(list, equip, space, zones, plateLite){
+  let L = list.filter(x=> zones.has(x.cat));
+  L = L.filter(x=>(equip==='all' || x.equip===equip || ((x.alt||[]).map(byId).filter(Boolean)).some(a=>a.equip===equip)));
+  L = L.filter(x=> (space===x.space || space==='standard' || x.space==='faible'));
+  if(plateLite){
+    const penalty = s => s==='barre+banc+disques'?3 : (s&&s.includes('barre+disques')?2 : 0);
+    L = L.slice().sort((a,b)=> penalty(a.station)-penalty(b.station));
   }
+  return L;
 }
 
+// ------------------------------
+// Rendering
+// ------------------------------
+let listEl, kDur, kVol, kRpe, logEl;
 function renderPlan(list, sets, reps, rest){
   listEl.innerHTML='';
   list.forEach(ex=>{
     const card = buildCard(ex);
-    // override default badge to reflect global choices
     card.querySelector('.badge').textContent = `${sets} × ${reps}`;
     card.querySelector('input[name=sets]').value = sets;
     card.querySelector('input[name=reps]').value = reps;
     card.querySelector('input[name=rest]').value = rest;
     listEl.appendChild(card);
   });
-  // update duration estimate for whole plan
   const t = estimateDurationSec(list, sets, reps, rest);
   kDur.textContent = fmtTime(t);
   kVol.textContent = '—';
   kRpe.textContent = '—';
   logEl.textContent = '';
-}
-
-// --- Persistance (localStorage) ---
-const KEY = 'coach_session_v1';
-
-function loadAll(){
-  try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; }
-}
-function saveAll(arr){
-  localStorage.setItem(KEY, JSON.stringify(arr));
-}
-function saveEntry(id, name, vals){
-  const all = loadAll();
-  const row = {
-    ts: new Date().toISOString(),
-    id, name,
-    sets: vals.sets, reps: vals.reps, rest: vals.rest,
-    kg: vals.kg, rpe: vals.rpe,
-    volume: vals.kg * vals.reps * vals.sets
-  };
-  all.push(row);
-  saveAll(all);
 }
 
 function updateSummary(){
@@ -244,14 +235,13 @@ function updateSummary(){
   const avgRpe = (all.reduce((a,b)=>a+b.rpe,0) / all.length).toFixed(1);
   kVol.textContent = `${Math.round(totalVol)} kg·rep`;
   kRpe.textContent = `${avgRpe}`;
-
   const lines = all.slice(-12).map(r=>`• ${new Date(r.ts).toLocaleTimeString()} — ${r.name}: ${r.sets}×${r.reps} @ ${r.kg}kg (RPE ${r.rpe}) → ${Math.round(r.volume)} kg·rep`);
   logEl.textContent = lines.join('\n');
 }
 
 function exportCSV(){
   const all = loadAll();
-  if(!all.length){ toast('Rien à exporter'); return; }
+  if(!all.length){ console.log('Rien à exporter'); return; }
   const head = ['timestamp','id','name','sets','reps','rest','kg','rpe','volume'];
   const rows = all.map(r=>[r.ts,r.id,`"${r.name.replace(/"/g,'""')}"`,r.sets,r.reps,r.rest,r.kg,r.rpe,r.volume].join(','));
   const csv = [head.join(','), ...rows].join('\n');
@@ -266,18 +256,64 @@ function exportCSV(){
 function resetAll(){
   localStorage.removeItem(KEY);
   updateSummary();
-  toast('Séance réinitialisée');
 }
 
-function toast(msg){
-  console.log(msg);
+// ------------------------------
+// Build plan
+// ------------------------------
+function buildPlan(){
+  const mode = $('#mode').value;
+  const nb = clamp(parseInt($('#nbExo').value,10),1,12);
+  const sets = clamp(parseInt($('#sets').value,10),1,5);
+  const reps = clamp(parseInt($('#reps').value,10),1,30);
+  const rest = clamp(parseInt($('#rest').value,10),15,240);
+  const space = $('#space').value;
+  const equip = $('#equip').value;
+  const order = $('#order') ? $('#order').value : 'balanced';
+  const zonesSel = new Set([...$$('#zones input:checked')].map(i=>i.value));
+  if(zonesSel.size===0){ zonesSel.add('upper'); zonesSel.add('lower'); }
+  const plateLite = $('#plateLite')?.checked || false;
+
+  let pool = pickByMode(mode);
+  pool = filterByConstraints(pool, equip, space, zonesSel, plateLite);
+
+  if(mode==='full'){
+    const upp = pool.filter(x=>x.cat==='upper');
+    const low = pool.filter(x=>x.cat==='lower');
+    const core = pool.filter(x=>x.cat==='core');
+    const plan = [];
+    let i=0;
+    while(plan.length<nb && (upp.length || low.length || core.length)){
+      if(i%3===0 && upp.length) plan.push(upp.shift());
+      else if(i%3===1 && low.length) plan.push(low.shift());
+      else if(core.length) plan.push(core.shift());
+      i++;
+    }
+    renderPlan(orderPlan(plan, order, mode), sets, reps, rest);
+  } else {
+    renderPlan(orderPlan(pool.slice(0,nb), order, mode), sets, reps, rest);
+  }
 }
 
-// --- Wire ---
-$('#btnBuild').addEventListener('click', buildPlan);
-$('#btnSave').addEventListener('click', updateSummary);
-$('#btnCsv').addEventListener('click', exportCSV);
-$('#btnReset').addEventListener('click', resetAll);
+// ------------------------------
+// Boot
+// ------------------------------
+document.addEventListener('DOMContentLoaded', async () => {
+  listEl = $('#exerciseList');
+  kDur = $('#kDur'); kVol=$('#kVol'); kRpe=$('#kRpe');
+  logEl = $('#log');
 
-// initial render
-loadDB().then(()=>{ buildPlan(); updateSummary(); });
+  const btnBuild = $('#btnBuild');
+  const btnSave = $('#btnSave');
+  const btnCsv = $('#btnCsv');
+  const btnReset = $('#btnReset');
+
+  if(btnBuild) btnBuild.addEventListener('click', buildPlan);
+  if(btnSave) btnSave.addEventListener('click', updateSummary);
+  if(btnCsv) btnCsv.addEventListener('click', exportCSV);
+  if(btnReset) btnReset.addEventListener('click', resetAll);
+
+  await loadDB();
+  buildPlan();
+  updateSummary();
+});
