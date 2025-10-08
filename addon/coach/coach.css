@@ -76,3 +76,6 @@ details[open] summary .plus{transform:rotate(45deg)}
 .zones{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .zones label{display:flex;gap:6px;align-items:center;color:var(--text);font-size:13px}
 .toggle{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--text)}
+
+.controls { position: relative; z-index: 0; }
+#btnBuild { position: relative; z-index: 1; }
