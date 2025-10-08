@@ -95,3 +95,15 @@ details[open] summary .plus{transform:rotate(45deg)}
 .zones{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .zones label{display:flex;gap:6px;align-items:center;color:var(--text);font-size:13px}
 .toggle{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--text)}
+
+
+/* Empêche tout overlay de label sur le bouton Générer */
+.controls{ position: relative; }
+#btnBuild{ position: relative; z-index: 2; }
+
+/* Style des mini-boutons désactivés */
+button.mini[disabled]{
+  opacity:.45;
+  cursor:not-allowed;
+  border-color: rgba(125,211,252,.2);
+}
