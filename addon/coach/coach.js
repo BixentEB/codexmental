@@ -193,16 +193,13 @@ function renderBlock(cat, list, sets, reps, rest){
 const DEFAULT_QUOTAS = { warm:2, upper:3, lower:3, core:2, stretch:2 };
 function computeQuotas(total, enabled, manual, autoSplit){
   const q = {...DEFAULT_QUOTAS, ...manual};
-  // désactive les quotas des blocs non cochés
   for(const k of Object.keys(q)){ if(!enabled.has(k)) q[k]=0; }
   let sum = Object.values(q).reduce((a,b)=>a+b,0);
   if(!autoSplit || sum===0) return q;
 
   const scale = total / sum;
-  // d’abord arrondir
   let out = {};
   for(const k of Object.keys(q)) out[k] = Math.floor(q[k]*scale);
-  // répartir le reliquat
   let used = Object.values(out).reduce((a,b)=>a+b,0);
   const order = ['upper','lower','core','warm','stretch'];
   let i=0; while(used<total){
@@ -214,6 +211,13 @@ function computeQuotas(total, enabled, manual, autoSplit){
 
 // ===== Build plan (multi-bloc) =====
 function pickN(lst, n){ return lst.slice(0, Math.max(0,n)); }
+
+function setMiniState(cat, qVal, maxAvail){
+  const plus = document.querySelector(`button[data-q="+${cat}"]`);
+  const minus= document.querySelector(`button[data-q="-${cat}"]`);
+  if(plus){ plus.disabled = qVal >= maxAvail; }
+  if(minus){ minus.disabled = qVal <= 0; }
+}
 
 function buildAll(){
   // paramètres généraux
@@ -257,22 +261,36 @@ function buildAll(){
   // calcule quotas finaux
   const q = computeQuotas(nbTotal, enabled, manual, autoSplit);
 
-  // visibilité des sections selon quotas/enabled
+  // --- pools filtrés par bloc pour connaître le max disponible & rendre
+  let totalSec = 0;
   for(const cat of ['warm','upper','lower','core','stretch']){
-    const sec = $(`#sec-${cat}`);
-    sec.style.display = (enabled.has(cat) && q[cat]>0) ? '' : 'none';
-  }
+    const secEl = $(`#sec-${cat}`);
+    const spanEl = $(`#q-${cat}`);
+    const enabledCat = enabled.has(cat) && q[cat]>0;
 
-  let totalSec = 0, grandList = [];
+    // mettre à jour l'affichage du quota utilisé (même en autoSplit)
+    spanEl.textContent = String(q[cat]);
 
-  for(const cat of ['warm','upper','lower','core','stretch']){
-    if(!(enabled.has(cat) && q[cat]>0)) continue;
+    // visibilité
+    secEl.style.display = enabled.has(cat) && q[cat]>0 ? '' : 'none';
+
+    // calculer la liste dispo pour gérer le max des +/-
     let base = filterBase(cat);
     base = applyConstraints(base, equip, space, plateLite);
     base = orderPlan(base, order);
-    const chosen = pickN(base, q[cat]);
-    totalSec += renderBlock(cat, chosen, sets, reps, rest);
-    grandList.push(...chosen);
+    const maxAvail = base.length;
+
+    // état des boutons +/- selon disponibilités
+    setMiniState(cat, q[cat], maxAvail);
+
+    if(enabledCat){
+      const chosen = pickN(base, q[cat]);
+      totalSec += renderBlock(cat, chosen, sets, reps, rest);
+    }else{
+      // vide aussi la liste si masqué
+      $(`#list-${cat}`).innerHTML = '';
+      $(`#meta-${cat}`).textContent = '—';
+    }
   }
 
   // Récap général
