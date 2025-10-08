@@ -1,13 +1,9 @@
-// ------------------------------
-// Helpers
-// ------------------------------
+// ===== Helpers =====
 const $ = (q,root=document)=>root.querySelector(q);
 const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
-function clamp(n,min,max){ return Math.min(max, Math.max(min, n)); }
+const clamp = (n,min,max)=> Math.min(max, Math.max(min, n));
 
-// ------------------------------
-// External DB loader (with fallback)
-// ------------------------------
+// ===== External DB (fallback if JSON absent) =====
 const EXO_FALLBACK = [
   { id:'bench', name:'Développé couché — barre', cat:'upper', equip:'barre', space:'standard', station:'barre+banc+disques', sets:3, reps:'8-12', rest:75, timePerRep:3, tips:'Omoplates serrées.', alt:['pushup','db_press'] },
   { id:'row', name:'Rowing barre penché', cat:'upper', equip:'barre', space:'standard', station:'barre+disques (debout)', sets:3, reps:'10-12', rest:75, timePerRep:3, tips:'Buste ~45°.', alt:['db_row'] },
@@ -27,14 +23,11 @@ async function loadDB(){
     EXO_DB = EXO_FALLBACK;
   }
 }
-function byId(id){ return EXO_DB.find(x=>x.id===id); }
+const byId = id => EXO_DB.find(x=>x.id===id);
 
-// ------------------------------
-// Ordering strategies
-// ------------------------------
-function orderPlan(list, strategy, mode){
+// ===== Ordering strategies (appliquées par bloc) =====
+function orderPlan(list, strategy){
   if(strategy==='balanced') return list;
-
   if(strategy==='min_switch'){
     const prio = [
       'barre+banc+disques',
@@ -48,73 +41,58 @@ function orderPlan(list, strategy, mode){
     return list.slice().sort((a,b)=>{
       const da = idx(a.station), db = idx(b.station);
       if(da!==db) return da-db;
-      const pushNames = ['Développé','Écartés','Hip Thrust','Extension'];
-      const isPush = x => pushNames.some(k=> (x.name||'').includes(k));
-      if(isPush(a) !== isPush(b)) return isPush(a) ? -1 : 1;
-      return 0;
+      return (a.name||'').localeCompare(b.name||'');
     });
   }
-
   if(strategy==='pushpull'){
     const pushK = ['Développé','Écartés','Pompes','Hip Thrust','Extension'];
-    const pullK = ['Rowing','Soulevé','Curl','Tirage','Good Morning','Gainage'];
+    const pullK = ['Rowing','Soulevé','Curl','Tirage','Inversé'];
     const score = (x)=> (pushK.some(k=>x.name.includes(k))?0 : (pullK.some(k=>x.name.includes(k))?1:2));
     return list.slice().sort((a,b)=>{
       const da=score(a), db=score(b);
       if(da!==db) return da-db;
       if(a.station!==b.station) return (a.station||'').localeCompare(b.station||'');
-      return 0;
+      return (a.name||'').localeCompare(b.name||'');
     });
   }
   return list;
 }
 
-// ------------------------------
-// Duration & misc helpers
-// ------------------------------
+// ===== Misc =====
 function estimateDurationSec(plan, sets, reps, rest){
   let repN = parseInt(String(reps).split(/[-/s]/)[0],10);
   if(Number.isNaN(repN)) repN = 10;
   let total = 0;
   for(const ex of plan){
     const tRep = ex.timePerRep || 3;
-    const s = sets;
-    const perSet = (repN * tRep) + 30 + rest; // +30s setup
-    total += s * perSet;
+    const perSet = (repN * tRep) + 30 + rest; // +30s de setup
+    total += (sets || ex.sets || 3) * perSet;
   }
   return Math.round(total);
 }
-function fmtTime(sec){ const m = Math.floor(sec/60), s= sec%60; return `${m}m ${String(s).padStart(2,'0')}s`; }
+const fmtTime = sec => `${Math.floor(sec/60)}m ${String(sec%60).padStart(2,'0')}s`;
 
-// ------------------------------
-// Persistence
-// ------------------------------
+// ===== Persistence (localStorage) =====
 const KEY = 'coach_session_v1';
-function loadAll(){ try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; } }
-function saveAll(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); }
+const loadAll = ()=>{ try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; } };
+const saveAll = arr => localStorage.setItem(KEY, JSON.stringify(arr));
 function saveEntry(id, name, vals){
   const all = loadAll();
-  const row = {
-    ts: new Date().toISOString(),
-    id, name,
-    sets: vals.sets, reps: vals.reps, rest: vals.rest,
-    kg: vals.kg, rpe: vals.rpe,
-    volume: vals.kg * vals.reps * vals.sets
-  };
-  all.push(row);
-  saveAll(all);
+  const row = { ts:new Date().toISOString(), id, name,
+    sets:vals.sets, reps:vals.reps, rest:vals.rest, kg:vals.kg, rpe:vals.rpe,
+    volume: vals.kg * vals.reps * vals.sets };
+  all.push(row); saveAll(all);
 }
 
-// ------------------------------
-// UI builders
-// ------------------------------
-function buildCard(ex){
+// ===== UI: cards =====
+function buildCard(ex, globalSets, globalReps, globalRest){
   const det = document.createElement('details');
   det.className='card';
   det.dataset.id = ex.id;
+  const repInit = parseInt(String(ex.reps),10)||10;
   det.innerHTML = `
     <summary>
-      <span class="badge">${ex.sets} × ${ex.reps}</span>
+      <span class="badge">${globalSets} × ${globalReps}</span>
       <span class="name">${ex.name}</span>
       <span class="plus" aria-hidden="true">+</span>
     </summary>
@@ -122,14 +100,17 @@ function buildCard(ex){
       <div class="row">
         <div class="tips">${ex.tips||''}</div>
         <div class="alt" role="group" aria-label="Alternatives">
-          ${(ex.alt||[]).map(aid=>{ const a=typeof aid==='string'?byId(aid):aid; return a?`<button class="chip" data-replace="${a.id}">${a.name}</button>`:''; }).join('') || '<span class="tips">Aucune alternative listée</span>'}
+          ${(ex.alt||[]).map(aid=>{
+            const a = typeof aid==='string' ? byId(aid) : aid;
+            return a?`<button class="chip" data-replace="${a.id}">${a.name}</button>`:'';
+          }).join('') || '<span class="tips">Aucune alternative listée</span>'}
         </div>
       </div>
       <form class="form" onsubmit="return false">
         <div class="rowx">
-          <label>Séries<br><input name="sets" type="number" min="1" max="5" value="${ex.sets}"></label>
-          <label>Reps<br><input name="reps" type="number" min="1" max="30" value="${parseInt(String(ex.reps),10)||10}"></label>
-          <label>Repos (s)<br><input name="rest" type="number" min="15" max="240" value="${ex.rest}"></label>
+          <label>Séries<br><input name="sets" type="number" min="1" max="5" value="${globalSets}"></label>
+          <label>Reps<br><input name="reps" type="number" min="1" max="30" value="${globalReps||repInit}"></label>
+          <label>Repos (s)<br><input name="rest" type="number" min="15" max="240" value="${globalRest||ex.rest}"></label>
           <label>Charge (kg)<br><input name="kg" type="number" min="0" max="300" step="0.5" value="0"></label>
           <label>RPE (0–10)<br><input name="rpe" type="number" min="0" max="10" step="0.5" value="6"></label>
           <div style="align-self:end;display:flex;gap:8px;justify-content:flex-end">
@@ -141,31 +122,32 @@ function buildCard(ex){
       </form>
     </div>
   `;
+
   det.addEventListener('click', (e)=>{
     const btn = e.target.closest('[data-replace]');
-    if(btn){
-      const replId = btn.dataset.replace;
-      const alt = byId(replId);
-      if(alt){
-        det.querySelector('.name').textContent = alt.name;
-        det.querySelector('.badge').textContent = `${alt.sets} × ${alt.reps}`;
-        det.dataset.id = alt.id;
-        det.querySelector('.tips').textContent = alt.tips || '';
-        det.querySelector('.alt').innerHTML = (alt.alt||[]).map(aid=>{ const a=byId(aid); return a?`<button class="chip" data-replace="${a.id}">${a.name}</button>`:''; }).join('') || '<span class="tips">Aucune alternative listée</span>';
-        det.querySelector('input[name=sets]').value = alt.sets;
-        det.querySelector('input[name=reps]').value = parseInt(String(alt.reps),10)||10;
-        det.querySelector('input[name=rest]').value = alt.rest;
-        det.querySelector('.js-est').textContent = 'Durée estimée pour cet exo : — • Volume : —';
-      }
-      e.preventDefault();
-    }
+    if(!btn) return;
+    const alt = byId(btn.dataset.replace);
+    if(!alt) return;
+    det.querySelector('.name').textContent = alt.name;
+    det.querySelector('.badge').textContent = `${globalSets} × ${globalReps}`;
+    det.dataset.id = alt.id;
+    det.querySelector('.tips').textContent = alt.tips || '';
+    det.querySelector('.alt').innerHTML = (alt.alt||[]).map(aid=>{
+      const a=byId(aid); return a?`<button class="chip" data-replace="${a.id}">${a.name}</button>`:''; }).join('') || '<span class="tips">Aucune alternative listée</span>';
+    const form = det.querySelector('form');
+    form.sets.value = globalSets;
+    form.reps.value = globalReps;
+    form.rest.value = globalRest || alt.rest;
+    det.querySelector('.js-est').textContent = 'Durée estimée pour cet exo : — • Volume : —';
+    e.preventDefault();
   });
+
   const form = det.querySelector('form');
   form.querySelector('.act-calc').addEventListener('click', ()=>{
     const v = getFormVals(form);
     const t = estimateDurationSec([ex], v.sets, v.reps, v.rest);
     const vol = v.kg * v.reps * v.sets;
-    det.querySelector('.js-est').textContent = `Durée estimée pour cet exo : ${fmtTime(t)} • Volume : ${vol} kg·rep • RPE ${v.rpe}`;
+    det.querySelector('.js-est').textContent = `Durée estimée pour cet exo : ${fmtTime(t)} • Volume : ${Math.round(vol)} kg·rep • RPE ${v.rpe}`;
   });
   form.querySelector('.act-add').addEventListener('click', ()=>{
     const v = getFormVals(form);
@@ -174,28 +156,21 @@ function buildCard(ex){
   });
   return det;
 }
+const getFormVals = (form)=>({
+  sets: clamp(parseInt(form.sets.value,10),1,5),
+  reps: clamp(parseInt(form.reps.value,10),1,60),
+  rest: clamp(parseInt(form.rest.value,10),15,240),
+  kg: Math.max(0, parseFloat(form.kg.value)||0),
+  rpe: clamp(parseFloat(form.rpe.value)||0,0,10)
+});
 
-function getFormVals(form){
-  return {
-    sets: clamp(parseInt(form.sets.value,10),1,5),
-    reps: clamp(parseInt(form.reps.value,10),1,60),
-    rest: clamp(parseInt(form.rest.value,10),15,240),
-    kg: Math.max(0, parseFloat(form.kg.value)||0),
-    rpe: clamp(parseFloat(form.rpe.value)||0,0,10)
-  };
-}
-
-// ------------------------------
-// Filters
-// ------------------------------
-function pickByMode(mode){
-  if(mode==='full') return EXO_DB.filter(x=>x.cat==='upper' || x.cat==='lower' || x.cat==='core').slice(0);
-  return EXO_DB.filter(x=>x.cat===mode);
-}
-function filterByConstraints(list, equip, space, zones, plateLite){
-  let L = list.filter(x=> zones.has(x.cat));
-  L = L.filter(x=>(equip==='all' || x.equip===equip || ((x.alt||[]).map(byId).filter(Boolean)).some(a=>a.equip===equip)));
-  L = L.filter(x=> (space===x.space || space==='standard' || x.space==='faible'));
+// ===== Filters =====
+function filterBase(cat){ return EXO_DB.filter(x=>x.cat===cat); }
+function applyConstraints(list, equip, space, plateLite){
+  let L = list.filter(x=> (space===x.space || space==='standard' || x.space==='faible'));
+  if(equip!=='all'){
+    L = L.filter(x=> x.equip===equip || ((x.alt||[]).map(byId).filter(Boolean)).some(a=>a.equip===equip));
+  }
   if(plateLite){
     const penalty = s => s==='barre+banc+disques'?3 : (s&&s.includes('barre+disques')?2 : 0);
     L = L.slice().sort((a,b)=> penalty(a.station)-penalty(b.station));
@@ -203,42 +178,98 @@ function filterByConstraints(list, equip, space, zones, plateLite){
   return L;
 }
 
-// ------------------------------
-// Rendering
-// ------------------------------
-let listEl, kDur, kVol, kRpe, logEl;
-function renderPlan(list, sets, reps, rest){
-  listEl.innerHTML='';
-  list.forEach(ex=>{
-    const card = buildCard(ex);
-    card.querySelector('.badge').textContent = `${sets} × ${reps}`;
-    card.querySelector('input[name=sets]').value = sets;
-    card.querySelector('input[name=reps]').value = reps;
-    card.querySelector('input[name=rest]').value = rest;
-    listEl.appendChild(card);
-  });
-  const t = estimateDurationSec(list, sets, reps, rest);
-  kDur.textContent = fmtTime(t);
-  kVol.textContent = '—';
-  kRpe.textContent = '—';
-  logEl.textContent = '';
+// ===== Render per block =====
+function renderBlock(cat, list, sets, reps, rest){
+  const elList = $(`#list-${cat}`);
+  const elMeta = $(`#meta-${cat}`);
+  elList.innerHTML = '';
+  list.forEach(ex => elList.appendChild(buildCard(ex, sets, reps, rest)));
+  const sec = estimateDurationSec(list, sets, reps, rest);
+  elMeta.textContent = list.length ? `${list.length} exos · ~${fmtTime(sec)}` : '—';
+  return sec;
 }
 
-function updateSummary(){
-  const all = loadAll();
-  if(!all.length){
-    kVol.textContent = '—'; kRpe.textContent='—';
-    logEl.textContent = 'Aucune saisie pour cette séance.';
-    return;
+// ===== Quotas =====
+const DEFAULT_QUOTAS = { warm:2, upper:3, lower:3, core:2, stretch:2 };
+function computeQuotas(total, enabled, manual, autoSplit){
+  const q = {...DEFAULT_QUOTAS, ...manual};
+  // désactive les quotas des blocs non cochés
+  for(const k of Object.keys(q)){ if(!enabled.has(k)) q[k]=0; }
+  let sum = Object.values(q).reduce((a,b)=>a+b,0);
+  if(!autoSplit || sum===0) return q;
+
+  const scale = total / sum;
+  // d’abord arrondir
+  let out = {};
+  for(const k of Object.keys(q)) out[k] = Math.floor(q[k]*scale);
+  // répartir le reliquat
+  let used = Object.values(out).reduce((a,b)=>a+b,0);
+  const order = ['upper','lower','core','warm','stretch'];
+  let i=0; while(used<total){
+    const k = order[i++ % order.length];
+    if(enabled.has(k)){ out[k]++; used++; }
   }
-  const totalVol = all.reduce((a,b)=>a+b.volume,0);
-  const avgRpe = (all.reduce((a,b)=>a+b.rpe,0) / all.length).toFixed(1);
-  kVol.textContent = `${Math.round(totalVol)} kg·rep`;
-  kRpe.textContent = `${avgRpe}`;
-  const lines = all.slice(-12).map(r=>`• ${new Date(r.ts).toLocaleTimeString()} — ${r.name}: ${r.sets}×${r.reps} @ ${r.kg}kg (RPE ${r.rpe}) → ${Math.round(r.volume)} kg·rep`);
-  logEl.textContent = lines.join('\n');
+  return out;
 }
 
+// ===== Build plan (multi-bloc) =====
+function pickN(lst, n){ return lst.slice(0, Math.max(0,n)); }
+
+function buildAll(){
+  const nbTotal = clamp(parseInt($('#nbExo').value,10),3,20);
+  const sets = clamp(parseInt($('#sets').value,10),1,5);
+  const reps = clamp(parseInt($('#reps').value,10),1,30);
+  const rest = clamp(parseInt($('#rest').value,10),15,240);
+  const space = $('#space').value;
+  const equip = $('#equip').value;
+  const order = $('#order').value;
+  const plateLite = $('#plateLite').checked;
+  const autoSplit = $('#autoSplit').checked;
+  const mode = $('#mode').value;
+
+  const enabled = new Set([...$$('#zones input:checked')].map(i=>i.value));
+  if(mode!=='full'){ // mode ciblé = un seul bloc
+    enabled.clear(); enabled.add(mode);
+  }
+
+  // quotas manuels (depuis les spans)
+  const manual = {
+    warm: parseInt($('#q-warm').textContent,10),
+    upper: parseInt($('#q-upper').textContent,10),
+    lower: parseInt($('#q-lower').textContent,10),
+    core: parseInt($('#q-core').textContent,10),
+    stretch: parseInt($('#q-stretch').textContent,10),
+  };
+  const q = computeQuotas(nbTotal, enabled, manual, autoSplit);
+
+  // visibilité des sections selon quotas/enabled
+  for(const cat of ['warm','upper','lower','core','stretch']){
+    const sec = $(`#sec-${cat}`);
+    sec.style.display = (enabled.has(cat) && q[cat]>0) ? '' : 'none';
+  }
+
+  let totalSec = 0, grandList = [];
+
+  for(const cat of ['warm','upper','lower','core','stretch']){
+    if(!(enabled.has(cat) && q[cat]>0)) continue;
+    let base = filterBase(cat);
+    base = applyConstraints(base, equip, space, plateLite);
+    base = orderPlan(base, order);
+    const chosen = pickN(base, q[cat]);
+    totalSec += renderBlock(cat, chosen, sets, reps, rest);
+    grandList.push(...chosen);
+  }
+
+  // Récap général
+  $('#kDur').textContent = fmtTime(totalSec);
+  const all = loadAll();
+  const totalVol = all.reduce((a,b)=>a+b.volume,0);
+  $('#kVol').textContent = all.length? `${Math.round(totalVol)} kg·rep` : '—';
+  $('#kRpe').textContent = all.length? (all.reduce((a,b)=>a+b.rpe,0)/all.length).toFixed(1) : '—';
+  $('#log').textContent = all.length ? all.slice(-12).map(r=>`• ${new Date(r.ts).toLocaleTimeString()} — ${r.name}: ${r.sets}×${r.reps} @ ${r.kg}kg (RPE ${r.rpe}) → ${Math.round(r.volume)} kg·rep`).join('\n') : 'Aucune saisie pour cette séance.';
+}
+
+// ===== Export / Reset =====
 function exportCSV(){
   const all = loadAll();
   if(!all.length){ console.log('Rien à exporter'); return; }
@@ -247,73 +278,43 @@ function exportCSV(){
   const csv = [head.join(','), ...rows].join('\n');
   const blob = new Blob([csv], {type:'text/csv'});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `seance-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
-  a.click();
+  const a = document.createElement('a'); a.href=url; a.download=`seance-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`; a.click();
   URL.revokeObjectURL(url);
 }
+function resetAll(){ localStorage.removeItem(KEY); buildAll(); }
 
-function resetAll(){
-  localStorage.removeItem(KEY);
-  updateSummary();
-}
+// ===== Wire =====
+document.addEventListener('DOMContentLoaded', async ()=>{
+  // boutons quotas +/-
+  $$('.mini').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const op = btn.dataset.q[0];            // '+' ou '-'
+      const cat = btn.dataset.q.slice(1);     // 'warm' | 'upper' | ...
+      const span = $('#q-'+cat);
+      const v = parseInt(span.textContent,10);
+      span.textContent = String(clamp(v + (op==='+'?1:-1), 0, 12));
+      buildAll();
+    });
+  });
 
-// ------------------------------
-// Build plan
-// ------------------------------
-function buildPlan(){
-  const mode = $('#mode').value;
-  const nb = clamp(parseInt($('#nbExo').value,10),1,12);
-  const sets = clamp(parseInt($('#sets').value,10),1,5);
-  const reps = clamp(parseInt($('#reps').value,10),1,30);
-  const rest = clamp(parseInt($('#rest').value,10),15,240);
-  const space = $('#space').value;
-  const equip = $('#equip').value;
-  const order = $('#order') ? $('#order').value : 'balanced';
-  const zonesSel = new Set([...$$('#zones input:checked')].map(i=>i.value));
-  if(zonesSel.size===0){ zonesSel.add('upper'); zonesSel.add('lower'); }
-  const plateLite = $('#plateLite')?.checked || false;
+  // reroll par bloc
+  $$('[data-reroll]').forEach(btn=>{
+    btn.addEventListener('click', ()=> buildAll());
+  });
 
-  let pool = pickByMode(mode);
-  pool = filterByConstraints(pool, equip, space, zonesSel, plateLite);
+  // contrôles généraux
+  ['mode','nbExo','sets','reps','rest','space','equip','order','plateLite','autoSplit']
+    .forEach(id=> $('#'+id).addEventListener('change', buildAll));
+  $$('#zones input').forEach(i=> i.addEventListener('change', buildAll));
 
-  if(mode==='full'){
-    const upp = pool.filter(x=>x.cat==='upper');
-    const low = pool.filter(x=>x.cat==='lower');
-    const core = pool.filter(x=>x.cat==='core');
-    const plan = [];
-    let i=0;
-    while(plan.length<nb && (upp.length || low.length || core.length)){
-      if(i%3===0 && upp.length) plan.push(upp.shift());
-      else if(i%3===1 && low.length) plan.push(low.shift());
-      else if(core.length) plan.push(core.shift());
-      i++;
-    }
-    renderPlan(orderPlan(plan, order, mode), sets, reps, rest);
-  } else {
-    renderPlan(orderPlan(pool.slice(0,nb), order, mode), sets, reps, rest);
-  }
-}
+  // actions récap
+  $('#btnSave').addEventListener('click', buildAll); // juste rafraîchir récap
+  $('#btnCsv').addEventListener('click', exportCSV);
+  $('#btnReset').addEventListener('click', resetAll);
 
-// ------------------------------
-// Boot
-// ------------------------------
-document.addEventListener('DOMContentLoaded', async () => {
-  listEl = $('#exerciseList');
-  kDur = $('#kDur'); kVol=$('#kVol'); kRpe=$('#kRpe');
-  logEl = $('#log');
-
-  const btnBuild = $('#btnBuild');
-  const btnSave = $('#btnSave');
-  const btnCsv = $('#btnCsv');
-  const btnReset = $('#btnReset');
-
-  if(btnBuild) btnBuild.addEventListener('click', buildPlan);
-  if(btnSave) btnSave.addEventListener('click', updateSummary);
-  if(btnCsv) btnCsv.addEventListener('click', exportCSV);
-  if(btnReset) btnReset.addEventListener('click', resetAll);
+  // générer
+  $('#btnBuild').addEventListener('click', buildAll);
 
   await loadDB();
-  buildPlan();
-  updateSummary();
+  buildAll();
 });
