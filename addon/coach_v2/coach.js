@@ -46,7 +46,7 @@ const EXOS = {
   ]
 };
 
-// ===== Utilitaires =====
+// ===== Utils =====
 const $ = (q,root=document)=>root.querySelector(q);
 const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
 const today = ()=> new Date().toISOString().slice(0,10);
@@ -56,54 +56,63 @@ function save(data){localStorage.setItem(KEY, JSON.stringify(data));}
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{items:[]}}catch{return {items:[]}}}
 const journal = load();
 
-// ===== Catalogue (avec accordéon auto) =====
+// ===== Catalogue + accordéon =====
 function buildCatalogue(){
   const host = $('#catList'); host.innerHTML='';
   const q = ($('#q').value||'').toLowerCase();
 
   CATS.forEach((c,i)=>{
-    const det=document.createElement('details'); det.className='cat'; det.open = i===0;
-    det.innerHTML = `<summary><span class="badge"><span class="dot ${c.color}"></span>${c.name}</span></summary>`;
+    const cat = document.createElement('details');
+    cat.className = 'cat';
+    cat.open = i===0;
+    cat.innerHTML = `<summary><span class="badge"><span class="dot ${c.color}"></span>${c.name}</span></summary>`;
 
-    const items=document.createElement('div'); items.className='items';
+    const items = document.createElement('div');
+    items.className = 'items';
+
     (EXOS[c.name]||[]).forEach(ex=>{
-      if(q && ![ex.name, ex.muscles, ex.gear].join(' ').toLowerCase().includes(q)) return;
-      const div=document.createElement('div'); div.className='item';
-      div.innerHTML = `
+      if(q && ![ex.name,ex.muscles,ex.gear].join(' ').toLowerCase().includes(q)) return;
+
+      const row = document.createElement('div');
+      row.className = 'item';
+      row.innerHTML = `
         <div class="itemHead">
           <div>
             <h4>${ex.name}</h4>
             <small>${ex.gear} • Muscles : ${ex.muscles}</small>
           </div>
-          <div>
-            <button class="pick">Sélectionner</button>
-          </div>
+          <div><button class="pick">Sélectionner</button></div>
         </div>
         <details class="inner">
           <summary>+ Détails</summary>
           <div style="padding:6px 0;color:#d7e6ff">${ex.desc}</div>
-          <div style="font-size:.85rem;color:#cfe1ff">Mode par défaut : <b>${ex.mode==='reps'?'Répétitions':'Chrono'}</b>. Bases : ${ex.base.weight?`Poids ${ex.base.weight}kg, `:''}${ex.base.reps?`${ex.base.reps} réps, `:''}${ex.base.time?`${ex.base.time}s, `:''}${ex.base.sets||3} séries${ex.base.rpe?`, RPE ${ex.base.rpe}`:''}.</div>
+          <div style="font-size:.85rem;color:#cfe1ff">
+            Mode par défaut : <b>${ex.mode==='reps'?'Répétitions':'Chrono'}</b>.
+            Bases : ${ex.base.weight?`Poids ${ex.base.weight}kg, `:''}${ex.base.reps?`${ex.base.reps} réps, `:''}${ex.base.time?`${ex.base.time}s, `:''}${ex.base.sets||3} séries${ex.base.rpe?`, RPE ${ex.base.rpe}`:''}.
+          </div>
         </details>
       `;
-      div.querySelector('.pick').onclick=()=>selectExercise(c.name, ex);
-      items.appendChild(div);
+      row.querySelector('.pick').onclick = ()=>selectExercise(c.name, ex);
+      items.appendChild(row);
     });
-    det.appendChild(items); host.appendChild(det);
+
+    cat.appendChild(items);
+    host.appendChild(cat);
   });
 
-  // Accordéon auto
-  host.addEventListener('toggle', (e)=>{
-    const el = e.target;
-    if(!(el instanceof HTMLDetailsElement)) return;
-    // Catégories : une seule ouverte
-    if(el.classList.contains('cat') && el.open){
-      host.querySelectorAll('details.cat').forEach(d=>{ if(d!==el) d.open=false; });
-    }
-    // Détails internes : un seul ouvert par catégorie
-    if(el.classList.contains('inner') && el.open){
-      const box = el.closest('.items');
-      if(box) box.querySelectorAll('details.inner').forEach(d=>{ if(d!==el) d.open=false; });
-    }
+  // — Accordéon catégories : 1 ouverte
+  const cats = [...host.querySelectorAll(':scope > details.cat')];
+  cats.forEach(d=>{
+    d.addEventListener('toggle', ()=>{
+      if(d.open){ cats.forEach(o=>{ if(o!==d) o.open=false; }); }
+    });
+    // — Accordéon interne : 1 “+ Détails” ouvert par catégorie
+    const inners = [...d.querySelectorAll(':scope .items > .item details')];
+    inners.forEach(it=>{
+      it.addEventListener('toggle', ()=>{
+        if(it.open){ inners.forEach(o=>{ if(o!==it) o.open=false; }); }
+      });
+    });
   });
 }
 
