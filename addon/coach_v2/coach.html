@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Journal d'entraînement — Full Body</title>
+      <link rel="icon" href="/addon/coach/img/muscle.png" sizes="96x96">
+  <link rel="stylesheet" href="coach.css" />
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="h1">Journal d'entraînement — Full Body</div>
+      <div class="sub">À gauche : catalogue par catégories (repliables). À droite : journal. Clique un exercice → il s’ajoute au formulaire, puis renseigne <b>Poids</b> + <b>Rép/Séries</b> ou <b>Temps/Séries</b>, <b>RPE</b> et <b>Ressenti</b>, puis <b>Valider</b>. Sauvegarde locale et export JSON.</div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <main>
+      <!-- LEFT: CATALOGUE -->
+      <section class="panel catalogue">
+        <div class="sectionHead"><h2>Exercices</h2><span class="badge"><span class="dot c1"></span>Catégories repliables</span></div>
+        <div class="search"><input id="q" class="input" placeholder="Rechercher (nom, muscles, matériel)…"></div>
+        <div class="catList" id="catList"></div>
+      </section>
+
+      <!-- RIGHT: JOURNAL -->
+      <section class="panel">
+        <div class="sectionHead"><h2>Journal</h2>
+          <div class="toolbar">
+            <button id="exp" class="btn ghost">Exporter JSON</button>
+            <label class="btn ghost" for="impFile">Importer JSON</label>
+            <input id="impFile" type="file" accept="application/json" style="display:none">
+            <button id="clear" class="btn warn">Réinitialiser</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="formGrid">
+            <div>
+              <div class="lbl">Exercice sélectionné</div>
+              <input id="fxName" class="inputBox" placeholder="Clique un exercice dans la liste de gauche" readonly>
+            </div>
+            <div>
+              <div class="lbl">Mode</div>
+              <select id="fxMode" class="select">
+                <option value="reps">Répétitions</option>
+                <option value="time">Chrono (secondes)</option>
+              </select>
+            </div>
+            <div>
+              <div class="lbl">Poids (kg)</div>
+              <input id="fxWeight" class="inputBox" type="number" min="0" value="0">
+            </div>
+            <div>
+              <div class="lbl">Répétitions</div>
+              <input id="fxReps" class="inputBox" type="number" min="0" value="10">
+            </div>
+            <div>
+              <div class="lbl">Temps (sec)</div>
+              <input id="fxTime" class="inputBox" type="number" min="0" value="0">
+            </div>
+            <div>
+              <div class="lbl">Séries</div>
+              <input id="fxSets" class="inputBox" type="number" min="1" value="3">
+            </div>
+            <div>
+              <div class="lbl">RPE (1–10)</div>
+              <input id="fxRpe" class="inputBox" type="number" min="1" max="10" value="7">
+            </div>
+            <div>
+              <div class="lbl">Ressenti</div>
+              <select id="fxFeel" class="select">
+                <option>Facile</option>
+                <option selected>Moyen</option>
+                <option>Difficile</option>
+              </select>
+            </div>
+            <div style="align-self:end">
+              <button id="add" class="btn ok">Valider → Ajouter au journal</button>
+            </div>
+          </div>
+          <div class="help">Légende : Poids (kg) • Répétitions/Séries <i>ou</i> Temps(s)/Séries • RPE (effort perçu) • Ressenti (facile/moyen/difficile). Le champ inutile (Rép. vs Temps) peut rester à 0 selon le mode.</div>
+        </div>
+
+        <div class="card">
+          <table class="table" id="logTable">
+            <thead>
+              <tr><th>Date</th><th>Catégorie</th><th>Exercice</th><th>Mode</th><th>Poids</th><th>Rép.</th><th>Temps</th><th>Séries</th><th>RPE</th><th>Ressenti</th><th>Volume</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr><th colspan="10">Volume total</th><th id="volTot">0</th><th></th></tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="coach.js" defer></script>
+</body>
+</html>
