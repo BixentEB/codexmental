@@ -1,4 +1,4 @@
-// ===== Données d'exercices =====
+// ===== Données d'exercices (identiques à avant, abrégées ici) =====
 const CATS = [
   {name:'Échauffement', color:'c1'},
   {name:'Haut du corps', color:'c2'},
@@ -50,11 +50,24 @@ const EXOS = {
 const $ = (q,root=document)=>root.querySelector(q);
 const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
 const today = ()=> new Date().toISOString().slice(0,10);
-const KEY = 'journal_fullbody_v1';
+const KEY = 'journal_fullbody_v2';            // <- nouvelle clé
+const PRESET_KEY = 'journal_presets_v1';
 
-function save(data){localStorage.setItem(KEY, JSON.stringify(data));}
+// ===== State & presets =====
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{items:[]}}catch{return {items:[]}}}
+function save(data){localStorage.setItem(KEY, JSON.stringify(data));}
 const journal = load();
+
+function loadPresets(){
+  const d = { active:'barre',
+    barre:{mode:'reps', weight:10, reps:10, time:0, sets:3, rpe:7, feel:'Moyen'},
+    halteres:{mode:'reps', weight:6, reps:12, time:0, sets:3, rpe:7, feel:'Moyen'},
+    pdc:{mode:'time', weight:0, reps:0, time:30, sets:3, rpe:7, feel:'Moyen'}
+  };
+  try{ return Object.assign(d, JSON.parse(localStorage.getItem(PRESET_KEY)||'{}')); }catch{ return d; }
+}
+function savePresets(p){ localStorage.setItem(PRESET_KEY, JSON.stringify(p)); }
+const presets = loadPresets();
 
 // ===== Catalogue + accordéon =====
 function buildCatalogue(){
@@ -88,7 +101,7 @@ function buildCatalogue(){
           <div style="padding:6px 0;color:#d7e6ff">${ex.desc}</div>
           <div style="font-size:.85rem;color:#cfe1ff">
             Mode par défaut : <b>${ex.mode==='reps'?'Répétitions':'Chrono'}</b>.
-            Bases : ${ex.base.weight?`Poids ${ex.base.weight}kg, `:''}${ex.base.reps?`${ex.base.reps} réps, `:''}${ex.base.time?`${ex.base.time}s, `:''}${ex.base.sets||3} séries${ex.base.rpe?`, RPE ${ex.base.rpe}`:''}.
+            Bases : ${ex.base?.weight?`Poids ${ex.base.weight}kg, `:''}${ex.base?.reps?`${ex.base.reps} réps, `:''}${ex.base?.time?`${ex.base.time}s, `:''}${(ex.base?.sets)||3} séries${ex.base?.rpe?`, RPE ${ex.base.rpe}`:''}.
           </div>
         </details>
       `;
@@ -100,50 +113,95 @@ function buildCatalogue(){
     host.appendChild(cat);
   });
 
-  // — Accordéon catégories : 1 ouverte
+  // Accordéon catégories : 1 ouverte
   const cats = [...host.querySelectorAll(':scope > details.cat')];
   cats.forEach(d=>{
-    d.addEventListener('toggle', ()=>{
-      if(d.open){ cats.forEach(o=>{ if(o!==d) o.open=false; }); }
-    });
-    // — Accordéon interne : 1 “+ Détails” ouvert par catégorie
+    d.addEventListener('toggle', ()=>{ if(d.open){ cats.forEach(o=>{ if(o!==d) o.open=false; }); } });
+    // Accordéon interne par catégorie
     const inners = [...d.querySelectorAll(':scope .items > .item details')];
     inners.forEach(it=>{
-      it.addEventListener('toggle', ()=>{
-        if(it.open){ inners.forEach(o=>{ if(o!==it) o.open=false; }); }
-      });
+      it.addEventListener('toggle', ()=>{ if(it.open){ inners.forEach(o=>{ if(o!==it) o.open=false; }); } });
     });
   });
 }
-
 document.addEventListener('input', (e)=>{ if(e.target.id==='q') buildCatalogue(); });
 
-// ===== Sélection + formulaire =====
-function selectExercise(cat, ex){
-  $('#fxName').value = ex.name;
-  $('#fxMode').value = ex.mode;
-  $('#fxWeight').value = ex.base.weight||0;
-  $('#fxReps').value = ex.base.reps||0;
-  $('#fxTime').value = ex.base.time||0;
-  $('#fxSets').value = ex.base.sets||3;
-  $('#fxRpe').value = ex.base.rpe||7;
-  $('#fxFeel').value = 'Moyen';
-  $('#fxName').dataset.cat = cat;
+// ===== Réglages (barre persistante) =====
+function applySettings(s){
+  $('#fxMode').value=s.mode;
+  $('#fxWeight').value=s.weight||0;
+  $('#fxReps').value=s.reps||0;
+  $('#fxTime').value=s.time||0;
+  $('#fxSets').value=s.sets||3;
+  $('#fxRpe').value=s.rpe||7;
+  $('#fxFeel').value=s.feel||'Moyen';
+}
+function readSettings(){
+  return {
+    mode:$('#fxMode').value,
+    weight:+$('#fxWeight').value||0,
+    reps:+$('#fxReps').value||0,
+    time:+$('#fxTime').value||0,
+    sets:+$('#fxSets').value||0,
+    rpe:+$('#fxRpe').value||0,
+    feel:$('#fxFeel').value
+  };
 }
 
-$('#fxMode').addEventListener('change', ()=>{
-  const isTime = $('#fxMode').value==='time';
-  if(isTime){ $('#fxReps').value = 0; } else { $('#fxTime').value = 0; }
+// presets boutons
+let currentPreset = presets.active;
+function loadPreset(name){
+  currentPreset = name;
+  applySettings(presets[name]);
+}
+function saveCurrentIntoPreset(){
+  presets[currentPreset] = readSettings();
+  presets.active = currentPreset;
+  savePresets(presets);
+}
+
+// init presets UI
+document.addEventListener('click', (e)=>{
+  const b=e.target.closest('[data-preset]'); if(!b) return;
+  loadPreset(b.dataset.preset);
 });
+$('#savePreset').addEventListener('click', saveCurrentIntoPreset);
+
+// mode toggle (désactive champs inutiles)
+function updateModeUI(){
+  const isTime = $('#fxMode').value==='time';
+  $('#fxReps').disabled = isTime;
+  $('#fxTime').disabled = !isTime;
+}
+$('#fxMode').addEventListener('change', updateModeUI);
+
+// ===== Sélection + ajout =====
+function selectExercise(cat, ex){
+  $('#fxName').value = ex.name;
+  $('#fxName').dataset.cat = cat;
+
+  // si on ne garde PAS les réglages, on applique la base exo
+  if(!$('#keepSettings').checked){
+    const b = ex.base||{};
+    const s = {
+      mode: ex.mode,
+      weight: b.weight||0, reps:b.reps||0, time:b.time||0,
+      sets:b.sets||3, rpe:b.rpe||7, feel:'Moyen'
+    };
+    applySettings(s);
+  }
+}
 
 $('#add').onclick = ()=>{
   const name=$('#fxName').value.trim(); if(!name){alert('Sélectionne un exercice à gauche.'); return;}
   const cat=$('#fxName').dataset.cat||'';
-  const mode=$('#fxMode').value;
-  const weight=+$('#fxWeight').value||0, reps=+$('#fxReps').value||0, time=+$('#fxTime').value||0, sets=+$('#fxSets').value||0, rpe=+$('#fxRpe').value||0, feel=$('#fxFeel').value;
-  if(mode==='reps' && reps===0){alert('Renseigne le nombre de répétitions.'); return;}
-  if(mode==='time' && time===0){alert('Renseigne le temps en secondes.'); return;}
-  const item={date:today(), cat, name, mode, weight, reps, time, sets, rpe, feel, volume:(mode==='reps'?weight*reps*sets:0)};
+  const s=readSettings();
+
+  if(s.mode==='reps' && s.reps===0){alert('Renseigne le nombre de répétitions.'); return;}
+  if(s.mode==='time' && s.time===0){alert('Renseigne le temps en secondes.'); return;}
+
+  const item={date:today(), cat, name, mode:s.mode, weight:s.weight, reps:s.reps, time:s.time, sets:s.sets, rpe:s.rpe, feel:s.feel,
+              volume:(s.mode==='reps'?s.weight*s.reps*s.sets:0)};
   journal.items.push(item); save(journal); renderTable();
   $('#logTable').scrollIntoView({behavior:'smooth', block:'nearest'});
 };
@@ -154,9 +212,11 @@ function renderTable(){
   journal.items.forEach((it,i)=>{
     vol+=it.volume||0;
     const tr=document.createElement('tr');
-    tr.innerHTML = `<td>${it.date}</td><td>${it.cat||''}</td><td>${it.name}</td><td>${it.mode}</td><td>${it.weight||0}</td><td>${it.reps||0}</td><td>${it.time||0}</td><td>${it.sets||0}</td><td>${it.rpe||0}</td><td>${it.feel||''}</td><td>${fmt(it.volume||0)}</td><td class='rowActions'><button class='btn ghost' data-i='${i}'>Suppr.</button></td>`;
+    tr.innerHTML = `<td>${it.date}</td><td>${it.cat||''}</td><td>${it.name}</td><td>${it.mode}</td><td>${it.weight||0}</td><td>${it.reps||0}</td><td>${it.time||0}</td><td>${it.sets||0}</td><td>${it.rpe||0}</td><td>${it.feel||''}</td><td>${fmt(it.volume||0)}</td><td><button class='btn ghost' data-i='${i}'>Suppr.</button></td>`;
     tr.ondblclick = ()=>{
-      $('#fxName').value=it.name; $('#fxName').dataset.cat=it.cat; $('#fxMode').value=it.mode; $('#fxWeight').value=it.weight; $('#fxReps').value=it.reps; $('#fxTime').value=it.time; $('#fxSets').value=it.sets; $('#fxRpe').value=it.rpe; $('#fxFeel').value=it.feel;
+      $('#fxName').value=it.name; $('#fxName').dataset.cat=it.cat;
+      applySettings({mode:it.mode, weight:it.weight, reps:it.reps, time:it.time, sets:it.sets, rpe:it.rpe, feel:it.feel});
+      updateModeUI();
       window.scrollTo({top:0,behavior:'smooth'});
     };
     tbody.appendChild(tr);
@@ -175,6 +235,8 @@ $('#impFile').addEventListener('change', (e)=>{
 });
 $('#clear').onclick=()=>{ if(confirm('Effacer tout le journal ?')){ journal.items=[]; save(journal); renderTable(); } };
 
-// Init
+// ===== Init =====
 buildCatalogue();
+loadPreset(presets.active);
+updateModeUI();
 renderTable();
