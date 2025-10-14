@@ -1,6 +1,6 @@
 :root{
   --bg:#0f1115; --text:#eaf0ff; --muted:#a7b1c8; --panel:#12182a; --card:#161e31;
-  --line:#26324a; --accent:#7bd6ff; --ok:#6ee7a7; --warn:#ffd166;
+  --line:#26324a; --accent:#7bd6ff; --ok:#22c55e; --warn:#ffd166;
   --c1:#3b82f6; --c2:#22c55e; --c3:#f59e0b; --c4:#ef4444; --c5:#a855f7;
 }
 *{box-sizing:border-box}
@@ -12,7 +12,7 @@ header{position:sticky;top:0;z-index:10;background:#0f1115e6;backdrop-filter:blu
 
 main{
   display:grid;
-  grid-template-columns:520px 1fr;   /* ← plus large à gauche */
+  grid-template-columns:520px 1fr; /* ← colonne gauche élargie */
   gap:20px;
   margin-top:16px
 }
@@ -25,7 +25,11 @@ main{
 .catalogue{display:grid;grid-template-rows:auto 1fr}
 .search{padding:12px;border-bottom:1px solid var(--line)}
 .input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1525;color:var(--text)}
-.catList{overflow:auto;max-height:72vh;padding:8px}
+.catList{
+  overflow:auto;max-height:72vh;padding:8px;
+  overflow-anchor:none;                 /* anti-glissements */
+  scrollbar-gutter:stable both-edges;   /* garde la place du scroll */
+}
 .cat{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:var(--card)}
 .cat summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;align-items:center;gap:10px}
 .cat summary::-webkit-details-marker{display:none}
@@ -33,7 +37,7 @@ main{
 .dot{width:10px;height:10px;border-radius:50%}
 .dot.c1{background:var(--c1)} .dot.c2{background:var(--c2)} .dot.c3{background:var(--c3)} .dot.c4{background:var(--c4)} .dot.c5{background:var(--c5)}
 .items{padding:6px 10px 12px}
-.item{border-top:1px dashed #2a3a58;padding:10px 4px}
+.item{border-top:1px dashed #2a3a58;padding:10px 6px;position:relative;border-left:3px solid transparent;border-radius:10px}
 .item:first-child{border-top:none}
 .itemHead{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .itemHead button{padding:6px 10px;border-radius:9px;border:1px solid var(--line);background:#12203a;color:var(--text);cursor:pointer}
@@ -42,11 +46,25 @@ main{
 .item details{margin-top:8px}
 .item details summary{cursor:pointer;color:#cfe1ff}
 
+/* États visuels sélection/validé */
+.item.is-selected{
+  border-color:#f59e0b;
+  background:linear-gradient(90deg, rgba(245,158,11,.14), transparent);
+}
+.item.is-done{
+  border-color:#22c55e;
+  background:linear-gradient(90deg, rgba(34,197,94,.14), transparent);
+}
+.item.is-selected.is-done{
+  border-color:#84cc16;
+  box-shadow:0 0 0 1px rgba(132,204,22,.25) inset;
+}
+
 /* RIGHT: journal */
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px;padding:14px}
 .formGrid{display:grid;grid-template-columns:1.3fr repeat(5, 150px) 1fr;gap:12px;align-items:end}
-.formGrid.wide{grid-template-columns:repeat(7, minmax(130px, 1fr));} /* ← force une seule ligne sur grands écrans */
-.formGrid.oneRow{grid-template-columns:1.6fr 180px}
+.formGrid.wide{grid-template-columns:repeat(7, minmax(140px, 1fr));} /* ← champs sur une ligne */
+.formGrid.oneRow{grid-template-columns:1.6fr 200px}
 @media(max-width:1350px){.formGrid.wide{grid-template-columns:1fr 1fr 1fr}}
 .lbl{font-size:.85rem;color:var(--muted);margin-bottom:4px}
 .select,.inputBox{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0f1525;color:var(--text)}
@@ -67,26 +85,3 @@ main{
 .presetBar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
 .presetGroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .chk{display:flex;align-items:center;gap:8px;color:#cfe1ff;font-size:.9rem}
-
-/* État visuel des exercices (sélection / validé) */
-.item{ position:relative; border-left:3px solid transparent; border-radius:10px; }
-.item.is-selected{
-  border-color:#f59e0b;
-  background:linear-gradient(90deg, rgba(245,158,11,.14), transparent);
-}
-.item.is-done{
-  border-color:#22c55e;
-  background:linear-gradient(90deg, rgba(34,197,94,.14), transparent);
-}
-.item.is-selected.is-done{
-  border-color:#84cc16;
-  box-shadow:0 0 0 1px rgba(132,204,22,.25) inset;
-}
-
-
-/* Stabilise le scroll pour éviter les micro-décalages lors des ouvertures/fermetures */
-.catList{
-  overflow-anchor: none;         /* évite le ré-ancrage automatique */
-  scrollbar-gutter: stable both-edges; /* garde la place du scrollbar */
-}
-
