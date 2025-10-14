@@ -84,3 +84,9 @@ main{
 }
 
 
+/* Stabilise le scroll pour éviter les micro-décalages lors des ouvertures/fermetures */
+.catList{
+  overflow-anchor: none;         /* évite le ré-ancrage automatique */
+  scrollbar-gutter: stable both-edges; /* garde la place du scrollbar */
+}
+
