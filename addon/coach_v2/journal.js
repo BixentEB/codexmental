@@ -1,4 +1,4 @@
-// ===== Données d'exercices (identiques à avant, abrégées ici) =====
+// ===== Données d'exercices =====
 const CATS = [
   {name:'Échauffement', color:'c1'},
   {name:'Haut du corps', color:'c2'},
@@ -25,9 +25,9 @@ const EXOS = {
     {name:'Pompes au sol', gear:'PDC', muscles:'Pecs, triceps, core', desc:'Poitrine proche du sol.', mode:'reps', base:{reps:12,sets:3,rpe:6}}
   ],
   'Bas du corps': [
+    {name:'Soulevé de terre jambes tendues', gear:'Barre', muscles:'Ischios, fessiers, lombaires', desc:"Hanches en arrière, étirement ischios.", mode:'reps', base:{weight:12,reps:8,sets:3,rpe:7}},
     {name:'Squat (barre ou PDC)', gear:'Barre / PDC', muscles:'Quadriceps, fessiers', desc:'Genoux suivent orteils, dos neutre.', mode:'reps', base:{weight:8,reps:10,sets:3,rpe:7}},
     {name:'Goblet squat — haltère', gear:'Haltère', muscles:'Quadriceps, fessiers', desc:'Haltère contre poitrine, buste droit.', mode:'reps', base:{weight:8,reps:10,sets:3,rpe:7}},
-    {name:'Soulevé de terre jambes tendues', gear:'Barre', muscles:'Ischios, fessiers, lombaires', desc:"Hanches en arrière, étirement ischios.", mode:'reps', base:{weight:12,reps:8,sets:3,rpe:7}},
     {name:'Pont fessier au sol', gear:'PDC', muscles:'Fessiers', desc:'Rétroversion, contraction en haut.', mode:'reps', base:{reps:15,sets:3,rpe:7}},
     {name:'Chaise au mur (isométrique)', gear:'Mur', muscles:'Quadriceps', desc:'Cuisses // au sol, dos plaqué.', mode:'time', base:{time:40,sets:3,rpe:7}},
     {name:'Fentes avant — haltères', gear:'Haltères', muscles:'Quadriceps, fessiers', desc:'Grand pas, contrôle redescente.', mode:'reps', base:{weight:6,reps:10,sets:3,rpe:7}}
@@ -46,18 +46,31 @@ const EXOS = {
   ]
 };
 
-// ===== Utils =====
+// ===== Utils / State =====
 const $ = (q,root=document)=>root.querySelector(q);
 const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
 const today = ()=> new Date().toISOString().slice(0,10);
-const KEY = 'journal_fullbody_v2';            // <- nouvelle clé
+const KEY = 'journal_fullbody_v3';
 const PRESET_KEY = 'journal_presets_v1';
+const DONE_KEY = 'journal_done_by_date_v1';
 
-// ===== State & presets =====
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||{items:[]}}catch{return {items:[]}}}
-function save(data){localStorage.setItem(KEY, JSON.stringify(data));}
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{items:[]} }catch{ return {items:[]} } }
+function save(data){ localStorage.setItem(KEY, JSON.stringify(data)); }
 const journal = load();
 
+// --- Done (validé aujourd’hui)
+function loadDoneSet(){
+  try{ const all = JSON.parse(localStorage.getItem(DONE_KEY)||'{}'); return new Set(all[today()]||[]); }
+  catch{ return new Set(); }
+}
+function saveDoneSet(set){
+  const all = JSON.parse(localStorage.getItem(DONE_KEY)||'{}');
+  all[today()] = [...set]; localStorage.setItem(DONE_KEY, JSON.stringify(all));
+}
+let doneToday = loadDoneSet();
+let selectedId = null;
+
+// --- Presets
 function loadPresets(){
   const d = { active:'barre',
     barre:{mode:'reps', weight:10, reps:10, time:0, sets:3, rpe:7, feel:'Moyen'},
@@ -68,8 +81,18 @@ function loadPresets(){
 }
 function savePresets(p){ localStorage.setItem(PRESET_KEY, JSON.stringify(p)); }
 const presets = loadPresets();
+let currentPreset = presets.active;
 
-// ===== Catalogue + accordéon =====
+// ===== Catalogue + accordéon sans décalage =====
+function applyStates(){
+  $$('#catList .item').forEach(el=>{
+    el.classList.remove('is-selected','is-done');
+    const id = el.dataset.id;
+    if(doneToday.has(id)) el.classList.add('is-done');
+    if(selectedId === id) el.classList.add('is-selected');
+  });
+}
+
 function buildCatalogue(){
   const host = $('#catList'); host.innerHTML='';
   const q = ($('#q').value||'').toLowerCase();
@@ -88,6 +111,7 @@ function buildCatalogue(){
 
       const row = document.createElement('div');
       row.className = 'item';
+      row.dataset.id = `${c.name}::${ex.name}`;
       row.innerHTML = `
         <div class="itemHead">
           <div>
@@ -113,20 +137,29 @@ function buildCatalogue(){
     host.appendChild(cat);
   });
 
-  // Accordéon catégories : 1 ouverte
-  const cats = [...host.querySelectorAll(':scope > details.cat')];
-  cats.forEach(d=>{
-    d.addEventListener('toggle', ()=>{ if(d.open){ cats.forEach(o=>{ if(o!==d) o.open=false; }); } });
-    // Accordéon interne par catégorie
-    const inners = [...d.querySelectorAll(':scope .items > .item details')];
-    inners.forEach(it=>{
-      it.addEventListener('toggle', ()=>{ if(it.open){ inners.forEach(o=>{ if(o!==it) o.open=false; }); } });
-    });
+  // Accordéon piloté (anti-décalage)
+  host.addEventListener('click', (e)=>{
+    const sum = e.target.closest('summary'); if(!sum) return;
+    const det = sum.parentElement; if(!(det instanceof HTMLDetailsElement)) return;
+    const scroller = host; const keepY = scroller.scrollTop;
+    const willOpen = !det.open;
+
+    if(det.classList.contains('cat')){
+      host.querySelectorAll(':scope > details.cat[open]').forEach(d=>{ if(d!==det) d.open=false; });
+      det.open = willOpen; scroller.scrollTop = keepY; e.preventDefault();
+    }
+    if(det.classList.contains('inner')){
+      const box = det.closest('.items');
+      if(box) box.querySelectorAll('details.inner[open]').forEach(d=>{ if(d!==det) d.open=false; });
+      det.open = willOpen; scroller.scrollTop = keepY; e.preventDefault();
+    }
   });
+
+  applyStates();
 }
 document.addEventListener('input', (e)=>{ if(e.target.id==='q') buildCatalogue(); });
 
-// ===== Réglages (barre persistante) =====
+// ===== Réglages persistants + presets =====
 function applySettings(s){
   $('#fxMode').value=s.mode;
   $('#fxWeight').value=s.weight||0;
@@ -135,6 +168,7 @@ function applySettings(s){
   $('#fxSets').value=s.sets||3;
   $('#fxRpe').value=s.rpe||7;
   $('#fxFeel').value=s.feel||'Moyen';
+  updateModeUI();
 }
 function readSettings(){
   return {
@@ -147,27 +181,15 @@ function readSettings(){
     feel:$('#fxFeel').value
   };
 }
+function loadPreset(name){ currentPreset=name; applySettings(presets[name]); }
+function saveCurrentIntoPreset(){ presets[currentPreset]=readSettings(); presets.active=currentPreset; savePresets(presets); }
 
-// presets boutons
-let currentPreset = presets.active;
-function loadPreset(name){
-  currentPreset = name;
-  applySettings(presets[name]);
-}
-function saveCurrentIntoPreset(){
-  presets[currentPreset] = readSettings();
-  presets.active = currentPreset;
-  savePresets(presets);
-}
-
-// init presets UI
 document.addEventListener('click', (e)=>{
   const b=e.target.closest('[data-preset]'); if(!b) return;
   loadPreset(b.dataset.preset);
 });
 $('#savePreset').addEventListener('click', saveCurrentIntoPreset);
 
-// mode toggle (désactive champs inutiles)
 function updateModeUI(){
   const isTime = $('#fxMode').value==='time';
   $('#fxReps').disabled = isTime;
@@ -180,14 +202,12 @@ function selectExercise(cat, ex){
   $('#fxName').value = ex.name;
   $('#fxName').dataset.cat = cat;
 
-  // si on ne garde PAS les réglages, on applique la base exo
+  selectedId = `${cat}::${ex.name}`;
+  applyStates();
+
   if(!$('#keepSettings').checked){
     const b = ex.base||{};
-    const s = {
-      mode: ex.mode,
-      weight: b.weight||0, reps:b.reps||0, time:b.time||0,
-      sets:b.sets||3, rpe:b.rpe||7, feel:'Moyen'
-    };
+    const s = { mode:ex.mode, weight:b.weight||0, reps:b.reps||0, time:b.time||0, sets:b.sets||3, rpe:b.rpe||7, feel:'Moyen' };
     applySettings(s);
   }
 }
@@ -203,6 +223,11 @@ $('#add').onclick = ()=>{
   const item={date:today(), cat, name, mode:s.mode, weight:s.weight, reps:s.reps, time:s.time, sets:s.sets, rpe:s.rpe, feel:s.feel,
               volume:(s.mode==='reps'?s.weight*s.reps*s.sets:0)};
   journal.items.push(item); save(journal); renderTable();
+
+  // marquer “fait aujourd’hui”
+  const id = `${cat}::${name}`;
+  doneToday.add(id); saveDoneSet(doneToday); applyStates();
+
   $('#logTable').scrollIntoView({behavior:'smooth', block:'nearest'});
 };
 
@@ -216,7 +241,6 @@ function renderTable(){
     tr.ondblclick = ()=>{
       $('#fxName').value=it.name; $('#fxName').dataset.cat=it.cat;
       applySettings({mode:it.mode, weight:it.weight, reps:it.reps, time:it.time, sets:it.sets, rpe:it.rpe, feel:it.feel});
-      updateModeUI();
       window.scrollTo({top:0,behavior:'smooth'});
     };
     tbody.appendChild(tr);
@@ -235,8 +259,8 @@ $('#impFile').addEventListener('change', (e)=>{
 });
 $('#clear').onclick=()=>{ if(confirm('Effacer tout le journal ?')){ journal.items=[]; save(journal); renderTable(); } };
 
-// ===== Init =====
+// Init
 buildCatalogue();
 loadPreset(presets.active);
-updateModeUI();
+applySettings(presets[presets.active]);
 renderTable();
