@@ -60,6 +60,14 @@
     .footer-note{margin-top:16px; color:var(--muted); font-size:12px;}
     .row-actions{display:flex; gap:6px}
     .micro{font-size:11px; padding:6px 8px; border-radius:8px; background:#182232; border:1px solid var(--border)}
+      /* --- Collapsible day blocks --- */
+    .toggle{appearance:none; border:1px solid var(--border); background:#1c2533; color:var(--ink); padding:6px 10px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px}
+    .toggle .chev{transition:transform .2s ease}
+    .toggle[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+    .day-head .actions{margin-left:auto; display:flex; gap:8px}
+    .day-body{transition:max-height .25s ease, opacity .2s ease; overflow:hidden}
+    .day-card.is-collapsed .day-body{max-height:0; opacity:0}
+    .day-card:not(.is-collapsed) .day-body{max-height:2000px; opacity:1}
   </style>
 </head>
 <body>
@@ -74,6 +82,8 @@
       <button class="btn" id="btn-export">Exporter (JSON)</button>
       <button class="btn" id="btn-import">Importer</button>
       <button class="btn" id="btn-reset-week">Réinitialiser la semaine</button>
+      <button class="btn" id="btn-collapse-all">Tout fermer</button>
+      <button class="btn" id="btn-expand-all">Tout ouvrir</button>
     </div>
 
     <div class="week-grid" id="week">
@@ -595,6 +605,67 @@ Extensions triceps au‑dessus de la tête — Fixe à une poignée/porte, ou ti
     function writeAll(json){
       localStorage.setItem(KEY, JSON.stringify(json));
     }
+
+    // ===== Collapsibles (jours repliables) =====
+    const COLLAPSE_KEY = KEY + '_collapsed';
+    let collapsedMap = {};
+    try{ collapsedMap = JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}'); }catch{ collapsedMap = {}; }
+
+    function collapse(card, btn, yes){
+      if(yes){ card.classList.add('is-collapsed'); btn.setAttribute('aria-expanded','false'); }
+      else   { card.classList.remove('is-collapsed'); btn.setAttribute('aria-expanded','true'); }
+    }
+
+    function setupCollapsibles(){
+      root.querySelectorAll('.day-card').forEach(card=>{
+        const head = card.querySelector('.day-head'); if(!head) return;
+        if(!card.querySelector('.day-body')){
+          const body = document.createElement('div');
+          body.className = 'day-body';
+          // déplacer tout le contenu après le header dans body
+          let n = head.nextSibling; const toMove=[]; while(n){ toMove.push(n); n=n.nextSibling; }
+          toMove.forEach(node=> body.appendChild(node));
+          card.appendChild(body);
+        }
+        // bouton toggle
+        if(!head.querySelector('.toggle')){
+          const btn = document.createElement('button');
+          btn.className = 'toggle';
+          btn.setAttribute('aria-expanded','true');
+          btn.innerHTML = '<span class="chev">▾</span>';
+          const actions = document.createElement('div'); actions.className='actions'; actions.appendChild(btn); head.appendChild(actions);
+          const day = card.getAttribute('data-day')||'';
+          if(collapsedMap[day]) collapse(card, btn, true);
+          btn.addEventListener('click', ()=>{
+            const willCollapse = !card.classList.contains('is-collapsed');
+            collapse(card, btn, willCollapse);
+            collapsedMap[day] = willCollapse;
+            localStorage.setItem(COLLAPSE_KEY, JSON.stringify(collapsedMap));
+          });
+        }
+      });
+    }
+
+    // Boutons global : tout fermer / tout ouvrir
+    document.getElementById('btn-collapse-all').addEventListener('click', ()=>{
+      root.querySelectorAll('.day-card').forEach(card=>{
+        const btn = card.querySelector('.day-head .toggle'); if(!btn) return;
+        collapse(card, btn, true);
+        const d = card.getAttribute('data-day')||''; collapsedMap[d]=true;
+      });
+      localStorage.setItem(COLLAPSE_KEY, JSON.stringify(collapsedMap));
+    });
+    document.getElementById('btn-expand-all').addEventListener('click', ()=>{
+      root.querySelectorAll('.day-card').forEach(card=>{
+        const btn = card.querySelector('.day-head .toggle'); if(!btn) return;
+        collapse(card, btn, false);
+        const d = card.getAttribute('data-day')||''; collapsedMap[d]=false;
+      });
+      localStorage.setItem(COLLAPSE_KEY, JSON.stringify(collapsedMap));
+    });
+
+    setupCollapsibles();
+
   })();
   </script>
 </body>
