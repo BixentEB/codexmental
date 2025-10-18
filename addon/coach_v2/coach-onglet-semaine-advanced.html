@@ -22,20 +22,43 @@
     thead th{font-weight:600; color:var(--muted)}
     tr.active{background:rgba(116,179,255,.08)}
 
-    /* Agenda mini-cal */
-    .agenda{display:grid; grid-template-columns:repeat(7,1fr); gap:8px}
-    .dayDot{display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px; border:1px solid var(--border); border-radius:12px; background:#121725}
-    .dLabel{font-size:12px; color:var(--muted)}
-    .dot{width:18px; height:18px; border-radius:999px; background:#2a3042; border:1px solid var(--border); position:relative}
-    .dot.is-full{background:var(--red)}
-    .dot.is-cardio{background:#ff9f5c}
-    .dot.is-rest{background:#7fa0c0}
-    .dayDot.active{outline:2px solid var(--blue)}
-    .check{font-size:11px; opacity:.9}
-    .btn{background:#1c2533; color:var(--ink); border:1px solid var(--border); border-radius:10px; padding:7px 10px; cursor:pointer}
-    .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px}
+    /* === Mini calendrier mensuel (remplace les 7 pastilles) === */
+.card.coach-agenda .calendar-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:.5rem; margin-bottom:.5rem;
+}
+.card.coach-agenda .calendar-title{font-weight:600}
+.card.coach-agenda .calendar-grid{
+  display:grid; grid-template-columns: repeat(7,1fr);
+  gap:.4rem; align-items:stretch;
+}
+.card.coach-agenda .cal-head{
+  text-align:center; opacity:.7; font-size:.9rem;
+}
+.card.coach-agenda .cal-cell{
+  position:relative; aspect-ratio:1/1; border-radius:.6rem;
+  display:flex; align-items:center; justify-content:center;
+  background: var(--chip-bg, #0f121a);
+  border:1px solid var(--border);
+  font-size:.95rem; cursor:pointer; user-select:none;
+}
+.card.coach-agenda .cal-cell.today{ outline:2px solid var(--blue); }
+.card.coach-agenda .badge{
+  position:absolute; right:.28rem; top:.28rem;
+  width:.55rem; height:.55rem; border-radius:50%;
+}
+.badge.full{background:#ff7a7a}
+.badge.cardio{background:#74b3ff}
+.badge.off{background:#96a2b5}
+.card.coach-agenda .legend{display:flex; gap:1rem; align-items:center; margin-top:.6rem; opacity:.9}
+.card.coach-agenda .dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%}
+.dot.full{background:#ff7a7a}.dot.cardio{background:#74b3ff}.dot.off{background:#96a2b5}
+.card.coach-agenda .nav-btn{
+  background:transparent; border:1px solid var(--border);
+  border-radius:.5rem; padding:.25rem .5rem; cursor:pointer; color:var(--ink);
+}
 
-    /* Controls */
+/* Controls */
     .controls .pair{display:grid; grid-template-columns:160px 1fr; gap:10px; align-items:center; margin:8px 0}
     input[type="range"]{width:100%}
     .badge{font-size:12px; padding:3px 8px; border-radius:999px; background:var(--chip); color:var(--muted); border:1px solid var(--border)}
@@ -88,14 +111,23 @@
       </section>
 
       <!-- 2) Agenda validation -->
-      <section class="card" id="agenda">
-        <h2>🗓️ Agenda entraînement</h2>
-        <div class="agenda" id="agendaGrid"></div>
-        <div class="toolbar">
-          <span class="badge">Clique sur un jour pour valider / invalider</span>
-          <button class="btn" id="clearAgenda">Effacer validations</button>
-        </div>
-      </section>
+      <section class="card coach-agenda" id="agenda">
+  <h2>🗓️ Agenda entraînement</h2>
+  <div class="calendar-head">
+    <button class="nav-btn" id="cal-prev" aria-label="Mois précédent">◀</button>
+    <div class="calendar-title" id="cal-title"></div>
+    <button class="nav-btn" id="cal-next" aria-label="Mois suivant">▶</button>
+  </div>
+  <div class="calendar-grid" id="cal-grid"></div>
+  <div class="legend">
+    <span class="dot full"></span> Full Body
+    <span class="dot cardio"></span> Cardio
+    <span class="dot off"></span> Off
+  </div>
+  <div class="toolbar">
+    <button class="btn" id="clearAgenda">Effacer validations</button>
+  </div>
+</section>
 
       <!-- 3) Réglages progressifs -->
       <section class="card controls" id="controls">
@@ -338,7 +370,7 @@
         <div class="dayBody">
           <div class="ex"><div class="fields">
             <div class="cell"><label>Option</label><input type="text" value="Cycling/Tapis fractionné" data-k="opt"></div>
-            <div class="cell"><label>Warm-up</label><input type="text" value="5 min" data-k="wu"></div>
+            <div class="cell"><label>Warm‑up</label><input type="text" value="5 min" data-k="wu"></div>
             <div class="cell"><label>Bloc A</label><input type="text" value="3× (5 min modéré + 1 min rapide)" data-k="a"></div>
             <div class="cell"><label>Bloc B</label><input type="text" value="2× (2 min modéré + 2 min intense)" data-k="b"></div>
             <div class="cell"><label>Cooldown</label><input type="text" value="5 min" data-k="cd"></div>
@@ -378,39 +410,75 @@
       if(Number(tr.dataset.day) === currentDay){ tr.classList.add('active'); }
     });
 
-    // === Agenda grid
-    const grid = document.getElementById('agendaGrid');
-    const labels = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-    const types = {0:'rest',1:'full',2:'cardio',3:'full',4:'cardio',5:'full',6:'cardio'};
-    const saved = JSON.parse(localStorage.getItem(AGENDA_KEY)||'{}');
-    for(let d=1; d<=6; d++) buildDot(d); // Mon..Sat
-    buildDot(0); // Sunday at end
+    // === Agenda mensuel (remplace la grille hebdo) ===
+const calTitle = document.getElementById('cal-title');
+const calGrid  = document.getElementById('cal-grid');
+const MONTH_KEY = KEY + '_agenda_month';
+const WEEK_START = 1; // lundi
+const planJour = {1:'full',2:'cardio',3:'full',4:'cardio',5:'full',6:'cardio',0:'off'}; // Dim=0
+let calState = {year: new Date().getFullYear(), month: new Date().getMonth()};
 
-    function buildDot(d){
-      const wrap = document.createElement('div'); wrap.className='dayDot';
-      if(d===currentDay) wrap.classList.add('active');
-      const dot = document.createElement('div'); dot.className='dot';
-      const t = types[d];
-      if(t==='full') dot.classList.add('is-full');
-      if(t==='cardio') dot.classList.add('is-cardio');
-      if(t==='rest') dot.classList.add('is-rest');
-      if(saved[d]) dot.classList.add('done');
-      const lbl = document.createElement('div'); lbl.className='dLabel'; lbl.textContent = labels[d];
-      const chk = document.createElement('button'); chk.className='btn check'; chk.textContent = saved[d]?'Validé':'Valider';
-      chk.addEventListener('click', ()=>{
-        saved[d] = !saved[d];
-        localStorage.setItem(AGENDA_KEY, JSON.stringify(saved));
-        chk.textContent = saved[d]? 'Validé':'Valider';
-        wrap.classList.toggle('active', d===currentDay);
-      });
-      wrap.append(dot,lbl,chk); grid.appendChild(wrap);
-    }
+function fmtDate(d){ return d.toISOString().slice(0,10); }
+function loadMonth(){ try { return JSON.parse(localStorage.getItem(MONTH_KEY) || '{}'); } catch(e){ return {}; } }
+function saveMonth(v){ localStorage.setItem(MONTH_KEY, JSON.stringify(v)); }
 
-    document.getElementById('clearAgenda').addEventListener('click', ()=>{
-      localStorage.removeItem(AGENDA_KEY); location.reload();
+function renderCalendar(){
+  if(!calGrid) return;
+  const {year,month} = calState;
+  const first = new Date(year, month, 1);
+  const last  = new Date(year, month+1, 0);
+  const todayStr = fmtDate(new Date());
+  calTitle.textContent = first.toLocaleDateString('fr-FR', {month:'long', year:'numeric'});
+
+  calGrid.innerHTML = '';
+  // En-têtes jours
+  const heads = ['L','M','M','J','V','S','D'];
+  heads.forEach(h=>{
+    const hd=document.createElement('div'); hd.className='cal-head'; hd.textContent=h; calGrid.appendChild(hd);
+  });
+
+  // padding
+  const pad = ((first.getDay() - WEEK_START + 7) % 7);
+  for(let i=0;i<pad;i++){ calGrid.appendChild(document.createElement('div')); }
+
+  const valids = loadMonth();
+
+  // jours
+  for(let d=1; d<=last.getDate(); d++){
+    const date = new Date(year, month, d);
+    const key = fmtDate(date);
+    const cell = document.createElement('button');
+    cell.type='button'; cell.className='cal-cell'; cell.textContent = d;
+    if(key===todayStr) cell.classList.add('today');
+
+    const dow = date.getDay();
+    const type = planJour[dow] || 'off';
+
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    if(valids[key]) badge.classList.add(valids[key]); // full/cardio/off
+    cell.appendChild(badge);
+
+    cell.addEventListener('click', ()=>{
+      const cur = loadMonth();
+      if(cur[key]){ delete cur[key]; badge.className='badge'; }
+      else { cur[key]=type; badge.className='badge '+type; }
+      saveMonth(cur);
     });
 
-    // === Collapsibles
+    calGrid.appendChild(cell);
+  }
+}
+
+document.getElementById('cal-prev')?.addEventListener('click', ()=>{
+  calState.month--; if(calState.month<0){ calState.month=11; calState.year--; } renderCalendar();
+});
+document.getElementById('cal-next')?.addEventListener('click', ()=>{
+  calState.month++; if(calState.month>11){ calState.month=0; calState.year++; } renderCalendar();
+});
+renderCalendar();
+
+// === Collapsibles
     document.querySelectorAll('.dayCard').forEach(card=>{
       const btn = card.querySelector('.toggle');
       btn.addEventListener('click', ()=>{
@@ -502,7 +570,7 @@
     document.getElementById('applyToday').addEventListener('click', ()=> applyAdjust(currentDay));
     document.getElementById('resetAdjust').addEventListener('click', ()=> resetDay(currentDay));
 
-    // Auto-update at midnight (changes highlight/open day)
+    // Auto‑update at midnight (changes highlight/open day)
     let dayStamp = new Date().toDateString();
     setInterval(()=>{
       const now = new Date();
