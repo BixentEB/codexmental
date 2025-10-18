@@ -77,6 +77,7 @@
       <article class="day" data-day="1" data-type="full">
         <header>
           <button class="chev" aria-expanded="true">▾</button>
+          <button class="apply-here btn-sm" title="Appliquer la difficulté à ce jour">⚙️ Appliquer ici</button>
           <h3>🟢 Lundi — Full Body A : Force & Structure</h3>
         </header>
         <div class="body">
@@ -122,6 +123,7 @@
       <article class="day" data-day="2" data-type="cardio">
         <header>
           <button class="chev" aria-expanded="false">▸</button>
+          <button class="apply-here btn-sm" title="Appliquer la difficulté à ce jour">⚙️ Appliquer ici</button>
           <h3>🔵 Mardi — Cardio : Marche + Run (Z2–3)</h3>
         </header>
         <div class="body hidden">
@@ -147,6 +149,7 @@
       <article class="day" data-day="3" data-type="full">
         <header>
           <button class="chev" aria-expanded="false">▸</button>
+          <button class="apply-here btn-sm" title="Appliquer la difficulté à ce jour">⚙️ Appliquer ici</button>
           <h3>🟢 Mercredi — Full Body B : Volume & Brûlage</h3>
         </header>
         <div class="body hidden">
@@ -171,10 +174,37 @@
         </div>
       </article>
 
-      <!-- Vendredi -->
+      
+      <!-- Jeudi (Cardio LISS) -->
+      <article class="day" data-day="4" data-type="cardio">
+        <header>
+          <button class="chev" aria-expanded="false">▸</button>
+          <button class="apply-here btn-sm" title="Appliquer la difficulté à ce jour">⚙️ Appliquer ici</button>
+          <h3>🔵 Jeudi — Cardio LISS (marche/tapis)</h3>
+        </header>
+        <div class="body hidden">
+          <div class="exo cardio">
+            <div class="line1">
+              <span class="name">Marche rapide tapis</span>
+              <span class="goal">LISS</span>
+            </div>
+            <div class="line2 params cardio-controls">
+              <label>Total <input class="num xs" data-k="total" type="number" value="40"></label>
+              <label>WU <input class="num xs" data-k="wu" type="number" value="5"></label>
+              <label>CD <input class="num xs" data-k="cd" type="number" value="5"></label>
+              <label>Bloc <input class="num lg" data-k="bloc" type="text" value="Marche 5’ continu"></label>
+            </div>
+          </div>
+          <div class="post-training">
+            <strong>Post-training</strong> — Étirements 5 min + respiration nasale 2 min.
+          </div>
+        </div>
+      </article>
+    <!-- Vendredi -->
       <article class="day" data-day="5" data-type="full">
         <header>
           <button class="chev" aria-expanded="false">▸</button>
+          <button class="apply-here btn-sm" title="Appliquer la difficulté à ce jour">⚙️ Appliquer ici</button>
           <h3>🔴 Vendredi — Full Body C : Puissance & Combo</h3>
         </header>
         <div class="body hidden">
@@ -199,10 +229,37 @@
         </div>
       </article>
 
-      <!-- Dimanche -->
+      
+      <!-- Samedi (Cardio libre) -->
+      <article class="day" data-day="6" data-type="cardio">
+        <header>
+          <button class="chev" aria-expanded="false">▸</button>
+          <button class="apply-here btn-sm" title="Appliquer la difficulté à ce jour">⚙️ Appliquer ici</button>
+          <h3>🔵 Samedi — Cardio libre / HIIT léger</h3>
+        </header>
+        <div class="body hidden">
+          <div class="exo cardio">
+            <div class="line1">
+              <span class="name">Cycling/Tapis fractionné</span>
+              <span class="goal">Aérobie + Pic</span>
+            </div>
+            <div class="line2 params cardio-controls">
+              <label>Total <input class="num xs" data-k="total" type="number" value="30"></label>
+              <label>WU <input class="num xs" data-k="wu" type="number" value="5"></label>
+              <label>CD <input class="num xs" data-k="cd" type="number" value="5"></label>
+              <label>Bloc <input class="num lg" data-k="bloc" type="text" value="3× (5’ modéré + 1’ rapide)"></label>
+            </div>
+          </div>
+          <div class="post-training">
+            <strong>Post-training</strong> — Vélo / marche rapide 5–8 min (Z2) si séance muscu dans la journée.
+          </div>
+        </div>
+      </article>
+    <!-- Dimanche -->
       <article class="day" data-day="0" data-type="off">
         <header>
           <button class="chev" aria-expanded="false">▸</button>
+          <button class="apply-here btn-sm" title="Appliquer la difficulté à ce jour">⚙️ Appliquer ici</button>
           <h3>☕ Dimanche — OFF / Récup</h3>
         </header>
         <div class="body hidden">

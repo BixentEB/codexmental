@@ -28,7 +28,8 @@ function renderCalendar() {
   const { y, m } = calState;
   const first = new Date(y, m, 1);
   const last = new Date(y, m+1, 0);
-  const todayStr = new Date().toISOString().slice(0,10);
+  const _now=new Date();
+  const todayStr = `${_now.getFullYear()}-${String(_now.getMonth()+1).padStart(2,'0')}-${String(_now.getDate()).padStart(2,'0')}`;
 
   calTitle.textContent = first.toLocaleDateString('fr-FR',{ month:'long', year:'numeric' });
   calEl.innerHTML = '';
@@ -121,15 +122,16 @@ document.querySelectorAll('.note-btn').forEach(btn=>{
 
 // ===== Layout toggle (dense <-> chips)
 document.getElementById('toggleLayout').addEventListener('click', ()=>{
-  prefs.layout = (prefs.layout==='dense' ? 'chips' : 'dense');
-  document.body.dataset.layout = prefs.layout;
-  renderExoChips();
+  const old = document.body.dataset.layout || 'dense';
+  const next = (old==='dense' ? 'chips' : 'dense');
+  document.body.dataset.layout = next;
+  renderExoChips(next);
 });
 
-function renderExoChips(){
+function renderExoChips(layout = (document.body.dataset.layout||'dense')){
   document.querySelectorAll('.exo').forEach(exo=>{
     let chip = exo.querySelector('.chips');
-    if (prefs.layout==='chips'){
+    if (layout==='chips'){
       if (!chip){
         chip = document.createElement('div');
         chip.className = 'chips';
@@ -143,7 +145,7 @@ function renderExoChips(){
       exo.querySelector('.params').style.display = 'none';
     } else {
       if (chip) chip.remove();
-      exo.querySelector('.params').style.display = '';
+      const p = exo.querySelector('.params'); if(p) p.style.display = '';
     }
   });
 }
@@ -194,8 +196,8 @@ loadCycleStart(); updateCycleInfo();
 cycleStartInput.addEventListener('change', ()=>{ saveCycleStart(); updateCycleInfo(); });
 
 function currentDayIndex(){ return new Date().getDay(); } // 0..6
-function applyToDay(dayIdx){
-  const card = document.querySelector(`.day[data-day="${dayIdx}"]`);
+
+function applyToCard(card){
   if (!card) return;
   const blockB = cycleInfo.textContent.includes('3-1-1');
   card.querySelectorAll('.exo').forEach(exo=>{
@@ -212,6 +214,32 @@ function applyToDay(dayIdx){
 
     if (add05.checked && loadI && /\d/.test(loadI.value)){
       loadI.value = loadI.value.replace(/(\d+(?:[.,]\d+)?)/g, (m)=>{
+        const n = parseFloat(m.replace(',','.')); return String((n+0.5).toFixed(1)).replace('.',',');
+      });
+    }
+  });
+  renderExoChips();
+}
+
+function applyToDay(dayIdx){
+
+  const card = document.querySelector(`.day[data-day="${dayIdx}"]`);
+  if (!card) return;
+  const blockB = cycleInfo.textContent.includes('3-1-1');
+  card.querySelectorAll('.exo').forEach(exo=>{
+    const setsI = exo.querySelector('[data-k="sets"]');
+    const repsI = exo.querySelector('[data-k="reps"]');
+    const tempoI = exo.querySelector('[data-k="tempo"]');
+    const rpeI = exo.querySelector('[data-k="rpe"]');
+    const loadI = exo.querySelector('[data-k="load"]');
+
+    if (tempoI) tempoI.value = blockB ? '3-1-1' : '2-1-2';
+    if (repsI) repsI.value = Math.max(1, Number(repsI.value) + rpeOffset);
+    if (setsI) setsI.value = Math.max(1, Number(setsI.value) + Math.floor(rpeOffset/2));
+    if (rpeI)  rpeI.value = (Number(rpeI.value) + rpeOffset).toString().replace(/\.0$/,'');
+
+    if (add05.checked && loadI && /\\d/.test(loadI.value)){
+      loadI.value = loadI.value.replace(/(\\d+(?:[.,]\\d+)?)/g, (m)=>{
         const n = parseFloat(m.replace(',','.'));
         return String((n+0.5).toFixed(1)).replace('.',',');
       });
@@ -220,5 +248,37 @@ function applyToDay(dayIdx){
   renderExoChips();
 }
 
-document.getElementById('applyToday').addEventListener('click', ()=>applyToDay(currentDayIndex()));
+document.getElementById('applyToday').addEventListener('click', ()=>{ if(!applyToExpanded()) applyToDay(currentDayIndex()); });
 document.getElementById('resetToday').addEventListener('click', ()=>location.reload());
+
+// per-day apply buttons
+document.querySelectorAll('.day .apply-here').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const card = btn.closest('.day');
+    applyToCard(card);
+  });
+});
+
+function applyToExpanded(){
+  const open = document.querySelector('.day .chev[aria-expanded="true"]');
+  if (open){ applyToCard(open.closest('.day')); return true; }
+  return false;
+}
+
+// Cardio auto duration compute
+function updateCardio(exo){
+  const total = Number(exo.querySelector('[data-k="total"]')?.value || 0);
+  const wu = Number(exo.querySelector('[data-k="wu"]')?.value || 5);
+  const cd = Number(exo.querySelector('[data-k="cd"]')?.value || 5);
+  const bloc = exo.querySelector('[data-k="bloc"]');
+  if (!total || !bloc) return;
+  const remaining = Math.max(0, total - wu - cd);
+  const cycles = Math.max(1, Math.floor(remaining / 5));
+  bloc.value = `Marche 4’ + Run 1’ × ${cycles}`;
+}
+document.querySelectorAll('.card #plan .cardio').forEach(cardio=>{
+  cardio.querySelectorAll('[data-k="total"],[data-k="wu"],[data-k="cd"]').forEach(inp=>{
+    inp.addEventListener('input', ()=>updateCardio(cardio));
+  });
+  updateCardio(cardio);
+});
