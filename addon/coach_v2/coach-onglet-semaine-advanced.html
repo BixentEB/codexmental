@@ -338,7 +338,7 @@
         <div class="dayBody">
           <div class="ex"><div class="fields">
             <div class="cell"><label>Option</label><input type="text" value="Cycling/Tapis fractionné" data-k="opt"></div>
-            <div class="cell"><label>Warm‑up</label><input type="text" value="5 min" data-k="wu"></div>
+            <div class="cell"><label>Warm-up</label><input type="text" value="5 min" data-k="wu"></div>
             <div class="cell"><label>Bloc A</label><input type="text" value="3× (5 min modéré + 1 min rapide)" data-k="a"></div>
             <div class="cell"><label>Bloc B</label><input type="text" value="2× (2 min modéré + 2 min intense)" data-k="b"></div>
             <div class="cell"><label>Cooldown</label><input type="text" value="5 min" data-k="cd"></div>
@@ -502,7 +502,7 @@
     document.getElementById('applyToday').addEventListener('click', ()=> applyAdjust(currentDay));
     document.getElementById('resetAdjust').addEventListener('click', ()=> resetDay(currentDay));
 
-    // Auto‑update at midnight (changes highlight/open day)
+    // Auto-update at midnight (changes highlight/open day)
     let dayStamp = new Date().toDateString();
     setInterval(()=>{
       const now = new Date();
