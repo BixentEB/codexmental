@@ -1,4 +1,4 @@
-/* styles.css — Coach v3 */
+/* styles.css — Coach v3.2 */
 :root{
   --bg:#0f1115; --card:#141822; --ink:#e8ecf3; --muted:#9fb0c3; --chip:#1b2330; --border:#273042;
   --green:#5ee1a8; --blue:#74b3ff; --red:#ff7a7a; --amber:#ffcf66; --gray:#96a2b5;
@@ -26,13 +26,16 @@ h2{margin:0 0 12px 0; font-size:16px}
 
 .cal-toolbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
 .cal-title{font-weight:600}
-.calendar{display:grid; grid-template-columns: repeat(8, 1fr); gap:6px} /* +1 pour numéros de semaine */
+.calendar{display:grid; grid-template-columns: repeat(8, 1fr); gap:6px}
 .weeknum{display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--muted)}
 .cell{position:relative; aspect-ratio:1/1; border:1px solid rgba(180,200,255,.18); border-radius:12px; background:#172032; display:flex; align-items:center; justify-content:center; font-size:13px; cursor:pointer; color:var(--ink)}
 .cell.today{outline:2px solid var(--blue); box-shadow:0 0 0 3px rgba(116,179,255,.25) inset, 0 0 0 2px rgba(116,179,255,.35)}
 .badge-mini{position:absolute; top:6px; right:6px; width:8px; height:8px; border-radius:50%}
 .badge-mini.full{background:var(--red)} .badge-mini.cardio{background:var(--blue)} .badge-mini.off{background:var(--gray)} .badge-mini.ok{background:#62d26f}
-.cell:hover{filter:brightness(1.1)}
+.cell.border-full{border-color: rgba(255,122,122,.45)}
+.cell.border-cardio{border-color: rgba(116,179,255,.45)}
+.cell.border-off{border-color: rgba(150,162,181,.45)}
+.cell:hover{filter:brightness(1.08)}
 
 #plan{grid-column: 1 / -1}
 .day{border-left:8px solid transparent; border-radius:12px; border:1px solid var(--border); margin:12px 0; background:#0f141e}
@@ -58,6 +61,9 @@ h2{margin:0 0 12px 0; font-size:16px}
 textarea{width:100%; min-height:60px; background:var(--chip); color:var(--ink); border:1px solid var(--border); border-radius:10px; padding:8px}
 
 .post-training{margin-top:8px; font-size:13px; color:var(--muted)}
+
+.mode-row{display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap}
+.preset-row,.custom-row,.cycle-row,.toolbar{margin-top:6px}
 
 @media (max-width: 980px){
   .container{grid-template-columns:1fr}

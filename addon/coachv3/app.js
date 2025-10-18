@@ -1,7 +1,6 @@
-// app.js — Coach v3
+// app.js — Coach v3.2
 const CAL_STORAGE = 'coach_v3_calendar';
 const CYCLE_STORAGE = 'coach_v3_cycle_start';
-const prefs = { layout: 'dense' }; // 'dense' | 'chips'
 
 // ===== Calendar Pro =====
 const calEl = document.getElementById('calendar');
@@ -28,8 +27,7 @@ function renderCalendar() {
   const { y, m } = calState;
   const first = new Date(y, m, 1);
   const last = new Date(y, m+1, 0);
-  const _now=new Date();
-  const todayStr = `${_now.getFullYear()}-${String(_now.getMonth()+1).padStart(2,'0')}-${String(_now.getDate()).padStart(2,'0')}`;
+  const todayStr = new Date().toLocaleDateString('sv-SE'); // local yyyy-mm-dd
 
   calTitle.textContent = first.toLocaleDateString('fr-FR',{ month:'long', year:'numeric' });
   calEl.innerHTML = '';
@@ -65,7 +63,7 @@ function renderCalendar() {
     }
 
     const date = new Date(y, m, d);
-    const key = date.toISOString().slice(0,10);
+    const key = new Date(date.getFullYear(), date.getMonth(), date.getDate()).toLocaleDateString('sv-SE');
     const cell = document.createElement('button');
     cell.className = 'cell';
     cell.textContent = d;
@@ -75,6 +73,7 @@ function renderCalendar() {
     const type = planJour[dow] || 'off';
     const dot = document.createElement('span');
     dot.className = 'badge-mini ' + type;
+    cell.classList.add('border-'+type);
     if (valids[key]) dot.className = 'badge-mini ok';
     cell.appendChild(dot);
 
@@ -100,7 +99,7 @@ document.getElementById('cal-next').addEventListener('click', ()=>{
 });
 renderCalendar();
 
-// ===== Collapse days
+// ===== Collapse day sections
 document.querySelectorAll('.day').forEach(day=>{
   const btn = day.querySelector('.chev');
   const body = day.querySelector('.body');
@@ -120,14 +119,13 @@ document.querySelectorAll('.note-btn').forEach(btn=>{
   });
 });
 
-// ===== Layout toggle (dense <-> chips)
+// ===== Dense/Chips toggle
 document.getElementById('toggleLayout').addEventListener('click', ()=>{
   const old = document.body.dataset.layout || 'dense';
   const next = (old==='dense' ? 'chips' : 'dense');
   document.body.dataset.layout = next;
   renderExoChips(next);
 });
-
 function renderExoChips(layout = (document.body.dataset.layout||'dense')){
   document.querySelectorAll('.exo').forEach(exo=>{
     let chip = exo.querySelector('.chips');
@@ -142,7 +140,7 @@ function renderExoChips(layout = (document.body.dataset.layout||'dense')){
       const tempo = exo.querySelector('[data-k="tempo"]')?.value ?? '';
       const rpe = exo.querySelector('[data-k="rpe"]')?.value ?? '';
       chip.textContent = `${sets}×${reps} • ${tempo} • RPE ${rpe}`;
-      exo.querySelector('.params').style.display = 'none';
+      const p = exo.querySelector('.params'); if(p) p.style.display = 'none';
     } else {
       if (chip) chip.remove();
       const p = exo.querySelector('.params'); if(p) p.style.display = '';
@@ -151,7 +149,7 @@ function renderExoChips(layout = (document.body.dataset.layout||'dense')){
 }
 renderExoChips();
 
-// ===== Difficulty presets + custom + 4-week rotation
+// ===== Difficulty panel
 const presetBtns = document.querySelectorAll('#difficulty [data-preset]');
 const rpeCustom = document.getElementById('rpeCustom');
 const rpeVal = document.getElementById('rpeVal');
@@ -165,13 +163,28 @@ presetBtns.forEach(b=>b.addEventListener('click', ()=>{
   rpeCustom.value = rpeOffset;
   rpeVal.textContent = String(rpeOffset);
 }));
-
 rpeCustom.addEventListener('input', ()=>{
   rpeOffset = Number(rpeCustom.value);
   rpeVal.textContent = String(rpeOffset);
   presetBtns.forEach(x=>x.classList.remove('active'));
 });
 
+let diffMode = 'muscu';
+const modeBtns = document.querySelectorAll('.mode-btn');
+modeBtns.forEach(b=>b.addEventListener('click', ()=>{
+  modeBtns.forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  diffMode = b.dataset.mode;
+}));
+const daySelect = document.getElementById('daySelect');
+function targetDayIdx(){
+  const v = Number(daySelect.value);
+  if (!isNaN(v) && v>=0) return v;
+  const open = document.querySelector('.day .chev[aria-expanded="true"]');
+  if (open) return Number(open.closest('.day').dataset.day);
+  return new Date().getDay();
+}
+
+// Cycle start & rotation 4 semaines
 const cycleStartInput = document.getElementById('cycleStart');
 const cycleInfo = document.getElementById('cycleInfo');
 function loadCycleStart(){
@@ -195,34 +208,7 @@ function updateCycleInfo(){
 loadCycleStart(); updateCycleInfo();
 cycleStartInput.addEventListener('change', ()=>{ saveCycleStart(); updateCycleInfo(); });
 
-function currentDayIndex(){ return new Date().getDay(); } // 0..6
-
-function applyToCard(card){
-  if (!card) return;
-  const blockB = cycleInfo.textContent.includes('3-1-1');
-  card.querySelectorAll('.exo').forEach(exo=>{
-    const setsI = exo.querySelector('[data-k="sets"]');
-    const repsI = exo.querySelector('[data-k="reps"]');
-    const tempoI = exo.querySelector('[data-k="tempo"]');
-    const rpeI = exo.querySelector('[data-k="rpe"]');
-    const loadI = exo.querySelector('[data-k="load"]');
-
-    if (tempoI) tempoI.value = blockB ? '3-1-1' : '2-1-2';
-    if (repsI) repsI.value = Math.max(1, Number(repsI.value) + rpeOffset);
-    if (setsI) setsI.value = Math.max(1, Number(setsI.value) + Math.floor(rpeOffset/2));
-    if (rpeI)  rpeI.value = (Number(rpeI.value) + rpeOffset).toString().replace(/\.0$/,'');
-
-    if (add05.checked && loadI && /\d/.test(loadI.value)){
-      loadI.value = loadI.value.replace(/(\d+(?:[.,]\d+)?)/g, (m)=>{
-        const n = parseFloat(m.replace(',','.')); return String((n+0.5).toFixed(1)).replace('.',',');
-      });
-    }
-  });
-  renderExoChips();
-}
-
-function applyToDay(dayIdx){
-
+function applyMuscuToDay(dayIdx){
   const card = document.querySelector(`.day[data-day="${dayIdx}"]`);
   if (!card) return;
   const blockB = cycleInfo.textContent.includes('3-1-1');
@@ -232,53 +218,87 @@ function applyToDay(dayIdx){
     const tempoI = exo.querySelector('[data-k="tempo"]');
     const rpeI = exo.querySelector('[data-k="rpe"]');
     const loadI = exo.querySelector('[data-k="load"]');
-
     if (tempoI) tempoI.value = blockB ? '3-1-1' : '2-1-2';
     if (repsI) repsI.value = Math.max(1, Number(repsI.value) + rpeOffset);
     if (setsI) setsI.value = Math.max(1, Number(setsI.value) + Math.floor(rpeOffset/2));
     if (rpeI)  rpeI.value = (Number(rpeI.value) + rpeOffset).toString().replace(/\.0$/,'');
-
     if (add05.checked && loadI && /\\d/.test(loadI.value)){
       loadI.value = loadI.value.replace(/(\\d+(?:[.,]\\d+)?)/g, (m)=>{
-        const n = parseFloat(m.replace(',','.'));
-        return String((n+0.5).toFixed(1)).replace('.',',');
+        const n = parseFloat(m.replace(',','.')); return String((n+0.5).toFixed(1)).replace('.',',');
       });
     }
   });
   renderExoChips();
 }
 
-document.getElementById('applyToday').addEventListener('click', ()=>{ if(!applyToExpanded()) applyToDay(currentDayIndex()); });
-document.getElementById('resetToday').addEventListener('click', ()=>location.reload());
-
-// per-day apply buttons
-document.querySelectorAll('.day .apply-here').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const card = btn.closest('.day');
-    applyToCard(card);
-  });
-});
-
-function applyToExpanded(){
-  const open = document.querySelector('.day .chev[aria-expanded="true"]');
-  if (open){ applyToCard(open.closest('.day')); return true; }
-  return false;
-}
-
-// Cardio auto duration compute
+// Cardio helpers
 function updateCardio(exo){
   const total = Number(exo.querySelector('[data-k="total"]')?.value || 0);
   const wu = Number(exo.querySelector('[data-k="wu"]')?.value || 5);
   const cd = Number(exo.querySelector('[data-k="cd"]')?.value || 5);
   const bloc = exo.querySelector('[data-k="bloc"]');
-  if (!total || !bloc) return;
+  if (!bloc) return;
+  if (!total){ bloc.value = '—'; return; }
   const remaining = Math.max(0, total - wu - cd);
   const cycles = Math.max(1, Math.floor(remaining / 5));
   bloc.value = `Marche 4’ + Run 1’ × ${cycles}`;
 }
-document.querySelectorAll('.card #plan .cardio').forEach(cardio=>{
-  cardio.querySelectorAll('[data-k="total"],[data-k="wu"],[data-k="cd"]').forEach(inp=>{
-    inp.addEventListener('input', ()=>updateCardio(cardio));
+function wireCardio(container){
+  container.querySelectorAll('.cardio').forEach(cardio=>{
+    cardio.querySelectorAll('[data-k="total"],[data-k="wu"],[data-k="cd"]').forEach(inp=>{
+      inp.addEventListener('input', ()=>updateCardio(cardio));
+    });
+    updateCardio(cardio);
   });
-  updateCardio(cardio);
+}
+wireCardio(document);
+
+function applyCardioToDay(dayIdx){
+  const card = document.querySelector(`.day[data-day="${dayIdx}"]`);
+  if (!card) return;
+  card.querySelectorAll('.cardio').forEach(exo=>{
+    const totalI = exo.querySelector('[data-k="total"]');
+    if (totalI){
+      const base = Number(totalI.value || 0);
+      const delta = rpeOffset * 5;
+      totalI.value = Math.max(10, base + delta);
+      updateCardio(exo);
+    }
+  });
+}
+
+function addTiboToDay(dayIdx){
+  const card = document.querySelector(`.day[data-day="${dayIdx}"]`);
+  if (!card) return;
+  if (card.querySelector('.exo.tibo')) return;
+  const block = document.createElement('div');
+  block.className = 'exo cardio tibo';
+  block.innerHTML = `
+    <div class="line1">
+      <span class="name">TIBO Extrm</span>
+      <span class="goal">Brûle graisse (HIIT guidé)</span>
+    </div>
+    <div class="line2 params cardio-controls">
+      <label>Total <input class="num xs" data-k="total" type="number" value="30"></label>
+      <label>WU <input class="num xs" data-k="wu" type="number" value="5"></label>
+      <label>CD <input class="num xs" data-k="cd" type="number" value="5"></label>
+      <label>Bloc <input class="num lg" data-k="bloc" type="text" value="Routine vidéo"></label>
+    </div>`;
+  card.querySelector('.body').appendChild(block);
+  wireCardio(card);
+}
+
+// Apply buttons
+document.getElementById('applyToday').addEventListener('click', ()=>{
+  const v = Number(document.getElementById('daySelect').value);
+  let d;
+  if (!isNaN(v) && v>=0) d = v;
+  else {
+    const open = document.querySelector('.day .chev[aria-expanded="true"]');
+    d = open ? Number(open.closest('.day').dataset.day) : new Date().getDay();
+  }
+  if (diffMode==='muscu') applyMuscuToDay(d);
+  else if (diffMode==='cardio') applyCardioToDay(d);
+  else addTiboToDay(d);
 });
+document.getElementById('resetToday').addEventListener('click', ()=>location.reload());
