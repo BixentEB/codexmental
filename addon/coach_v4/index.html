@@ -7,9 +7,22 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+<!-- Bandeau / Topbar -->
 <header class="topbar">
-  <h1>Coach v4 — Journal & Plan</h1>
-  <nav><button id="toggleLayout" class="btn">Basculer layout exos</button></nav>
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1>Coach v4 — Journal & Plan</h1>
+      <p class="tagline">Agenda, réglages adaptatifs & suivi sauvegardé</p>
+    </div>
+    <nav class="actions">
+      <button id="toggleLayout" class="btn">Basculer layout exos</button>
+      <button id="btnExport" class="btn">Exporter</button>
+      <button id="btnImport" class="btn">Importer</button>
+      <button id="btnReset"  class="btn danger">Réinitialiser</button>
+      <input id="fileImport" type="file" accept="application/json" hidden />
+    </nav>
+  </div>
 </header>
 
 <main class="container">
@@ -106,7 +119,7 @@
         <button id="simTibo" class="btn">🧪 Simuler</button>
         <button id="applyTibo" class="btn primary">➕ Ajouter TIBO</button>
       </div>
-      <p class="hint">Base 30 min = 5 cycles (3’/3’). RPE +1 ⇒ +1 cycle. **Uniquement** jours Cardio.</p>
+      <p class="hint">Base 30 min = 5 cycles (3’/3’). RPE +1 ⇒ +1 cycle. <strong>Uniquement</strong> jours Cardio.</p>
       <div id="simTiboOut" class="simout"></div>
     </div>
 
@@ -120,17 +133,16 @@
         <button id="simCore" class="btn">🧪 Simuler</button>
         <button id="applyCore" class="btn primary">✅ Appliquer</button>
       </div>
-      <p class="hint">Base 3×30s. RPE +1 ⇒ +5s/série. >45s ⇒ +1 série & retour 30s.</p>
+      <p class="hint">Base 3×30s. RPE +1 ⇒ +5s/série. &gt;45s ⇒ +1 série & retour 30s.</p>
       <div id="simCoreOut" class="simout"></div>
     </div>
   </section>
 
-  <!-- Plan de la semaine : Lundi/Mardi/Mercredi/Jeudi/Vendredi/Samedi/Dimanche -->
-  <!-- (Tous les exos que tu as listés sont intégrés) -->
-  <!-- LUNDI -->
+  <!-- Plan de la semaine (tous les jours/exos) -->
   <section class="card" id="plan">
     <h2>🧩 Plan de la semaine</h2>
 
+    <!-- LUNDI -->
     <article class="day" data-day="1" data-type="full">
       <header><button class="chev" aria-expanded="true">▾</button><h3>🟢 Lundi — Full Body A : Force & Structure</h3></header>
       <div class="body">
@@ -191,7 +203,6 @@
             <label>Reps <input class="num xs" data-k="reps" type="number" value="20"></label>
             <label>Tempo <input class="num xs" data-k="tempo" type="text" value="2-1-2"></label>
             <label>RPE <input class="num xs" data-k="rpe" type="number" step="0.5" value="6"></label>
-            <label>Charge <input class="num sm" data-k="load" type="text" value="PDC"></label>
           </div>
         </div>
         <div class="exo core" data-name="Planche">
@@ -442,46 +453,44 @@
 
   <!-- LEXIQUE -->
   <section class="card" id="lexique">
-  <h2>ℹ️ Lexique</h2>
-  <div class="tabs">
-    <button class="tab active" data-tab="lex-termes">Termes</button>
-    <button class="tab" data-tab="lex-exos">Exercices</button>
-  </div>
+    <h2>ℹ️ Lexique</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="lex-termes">Termes</button>
+      <button class="tab" data-tab="lex-exos">Exercices</button>
+    </div>
 
-  <div id="panel-lex-termes">
-    <ul class="lex">
-      <li><strong>WU</strong> — Warm-Up / Échauffement (≈10% du temps total).</li>
-      <li><strong>CD</strong> — Cool-Down / Retour au calme (≈10%).</li>
-      <li><strong>RPE</strong> — Perception d’effort (6 facile → 10 max).</li>
-      <li><strong>Tempo</strong> — Vitesse d’exécution : ex. <em>2-1-1</em> = 2s descente, 1s pause, 1s montée.</li>
-      <li><strong>LISS</strong> — Cardio doux et continu (Low Intensity Steady State).</li>
-      <li><strong>Z2 / Z3</strong> — Zones cardio modérée / soutenue.</li>
-      <li><strong>PDC</strong> — Poids du corps (sans charge externe).</li>
-      <li><strong>Bloc 4’+1’</strong> — 4 min marche + 1 min run, répété <em>n</em> fois.</li>
-    </ul>
-  </div>
+    <div id="panel-lex-termes">
+      <ul class="lex">
+        <li><strong>WU</strong> — Warm-Up / Échauffement (≈10% du temps total).</li>
+        <li><strong>CD</strong> — Cool-Down / Retour au calme (≈10%).</li>
+        <li><strong>RPE</strong> — Perception d’effort (6 facile → 10 max).</li>
+        <li><strong>Tempo</strong> — Vitesse d’exécution : ex. <em>2-1-1</em> = 2s descente, 1s pause, 1s montée.</li>
+        <li><strong>LISS</strong> — Cardio doux et continu (Low Intensity Steady State).</li>
+        <li><strong>Z2 / Z3</strong> — Zones cardio modérée / soutenue.</li>
+        <li><strong>PDC</strong> — Poids du corps (sans charge externe).</li>
+        <li><strong>Bloc 4’+1’</strong> — 4 min marche + 1 min run, répété <em>n</em> fois.</li>
+      </ul>
+    </div>
 
-  <div id="panel-lex-exos" class="hidden">
-    <ul class="lex">
-      <li><strong>Développé couché</strong> — Pecs, triceps, épaules antérieures.</li>
-      <li><strong>Goblet squat</strong> — Quads, fessiers, gainage (haltère contre la poitrine).</li>
-      <li><strong>Rowing barre / 1 bras</strong> — Dos, biceps, posture.</li>
-      <li><strong>SDT jambes tendues</strong> — Ischios, fessiers, lombaires (charnière de hanche).</li>
-      <li><strong>Hip Thrust</strong> — Extension de hanche, fessiers.</li>
-      <li><strong>Élévations latérales</strong> — Épaules latérales.</li>
-      <li><strong>Planche / + bras</strong> — Gainage anti-extension / anti-rotation.</li>
-      <li><strong>Fentes arrière</strong> — Fessiers, cuisses, stabilité.</li>
-      <li><strong>Crunch (variantes)</strong> — Abdominaux (contrôle lombaire).</li>
-      <li><strong>Marche + Run</strong> — Fractionné doux aérobie.</li>
-      <li><strong>TIBO Extrm</strong> — HIIT guidé vidéo (cycles 3’ effort / 3’ récup).</li>
-    </ul>
-  </div>
-</section>
-
+    <div id="panel-lex-exos" class="hidden">
+      <ul class="lex">
+        <li><strong>Développé couché</strong> — Pecs, triceps, épaules antérieures.</li>
+        <li><strong>Goblet squat</strong> — Quads, fessiers, gainage (haltère contre la poitrine).</li>
+        <li><strong>Rowing barre / 1 bras</strong> — Dos, biceps, posture.</li>
+        <li><strong>SDT jambes tendues</strong> — Ischios, fessiers, lombaires.</li>
+        <li><strong>Hip Thrust</strong> — Extension de hanche, fessiers.</li>
+        <li><strong>Élévations latérales</strong> — Épaules latérales.</li>
+        <li><strong>Planche / + bras</strong> — Gainage anti-extension / anti-rotation.</li>
+        <li><strong>Fentes arrière</strong> — Fessiers, cuisses, stabilité.</li>
+        <li><strong>Crunch (variantes)</strong> — Abdominaux (contrôle lombaire).</li>
+        <li><strong>Marche + Run</strong> — Fractionné doux aérobie.</li>
+        <li><strong>TIBO Extrm</strong> — HIIT guidé vidéo (cycles 3’ effort / 3’ récup).</li>
+      </ul>
+    </div>
+  </section>
 </main>
 
-<footer class="foot"><small>v4 prototype — moteur adaptatif par type, listes complètes.</small></footer>
+<footer class="foot"><small>v4 prototype — moteur adaptatif par type, sauvegarde locale incluse.</small></footer>
 <script src="app.js"></script>
 </body>
 </html>
-
