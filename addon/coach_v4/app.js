@@ -1,5 +1,7 @@
 // ===== Calendar =====
 const CAL_STORAGE = 'coach_v4_calendar';
+const STATE_KEY   = 'coach_v4_state';
+
 const calEl = document.getElementById('calendar');
 const calTitle = document.getElementById('cal-title');
 let calState = { y: new Date().getFullYear(), m: new Date().getMonth() };
@@ -57,6 +59,7 @@ function renderCalendar(){
       const cur=loadCal();
       if(cur[key]) delete cur[key]; else cur[key]=true;
       saveCal(cur); renderCalendar();
+      setTimeout(saveStateDebounced, 50);
     });
 
     calEl.appendChild(cell);
@@ -84,6 +87,7 @@ document.getElementById('toggleLayout').onclick=()=>{
   const next=(old==='dense'?'chips':'dense');
   document.body.dataset.layout=next;
   renderExoChips(next);
+  saveStateDebounced();
 };
 
 function renderExoChips(layout=(document.body.dataset.layout||'dense')){
@@ -107,7 +111,6 @@ renderExoChips();
 
 
 // ===== Tabs =====
-// — scoping à #adapt pour ne pas interférer avec les onglets du lexique
 document.querySelectorAll('#adapt .tab').forEach(t=>{
   t.addEventListener('click', ()=>{
     document.querySelectorAll('#adapt .tab').forEach(x=>x.classList.remove('active'));
@@ -132,7 +135,6 @@ document.querySelectorAll('#lexique .tab').forEach(btn=>{
 
 // ===== Helpers (sélecteur de jour prioritaire) =====
 const daySelect = document.getElementById('daySelect');
-// d’abord le sélecteur, sinon la carte ouverte, sinon aujourd’hui
 const getSelectedDayIdx = () => {
   const v = Number(daySelect?.value);
   if (!Number.isNaN(v) && v >= 0) return v;
@@ -201,6 +203,7 @@ function applyMuscu(card, delta){
     }
   });
   renderExoChips();
+  saveStateDebounced();
 }
 
 
@@ -245,6 +248,7 @@ function applyCardio(card, delta){
     if(cdI)    cdI.value = cd;
     if(blocI)  blocI.value = `Marche 4’ + Run 1’ × ${cycles}`;
   });
+  saveStateDebounced();
 }
 
 
@@ -287,6 +291,8 @@ function addOrUpdateTibo(delta){
   exo.querySelector('[data-k="wu"]').value    = 5;
   exo.querySelector('[data-k="cd"]').value    = 5;
   exo.querySelector('[data-k="bloc"]').value  = `${cycles} cycles 3’/3’`;
+
+  saveStateDebounced();
 }
 
 
@@ -322,6 +328,7 @@ function applyCore(card, delta){
     if(setsI) setsI.value = sets;
     if(secI)  secI.value  = sec;
   });
+  saveStateDebounced();
 }
 
 
@@ -345,3 +352,130 @@ document.getElementById('simCore').onclick = () => {
   simCoreOut.textContent = simulateCore(getDayCard(), Number(rpeCore.value)).join(' • ');
 };
 document.getElementById('applyCore').onclick = () => applyCore(getDayCard(), Number(rpeCore.value));
+
+
+// ====== Sauvegarde locale (autosave + export/import) ======
+let _saveT = null;
+function saveStateDebounced() {
+  clearTimeout(_saveT);
+  _saveT = setTimeout(() => {
+    localStorage.setItem(STATE_KEY, JSON.stringify(collectState()));
+  }, 300);
+}
+
+function collectState() {
+  // Jours + exos
+  const days = [];
+  document.querySelectorAll('.day').forEach(day => {
+    const d = { day: Number(day.dataset.day), type: day.dataset.type, exos: [] };
+    day.querySelectorAll('.exo').forEach(exo => {
+      const one = { name: exo.dataset.name || exo.querySelector('.name')?.textContent?.trim() || '', vals:{} };
+      exo.querySelectorAll('[data-k]').forEach(inp => {
+        one.vals[inp.getAttribute('data-k')] = inp.value;
+      });
+      d.exos.push(one);
+    });
+    days.push(d);
+  });
+
+  const calendar = loadCal();
+  const ui = {
+    layout: document.body.dataset.layout || 'dense',
+    daySelect: document.getElementById('daySelect')?.value || '-1',
+    muscu: { rpe: document.getElementById('rpeMuscu')?.value||'0', rest: document.getElementById('restMuscu')?.value||'60s', add05: !!document.getElementById('add05')?.checked },
+    cardio: { rpe: document.getElementById('rpeCardio')?.value||'0' },
+    tibo:   { rpe: document.getElementById('rpeTibo')?.value||'0' },
+    core:   { rpe: document.getElementById('rpeCore')?.value||'0' }
+  };
+
+  return { days, calendar, ui };
+}
+
+function applyState(state) {
+  if (!state) return;
+
+  // calendrier
+  if (state.calendar) {
+    saveCal(state.calendar);
+    renderCalendar();
+  }
+
+  // UI
+  if (state.ui) {
+    document.body.dataset.layout = state.ui.layout || 'dense';
+    renderExoChips();
+    const ds = document.getElementById('daySelect'); if (ds) ds.value = state.ui.daySelect ?? '-1';
+    const _rM = document.getElementById('rpeMuscu'); if (_rM) { _rM.value = state.ui.muscu?.rpe ?? '0'; document.getElementById('rpeMuscuVal').textContent = _rM.value; }
+    const _rest = document.getElementById('restMuscu'); if (_rest) _rest.value = state.ui.muscu?.rest ?? '60s';
+    const _add = document.getElementById('add05'); if (_add) _add.checked = !!state.ui.muscu?.add05;
+    const _rC = document.getElementById('rpeCardio'); if (_rC) { _rC.value = state.ui.cardio?.rpe ?? '0'; document.getElementById('rpeCardioVal').textContent = _rC.value; }
+    const _rT = document.getElementById('rpeTibo'); if (_rT) { _rT.value = state.ui.tibo?.rpe ?? '0'; document.getElementById('rpeTiboVal').textContent = _rT.value; }
+    const _rCore = document.getElementById('rpeCore'); if (_rCore) { _rCore.value = state.ui.core?.rpe ?? '0'; document.getElementById('rpeCoreVal').textContent = _rCore.value; }
+  }
+
+  // exos
+  if (state.days?.length) {
+    state.days.forEach(sd => {
+      const day = document.querySelector(`.day[data-day="${sd.day}"]`);
+      if (!day) return;
+      sd.exos.forEach(e => {
+        let exo = Array.from(day.querySelectorAll('.exo'))
+          .find(x => (x.dataset.name || x.querySelector('.name')?.textContent?.trim() || '') === e.name);
+
+        if (!exo && sd.type === 'cardio' && /tibo/i.test(e.name)) {
+          addOrUpdateTibo(0);
+          exo = day.querySelector('.exo.cardio.tibo');
+        }
+        if (!exo) return;
+        Object.entries(e.vals||{}).forEach(([k,v])=>{
+          const input = exo.querySelector(`[data-k="${k}"]`);
+          if (input) input.value = v;
+        });
+      });
+    });
+  }
+}
+
+// autosave sur inputs
+document.addEventListener('input', (e)=>{
+  if (e.target.closest('.params') || e.target.id==='daySelect') saveStateDebounced();
+});
+
+// Export
+document.getElementById('btnExport').onclick = ()=>{
+  const data = JSON.stringify(collectState(), null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'coach_v4_state.json'; a.click();
+  URL.revokeObjectURL(url);
+};
+
+// Import
+document.getElementById('btnImport').onclick = ()=> document.getElementById('fileImport').click();
+document.getElementById('fileImport').addEventListener('change', async (e)=>{
+  const file = e.target.files?.[0]; if(!file) return;
+  const text = await file.text();
+  try{
+    const state = JSON.parse(text);
+    applyState(state);
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    alert('Import OK — sauvegardé.');
+  } catch(err){
+    alert('Fichier invalide 🤕');
+  } finally { e.target.value=''; }
+});
+
+// Reset
+document.getElementById('btnReset').onclick = ()=>{
+  if(!confirm('Tout réinitialiser (plan + calendrier) ?')) return;
+  localStorage.removeItem(STATE_KEY);
+  localStorage.removeItem(CAL_STORAGE);
+  location.reload();
+};
+
+// Restauration au chargement
+try {
+  const raw = localStorage.getItem(STATE_KEY);
+  if (raw) applyState(JSON.parse(raw));
+} catch(e){ /* ignore */ }
