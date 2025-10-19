@@ -479,3 +479,11 @@ try {
   const raw = localStorage.getItem(STATE_KEY);
   if (raw) applyState(JSON.parse(raw));
 } catch(e){ /* ignore */ }
+
+// Anti-glow: désactive les effets pendant le scroll
+let _scrollT = null;
+window.addEventListener('scroll', () => {
+  document.body.classList.add('scrolling');
+  clearTimeout(_scrollT);
+  _scrollT = setTimeout(() => document.body.classList.remove('scrolling'), 120);
+}, { passive: true });
