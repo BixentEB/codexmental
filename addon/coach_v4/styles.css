@@ -224,9 +224,21 @@ h2{margin:0 0 12px 0; font-size:16px}
 /* ====== Formulaires ====== */
 input, select, button{font:inherit}
 
+/* --- Anti-halo violet pendant le scroll --- */
+.card { isolation: isolate; }                 /* coupe les mélanges entre couches */
+.chips { contain: paint; will-change: transform; transform: translateZ(0); } /* force une couche dédiée */
+
+/* Option (si halo persiste un peu) : neutraliser toute ombre/outline des chips pendant le scroll */
+.scrolling .chips { box-shadow: none !important; }
+
+/* Option douce : fond un peu moins translucide sur les chips */
+.chips { background: #141e30; } /* était #162133, légèrement plus opaque */
+
+
 /* ====== Responsif ====== */
 @media (max-width:980px){
   .container{grid-template-columns:1fr}
   .topbar-inner{flex-direction:column; align-items:flex-start}
   .actions{width:100%}
 }
+
