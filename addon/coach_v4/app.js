@@ -59,15 +59,23 @@ function renderCalendar(){
       const cur=loadCal();
       if(cur[key]) delete cur[key]; else cur[key]=true;
       saveCal(cur); renderCalendar();
-      setTimeout(saveStateDebounced, 50);
+      setTimeout(()=>{ saveStateDebounced(); updateWeekStats(); }, 50);
     });
 
     calEl.appendChild(cell);
     cur++; if(cur===8) cur=0;
   }
+  // maj des stats à chaque rendu
+  updateWeekStats();
 }
-document.getElementById('cal-prev').onclick=()=>{ calState.m--; if(calState.m<0){calState.m=11; calState.y--;} renderCalendar(); };
-document.getElementById('cal-next').onclick=()=>{ calState.m++; if(calState.m>11){calState.m=0; calState.y++;} renderCalendar(); };
+document.getElementById('cal-prev').onclick=()=>{
+  calState.m--; if(calState.m<0){calState.m=11; calState.y--;}
+  renderCalendar(); updateWeekStats();
+};
+document.getElementById('cal-next').onclick=()=>{
+  calState.m++; if(calState.m>11){calState.m=0; calState.y++;}
+  renderCalendar(); updateWeekStats();
+};
 renderCalendar();
 
 
@@ -88,6 +96,7 @@ document.getElementById('toggleLayout').onclick=()=>{
   document.body.dataset.layout=next;
   renderExoChips(next);
   saveStateDebounced();
+  updateWeekStats();
 };
 
 function renderExoChips(layout=(document.body.dataset.layout||'dense')){
@@ -143,6 +152,18 @@ const getSelectedDayIdx = () => {
 };
 const getDayCard = () =>
   document.querySelector(`.day[data-day="${getSelectedDayIdx()}"]`);
+
+
+// ===== Semaine & format =====
+function startOfWeek(d=new Date()){
+  const x=new Date(d); const day=(x.getDay()+6)%7; // 0=lundi
+  x.setHours(0,0,0,0); x.setDate(x.getDate()-day); return x;
+}
+function endOfWeek(d=new Date()){ const s=startOfWeek(d); const e=new Date(s); e.setDate(s.getDate()+7); return e; }
+function ymd(date){ return new Date(date.getFullYear(),date.getMonth(),date.getDate()).toLocaleDateString('sv-SE'); }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function fmtHM(min){ const h=Math.floor(min/60), m=min%60; return `${h}h${pad2(m)}`; }
+
 
 
 // ===== LOGIQUE ADAPTATIVE =====
@@ -204,6 +225,7 @@ function applyMuscu(card, delta){
   });
   renderExoChips();
   saveStateDebounced();
+  updateWeekStats();
 }
 
 
@@ -249,6 +271,7 @@ function applyCardio(card, delta){
     if(blocI)  blocI.value = `Marche 4’ + Run 1’ × ${cycles}`;
   });
   saveStateDebounced();
+  updateWeekStats();
 }
 
 
@@ -293,6 +316,7 @@ function addOrUpdateTibo(delta){
   exo.querySelector('[data-k="bloc"]').value  = `${cycles} cycles 3’/3’`;
 
   saveStateDebounced();
+  updateWeekStats();
 }
 
 
@@ -329,6 +353,118 @@ function applyCore(card, delta){
     if(secI)  secI.value  = sec;
   });
   saveStateDebounced();
+  updateWeekStats();
+}
+
+
+// ---- Extras (marches & entraînements libres) ----
+function getStateRaw(){ try{ return JSON.parse(localStorage.getItem(STATE_KEY)||'{}'); }catch(e){ return {}; } }
+function getExtras(){
+  const s=getStateRaw(); return Array.isArray(s.extras)? s.extras : [];
+}
+function setExtras(arr){
+  const s=getStateRaw(); s.extras=arr; localStorage.setItem(STATE_KEY, JSON.stringify(s));
+}
+function addExtraEntry(dateStr, minutes, label='Marche'){
+  const arr=getExtras();
+  arr.push({ date: dateStr, minutes: Number(minutes), label });
+  setExtras(arr);
+  renderExtras();
+  updateWeekStats();
+}
+function removeExtraAt(idx){
+  const arr=getExtras(); arr.splice(idx,1); setExtras(arr); renderExtras(); updateWeekStats();
+}
+function renderExtras(){
+  const wrap=document.getElementById('extraList'); if(!wrap) return;
+  const arr=getExtras();
+  if(!arr.length){ wrap.innerHTML='<div class="hint">Aucun extra pour l’instant.</div>'; return; }
+  const wkS=startOfWeek(), wkE=endOfWeek();
+  wrap.innerHTML='';
+  arr.forEach((e,i)=>{
+    const inWeek = (new Date(e.date) >= wkS && new Date(e.date) < wkE);
+    const row=document.createElement('div'); row.className='extra-item';
+    row.innerHTML=`
+      <div class="meta">
+        <span class="tag">${e.label||'Extra'}</span>
+        <span>${e.date}</span>
+        <span>${e.minutes} min</span>
+        ${inWeek?'<span class="tag">Cette semaine</span>':''}
+      </div>
+      <button class="btn-sm" data-del="${i}">Supprimer</button>
+    `;
+    row.querySelector('[data-del]').addEventListener('click',()=>removeExtraAt(i));
+    wrap.appendChild(row);
+  });
+}
+
+
+// ---- Stats hebdo (validations + heures) ----
+function countValidatedByType(){
+  const valids = loadCal();
+  const wkS=startOfWeek(), wkE=endOfWeek();
+  let full=0, cardio=0;
+
+  for(const [key, ok] of Object.entries(valids)){
+    if(!ok) continue;
+    const d=new Date(key);
+    if(!(d>=wkS && d<wkE)) continue;
+    const type = planJour[d.getDay()] || 'off';
+    if(type==='full') full++;
+    if(type==='cardio') cardio++;
+  }
+  return {full, cardio};
+}
+
+// Estimation temps Muscu pour un jour (min)
+function estimateMuscuMinutes(dayCard){
+  const restSel = document.getElementById('restMuscu');
+  const restSec = restSel ? parseInt(restSel.value) : 60;
+  let sec=0;
+  dayCard.querySelectorAll('.exo:not(.cardio)').forEach(exo=>{
+    const sets=Number(exo.querySelector('[data-k="sets"]')?.value||0);
+    const reps=Number(exo.querySelector('[data-k="reps"]')?.value||0);
+    const tempo=String(exo.querySelector('[data-k="tempo"]')?.value||'');
+    const isCore = exo.classList.contains('core') || /statique/i.test(tempo) || exo.querySelector('[data-k="sec"]');
+
+    if(isCore){
+      const t=Number(exo.querySelector('[data-k="sec"]')?.value||30);
+      sec += sets * (t + 15); // + transitions
+    }else{
+      const perRep = 2.5; // moyenne tempo
+      sec += sets * (reps*perRep + restSec);
+    }
+  });
+  sec += 120; // transitions globales
+  return Math.round(sec/60);
+}
+
+function weeklyPlannedMinutes(){
+  let min=0;
+  document.querySelectorAll('.day').forEach(day=>{
+    const type=day.dataset.type;
+    if(type==='cardio'){
+      day.querySelectorAll('.exo.cardio').forEach(exo=>{
+        min += Number(exo.querySelector('[data-k="total"]')?.value||0);
+      });
+    }else if(type==='full'){
+      min += estimateMuscuMinutes(day);
+    }
+  });
+  const wkS=startOfWeek(), wkE=endOfWeek();
+  getExtras().forEach(e=>{ const d=new Date(e.date); if(d>=wkS && d<wkE) min += Number(e.minutes||0); });
+  return min;
+}
+
+function updateWeekStats(){
+  const {full, cardio} = countValidatedByType();
+  const totalMin = weeklyPlannedMinutes();
+  const elF=document.getElementById('statFull');
+  const elC=document.getElementById('statCardio');
+  const elH=document.getElementById('statHours');
+  if(elF) elF.textContent=full;
+  if(elC) elC.textContent=cardio;
+  if(elH) elH.textContent=fmtHM(totalMin);
 }
 
 
@@ -352,6 +488,41 @@ document.getElementById('simCore').onclick = () => {
   simCoreOut.textContent = simulateCore(getDayCard(), Number(rpeCore.value)).join(' • ');
 };
 document.getElementById('applyCore').onclick = () => applyCore(getDayCard(), Number(rpeCore.value));
+
+
+// ---- Wire Extras ----
+function dateForExtraSelect(){
+  const sel=document.getElementById('extraDay');
+  const v=sel?.value||'today';
+  if(v==='today') return ymd(new Date());
+  const target=Number(v);
+  const s=startOfWeek(); // lundi
+  let d= new Date(s);
+  const map=[6,0,1,2,3,4,5]; // 0..6 => Dim..Sam
+  d.setDate(s.getDate()+map[target]);
+  return ymd(d);
+}
+const btnAddExtra=document.getElementById('addExtra');
+const btnQuick=document.getElementById('quick3x30');
+
+if(btnAddExtra){
+  btnAddExtra.addEventListener('click', ()=>{
+    const minutes=Number(document.getElementById('extraMin').value||30);
+    const qty=Number(document.getElementById('extraQty').value||1);
+    const dateStr=dateForExtraSelect();
+    for(let i=0;i<qty;i++) addExtraEntry(dateStr, minutes, 'Marche');
+  });
+}
+if(btnQuick){
+  btnQuick.addEventListener('click', ()=>{
+    const dateStr=ymd(new Date());
+    for(let i=0;i<3;i++) addExtraEntry(dateStr, 30, 'Marche');
+  });
+}
+
+// Render initial des extras + stats
+renderExtras();
+updateWeekStats();
 
 
 // ====== Sauvegarde locale (autosave + export/import) ======
@@ -388,7 +559,8 @@ function collectState() {
     core:   { rpe: document.getElementById('rpeCore')?.value||'0' }
   };
 
-  return { days, calendar, ui };
+  const extras = getExtras();
+  return { days, calendar, ui, extras };
 }
 
 function applyState(state) {
@@ -413,6 +585,12 @@ function applyState(state) {
     const _rCore = document.getElementById('rpeCore'); if (_rCore) { _rCore.value = state.ui.core?.rpe ?? '0'; document.getElementById('rpeCoreVal').textContent = _rCore.value; }
   }
 
+  // extras
+  if (Array.isArray(state.extras)) {
+    setExtras(state.extras);
+    renderExtras();
+  }
+
   // exos
   if (state.days?.length) {
     state.days.forEach(sd => {
@@ -422,6 +600,7 @@ function applyState(state) {
         let exo = Array.from(day.querySelectorAll('.exo'))
           .find(x => (x.dataset.name || x.querySelector('.name')?.textContent?.trim() || '') === e.name);
 
+        // créer TIBO si absent sur jour cardio
         if (!exo && sd.type === 'cardio' && /tibo/i.test(e.name)) {
           addOrUpdateTibo(0);
           exo = day.querySelector('.exo.cardio.tibo');
@@ -434,11 +613,16 @@ function applyState(state) {
       });
     });
   }
+
+  updateWeekStats();
 }
 
-// autosave sur inputs
+// autosave sur inputs + stats live
 document.addEventListener('input', (e)=>{
-  if (e.target.closest('.params') || e.target.id==='daySelect') saveStateDebounced();
+  if (e.target.closest('.params') || e.target.id==='daySelect'){
+    saveStateDebounced();
+    updateWeekStats();
+  }
 });
 
 // Export
@@ -478,7 +662,8 @@ document.getElementById('btnReset').onclick = ()=>{
 try {
   const raw = localStorage.getItem(STATE_KEY);
   if (raw) applyState(JSON.parse(raw));
-} catch(e){ /* ignore */ }
+  else updateWeekStats();
+} catch(e){ updateWeekStats(); }
 
 // Anti-glow: désactive les effets pendant le scroll
 let _scrollT = null;
