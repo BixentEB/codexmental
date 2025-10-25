@@ -1,9 +1,6 @@
 /* ==========================================================
-   COACH V5 — ROUTER
-   Charge dynamiquement les sous-pages dans <main id="subview">
-   sans casser la logique du app.js (plan, stats, etc.)
-   ========================================================== */
-
+   COACH V5 — ROUTER (v2 : + plan-b, + programs)
+========================================================== */
 (function(){
   const SUB = document.getElementById('subview');
   const NAV = document.querySelector('.nav-tabs');
@@ -12,10 +9,11 @@
   const STATE_KEY   = 'coach_v5_state';
   const CAL_STORAGE = 'coach_v5_calendar';
 
-  // --- routes disponibles
   const routes = {
     '#/plan':     { file: 'pages/plan.html' },
-    '#/encyclo':  { file: 'pages/encyclo.html', js: 'pages/encyclo.js' },
+    '#/plan-b':   { file: 'pages/planB.html' },
+    '#/encyclo':  { file: 'pages/encyclo.html',  js: 'pages/encyclo.js' },
+    '#/programs': { file: 'pages/programs.html', js: 'pages/programs.js' },
     '#/lexique':  { file: 'pages/lexique.html' },
     '#/reglages': { file: 'pages/reglages.html' }
   };
@@ -45,22 +43,14 @@
   window.addEventListener('hashchange', ()=> load(location.hash || '#/plan'));
   load(location.hash || '#/plan');
 
-  /* === Fonctions de sauvegarde et reset (mêmes clés que app.js) === */
-  function getState(){ try{ return JSON.parse(localStorage.getItem(STATE_KEY)||'{}'); }catch(e){ return {}; } }
-  function saveState(s){ localStorage.setItem(STATE_KEY, JSON.stringify(s)); }
-
-  // --- Export global
+  // === Export/Import/Reset (barre du haut)
   document.getElementById('btnExport')?.addEventListener('click', ()=>{
     const data = localStorage.getItem(STATE_KEY) || '{}';
     const url = URL.createObjectURL(new Blob([data], { type:'application/json' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'coach_v5_state.json';
-    a.click();
+    const a = document.createElement('a'); a.href = url; a.download = 'coach_v5_state.json'; a.click();
     URL.revokeObjectURL(url);
   });
 
-  // --- Import global
   document.getElementById('btnImport')?.addEventListener('click', ()=> 
     document.getElementById('fileImport')?.click()
   );
@@ -68,7 +58,7 @@
     const f=e.target.files?.[0]; if(!f) return;
     try{
       const text = await f.text();
-      JSON.parse(text); // validation
+      JSON.parse(text);
       localStorage.setItem(STATE_KEY, text);
       alert('Import réussi ✅ — rechargement.');
       location.reload();
@@ -77,7 +67,6 @@
     }finally{ e.target.value=''; }
   });
 
-  // --- Reset total
   document.getElementById('btnReset')?.addEventListener('click', ()=>{
     if(!confirm('Tout réinitialiser (plan + calendrier + extras) ?')) return;
     localStorage.removeItem(STATE_KEY);
@@ -85,20 +74,16 @@
     location.reload();
   });
 
-  /* === Mini API accessible depuis les autres pages === */
+  // === API minimale pour les sous-pages
   window.V5 = {
-    getState,
-    saveState,
+    getState(){ try{ return JSON.parse(localStorage.getItem(STATE_KEY)||'{}'); }catch(e){ return {}; } },
+    saveState(s){ localStorage.setItem(STATE_KEY, JSON.stringify(s)); },
     dayLabel(i){ return ['','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'][i]; },
-    ensureProgramB(){
-      const s=getState(); if(!s.programB) s.programB = {};
-      saveState(s); return s;
-    },
     copyAtoB(){
-      const s=getState(); if(s.programA){ s.programB = JSON.parse(JSON.stringify(s.programA)); saveState(s); alert('Programme A copié vers B ✅'); }
+      const s=this.getState(); if(s.programA){ s.programB = JSON.parse(JSON.stringify(s.programA)); this.saveState(s); alert('Programme A copié vers B ✅'); }
     },
     copyBtoA(){
-      const s=getState(); if(s.programB){ s.programA = JSON.parse(JSON.stringify(s.programB)); saveState(s); alert('Programme B copié vers A ✅'); }
+      const s=this.getState(); if(s.programB){ s.programA = JSON.parse(JSON.stringify(s.programB)); this.saveState(s); alert('Programme B copié vers A ✅'); }
     }
   };
 })();
