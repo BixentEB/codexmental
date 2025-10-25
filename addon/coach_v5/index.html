@@ -1,90 +1,36 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Coach v5 — Programmes & Encyclopédie</title>
-      <link rel="icon" href="/addon/coach/img/muscle.png" sizes="96x96">
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Coach v5 — Journal & Plan</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Topbar + onglets -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <h1>Coach v5 — Journal & Plan</h1>
-        <p class="tagline">Bandeau fixe + pages dynamiques (Plan A, Builder B, Encyclopédie, Lexique, Réglages)</p>
-      </div>
+  <h1>Coach v4 — Journal & Plan</h1>
 
-      <nav class="tabs-main" id="nav">
-        <a href="#/plan"    class="tab">Exos — Programme A</a>
-        <a href="#/builder" class="tab">Exos — Programme B (Maquette)</a>
-        <a href="#/encyclo" class="tab">Encyclopédie</a>
-        <a href="#/lexique" class="tab">Lexique</a>
-        <a href="#/settings" class="tab">Réglages</a>
-      </nav>
+  <!-- ===== NAV V5 ===== -->
+  <nav class="tabs-main v5" id="v5-nav">
+    <a href="#/plan" class="tab">Programme A (Plan)</a>
+    <a href="#/encyclo" class="tab">Encyclopédie + Maquette (B)</a>
+    <a href="#/lexique" class="tab">Lexique</a>
+    <a href="#/reglages" class="tab">Réglages</a>
+    <span class="spacer"></span>
+    <button id="v5-export" class="btn-sm">Exporter</button>
+    <button id="v5-import" class="btn-sm">Importer</button>
+    <input id="v5-file" type="file" accept="application/json" hidden>
+    <button id="v5-reset" class="btn-sm danger">Réinitialiser</button>
+  </nav>
 
-      <div class="actions">
-        <button id="btnExport" class="btn">Exporter</button>
-        <button id="btnImport" class="btn">Importer</button>
-        <input id="fileImport" type="file" accept="application/json" hidden />
-        <button id="btnReset" class="btn danger">Réinitialiser</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Bandeau fixe -->
-  <section class="container band">
-    <div class="card">
-      <h2>Agenda rapide</h2>
-      <div class="row">
-        <div class="badge">Semaine en cours</div>
-        <div id="miniStats" class="stats-note">
-          <span>✅ Full Body : <strong id="statFull">0</strong></span>
-          <span>🏃 Cardio : <strong id="statCardio">0</strong></span>
-          <span>⏱️ Total : <strong id="statHours">0h00</strong></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Synchronisation rapide</h2>
-      <div class="row">
-        <label>Portée
-          <select id="syncScope">
-            <option value="day">Jour actif</option>
-            <option value="week" selected>Toute la semaine</option>
-          </select>
-        </label>
-        <label>Type
-          <select id="syncType">
-            <option value="all">Tout</option>
-            <option value="muscu">Muscu</option>
-            <option value="cardio">Cardio</option>
-            <option value="tibo">TIBO</option>
-            <option value="core">Gainage</option>
-          </select>
-        </label>
-        <label>RPE
-          <input type="range" min="-2" max="2" value="0" id="syncRpe" />
-          <span class="badge" id="syncRpeVal">0</span>
-        </label>
-        <label>Repos muscu
-          <select id="restMuscuBand">
-            <option value="60">60s</option>
-            <option value="90" selected>90s</option>
-            <option value="120">120s</option>
-          </select>
-        </label>
-        <button id="btnApplySync" class="btn primary">Appliquer</button>
-      </div>
-      <p class="hint">Règles : RPE +1 → +1 rep (cap 15) puis +1 série & retour 8–10 ; Cardio ±5 min (WU/CD 10%) ; TIBO ±1 cycle ; Gainage ±5s (cap 45s → +1 série).</p>
-    </div>
+  <!-- ===== Blocs V4 inchangés ===== -->
+  <section class="band-v4">
+    <!-- mets ici tes 4 cartes hebdo / calendrier / extras / réglages (inchangées de ta v4) -->
   </section>
 
-  <!-- Corps de page -->
-  <main id="view" class="container"></main>
+  <!-- ===== Sous-pages dynamiques ===== -->
+  <section id="subview" style="margin:20px 0"></section>
 
   <script src="app.js"></script>
+  <script src="v5-router.js"></script>
 </body>
 </html>
