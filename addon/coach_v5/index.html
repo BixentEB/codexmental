@@ -1,36 +1,175 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Coach v5 — Journal & Plan</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Coach v4 — Journal & Plan (avec pages V5)</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Coach v4 — Journal & Plan</h1>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <h1>Coach v4 — Journal &amp; Plan</h1>
+        <p class="tagline">Agenda, réglages adaptatifs &amp; suivi sauvegardé • pages additionnelles (Encyclopédie/Maquette)</p>
+      </div>
 
-  <!-- ===== NAV V5 ===== -->
-  <nav class="tabs-main v5" id="v5-nav">
-    <a href="#/plan" class="tab">Programme A (Plan)</a>
-    <a href="#/encyclo" class="tab">Encyclopédie + Maquette (B)</a>
-    <a href="#/lexique" class="tab">Lexique</a>
-    <a href="#/reglages" class="tab">Réglages</a>
-    <span class="spacer"></span>
-    <button id="v5-export" class="btn-sm">Exporter</button>
-    <button id="v5-import" class="btn-sm">Importer</button>
-    <input id="v5-file" type="file" accept="application/json" hidden>
-    <button id="v5-reset" class="btn-sm danger">Réinitialiser</button>
-  </nav>
+      <!-- NAV V5 : nouvelle barre d’onglets (une seule ligne) -->
+      <nav class="tabs-main v5" id="v5-nav">
+        <a href="#/plan" class="tab">Programme A (Plan)</a>
+        <a href="#/encyclo" class="tab">Encyclopédie + Maquette (B)</a>
+        <a href="#/lexique" class="tab">Lexique</a>
+        <a href="#/reglages" class="tab">Réglages</a>
 
-  <!-- ===== Blocs V4 inchangés ===== -->
-  <section class="band-v4">
-    <!-- mets ici tes 4 cartes hebdo / calendrier / extras / réglages (inchangées de ta v4) -->
+        <span style="flex:1"></span>
+        <button id="v5-export" class="btn">Exporter</button>
+        <button id="v5-import" class="btn">Importer</button>
+        <input id="v5-file" type="file" accept="application/json" hidden />
+        <button id="v5-reset" class="btn danger">Réinitialiser</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====== TES 4 CARTES V4 (conserve ta structure existante) ====== -->
+  <section class="container band">
+    <!-- Carte 1 : Rappel Hebdo (IDs/classes V4 préservés) -->
+    <div class="card">
+      <h2>Rappel Hebdo</h2>
+      <table class="tbl">
+        <thead><tr><th>Jour</th><th>Type</th><th>Objectif</th></tr></thead>
+        <tbody id="hebdo-body">
+          <tr><td>Lundi</td><td>Full Body A</td><td>Force & structure</td></tr>
+          <tr><td>Mardi</td><td>Cardio (marche + run)</td><td>Zone 2-3 récupération active</td></tr>
+          <tr><td>Mercredi</td><td>Full Body B</td><td>Volume + densité</td></tr>
+          <tr><td>Jeudi</td><td>Cardio</td><td>Déstockage adipeux, récupération</td></tr>
+          <tr><td>Vendredi</td><td>Full Body C</td><td>Combo + puissance</td></tr>
+          <tr><td>Samedi</td><td>Cardio (libre)</td><td>Mobilisation / HIIT</td></tr>
+          <tr><td>Dimanche</td><td>OFF</td><td>Repos total 🧘‍♂️</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Carte 2 : Agenda Pro (IDs requis par V4 : #calendar / #cal-title / #cal-prev #cal-next) -->
+    <div class="card">
+      <h2>Agenda entraînement (Pro)</h2>
+      <div class="row" style="justify-content:space-between">
+        <button id="cal-prev" class="btn-sm">◀</button>
+        <div id="cal-title" class="badge">octobre 2025</div>
+        <button id="cal-next" class="btn-sm">▶</button>
+      </div>
+      <div id="calendar" class="calendar-pro"></div>
+      <div class="stats-note">
+        <span>Full Body validées : <strong id="statFull">0</strong></span>
+        <span>Cardio validées : <strong id="statCardio">0</strong></span>
+        <span>Total semaine : <strong id="statHours">0h00</strong></span>
+      </div>
+      <div class="legend" style="margin-top:6px">
+        <span class="badge">Full Body</span>
+        <span class="badge">Cardio</span>
+        <span class="badge">Off</span>
+        <span class="badge">Validé</span>
+      </div>
+    </div>
+
+    <!-- Carte 3 : Marches & Extras (hebdo) – IDs utilisés par V4 -->
+    <div class="card">
+      <h2>Marches & Extras (hebdo)</h2>
+      <div class="row">
+        <label>Jour
+          <select id="extraDay">
+            <option value="today">Aujourd’hui</option>
+            <option value="1">Lundi</option><option value="2">Mardi</option><option value="3">Mercredi</option>
+            <option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option><option value="0">Dimanche</option>
+          </select>
+        </label>
+        <label>Durée (min) <input id="extraMin" class="num xs" type="number" value="30" /></label>
+        <label>Quantité <input id="extraQty" class="num xs" type="number" value="1" /></label>
+        <button id="addExtra" class="btn">Ajouter</button>
+        <button id="quick3x30" class="btn">+ 3×30 min (aujourd’hui)</button>
+      </div>
+      <div id="extraList" style="margin-top:8px"></div>
+      <p class="hint">Astuce : 3×30 min/jour ≈ 10 000 pas.</p>
+    </div>
+
+    <!-- Carte 4 : Réglage adaptatif (V4) – onglets internes + IDs utilisés -->
+    <div class="card">
+      <h2>Réglage adaptatif (v4)</h2>
+
+      <div id="adapt" class="tabs-small">
+        <button class="tab active" data-tab="muscu">Muscu</button>
+        <button class="tab" data-tab="cardio">Cardio</button>
+        <button class="tab" data-tab="tibo">TIBO</button>
+        <button class="tab" data-tab="core">Gainage</button>
+      </div>
+
+      <!-- Panel Muscu -->
+      <div id="panel-muscu" class="panel">
+        <div class="row">
+          <label>Jour
+            <select id="daySelect">
+              <option value="-1" selected>Ouvert / Aujourd’hui</option>
+              <option value="1">Lundi</option><option value="2">Mardi</option><option value="3">Mercredi</option>
+              <option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option><option value="7">Dimanche</option>
+            </select>
+          </label>
+          <label>RPE cible <input id="rpeMuscu" type="range" min="-2" max="2" value="0" /> <span class="badge" id="rpeMuscuVal">0</span></label>
+          <label>Repos
+            <select id="restMuscu"><option>60s</option><option selected>90s</option><option>120s</option></select>
+          </label>
+          <label><input id="add05" type="checkbox" /> +0,5 kg (si charge)</label>
+          <button id="simMuscu" class="btn">Simuler</button>
+          <button id="applyMuscu" class="btn primary">Appliquer</button>
+        </div>
+        <div id="simMuscuOut" class="hint"></div>
+      </div>
+
+      <!-- Panel Cardio -->
+      <div id="panel-cardio" class="panel hidden">
+        <div class="row">
+          <label>RPE cible <input id="rpeCardio" type="range" min="-2" max="2" value="0" /> <span class="badge" id="rpeCardioVal">0</span></label>
+          <button id="simCardio" class="btn">Simuler</button>
+          <button id="applyCardio" class="btn primary">Appliquer</button>
+        </div>
+        <div id="simCardioOut" class="hint"></div>
+      </div>
+
+      <!-- Panel TIBO -->
+      <div id="panel-tibo" class="panel hidden">
+        <div class="row">
+          <label>RPE cible <input id="rpeTibo" type="range" min="-2" max="2" value="0" /> <span class="badge" id="rpeTiboVal">0</span></label>
+          <button id="simTibo" class="btn">Simuler</button>
+          <button id="applyTibo" class="btn primary">Ajouter/Mettre à jour</button>
+        </div>
+        <div id="simTiboOut" class="hint"></div>
+      </div>
+
+      <!-- Panel Core -->
+      <div id="panel-core" class="panel hidden">
+        <div class="row">
+          <label>RPE cible <input id="rpeCore" type="range" min="-2" max="2" value="0" /> <span class="badge" id="rpeCoreVal">0</span></label>
+          <button id="simCore" class="btn">Simuler</button>
+          <button id="applyCore" class="btn primary">Appliquer</button>
+        </div>
+        <div id="simCoreOut" class="hint"></div>
+      </div>
+    </div>
   </section>
 
-  <!-- ===== Sous-pages dynamiques ===== -->
-  <section id="subview" style="margin:20px 0"></section>
+  <!-- ====== SOUS-PAGES V5 (chargées dynamiquement) ====== -->
+  <section id="subview" class="container section"></section>
 
+  <!-- ====== TON PLAN V4 en dessous (inchangé) ====== -->
+  <section class="container section" id="plan-v4">
+    <div class="card section">
+      <h2>Plan de la semaine</h2>
+      <!-- tes cartes “day” sont rendues par app.js V4 : on garde la même structure de conteneur -->
+      <div id="week-root"><!-- V4 remplit ici --></div>
+    </div>
+  </section>
+
+  <!-- Tes scripts V4 -->
   <script src="app.js"></script>
+  <!-- Router V5 (nouveau) -->
   <script src="v5-router.js"></script>
 </body>
 </html>
