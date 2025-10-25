@@ -4,34 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Coach v5 — Programmes & Encyclopédie</title>
-    <link rel="icon" href="/addon/coach/img/muscle.png" sizes="96x96">
+      <link rel="icon" href="/addon/coach/img/muscle.png" sizes="96x96">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Topbar / Onglets -->
+  <!-- Topbar + onglets -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
         <h1>Coach v5 — Journal & Plan</h1>
-        <p class="tagline">Bandeau fixe + pages dynamiques (A/B, Maquette, Encyclopédie, Lexique, Réglages)</p>
+        <p class="tagline">Bandeau fixe + pages dynamiques (Plan A, Builder B, Encyclopédie, Lexique, Réglages)</p>
       </div>
+
       <nav class="tabs-main" id="nav">
-        <button class="tab active" data-route="progA">Exos — Programme A</button>
-        <button class="tab" data-route="progB">Exos — Programme B (Maquette)</button>
-        <button class="tab" data-route="encyclo">Encyclopédie</button>
-        <button class="tab" data-route="lexique">Lexique</button>
-        <button class="tab" data-route="settings">Réglages</button>
+        <a href="#/plan"    class="tab">Exos — Programme A</a>
+        <a href="#/builder" class="tab">Exos — Programme B (Maquette)</a>
+        <a href="#/encyclo" class="tab">Encyclopédie</a>
+        <a href="#/lexique" class="tab">Lexique</a>
+        <a href="#/settings" class="tab">Réglages</a>
       </nav>
+
       <div class="actions">
         <button id="btnExport" class="btn">Exporter</button>
         <button id="btnImport" class="btn">Importer</button>
-        <input id="fileImport" type="file" accept="application/json" hidden>
+        <input id="fileImport" type="file" accept="application/json" hidden />
         <button id="btnReset" class="btn danger">Réinitialiser</button>
       </div>
     </div>
   </header>
 
-  <!-- Bandeau fixe (stats rapides + synchronisation globale) -->
+  <!-- Bandeau fixe -->
   <section class="container band">
     <div class="card">
       <h2>Agenda rapide</h2>
@@ -44,6 +46,7 @@
         </div>
       </div>
     </div>
+
     <div class="card">
       <h2>Synchronisation rapide</h2>
       <div class="row">
@@ -63,7 +66,7 @@
           </select>
         </label>
         <label>RPE
-          <input type="range" min="-2" max="2" value="0" id="syncRpe">
+          <input type="range" min="-2" max="2" value="0" id="syncRpe" />
           <span class="badge" id="syncRpeVal">0</span>
         </label>
         <label>Repos muscu
@@ -75,12 +78,12 @@
         </label>
         <button id="btnApplySync" class="btn primary">Appliquer</button>
       </div>
-      <p class="hint">Règles : RPE +1 → +1 rep (cap 15), puis +1 série & retour 8–10; Cardio ±5 min (WU/CD 10%); TIBO ±1 cycle; Gainage ±5s (cap 45s → +1 série).</p>
+      <p class="hint">Règles : RPE +1 → +1 rep (cap 15) puis +1 série & retour 8–10 ; Cardio ±5 min (WU/CD 10%) ; TIBO ±1 cycle ; Gainage ±5s (cap 45s → +1 série).</p>
     </div>
   </section>
 
-  <!-- Contenu de page -->
-  <main id="page" class="container"></main>
+  <!-- Corps de page -->
+  <main id="view" class="container"></main>
 
   <script src="app.js"></script>
 </body>
