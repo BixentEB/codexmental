@@ -12,13 +12,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe 
 .brand h1{margin:0;font-size:18px}
 .tagline{margin:2px 0 0;color:var(--muted);font-size:12px}
 .tabs-main{display:flex;gap:8px;flex-wrap:wrap}
-.tab{background:#1c2533;border:1px solid var(--border);border-radius:10px;color:var(--ink);padding:6px 10px;cursor:pointer}
+.tab{background:#1c2533;border:1px solid var(--border);border-radius:10px;color:var(--ink);padding:6px 10px;text-decoration:none}
 .tab.active{outline:2px solid var(--blue)}
 .actions{margin-left:auto;display:flex;gap:8px}
 
 .btn{background:#1c2533;border:1px solid var(--border);border-radius:10px;color:var(--ink);padding:6px 10px;cursor:pointer}
 .btn.primary{outline:2px solid var(--blue)}
 .btn.danger{border-color:#ff898933;background:#2a1d22}
+.btn-sm{padding:4px 8px}
 
 .container{max-width:1280px;margin:16px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .container.band{grid-template-columns:1fr 1fr}
@@ -29,7 +30,6 @@ h2{margin:0 0 10px 0;font-size:16px}
 .hint{color:var(--muted);font-size:12px}
 .stats-note{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:13px}
 .stats-note strong{color:var(--ink)}
-
 .section{grid-column:1 / -1}
 
 .dayCard{border:1px solid var(--border);border-left:8px solid transparent;border-radius:12px;background:#0f141e;margin:10px 0}
