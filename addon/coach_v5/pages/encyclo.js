@@ -1,133 +1,190 @@
+/* ==========================================================
+   Encyclopédie — liste d’exercices + insertion dans A/B
+   Utilise window.V5 (exposée par router.js) pour lire/écrire l’état
+   ========================================================== */
 (function(){
-  const list = document.getElementById('list');
-  const board = document.getElementById('board');
-  const q = document.getElementById('qExo');
-  const dayPick = document.getElementById('dayPick');
+  if(!window.V5){ console.warn('V5 API manquante'); return; }
 
-  function shortDay(i){ return ['','Lun','Mar','Mer','Jeu','Ven','Sam','Dim'][i]; }
+  const $ = sel => document.querySelector(sel);
+  const listEl   = $('#enc-list');
+  const qInput   = $('#enc-search');
+  const selCat   = $('#enc-filter-cat');
+  const selProg  = $('#enc-target-prog');
+  const selDay   = $('#enc-target-day');
 
-  // récupère les exos déjà présents dans Programme A pour ne RIEN perdre
-  function collectFromA(){
-    const s = V5.getState(); const seen = new Map();
-    if(s.programA){
-      Object.values(s.programA).forEach(d=>{
-        const arr = d?.exos || d?.items || [];
-        arr.forEach(e=>{
-          const name = e.name || e?.vals?.name || e?.id || '';
-          if(!name) return;
-          if(!seen.has(name)) seen.set(name, {
-            id: name.toLowerCase().replace(/[^a-z0-9]+/g,'_'),
-            name_fr: name, name_en: name,
-            category: guessCategory(name),
-            groups: [], difficulty: 1,
-            metrics: guessMetrics(name),
-            defaults: guessDefaults(name, e)
-          });
-        });
-      });
+  // --- Base d’exercices (seed) — FR/EN + groupes
+  // (Tu peux en ajouter autant que tu veux via l’UI «Créer un exo»)
+  const seed = [
+    ex('Développé couché barre', 'muscu',  ['pecs','triceps','ant delts'], 'Barbell Bench Press', 2),
+    ex('Goblet Squat',           'muscu',  ['cuisses','fessiers','abdos'], 'Goblet Squat',        1),
+    ex('Rowing barre penché',    'muscu',  ['dos','biceps'],               'Barbell Row',         1),
+    ex('Soulevé de terre JT',    'muscu',  ['ischios','fessiers','lombaires'],'RDL',              2),
+    ex('Élévations latérales',   'muscu',  ['épaules latérales'],          'Lateral Raise',       1),
+    ex('Développé militaire',    'muscu',  ['épaules','triceps'],          'Overhead Press',      2),
+    ex('Front Squat',            'muscu',  ['quads','core'],               'Front Squat',         3),
+    ex('Tirage menton',          'muscu',  ['trapèzes','biceps'],          'Upright Row',         2),
+    ex('Fentes arrière',         'muscu',  ['fessiers','cuisses'],         'Reverse Lunge',       2),
+    ex('Planche',                'core',   ['core','transverse'],          'Plank',               1),
+    ex('Crunch au sol',          'core',   ['abdos'],                      'Crunch',              1),
+    ex('Crunch jambes levées',   'core',   ['abdos'],                      'Reverse Crunch',      1),
+    ex('Gainage genoux relevés', 'core',   ['core'],                       'Knee Plank',          1),
+    ex('Marche + Run',           'cardio', ['aérobie'],                    'Walk/Run',            1),
+    ex('Vélo 30/30',             'cardio', ['aérobie'],                    'Bike 30/30',          2),
+    ex('TIBO Extrm',             'tibo',   ['HIIT'],                       'TIBO Extreme',        2),
+  ];
+
+  // ---- Récupère/merge avec la base locale (si déjà enrichie par l’utilisateur)
+  const K_EXO = 'coach_v5_exercises';
+  function loadExoDB(){
+    try{ return JSON.parse(localStorage.getItem(K_EXO)||'[]'); }catch{ return []; }
+  }
+  function saveExoDB(arr){ localStorage.setItem(K_EXO, JSON.stringify(arr)); }
+
+  // merge unique par id
+  const userDB = loadExoDB();
+  const ENC = mergeUnique(seed, userDB);
+
+  // --- Création utilitaires
+  function ex(name, type, groups=[], alias='', diff=1){
+    return {
+      id: slug(name),
+      name, type, groups, alias, diff
+    };
+  }
+  function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,''); }
+  function mergeUnique(a,b){
+    const map = new Map();
+    [...a,...b].forEach(x=> map.set(x.id, x));
+    return [...map.values()];
+  }
+
+  // --- Rendu
+  function card(exo){
+    const wrap = document.createElement('div');
+    wrap.className = 'cardExo';
+
+    const title = document.createElement('div');
+    title.className = 'title';
+    title.innerHTML = `${exo.name} ${exo.alias?`<span class="meta">(${exo.alias})</span>`:''}`;
+    wrap.appendChild(title);
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = `${labelType(exo.type)} — ${exo.groups.join(', ')} — diff ${exo.diff}`;
+    wrap.appendChild(meta);
+
+    const btns = document.createElement('div');
+    btns.className = 'buttons';
+
+    const bFav = document.createElement('button');
+    bFav.className = 'btn small';
+    bFav.textContent = '⭐';
+    bFav.title = 'Marquer favori (local)';
+    bFav.onclick = ()=> toggleFav(exo.id, bFav);
+    btns.appendChild(bFav);
+
+    const bAdd = document.createElement('button');
+    bAdd.className = 'btn small primary';
+    bAdd.textContent = `+ Ajouter au ${selProg.value} — ${V5.dayLabel(Number(selDay.value))}`;
+    bAdd.onclick = ()=> addToProgram(exo);
+    btns.appendChild(bAdd);
+
+    wrap.appendChild(btns);
+    return wrap;
+  }
+
+  function labelType(t){
+    return t==='muscu' ? 'Muscu' : t==='cardio' ? 'Cardio' : t==='tibo' ? 'TIBO' : 'Gainage';
+  }
+
+  function render(){
+    if(!listEl) return;
+    const q = (qInput?.value||'').trim().toLowerCase();
+    const cat = selCat?.value || 'all';
+    listEl.innerHTML = '';
+
+    ENC.filter(exo=>{
+      if(cat!=='all' && exo.type!==cat) return false;
+      if(!q) return true;
+      const hay = [exo.name, exo.alias, exo.type, ...(exo.groups||[])].join(' ').toLowerCase();
+      return hay.includes(q);
+    }).forEach(x => listEl.appendChild(card(x)));
+
+    if(!listEl.children.length){
+      const p=document.createElement('p'); p.className='hint'; p.textContent='Aucun résultat.';
+      listEl.appendChild(p);
     }
-    return Array.from(seen.values());
-  }
-  function guessCategory(name){
-    const n=name.toLowerCase();
-    if(n.includes('run')||n.includes('marche')||n.includes('cardio')||n.includes('tibo')) return ['Cardio'];
-    if(n.includes('planche')||n.includes('gainage')||n.includes('plank')) return ['Gainage'];
-    return ['Muscu'];
-  }
-  function guessMetrics(name){
-    const cat = guessCategory(name)[0];
-    if(cat==='Cardio') return ['total','wu','cd','bloc'];
-    if(cat==='Gainage')return ['sets','sec','rpe'];
-    return ['sets','reps','tempo','rpe','load'];
-  }
-  function guessDefaults(name, e){
-    const cat = guessCategory(name)[0];
-    if(cat==='Cardio') return { total: 35, wu:5, cd:5, bloc:'4’+1’ × 5' };
-    if(cat==='Gainage')return { sets:3, sec:40, rpe:6 };
-    return { sets: e?.vals?.sets||3, reps: e?.vals?.reps||12, tempo: e?.vals?.tempo||'2-1-1', rpe: e?.vals?.rpe||7, load: e?.vals?.load||'' };
-  }
-  function seedIfEmpty(arr){
-    if(arr.length) return arr;
-    return [
-      {id:'bench_bar', name_fr:'Développé couché barre', name_en:'Barbell Bench Press', category:['Muscu'], groups:['Pecs','Triceps'], difficulty:2, metrics:['sets','reps','tempo','rpe','load'], defaults:{sets:4,reps:10,tempo:'2-1-1',rpe:7.5,load:'10–20kg'}},
-      {id:'goblet_squat', name_fr:'Goblet Squat', name_en:'Goblet Squat', category:['Muscu'], groups:['Cuisses','Fessiers'], difficulty:1, metrics:['sets','reps','tempo','rpe','load'], defaults:{sets:4,reps:15,tempo:'3-1-1',rpe:7,load:'5kg'}},
-      {id:'walk_run', name_fr:'Marche + Run', name_en:'Walk/Run', category:['Cardio'], groups:['Aérobie'], difficulty:1, metrics:['total','wu','cd','bloc'], defaults:{total:35,wu:5,cd:5,bloc:'4’+1’ × 5'}},
-      {id:'plank', name_fr:'Planche', name_en:'Plank', category:['Gainage'], groups:['Core'], difficulty:1, metrics:['sets','sec','rpe'], defaults:{sets:3,sec:40,rpe:6}},
-      {id:'tibo_extrm', name_fr:'TIBO Extrm', name_en:'TIBO Extreme', category:['Cardio'], groups:['HIIT'], difficulty:2, metrics:['total','wu','cd','bloc'], defaults:{total:36,wu:5,cd:5,bloc:'3’/3’ × 5'}}
-    ];
   }
 
-  let catalog = seedIfEmpty(collectFromA());
+  qInput?.addEventListener('input', render);
+  selCat?.addEventListener('change', render);
+  selProg?.addEventListener('change', render);
+  selDay?.addEventListener('change', render);
 
-  function renderCatalog(){
-    const qq=(q.value||'').toLowerCase().trim();
-    list.innerHTML='';
-    catalog
-      .filter(e=>!qq || `${e.name_fr} ${e.name_en}`.toLowerCase().includes(qq))
-      .forEach(e=>{
-        const card=document.createElement('div'); card.className='cardExo';
-        card.innerHTML=`
-          <div class="title">${e.name_fr} <span class="meta">(${e.name_en})</span></div>
-          <div class="meta">${(e.category||[]).join('/')} — ${(e.groups||[]).join(', ')}</div>
-          <div class="buttons">
-            <button class="btn-sm" data-info>ℹ️</button>
-            <button class="btn-sm primary" data-add>➕ Ajouter à B — ${shortDay(Number(dayPick.value))}</button>
-          </div>
-        `;
-        card.querySelector('[data-info]').onclick=()=>{
-          alert(`${e.name_fr} (${e.name_en})\nCat: ${(e.category||[]).join(', ')}\nGroups: ${(e.groups||[]).join(', ')}\nMetrics: ${e.metrics.join(', ')}`);
-        };
-        card.querySelector('[data-add]').onclick=()=> addToB(e, Number(dayPick.value));
-        card.draggable=true;
-        card.addEventListener('dragstart', ev=> ev.dataTransfer.setData('text/plain', e.id));
-        list.appendChild(card);
-      });
+  // --- Favoris (simple stockage local des ids)
+  const K_FAV = 'coach_v5_favorites';
+  function loadFav(){ try{ return new Set(JSON.parse(localStorage.getItem(K_FAV)||'[]')); }catch{ return new Set(); } }
+  function saveFav(set){ localStorage.setItem(K_FAV, JSON.stringify([...set])); }
+  const favs = loadFav();
+  function toggleFav(id, btn){
+    if(favs.has(id)) favs.delete(id); else favs.add(id);
+    saveFav(favs);
+    btn.style.filter = favs.has(id) ? 'brightness(1.2)' : '';
   }
-  q?.addEventListener('input', renderCatalog);
-  dayPick?.addEventListener('change', renderCatalog);
-  renderCatalog();
 
-  // board 7 colonnes (mini maquette B)
-  const labels=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-  labels.forEach((lab,i)=>{
-    const col=document.createElement('div'); col.className='col';
-    col.innerHTML=`<h4>${lab}</h4><div class="drop" data-day="${i+1}"></div>`;
-    const drop=col.querySelector('.drop');
-    drop.addEventListener('dragover', e=> e.preventDefault());
-    drop.addEventListener('drop', e=>{
-      e.preventDefault();
-      const id=e.dataTransfer.getData('text/plain');
-      const ex=catalog.find(x=>x.id===id); if(!ex) return;
-      addToB(ex, Number(drop.dataset.day));
-      drawBoard();
-    });
-    board.appendChild(col);
+  // --- Ajout d’un exo au programme A ou B
+  function addToProgram(exo){
+    const progKey = selProg.value === 'A' ? 'programA' : 'programB';
+    const dayIdx  = Number(selDay.value||1);
+
+    const s = V5.getState();
+    if(!s[progKey]) s[progKey] = {};
+    if(!s[progKey][dayIdx]) s[progKey][dayIdx] = { type: inferDayType(exo.type), items: [] };
+
+    const item = exoToItem(exo);
+    s[progKey][dayIdx].items.push(item);
+    V5.saveState(s);
+    alert(`Ajouté à ${progKey==='programA'?'Programme A':'Programme B'} — ${V5.dayLabel(dayIdx)} ✅`);
+  }
+
+  function inferDayType(t){
+    if(t==='cardio' || t==='tibo') return 'cardio';
+    if(t==='muscu' || t==='core') return 'full';
+    return 'off';
+  }
+
+  // Remap ency -> format item (comme app.js)
+  function exoToItem(exo){
+    const base = { id: exo.id, name: exo.name, type: exo.type, vals:{} };
+    switch(exo.type){
+      case 'muscu': base.vals = { sets:4, reps:12, tempo:'2-1-1', rpe:7, load:'PDC', rest:'90s' }; break;
+      case 'cardio':base.vals = { total:30, wu:5, cd:5, bloc:'4’+1’ × 5' }; break;
+      case 'tibo':  base.vals = { total:30, wu:5, cd:5, bloc:'3’/3’ × 4' }; break;
+      case 'core':  base.vals = { sets:3, sec:30, rpe:6 }; break;
+    }
+    return base;
+  }
+
+  // --- Création d’un exo perso (ajout à la DB locale)
+  const cxName = $('#cx-name'), cxType=$('#cx-type'), cxGroups=$('#cx-groups'), cxAlias=$('#cx-alias'), cxDiff=$('#cx-diff');
+  $('#enc-create-open')?.addEventListener('click', ()=> cxName?.focus());
+  $('#cx-add')?.addEventListener('click', ()=>{
+    const name=(cxName?.value||'').trim();
+    if(!name){ alert('Nom requis'); return; }
+    const type=(cxType?.value||'muscu');
+    const groups=(cxGroups?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const alias=(cxAlias?.value||'').trim();
+    const diff= Number(cxDiff?.value||1);
+
+    const item = ex(name, type, groups, alias, diff);
+    // ajoute à la base locale
+    const db = loadExoDB(); db.push(item); saveExoDB(db);
+    // merge en mémoire puis re-render
+    ENC.push(item);
+    cxName.value=''; cxGroups.value=''; cxAlias.value='';
+    render();
   });
 
-  function addToB(ex, day){
-    const s=V5.ensureProgramB();
-    const prog=s.programB || {};
-    const d=prog[day] || (prog[day]={type:'full',items:[]});
-    (d.items = d.items||[]).push({ id: ex.id, vals: {...ex.defaults}, name: ex.name_fr });
-    if((ex.category||[]).includes('Cardio')) d.type='cardio';
-    V5.setState(s);
-    drawBoard();
-  }
-
-  function drawBoard(){
-    const s=V5.getState(); const prog=s.programB||{};
-    board.querySelectorAll('.drop').forEach(drop=>{
-      const day=Number(drop.dataset.day); drop.innerHTML='';
-      const d=prog[day]; (d?.items||[]).forEach(it=>{
-        const ex = catalog.find(x=>x.id===it.id) || {name_fr: it.name||it.id};
-        const chip=document.createElement('div'); chip.className='chip'; chip.textContent=ex.name_fr;
-        drop.appendChild(chip);
-      });
-    });
-  }
-  drawBoard();
-
-  document.getElementById('copyAtoB')?.addEventListener('click', ()=>{ V5.copyAtoB(); drawBoard(); });
-  document.getElementById('copyBtoA')?.addEventListener('click', ()=>{ V5.copyBtoA(); alert('B → A copié'); });
-  document.getElementById('validateB')?.addEventListener('click', ()=>{ alert('Programme B prêt. Tu peux revenir sur le Plan (A) et copier si besoin.'); });
+  // Première peinture
+  render();
 })();
