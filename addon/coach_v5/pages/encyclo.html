@@ -1,0 +1,23 @@
+<div class="card">
+  <h2>Encyclopédie + Maquette Programme B</h2>
+
+  <div class="tools" style="display:flex;gap:8px;flex-wrap:wrap">
+    <input id="qExo" class="search" placeholder="Rechercher (FR/EN, groupes)…" />
+    <select id="dayPick">
+      <option value="1">Lundi</option><option value="2">Mardi</option><option value="3">Mercredi</option>
+      <option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option><option value="7">Dimanche</option>
+    </select>
+    <button id="copyAtoB" class="btn-sm">Copier A → B</button>
+    <button id="copyBtoA" class="btn-sm">Copier B → A</button>
+    <button id="validateB" class="btn-sm primary">Valider Programme B</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px">
+    <div>
+      <div id="list" class="list"></div>
+    </div>
+    <div>
+      <div class="grid7" id="board"></div>
+    </div>
+  </div>
+</div>
