@@ -7,8 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- ==== Bandeau principal ==== -->
+  <!-- Bandeau -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="title-group">
@@ -16,17 +15,17 @@
         <p class="subtitle">Plan, suivi & progression — sauvegarde locale</p>
       </div>
 
-      <!-- Onglets principaux -->
+      <!-- Onglets -->
       <nav class="nav-tabs">
         <a href="#/plan" class="tab active">Programme A</a>
-        <a class="tab" href="#/plan-b">Exos — Programme B (Maquette)</a>
+        <a href="#/plan-b" class="tab">Exos — Programme B (Maquette)</a>
         <a href="#/encyclo" class="tab">Encyclopédie / Maquette B</a>
-        <a class="tab" href="#/programs">Programmes (Templates)</a>
+        <a href="#/programs" class="tab">Programmes (Templates)</a>
         <a href="#/lexique" class="tab">Lexique</a>
         <a href="#/reglages" class="tab">Réglages</a>
       </nav>
 
-      <!-- Boutons de gestion -->
+      <!-- Gestion -->
       <div class="actions">
         <button id="btnExport" class="btn small">💾 Export</button>
         <button id="btnImport" class="btn small">📂 Import</button>
@@ -36,16 +35,13 @@
     </div>
   </header>
 
-  <!-- ==== 4 Blocs principaux (Hebdo, Agenda, Extras, Réglages) ==== -->
+  <!-- 4 blocs fixes -->
   <section class="dashboard">
-
-    <!-- Bloc Hebdo -->
+    <!-- Hebdo -->
     <div class="card">
       <h2>📅 Hebdo</h2>
       <table>
-        <thead>
-          <tr><th>Jour</th><th>Type</th><th>Objectif</th></tr>
-        </thead>
+        <thead><tr><th>Jour</th><th>Type</th><th>Objectif</th></tr></thead>
         <tbody>
           <tr><td>Lundi</td><td>Full Body A</td><td>Force & Structure</td></tr>
           <tr><td>Mardi</td><td>Cardio (marche + run)</td><td>Récupération active</td></tr>
@@ -58,7 +54,7 @@
       </table>
     </div>
 
-    <!-- Bloc Agenda -->
+    <!-- Agenda -->
     <div class="card">
       <h2>🗓️ Agenda</h2>
       <div class="calendar-header">
@@ -74,7 +70,7 @@
       </div>
     </div>
 
-    <!-- Bloc Extras -->
+    <!-- Extras -->
     <div class="card">
       <h2>🚶 Extras & Marches</h2>
       <div class="row">
@@ -85,19 +81,15 @@
             <option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option><option value="0">Dimanche</option>
           </select>
         </label>
-        <label>Durée (min)
-          <input id="extraMin" class="num" type="number" value="30">
-        </label>
-        <label>Quantité
-          <input id="extraQty" class="num" type="number" value="1">
-        </label>
+        <label>Durée (min)<input id="extraMin" class="num" type="number" value="30"></label>
+        <label>Qté<input id="extraQty" class="num" type="number" value="1"></label>
         <button id="addExtra" class="btn small">+ Ajouter</button>
         <button id="quick3x30" class="btn small">+3×30</button>
       </div>
       <div id="extraList" class="extra-list"></div>
     </div>
 
-    <!-- Bloc Réglage Adaptatif -->
+    <!-- Réglage -->
     <div class="card">
       <h2>⚙️ Réglage Adaptatif</h2>
       <div class="tabs-mini" id="adapt">
@@ -107,7 +99,7 @@
         <button class="tab" data-tab="core">Gainage</button>
       </div>
 
-      <!-- Panels -->
+      <!-- Muscu -->
       <div id="panel-muscu" class="panel">
         <label>Jour
           <select id="daySelect">
@@ -116,44 +108,33 @@
             <option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option><option value="7">Dimanche</option>
           </select>
         </label>
-        <label>RPE
-          <input id="rpeMuscu" type="range" min="-2" max="2" value="0">
-          <span id="rpeMuscuVal">0</span>
-        </label>
-        <label>Repos
-          <select id="restMuscu"><option>60s</option><option selected>90s</option><option>120s</option></select>
-        </label>
+        <label>RPE <input id="rpeMuscu" type="range" min="-2" max="2" value="0"><span id="rpeMuscuVal">0</span></label>
+        <label>Repos <select id="restMuscu"><option>60s</option><option selected>90s</option><option>120s</option></select></label>
         <label><input id="add05" type="checkbox"> +0.5 kg</label>
         <button id="simMuscu" class="btn small">Simuler</button>
         <button id="applyMuscu" class="btn small primary">Appliquer</button>
         <div id="simMuscuOut" class="hint"></div>
       </div>
 
+      <!-- Cardio -->
       <div id="panel-cardio" class="panel hidden">
-        <label>RPE
-          <input id="rpeCardio" type="range" min="-2" max="2" value="0">
-          <span id="rpeCardioVal">0</span>
-        </label>
+        <label>RPE <input id="rpeCardio" type="range" min="-2" max="2" value="0"><span id="rpeCardioVal">0</span></label>
         <button id="simCardio" class="btn small">Simuler</button>
         <button id="applyCardio" class="btn small primary">Appliquer</button>
         <div id="simCardioOut" class="hint"></div>
       </div>
 
+      <!-- TIBO -->
       <div id="panel-tibo" class="panel hidden">
-        <label>RPE
-          <input id="rpeTibo" type="range" min="-2" max="2" value="0">
-          <span id="rpeTiboVal">0</span>
-        </label>
+        <label>RPE <input id="rpeTibo" type="range" min="-2" max="2" value="0"><span id="rpeTiboVal">0</span></label>
         <button id="simTibo" class="btn small">Simuler</button>
         <button id="applyTibo" class="btn small primary">Appliquer</button>
         <div id="simTiboOut" class="hint"></div>
       </div>
 
+      <!-- Gainage -->
       <div id="panel-core" class="panel hidden">
-        <label>RPE
-          <input id="rpeCore" type="range" min="-2" max="2" value="0">
-          <span id="rpeCoreVal">0</span>
-        </label>
+        <label>RPE <input id="rpeCore" type="range" min="-2" max="2" value="0"><span id="rpeCoreVal">0</span></label>
         <button id="simCore" class="btn small">Simuler</button>
         <button id="applyCore" class="btn small primary">Appliquer</button>
         <div id="simCoreOut" class="hint"></div>
@@ -161,10 +142,9 @@
     </div>
   </section>
 
-  <!-- ==== Conteneur principal de page ==== -->
+  <!-- Sous-vues -->
   <main id="subview" class="subview"></main>
 
-  <!-- Scripts -->
   <script src="app.js"></script>
   <script src="router.js"></script>
 </body>
