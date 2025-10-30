@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Planning hebdomadaire capillaire positif</title>
+<style>
+  :root{
+    --bg:#0b0f14;
+    --panel:#121821;
+    --muted:#8aa0b3;
+    --text:#e6edf3;
+    --accent:#89d185;
+    --line:#223041;
+    --tag:#1b2431;
+    --ok:#89d185;
+    --warn:#ffd166;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Helvetica,Arial,sans-serif;
+    color:var(--text);
+    background:linear-gradient(180deg,#0a111a, #0b0f14 40%, #0b0f14);
+  }
+  .wrap{max-width:1100px;margin:auto;padding:24px}
+  header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+  h1{font-size:clamp(20px,3.6vw,28px);margin:0;letter-spacing:.3px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  button{
+    background:var(--tag);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:8px 12px;border-radius:10px;cursor:pointer;
+  }
+  button:hover{filter:brightness(1.07)}
+  .legend{color:var(--muted);font-size:.92rem;margin-bottom:14px}
+  .grid{
+    display:grid;gap:12px;
+    grid-template-columns: 140px 1fr 1fr 1.1fr;
+  }
+  .head, .cell{
+    background:var(--panel);
+    border:1px solid var(--line);
+  }
+  .head{
+    padding:10px 12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    background:linear-gradient(180deg,#131b25,#101722);
+  }
+  .row{display:contents}
+  .cell{padding:12px; position:relative}
+  .day{
+    display:flex;flex-direction:column;gap:6px;font-weight:700
+  }
+  .tag{
+    align-self:flex-start;
+    font-size:.78rem;color:var(--muted);
+    border:1px solid var(--line);
+    background:var(--tag);
+    padding:3px 6px;border-radius:999px;
+  }
+  .todo{display:grid;gap:10px}
+  .todo label{
+    display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:baseline;
+    background:rgba(255,255,255,0.02);
+    padding:8px;border:1px dashed var(--line);border-radius:10px;
+  }
+  .todo small{color:var(--muted)}
+  .note{color:var(--muted)}
+  .pill{display:inline-flex;gap:6px;align-items:center;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#0f1722;color:#cfe7ff;font-size:.8rem}
+  .ok{color:var(--ok)}
+  .warn{color:#ffb703}
+  .muted{color:var(--muted)}
+  .caps{font-variant:all-small-caps;letter-spacing:.04em}
+  .vit{opacity:.95}
+
+  /* responsive */
+  @media (max-width:870px){
+    .grid{grid-template-columns:1fr}
+    .head{display:none}
+    .cell{border-radius:12px}
+    .row .cell:first-child{border-bottom-left-radius:0;border-bottom-right-radius:0}
+    .row .cell:nth-child(2){border-top-left-radius:0;border-top-right-radius:0}
+  }
+
+  /* print */
+  @media print{
+    :root{--panel:#fff;--text:#000;--line:#d4dde7;--tag:#f5f7fb}
+    body{background:#fff}
+    .actions, .legend{display:none}
+    .wrap{padding:0}
+    .cell{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌕 Planning hebdomadaire capillaire positif</h1>
+    <div class="actions">
+      <button id="reset">Réinitialiser la semaine</button>
+      <button onclick="window.print()">Imprimer</button>
+    </div>
+  </header>
+
+  <div class="legend">
+    Routine basée sur <b>shampoings lundi & jeudi</b> •
+    Huile d’oignon <b>la veille et le jour même</b> •
+    Minoxidil sur cuir chevelu <b>sec</b> •
+    Compléments <span class="caps">Cap•Actifs</span> : <span class="pill">Phase 1 (matin)</span> <span class="pill">Phase 2 (soir)</span>.
+  </div>
+
+  <div id="table" class="grid" aria-live="polite"></div>
+
+  <p class="legend" style="margin-top:14px">
+    💬 Mantra massage : <i>“Chaque jour, mon cuir chevelu se régénère ; mes racines se réveillent ; ma chevelure retrouve sa force, sa lumière et sa vitalité.”</i>
+  </p>
+</div>
+
+<script>
+/* ---------- DATA (tu peux modifier facilement si besoin) ---------- */
+const plan = [
+  {
+    jour: "Lundi",
+    tag: "Jour de shampoing",
+    matin: [
+      { id:"lu-m-jo", txt:"🧅 Jus d’oignon (1 h) → Rinçage doux → Séchage", type:"step" },
+      { id:"lu-m-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"lu-m-cap1", txt:"💊 Cap•Actifs — Phase 1 (2 gélules)", type:"pill" }
+    ],
+    soir: [
+      { id:"lu-s-sh", txt:"🧴 Shampoing doux (sans sulfate) → Séchage", type:"step" },
+      { id:"lu-s-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"lu-s-cap2", txt:"💊 Cap•Actifs — Phase 2 (3 gélules)", type:"pill" }
+    ],
+    notes: "Cuir chevelu propre, prêt à absorber les actifs."
+  },
+  {
+    jour: "Mardi",
+    matin: [
+      { id:"ma-m-jo", txt:"🧅 Jus d’oignon (1 h) → Rinçage → Séchage", type:"step" },
+      { id:"ma-m-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"ma-m-cap1", txt:"💊 Phase 1 (2)", type:"pill" }
+    ],
+    soir: [
+      { id:"ma-s-jo", txt:"🧅 Jus d’oignon (1 h) → Rinçage → Séchage", type:"step" },
+      { id:"ma-s-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"ma-s-cap2", txt:"💊 Phase 2 (3)", type:"pill" }
+    ],
+    notes:"Routine classique — stimulation + hydratation interne."
+  },
+  {
+    jour: "Mercredi",
+    tag: "Veille soin huile",
+    matin: [
+      { id:"me-m-jo", txt:"🧅 Jus d’oignon (1 h) → Rinçage → Séchage", type:"step" },
+      { id:"me-m-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"me-m-cap1", txt:"💊 Phase 1 (2)", type:"pill" }
+    ],
+    soir: [
+      { id:"me-s-huile", txt:"💆‍♂️ Huile d’oignon maison (2 h ou nuit, sous charlotte)", type:"step" },
+      { id:"me-s-cap2", txt:"💊 Phase 2 (3)", type:"pill" }
+    ],
+    notes:"Masse doucement le cuir chevelu pendant l’application d’huile."
+  },
+  {
+    jour: "Jeudi",
+    tag: "Jour de shampoing",
+    matin: [
+      { id:"je-m-rh", txt:"🧴 Rinçage de l’huile → Shampoing doux → Séchage", type:"step" },
+      { id:"je-m-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"je-m-cap1", txt:"💊 Phase 1 (2)", type:"pill" }
+    ],
+    soir: [
+      { id:"je-s-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"je-s-cap2", txt:"💊 Phase 2 (3)", type:"pill" }
+    ],
+    notes:"Laisse bien respirer le cuir chevelu."
+  },
+  {
+    jour: "Vendredi",
+    matin: [
+      { id:"ve-m-jo", txt:"🧅 Jus d’oignon (1 h) → Rinçage → Séchage", type:"step" },
+      { id:"ve-m-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"ve-m-cap1", txt:"💊 Phase 1 (2)", type:"pill" }
+    ],
+    soir: [
+      { id:"ve-s-jo", txt:"🧅 Jus d’oignon (1 h) → Rinçage → Séchage", type:"step" },
+      { id:"ve-s-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"ve-s-cap2", txt:"💊 Phase 2 (3)", type:"pill" }
+    ],
+    notes:"Entretien & régénération."
+  },
+  {
+    jour: "Samedi",
+    tag: "Veille soin huile",
+    matin: [
+      { id:"sa-m-jo", txt:"🧅 Jus d’oignon (1 h) → Rinçage → Séchage", type:"step" },
+      { id:"sa-m-mino", txt:"💧 Minoxidil 5 %", type:"step" },
+      { id:"sa-m-cap1", txt:"💊 Phase 1 (2)", type:"pill" }
+    ],
+    soir: [
+      { id:"sa-s-huile", txt:"💆‍♂️ Huile d’oignon maison (2 h ou toute la nuit)", type:"step" },
+      { id:"sa-s-cap2", txt:"💊 Phase 2 (3)", type:"pill" }
+    ],
+    notes:"Idéal avant le repos dominical."
+  },
+  {
+    jour: "Dimanche",
+    matin: [
+      { id:"di-m-rh", txt:"🧴 Rinçage de l’huile (pas de shampoing si propre)", type:"step" },
+      { id:"di-m-cap1", txt:"💊 Phase 1 (2)", type:"pill" }
+    ],
+    soir: [
+      { id:"di-s-libre", txt:"🧘 Routine libre (repos ou mini-massage)", type:"step" },
+      { id:"di-s-cap2", txt:"💊 Phase 2 (3)", type:"pill" }
+    ],
+    notes:"Récupération & visualisation de la repousse 🌱."
+  }
+];
+
+/* ---------- RENDER ---------- */
+const container = document.getElementById('table');
+const headerCells = ["Jour","Matin","Soir","Notes"].map(t=> {
+  const d=document.createElement('div'); d.className='head'; d.textContent=t; return d;
+});
+headerCells.forEach(h=>container.appendChild(h));
+
+function weekKey(){
+  const d=new Date();
+  const t=new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = (t.getUTCDay() + 6) % 7 + 1; // 1..7 Mon..Sun
+  t.setUTCDate(t.getUTCDate() - dayNum + 3);
+  const firstThursday = new Date(Date.UTC(t.getUTCFullYear(),0,4));
+  const wk = 1 + Math.round(((t-firstThursday)/86400000 - 3 + ((firstThursday.getUTCDay()+6)%7))/7);
+  return `cap-hair-v1-week-${t.getUTCFullYear()}-${String(wk).padStart(2,'0')}`;
+}
+const STORAGE_KEY = weekKey();
+const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+function checkbox(id, text){
+  const wrap=document.createElement('label');
+  const input=document.createElement('input');
+  input.type='checkbox'; input.checked = !!saved[id];
+  input.addEventListener('change',()=>{ saved[id]=input.checked; localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)); });
+  const span=document.createElement('span'); span.innerHTML = text;
+  wrap.appendChild(input); wrap.appendChild(span);
+  return wrap;
+}
+
+plan.forEach(d=>{
+  const r = document.createElement('div'); r.className='row';
+
+  // Jour
+  const cDay = document.createElement('div'); cDay.className='cell';
+  const box = document.createElement('div'); box.className='day';
+  const title = document.createElement('div'); title.textContent = d.jour;
+  box.appendChild(title);
+  if(d.tag){
+    const tag=document.createElement('div'); tag.className='tag'; tag.textContent=d.tag;
+    box.appendChild(tag);
+  }
+  cDay.appendChild(box);
+
+  // Matin
+  const cM = document.createElement('div'); cM.className='cell';
+  const tm = document.createElement('div'); tm.className='todo';
+  d.matin.forEach(item=> tm.appendChild(checkbox(item.id, item.txt)));
+  cM.appendChild(tm);
+
+  // Soir
+  const cS = document.createElement('div'); cS.className='cell';
+  const ts = document.createElement('div'); ts.className='todo';
+  d.soir.forEach(item=> ts.appendChild(checkbox(item.id, item.txt)));
+  cS.appendChild(ts);
+
+  // Notes
+  const cN = document.createElement('div'); cN.className='cell';
+  const note = document.createElement('div'); note.className='note'; note.textContent = d.notes;
+  cN.appendChild(note);
+
+  [cDay,cM,cS,cN].forEach(x=>r.appendChild(x));
+  container.appendChild(r);
+});
+
+/* ---------- CONTROLS ---------- */
+document.getElementById('reset').addEventListener('click', ()=>{
+  if(confirm("Réinitialiser toutes les cases pour cette semaine ?")){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>
