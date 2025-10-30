@@ -18,6 +18,14 @@ small.muted{color:var(--muted)}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
 .tag{display:inline-block;background:var(--tag);border:1px solid var(--line);padding:2px 8px;border-radius:999px;color:#cfe7ff;font-size:.8rem}
 
+/* Today card */
+.today{display:grid;gap:10px;margin:14px 0}
+.today h3{margin:0 0 6px}
+.today .cols{display:grid;gap:12px;grid-template-columns:1.2fr 1.2fr .9fr}
+.today ul{margin:8px 0 0 18px}
+.today .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{border:1px solid var(--line);background:#0f1722;padding:4px 10px;border-radius:999px}
+
 /* Tabs */
 .tabs{margin-top:14px}
 .tab-head{display:flex;gap:8px;flex-wrap:wrap}
@@ -36,13 +44,16 @@ small.muted{color:var(--muted)}
 .day{font-weight:700}.subtag{margin-top:6px}
 .todo{display:grid;gap:10px}
 .todo label{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:baseline;background:rgba(255,255,255,.02);padding:8px;border:1px dashed var(--line);border-radius:10px}
-@media(max-width:870px){.grid{grid-template-columns:1fr}.head{display:none}}
+@media(max-width:870px){
+  .grid{grid-template-columns:1fr}.head{display:none}
+  .today .cols{grid-template-columns:1fr}
+}
+
 /* Keratin phases */
 .k-box{display:grid;gap:12px}
 .k-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 input[type="date"]{background:var(--tag);border:1px solid var(--line);color:var(--text);padding:8px;border-radius:10px}
 .k-dosage{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.pill{border:1px solid var(--line);background:#0f1722;padding:4px 10px;border-radius:999px}
 .k-timeline{display:grid;gap:10px;margin-top:8px}
 .k-phase{padding:10px;border:1px dashed var(--line);border-radius:10px}
 .k-phase b{display:block;margin-bottom:6px}
@@ -56,9 +67,33 @@ button:hover{filter:brightness(1.07)}
 <div class="wrap">
   <h1>🌕 Routine capillaire + Phases Kératine</h1>
   <small class="muted">
-    Shampoings <b>lundi & jeudi</b> • Huile d’oignon <b>la veille et le jour même</b> •
-    Minoxidil sur cuir chevelu <b>sec</b>. Les phases <b>kératine</b> sont des <u>dosages par périodes</u> (pas matin/soir).
+    Shampoings <b>lundi & jeudi</b> • Huile d’oignon <b>la veille (mer & dim) et le jour même (pré-shampoing)</b> •
+    Minoxidil matin/soir sur cuir chevelu <b>sec</b>. Les phases <b>kératine</b> sont des <u>dosages par périodes</u>.
   </small>
+
+  <!-- TODAY CARD -->
+  <div class="panel today" id="todayCard">
+    <div class="meta">
+      <span class="pill">📅 <b id="todayDate">—</b></span>
+      <span class="pill">🧭 <b id="todayJour">—</b></span>
+      <span id="todayTag" class="tag">Routine</span>
+      <span class="pill">💊 <span id="todayKeratin">—</span></span>
+    </div>
+    <div class="cols">
+      <div>
+        <b>Matin</b>
+        <ul id="todayMatin"></ul>
+      </div>
+      <div>
+        <b>Soir</b>
+        <ul id="todaySoir"></ul>
+      </div>
+      <div>
+        <b>Mémo</b>
+        <div class="muted" id="todayNote">—</div>
+      </div>
+    </div>
+  </div>
 
   <div class="tabs">
     <div class="tab-head">
@@ -84,6 +119,7 @@ button:hover{filter:brightness(1.07)}
             <span id="attackStatus" class="pill">Jour — Dosage —</span>
             <div class="actions">
               <button id="todayAttack">Mettre sur aujourd’hui</button>
+              <button id="activateAttack">Activer ce protocole</button>
               <button id="resetAttack">Réinitialiser</button>
             </div>
           </div>
@@ -91,11 +127,11 @@ button:hover{filter:brightness(1.07)}
         <div class="k-timeline">
           <div class="k-phase">
             <b>Phase 1 (J1–J15) — 2 gélules / jour</b>
-            <div class="k-note">Accent structure (kératine, zinc, vitamines B). Prendre avec un repas et un grand verre d’eau.</div>
+            <div class="k-note">Accent structure (kératine, zinc, vitamines B).</div>
           </div>
           <div class="k-phase">
             <b>Phase 2 (J16–J45) — 3 gélules / jour</b>
-            <div class="k-note">Accent acides aminés soufrés (cystine, lysine, méthionine) + prêle. Hydratation régulière.</div>
+            <div class="k-note">Accent acides aminés soufrés (cystine, lysine, méthionine) + prêle.</div>
           </div>
         </div>
         <div class="panel">
@@ -121,6 +157,7 @@ button:hover{filter:brightness(1.07)}
             <span id="maintStatus" class="pill">Jour — Dosage —</span>
             <div class="actions">
               <button id="todayMaint">Mettre sur aujourd’hui</button>
+              <button id="activateMaint">Activer ce protocole</button>
               <button id="resetMaint">Réinitialiser</button>
             </div>
           </div>
@@ -157,45 +194,146 @@ document.querySelectorAll('.tab-head button').forEach(btn=>{
   });
 });
 
-/* ---------- Semaine type (oignon / minoxidil / huiles) ---------- */
-const week = [
-  { j:"Lundi", tag:"Jour de shampoing",
-    m:["🧅 Jus d’oignon (1 h) → Rinçage doux → Séchage","💧 Minoxidil 5 %"],
-    s:["🧴 Shampoing doux → Séchage","💧 Minoxidil 5 %"],
-    note:"Cuir chevelu propre, prêt à absorber les actifs." },
-  { j:"Mardi",
-    m:["🧅 Jus d’oignon (1 h) → Rinçage → Séchage","💧 Minoxidil 5 %"],
-    s:["🧅 Jus d’oignon (1 h) → Rinçage → Séchage","💧 Minoxidil 5 %"],
-    note:"Routine classique — stimulation + hydratation interne." },
-  { j:"Mercredi", tag:"Veille soin huile",
-    m:["🧅 Jus d’oignon (1 h) → Rinçage → Séchage","💧 Minoxidil 5 %"],
-    s:["💆‍♂️ Huile d’oignon maison (2 h ou nuit, charlotte)"],
-    note:"Masse doucement le cuir chevelu pendant l’huile." },
-  { j:"Jeudi", tag:"Jour de shampoing",
-    m:["🧴 Rinçage huile → Shampoing doux → Séchage","💧 Minoxidil 5 %"],
-    s:["💧 Minoxidil 5 %"],
-    note:"Laisse bien respirer le cuir chevelu." },
-  { j:"Vendredi",
-    m:["🧅 Jus d’oignon (1 h) → Rinçage → Séchage","💧 Minoxidil 5 %"],
-    s:["🧅 Jus d’oignon (1 h) → Rinçage → Séchage","💧 Minoxidil 5 %"],
-    note:"Entretien & régénération." },
-  { j:"Samedi", tag:"Veille soin huile",
-    m:["🧅 Jus d’oignon (1 h) → Rinçage → Séchage","💧 Minoxidil 5 %"],
-    s:["💆‍♂️ Huile d’oignon maison (2 h ou nuit)"],
-    note:"Idéal avant repos dominical." },
-  { j:"Dimanche",
-    m:["🧴 Rinçage de l’huile (pas de shampoing si propre)"],
-    s:["🧘 Routine libre / mini-massage"],
-    note:"Récupération & visualisation de la repousse 🌱." }
-];
+/* ---------- PARAMÈTRES LOGIQUES ---------- */
+// Lundi & Jeudi = shampoing
+const SHAMPOO_DAYS = [1,4]; // 1=Mon … 7=Sun
+const OIL_DURATION = "2 h ou nuit (sous charlotte)";
+
+/* ---------- KÉRATINE : état global + helpers ---------- */
+const Keratin = {
+  mode: localStorage.getItem("ker-mode") || "attack", // "attack" | "maint"
+  startAttack: localStorage.getItem("ker-attack-start") || "",
+  startMaint:  localStorage.getItem("ker-maint-start")  || "",
+  setMode(m){ this.mode=m; localStorage.setItem("ker-mode",m); refreshToday(); },
+  setStart(key,val){ localStorage.setItem(key,val); this[key] = val; refreshToday(); },
+  doseFor(dateStr){
+    const mode=this.mode;
+    const start = mode==="attack" ? this.startAttack : this.startMaint;
+    if(!start) return "— (définir la date de début)";
+    const d0=new Date(start), d=new Date(dateStr);
+    d0.setHours(0,0,0,0); d.setHours(0,0,0,0);
+    const j=Math.floor((d-d0)/86400000)+1;
+
+    if(mode==="attack"){
+      if(j<1) return "— (pas commencé)";
+      if(j<=15) return "2 gél./jour (P1)";
+      if(j<=45) return "3 gél./jour (P2)";
+      return "✓ Attaque terminée";
+    }else{
+      if(j<1) return "— (pas commencé)";
+      if(j<=30) return "1 gél./jour (P1)";
+      if(j<=75) return "2 gél./jour (P2)";
+      return "✓ Entretien terminé";
+    }
+  }
+};
+
+/* ---------- UI de la section KÉRATINE ---------- */
+const startAttack = document.getElementById('startAttack');
+const attackStatus = document.getElementById('attackStatus');
+const startMaint  = document.getElementById('startMaint');
+const maintStatus = document.getElementById('maintStatus');
+
+startAttack.value = Keratin.startAttack;
+startMaint.value  = Keratin.startMaint;
+
+function fmt(d){return d.toISOString().slice(0,10);}
+function daysSince(start){
+  const s=new Date(start), t=new Date();
+  s.setHours(0,0,0,0); t.setHours(0,0,0,0);
+  return Math.floor((t-s)/86400000)+1;
+}
+function updAttack(){
+  const v=startAttack.value;
+  attackStatus.textContent = v ? (()=>{
+    const j=daysSince(v);
+    if(j<1) return "Jour — (pas commencé)";
+    if(j<=15) return `Jour ${j} · 2 gél./jour (P1)`;
+    if(j<=45) return `Jour ${j} · 3 gél./jour (P2)`;
+    return `Jour ${j} · ✓ Attaque terminée`;
+  })() : "Jour — Dosage —";
+  Keratin.setStart("ker-attack-start", v);
+}
+function updMaint(){
+  const v=startMaint.value;
+  maintStatus.textContent = v ? (()=>{
+    const j=daysSince(v);
+    if(j<1) return "Jour — (pas commencé)";
+    if(j<=30) return `Jour ${j} · 1 gél./jour (P1)`;
+    if(j<=75) return `Jour ${j} · 2 gél./jour (P2)`;
+    return `Jour ${j} · ✓ Entretien terminé`;
+  })() : "Jour — Dosage —";
+  Keratin.setStart("ker-maint-start", v);
+}
+document.getElementById('todayAttack').addEventListener('click',()=>{ startAttack.value=fmt(new Date()); updAttack(); });
+document.getElementById('resetAttack').addEventListener('click',()=>{ startAttack.value=""; updAttack(); });
+document.getElementById('activateAttack').addEventListener('click',()=> Keratin.setMode("attack"));
+
+document.getElementById('todayMaint').addEventListener('click',()=>{ startMaint.value=fmt(new Date()); updMaint(); });
+document.getElementById('resetMaint').addEventListener('click',()=>{ startMaint.value=""; updMaint(); });
+document.getElementById('activateMaint').addEventListener('click',()=> Keratin.setMode("maint"));
+
+updAttack(); updMaint();
+
+/* ---------- Génération automatique de la semaine ---------- */
+const DAY_NAMES = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+
+function isVeille(dayNum){
+  // veille = la veille d’un jour de shampoing
+  return SHAMPOO_DAYS.some(sd => ((sd + 5) % 7) + 1 === dayNum);
+}
+
+function buildDay(dayNum){
+  const name = DAY_NAMES[dayNum-1];
+  const shampooDay = SHAMPOO_DAYS.includes(dayNum);
+  const veille = isVeille(dayNum);
+
+  let matin = [
+    "🧅 Jus d’oignon (1 h) → Rinçage → Séchage",
+    "💧 Minoxidil 5 %"
+  ];
+  let soir = [
+    "🧅 Jus d’oignon (1 h) → Rinçage → Séchage",
+    "💧 Minoxidil 5 %"
+  ];
+  let tag = "";
+  let note = "Routine classique — stimulation + hydratation interne.";
+
+  if(veille){
+    tag = "Veille soin huile";
+    soir = [`💆‍♂️ Huile d’oignon ${OIL_DURATION}`]; // pas de minoxidil juste après l’huile
+    note = "Masse doucement le cuir chevelu pendant l’huile.";
+  }
+  if(shampooDay){
+    tag = "Jour de shampoing";
+    matin = [
+      `💆‍♂️ Huile d’oignon ${OIL_DURATION} (pré-shampoing)`,
+      "🧴 Shampoing doux → Séchage",
+      "💧 Minoxidil 5 %"
+    ];
+    soir = ["💧 Minoxidil 5 %"];
+    note = "Cuir chevelu propre, prêt à absorber les actifs. Laisse bien respirer.";
+  }
+  if(name==="Dimanche" && !shampooDay && !veille){
+    note = "Récupération & visualisation de la repousse 🌱.";
+  }
+
+  return { j:name, tag, m:matin, s:soir, note };
+}
+
+const week = Array.from({length:7}, (_,i)=>buildDay(i+1));
+
+/* ---------- Rendu de la grille hebdo (cases à cocher) ---------- */
 const table = document.getElementById('weekGrid');
-["Jour","Matin","Soir","Notes"].forEach(h=>{const d=document.createElement('div');d.className='head';d.textContent=h;table.appendChild(d);});
-const KEY="cap-week-v2";
+["Jour","Matin","Soir","Notes"].forEach(h=>{
+  const d=document.createElement('div');d.className='head';d.textContent=h;table.appendChild(d);
+});
+const KEY="cap-week-v3";
 const saved=JSON.parse(localStorage.getItem(KEY)||"{}");
 function chk(id, text){
   const L=document.createElement('label');
   const c=document.createElement('input'); c.type='checkbox'; c.checked=!!saved[id];
-  c.addEventListener('change',()=>{saved[id]=c.checked;localStorage.setItem(KEY,JSON.stringify(saved));});
+  c.addEventListener('change',()=>{saved[id]=c.checked; localStorage.setItem(KEY,JSON.stringify(saved));});
   const s=document.createElement('span'); s.textContent=text;
   L.appendChild(c); L.appendChild(s); return L;
 }
@@ -210,55 +348,33 @@ week.forEach((d,di)=>{
   [cDay,cM,cS,cN].forEach(x=>table.appendChild(x));
 });
 
-/* ---------- Phases Kératine : calcul automatique du dosage du jour ---------- */
-function fmt(d){return d.toISOString().slice(0,10);}
-function daysSince(start){
-  const s=new Date(start); const t=new Date(); s.setHours(0,0,0,0); t.setHours(0,0,0,0);
-  return Math.floor((t - s)/86400000)+1; // J1 = jour du début
+/* ---------- Bloc “Aujourd’hui” ---------- */
+function todayCardData(){
+  const now=new Date();
+  const dow=((now.getDay()+6)%7)+1; // 1..7
+  const dateStr=now.toISOString().slice(0,10);
+  const d=buildDay(dow);
+  return {
+    date: dateStr,
+    jour: d.j,
+    tag: d.tag || "Routine",
+    matin: d.m,
+    soir: d.s,
+    note: d.note,
+    keratin: Keratin.doseFor(dateStr)
+  };
 }
-/* Attack: P1 J1-15 -> 2 gél/j ; P2 J16-45 -> 3 gél/j */
-const AKEY="ker-attack-start";
-const startAttack=document.getElementById('startAttack');
-const attackStatus=document.getElementById('attackStatus');
-startAttack.value=localStorage.getItem(AKEY)||"";
-function updAttack(){
-  const v=startAttack.value;
-  if(!v){attackStatus.textContent="Jour — Dosage —";return;}
-  localStorage.setItem(AKEY,v);
-  const j=daysSince(v);
-  let phase="", dose="";
-  if(j<1){phase="(pas commencé)";dose="—";}
-  else if(j<=15){phase=`Jour ${j} • Phase 1`;dose="2 gélules / jour";}
-  else if(j<=45){phase=`Jour ${j} • Phase 2`;dose="3 gélules / jour";}
-  else {phase=`Jour ${j} • Fin de l’attaque`;dose="—";}
-  attackStatus.textContent = `${phase} · ${dose}`;
+function refreshToday(){
+  const t=todayCardData();
+  document.getElementById('todayDate').textContent=t.date;
+  document.getElementById('todayJour').textContent=t.jour;
+  document.getElementById('todayTag').textContent=t.tag;
+  document.getElementById('todayKeratin').textContent=t.keratin;
+  document.getElementById('todayMatin').innerHTML=t.matin.map(x=>`<li>${x}</li>`).join('');
+  document.getElementById('todaySoir').innerHTML=t.soir.map(x=>`<li>${x}</li>`).join('');
+  document.getElementById('todayNote').textContent=t.note;
 }
-startAttack.addEventListener('change',updAttack);
-document.getElementById('todayAttack').addEventListener('click',()=>{startAttack.value=fmt(new Date());updAttack();});
-document.getElementById('resetAttack').addEventListener('click',()=>{localStorage.removeItem(AKEY);startAttack.value="";updAttack();});
-updAttack();
-
-/* Maintenance: P1 J1-30 -> 1 gél/j ; P2 J31-75 -> 2 gél/j */
-const MKEY="ker-maint-start";
-const startMaint=document.getElementById('startMaint');
-const maintStatus=document.getElementById('maintStatus');
-startMaint.value=localStorage.getItem(MKEY)||"";
-function updMaint(){
-  const v=startMaint.value;
-  if(!v){maintStatus.textContent="Jour — Dosage —";return;}
-  localStorage.setItem(MKEY,v);
-  const j=daysSince(v);
-  let phase="", dose="";
-  if(j<1){phase="(pas commencé)";dose="—";}
-  else if(j<=30){phase=`Jour ${j} • Phase 1`;dose="1 gélule / jour";}
-  else if(j<=75){phase=`Jour ${j} • Phase 2`;dose="2 gélules / jour";}
-  else {phase=`Jour ${j} • Fin de l’entretien`;dose="—";}
-  maintStatus.textContent = `${phase} · ${dose}`;
-}
-startMaint.addEventListener('change',updMaint);
-document.getElementById('todayMaint').addEventListener('click',()=>{startMaint.value=fmt(new Date());updMaint();});
-document.getElementById('resetMaint').addEventListener('click',()=>{localStorage.removeItem(MKEY);startMaint.value="";updMaint();});
-updMaint();
+refreshToday();
 </script>
 </body>
 </html>
