@@ -191,32 +191,47 @@ document.addEventListener('DOMContentLoaded', () => {
     return { j:name, tag, m:matin, s:soir, note };
   }
 
-  /* ====== Keratine state ====== */
-  const Keratin = {
-    mode: localStorage.getItem("ker-mode") || "attack",
-    startAttack: localStorage.getItem("ker-attack-start") || "",
-    startMaint:  localStorage.getItem("ker-maint-start")  || "",
-    setMode(m){ this.mode=m; localStorage.setItem("ker-mode",m); refreshToday(); },
-    setStart(k,v){ localStorage.setItem(k,v); this[k.replace('ker-','').replaceAll('-','')] = v; refreshToday(); },
-    doseFor(dateStr){
-      const start = (this.mode==="attack") ? this.startAttack : this.startMaint;
-      if(!start) return "— (définir la date de début)";
-      const d0=new Date(start), d=new Date(dateStr);
-      d0.setHours(0,0,0,0); d.setHours(0,0,0,0);
-      const j=Math.floor((d-d0)/86400000)+1;
-      if(this.mode==="attack"){
-        if(j<1) return "— (pas commencé)";
-        if(j<=15) return "2 gél./jour (P1)";
-        if(j<=45) return "3 gél./jour (P2)";
-        return "✓ Attaque terminée";
-      }else{
-        if(j<1) return "— (pas commencé)";
-        if(j<=30) return "1 gél./jour (P1)";
-        if(j<=75) return "2 gél./jour (P2)";
-        return "✓ Entretien terminé";
-      }
+/* ========= KÉRATINE (fix) ========= */
+const Keratin = {
+  mode: localStorage.getItem("ker-mode") || "attack",
+  startAttack: localStorage.getItem("ker-attack-start") || "",
+  startMaint:  localStorage.getItem("ker-maint-start")  || "",
+
+  setMode(m){
+    this.mode = m;
+    localStorage.setItem("ker-mode", m);
+    refreshToday(); // met à jour la carte du jour
+  },
+
+  setStart(key, val){
+    localStorage.setItem(key, val);
+    if (key === "ker-attack-start") this.startAttack = val;
+    if (key === "ker-maint-start")  this.startMaint  = val;
+    refreshToday(); // recalcul dose du jour
+  },
+
+  doseFor(dateStr){
+    const start = (this.mode === "attack") ? this.startAttack : this.startMaint;
+    if (!start) return "— (définir la date de début)";
+
+    const d0 = new Date(start), d = new Date(dateStr);
+    d0.setHours(0,0,0,0); d.setHours(0,0,0,0);
+    const j = Math.floor((d - d0)/86400000) + 1;
+
+    if (this.mode === "attack") {
+      if (j < 1)  return "— (pas commencé)";
+      if (j <= 15) return "2 gél./jour (P1)";
+      if (j <= 45) return "3 gél./jour (P2)";
+      return "✓ Attaque terminée";
+    } else {
+      if (j < 1)  return "— (pas commencé)";
+      if (j <= 30) return "1 gél./jour (P1)";
+      if (j <= 75) return "2 gél./jour (P2)";
+      return "✓ Entretien terminé";
     }
-  };
+  }
+};
+
 
   /* ====== Onglets ====== */
   document.querySelectorAll('.tab-head button').forEach(btn=>{
