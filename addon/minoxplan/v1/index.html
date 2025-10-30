@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Routine capillaire + Phases Kératine</title>
+<link rel="icon" href="data:,"/>
 <style>
 :root{
   --bg:#0b0f14; --panel:#121821; --text:#e6edf3; --muted:#8aa0b3;
@@ -20,7 +21,6 @@ small.muted{color:var(--muted)}
 
 /* Today card */
 .today{display:grid;gap:10px;margin:14px 0}
-.today h3{margin:0 0 6px}
 .today .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .pill{border:1px solid var(--line);background:#0f1722;padding:4px 10px;border-radius:999px}
 .today .cols{display:grid;gap:12px;grid-template-columns:1.2fr 1.2fr .9fr}
@@ -173,205 +173,184 @@ button:hover{filter:brightness(1.07)}
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    /* ---------- Onglets ---------- */
-    document.querySelectorAll('.tab-head button').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        document.querySelectorAll('.tab-head button').forEach(b=>b.setAttribute('aria-selected','false'));
-        btn.setAttribute('aria-selected','true');
-        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
+  /* ========= CONSTANTES ========= */
+  const SHAMPOO_DAYS = [1,4]; // 1=Lundi, 4=Jeudi
+  const OIL_DURATION = "2 h ou nuit (sous charlotte)";
+  const DAY_NAMES = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+
+  /* ========= ONGlets ========= */
+  document.querySelectorAll('.tab-head button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab-head button').forEach(b=>b.setAttribute('aria-selected','false'));
+      btn.setAttribute('aria-selected','true');
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.getElementById(btn.dataset.tab).classList.add('active');
     });
+  });
 
-    /* ---------- PARAM LOGIQUES ---------- */
-    const SHAMPOO_DAYS = [1,4]; // Lundi & Jeudi
-    const OIL_DURATION = "2 h ou nuit (sous charlotte)";
-    const DAY_NAMES = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
-
-    /* ---------- KÉRATINE (état global) ---------- */
-    const Keratin = {
-      mode: localStorage.getItem("ker-mode") || "attack",
-      startAttack: localStorage.getItem("ker-attack-start") || "",
-      startMaint:  localStorage.getItem("ker-maint-start")  || "",
-      setMode(m){ this.mode=m; localStorage.setItem("ker-mode",m); refreshToday(); },
-      setStart(key,val){ localStorage.setItem(key,val); this[key]=val; refreshToday(); },
-      doseFor(dateStr){
-        const mode=this.mode;
-        const start = mode==="attack" ? this.startAttack : this.startMaint;
-        if(!start) return "— (définir la date de début)";
-        const d0=new Date(start), d=new Date(dateStr);
-        d0.setHours(0,0,0,0); d.setHours(0,0,0,0);
-        const j=Math.floor((d-d0)/86400000)+1;
-        if(mode==="attack"){
-          if(j<1) return "— (pas commencé)";
-          if(j<=15) return "2 gél./jour (P1)";
-          if(j<=45) return "3 gél./jour (P2)";
-          return "✓ Attaque terminée";
-        }else{
-          if(j<1) return "— (pas commencé)";
-          if(j<=30) return "1 gél./jour (P1)";
-          if(j<=75) return "2 gél./jour (P2)";
-          return "✓ Entretien terminé";
-        }
+  /* ========= KÉRATINE ========= */
+  const Keratin = {
+    mode: localStorage.getItem("ker-mode") || "attack",
+    startAttack: localStorage.getItem("ker-attack-start") || "",
+    startMaint:  localStorage.getItem("ker-maint-start")  || "",
+    setMode(m){ this.mode=m; localStorage.setItem("ker-mode",m); refreshToday(); },
+    setStart(key,val){ localStorage.setItem(key,val); this[key]=val; refreshToday(); },
+    doseFor(dateStr){
+      const start = (this.mode==="attack") ? this.startAttack : this.startMaint;
+      if(!start) return "— (définir la date de début)";
+      const d0=new Date(start), d=new Date(dateStr);
+      d0.setHours(0,0,0,0); d.setHours(0,0,0,0);
+      const j=Math.floor((d-d0)/86400000)+1;
+      if(this.mode==="attack"){
+        if(j<1) return "— (pas commencé)";
+        if(j<=15) return "2 gél./jour (P1)";
+        if(j<=45) return "3 gél./jour (P2)";
+        return "✓ Attaque terminée";
+      }else{
+        if(j<1) return "— (pas commencé)";
+        if(j<=30) return "1 gél./jour (P1)";
+        if(j<=75) return "2 gél./jour (P2)";
+        return "✓ Entretien terminé";
       }
-    };
-
-    /* ---------- UI Kératine ---------- */
-    const fmt = d => d.toISOString().slice(0,10);
-    const daysSince = start => {
-      const s=new Date(start), t=new Date();
-      s.setHours(0,0,0,0); t.setHours(0,0,0,0);
-      return Math.floor((t-s)/86400000)+1;
-    };
-
-    const startAttack = document.getElementById('startAttack');
-    const attackStatus = document.getElementById('attackStatus');
-    const startMaint  = document.getElementById('startMaint');
-    const maintStatus = document.getElementById('maintStatus');
-
-    if(startAttack){ startAttack.value = Keratin.startAttack; }
-    if(startMaint){  startMaint.value  = Keratin.startMaint; }
-
-    function updAttack(){
-      if(!attackStatus) return;
-      const v = startAttack.value;
-      if(!v){ attackStatus.textContent="Jour — Dosage —"; Keratin.setStart("ker-attack-start",""); return; }
-      const j=daysSince(v);
-      attackStatus.textContent = j<1 ? "Jour — (pas commencé)" :
-        j<=15 ? `Jour ${j} · 2 gél./jour (P1)` :
-        j<=45 ? `Jour ${j} · 3 gél./jour (P2)` :
-                `Jour ${j} · ✓ Attaque terminée`;
-      Keratin.setStart("ker-attack-start", v);
     }
-    function updMaint(){
-      if(!maintStatus) return;
-      const v = startMaint.value;
-      if(!v){ maintStatus.textContent="Jour — Dosage —"; Keratin.setStart("ker-maint-start",""); return; }
-      const j=daysSince(v);
-      maintStatus.textContent = j<1 ? "Jour — (pas commencé)" :
-        j<=30 ? `Jour ${j} · 1 gél./jour (P1)` :
-        j<=75 ? `Jour ${j} · 2 gél./jour (P2)` :
-                `Jour ${j} · ✓ Entretien terminé`;
-      Keratin.setStart("ker-maint-start", v);
-    }
+  };
 
-    document.getElementById('todayAttack')?.addEventListener('click',()=>{ startAttack.value=fmt(new Date()); updAttack(); });
-    document.getElementById('resetAttack')?.addEventListener('click',()=>{ startAttack.value=""; updAttack(); });
-    document.getElementById('activateAttack')?.addEventListener('click',()=> Keratin.setMode("attack"));
+  // UI Kératine
+  const fmt = d => d.toISOString().slice(0,10);
+  const daysSince = start => {
+    const s=new Date(start), t=new Date();
+    s.setHours(0,0,0,0); t.setHours(0,0,0,0);
+    return Math.floor((t-s)/86400000)+1;
+  };
+  const startAttack = document.getElementById('startAttack');
+  const attackStatus = document.getElementById('attackStatus');
+  const startMaint  = document.getElementById('startMaint');
+  const maintStatus = document.getElementById('maintStatus');
+  if(startAttack) startAttack.value = Keratin.startAttack;
+  if(startMaint)  startMaint.value  = Keratin.startMaint;
 
-    document.getElementById('todayMaint')?.addEventListener('click',()=>{ startMaint.value=fmt(new Date()); updMaint(); });
-    document.getElementById('resetMaint')?.addEventListener('click',()=>{ startMaint.value=""; updMaint(); });
-    document.getElementById('activateMaint')?.addEventListener('click',()=> Keratin.setMode("maint"));
-
-    updAttack(); updMaint();
-
-    /* ---------- Génération Semaine ---------- */
-    const isVeille = dayNum => SHAMPOO_DAYS.some(sd => ((sd + 5) % 7) + 1 === dayNum);
-
-    function buildDay(dayNum){
-      const name = DAY_NAMES[dayNum-1];
-      const shampooDay = SHAMPOO_DAYS.includes(dayNum);
-      const veille = isVeille(dayNum);
-
-      let matin = [
-        "🧅 Jus d’oignon (1 h) → Rinçage → Séchage",
-        "💧 Minoxidil 5 %"
-      ];
-      let soir = [
-        "🧅 Jus d’oignon (1 h) → Rinçage → Séchage",
-        "💧 Minoxidil 5 %"
-      ];
-      let tag = "";
-      let note = "Routine classique — stimulation + hydratation interne.";
-
-      if(veille){
-        tag = "Veille soin huile";
-        soir = [`💆‍♂️ Huile d’oignon ${OIL_DURATION}`];
-        note = "Masse doucement le cuir chevelu pendant l’huile.";
-      }
-      if(shampooDay){
-        tag = "Jour de shampoing";
-        matin = [
-          `💆‍♂️ Huile d’oignon ${OIL_DURATION} (pré-shampoing)`,
-          "🧴 Shampoing doux → Séchage",
-          "💧 Minoxidil 5 %"
-        ];
-        soir = ["💧 Minoxidil 5 %"];
-        note = "Cuir chevelu propre, prêt à absorber les actifs. Laisse bien respirer.";
-      }
-      if(name==="Dimanche" && !shampooDay && !veille){
-        note = "Récupération & visualisation de la repousse 🌱.";
-      }
-      return { j:name, tag, m:matin, s:soir, note };
-    }
-
-    const week = Array.from({length:7}, (_,i)=>buildDay(i+1));
-
-    /* ---------- Rendu grille hebdo ---------- */
-    const table = document.getElementById('weekGrid');
-    if(table){
-      ["Jour","Matin","Soir","Notes"].forEach(h=>{
-        const d=document.createElement('div'); d.className='head'; d.textContent=h; table.appendChild(d);
-      });
-      const KEY="cap-week-v3";
-      const saved=JSON.parse(localStorage.getItem(KEY)||"{}");
-      const chk = (id, text) => {
-        const L=document.createElement('label');
-        const c=document.createElement('input'); c.type='checkbox'; c.checked=!!saved[id];
-        c.addEventListener('change',()=>{ saved[id]=c.checked; localStorage.setItem(KEY,JSON.stringify(saved)); });
-        const s=document.createElement('span'); s.textContent=text;
-        L.appendChild(c); L.appendChild(s); return L;
-      };
-      week.forEach((d,di)=>{
-        const cDay=document.createElement('div'); cDay.className='cell';
-        cDay.innerHTML=`<div class="day">${d.j}${d.tag?`<div class="tag subtag">${d.tag}</div>`:''}</div>`;
-        const cM=document.createElement('div'); cM.className='cell'; const tm=document.createElement('div'); tm.className='todo';
-        d.m.forEach((t,ti)=>tm.appendChild(chk(`m-${di}-${ti}`,t))); cM.appendChild(tm);
-        const cS=document.createElement('div'); cS.className='cell'; const ts=document.createElement('div'); ts.className='todo';
-        d.s.forEach((t,ti)=>ts.appendChild(chk(`s-${di}-${ti}`,t))); cS.appendChild(ts);
-        const cN=document.createElement('div'); cN.className='cell'; cN.innerHTML=`<div class="note">${d.note}</div>`;
-        [cDay,cM,cS,cN].forEach(x=>table.appendChild(x));
-      });
-    }
-
-    /* ---------- Bloc “Aujourd’hui” ---------- */
-    function todayCardData(){
-      const now=new Date();
-      const dow=((now.getDay()+6)%7)+1; // 1..7
-      const dateStr=now.toISOString().slice(0,10);
-      const d=buildDay(dow);
-      return {
-        date: dateStr,
-        jour: d.j,
-        tag: d.tag || "Routine",
-        matin: d.m,
-        soir: d.s,
-        note: d.note,
-        keratin: Keratin.doseFor(dateStr)
-      };
-    }
-    function refreshToday(){
-      const t=todayCardData();
-      const $ = id => document.getElementById(id);
-      $('todayDate').textContent=t.date;
-      $('todayJour').textContent=t.jour;
-      $('todayTag').textContent=t.tag;
-      $('todayKeratin').textContent=t.keratin;
-      $('todayMatin').innerHTML=t.matin.map(x=>`<li>${x}</li>`).join('');
-      $('todaySoir').innerHTML=t.soir.map(x=>`<li>${x}</li>`).join('');
-      $('todayNote').textContent=t.note;
-    }
-    window.refreshToday = refreshToday; // si besoin pour debug
-    refreshToday();
-
-  } catch (e) {
-    console.error(e);
-    const err = document.createElement('div');
-    err.style.cssText = 'margin:12px 0;padding:10px;border:1px solid #6b2f2f;background:#2a1212;color:#ffdede;border-radius:10px';
-    err.textContent = 'Une erreur est survenue dans le script. Ouvre la console (F12) pour le détail.';
-    document.querySelector('.wrap').prepend(err);
+  function updAttack(){
+    if(!attackStatus) return;
+    const v = startAttack.value;
+    if(!v){ attackStatus.textContent="Jour — Dosage —"; Keratin.setStart("ker-attack-start",""); return; }
+    const j=daysSince(v);
+    attackStatus.textContent = j<1 ? "Jour — (pas commencé)" :
+      j<=15 ? `Jour ${j} · 2 gél./jour (P1)` :
+      j<=45 ? `Jour ${j} · 3 gél./jour (P2)` :
+              `Jour ${j} · ✓ Attaque terminée`;
+    Keratin.setStart("ker-attack-start", v);
   }
+  function updMaint(){
+    if(!maintStatus) return;
+    const v = startMaint.value;
+    if(!v){ maintStatus.textContent="Jour — Dosage —"; Keratin.setStart("ker-maint-start",""); return; }
+    const j=daysSince(v);
+    maintStatus.textContent = j<1 ? "Jour — (pas commencé)" :
+      j<=30 ? `Jour ${j} · 1 gél./jour (P1)` :
+      j<=75 ? `Jour ${j} · 2 gél./jour (P2)` :
+              `Jour ${j} · ✓ Entretien terminé`;
+    Keratin.setStart("ker-maint-start", v);
+  }
+  document.getElementById('todayAttack')?.addEventListener('click',()=>{ startAttack.value=fmt(new Date()); updAttack(); });
+  document.getElementById('resetAttack')?.addEventListener('click',()=>{ startAttack.value=""; updAttack(); });
+  document.getElementById('activateAttack')?.addEventListener('click',()=> Keratin.setMode("attack"));
+  document.getElementById('todayMaint')?.addEventListener('click',()=>{ startMaint.value=fmt(new Date()); updMaint(); });
+  document.getElementById('resetMaint')?.addEventListener('click',()=>{ startMaint.value=""; updMaint(); });
+  document.getElementById('activateMaint')?.addEventListener('click',()=> Keratin.setMode("maint"));
+  updAttack(); updMaint();
+
+  /* ========= LOGIQUE SEMAINE ========= */
+  const isVeille = dayNum => SHAMPOO_DAYS.some(sd => ((sd + 5) % 7) + 1 === dayNum);
+  function buildDay(dayNum){
+    const name = DAY_NAMES[dayNum-1];
+    const shampooDay = SHAMPOO_DAYS.includes(dayNum);
+    const veille = isVeille(dayNum);
+
+    let matin = [
+      "🧅 Jus d’oignon (1 h) → Rinçage → Séchage",
+      "💧 Minoxidil 5 %"
+    ];
+    let soir = [
+      "🧅 Jus d’oignon (1 h) → Rinçage → Séchage",
+      "💧 Minoxidil 5 %"
+    ];
+    let tag = "";
+    let note = "Routine classique — stimulation + hydratation interne.";
+
+    if(veille){
+      tag = "Veille soin huile";
+      soir = [`💆‍♂️ Huile d’oignon ${OIL_DURATION}`];
+      note = "Masse doucement le cuir chevelu pendant l’huile.";
+    }
+    if(shampooDay){
+      tag = "Jour de shampoing";
+      matin = [
+        `💆‍♂️ Huile d’oignon ${OIL_DURATION} (pré-shampoing)`,
+        "🧴 Shampoing doux → Séchage",
+        "💧 Minoxidil 5 %"
+      ];
+      soir = ["💧 Minoxidil 5 %"];
+      note = "Cuir chevelu propre, prêt à absorber les actifs. Laisse bien respirer.";
+    }
+    if(name==="Dimanche" && !shampooDay && !veille){
+      note = "Récupération & visualisation de la repousse 🌱.";
+    }
+    return { j:name, tag, m:matin, s:soir, note };
+  }
+  const week = Array.from({length:7}, (_,i)=>buildDay(i+1));
+
+  /* ========= RENDU GRILLE ========= */
+  const table = document.getElementById('weekGrid');
+  ["Jour","Matin","Soir","Notes"].forEach(h=>{
+    const d=document.createElement('div'); d.className='head'; d.textContent=h; table.appendChild(d);
+  });
+  const KEY="cap-week-v3";
+  const saved=JSON.parse(localStorage.getItem(KEY)||"{}");
+  const chk = (id, text) => {
+    const L=document.createElement('label');
+    const c=document.createElement('input'); c.type='checkbox'; c.checked=!!saved[id];
+    c.addEventListener('change',()=>{ saved[id]=c.checked; localStorage.setItem(KEY,JSON.stringify(saved)); });
+    const s=document.createElement('span'); s.textContent=text;
+    L.appendChild(c); L.appendChild(s); return L;
+  };
+  week.forEach((d,di)=>{
+    const cDay=document.createElement('div'); cDay.className='cell';
+    cDay.innerHTML=`<div class="day">${d.j}${d.tag?`<div class="tag subtag">${d.tag}</div>`:''}</div>`;
+    const cM=document.createElement('div'); cM.className='cell'; const tm=document.createElement('div'); tm.className='todo';
+    d.m.forEach((t,ti)=>tm.appendChild(chk(`m-${di}-${ti}`,t))); cM.appendChild(tm);
+    const cS=document.createElement('div'); cS.className='cell'; const ts=document.createElement('div'); ts.className='todo';
+    d.s.forEach((t,ti)=>ts.appendChild(chk(`s-${di}-${ti}`,t))); cS.appendChild(ts);
+    const cN=document.createElement('div'); cN.className='cell'; cN.innerHTML=`<div class="note">${d.note}</div>`;
+    [cDay,cM,cS,cN].forEach(x=>table.appendChild(x));
+  });
+
+  /* ========= TODAY CARD ========= */
+  function todayCardData(){
+    const now=new Date();
+    const dow=((now.getDay()+6)%7)+1; // 1..7
+    const dateStr=now.toISOString().slice(0,10);
+    const d=buildDay(dow);
+    return {
+      date: dateStr,
+      jour: d.j,
+      tag: d.tag || "Routine",
+      matin: d.m,
+      soir: d.s,
+      note: d.note,
+      keratin: Keratin.doseFor(dateStr)
+    };
+  }
+  function refreshToday(){
+    const t=todayCardData();
+    document.getElementById('todayDate').textContent=t.date;
+    document.getElementById('todayJour').textContent=t.jour;
+    document.getElementById('todayTag').textContent=t.tag;
+    document.getElementById('todayKeratin').textContent=t.keratin;
+    document.getElementById('todayMatin').innerHTML=t.matin.map(x=>`<li>${x}</li>`).join('');
+    document.getElementById('todaySoir').innerHTML=t.soir.map(x=>`<li>${x}</li>`).join('');
+    document.getElementById('todayNote').textContent=t.note;
+  }
+  refreshToday();
 });
 </script>
 </body>
