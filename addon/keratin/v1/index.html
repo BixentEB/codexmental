@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cap·Actifs — Suivi de cure (120 j)</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121821; --muted:#2a3443; --text:#e6ecf3; --sub:#9fb2c7;
+    --accent:#58a6ff; --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --shadow:0 8px 24px rgba(0,0,0,.25);
+    --radius:14px;
+  }
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 800px at 15% -10%, #182131 0%, transparent 60%),
+      radial-gradient(1200px 800px at 120% 0%, #101827 0%, transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font:500 15px/1.5 Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap{max-width:1100px;margin:32px auto;padding:0 16px}
+
+  /* Layout */
+  .top{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-bottom:18px}
+  @media (max-width:880px){.top{grid-template-columns:1fr}}
+
+  .card{background:linear-gradient(180deg,#121a27,#0f1520);border:1px solid #1f2a3a;border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card .inner{padding:16px 18px}
+  h1{font-size:22px;margin:0 0 8px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .tag{font-size:12px;padding:6px 8px;border-radius:10px;border:1px solid #263750;background:#0f1726;color:#cfe1ff}
+
+  /* Controls */
+  .controls{display:grid;grid-template-columns:1.1fr 1fr;gap:10px;margin-top:10px}
+  .controls > *{width:100%}
+  label{display:block;font-size:12px;color:var(--sub);margin:0 0 6px}
+  input[type=date], select{background:#0e1522;border:1px solid #233045;border-radius:12px;padding:10px;color:var(--text)}
+  .right{display:flex;gap:8px;justify-content:flex-end}
+  .btn{appearance:none;border:none;border-radius:12px;padding:12px 14px;font-weight:700;letter-spacing:.2px;cursor:pointer;
+       background:linear-gradient(180deg,#2b72ff,#1a56db);color:white;box-shadow:0 6px 16px rgba(35,109,255,.3)}
+  .btn.secondary{background:#1b2535;color:#e2e8f0;border:1px solid #2a3a53;box-shadow:none}
+  .btn.ghost{background:transparent;border:1px dashed #2b3d57;color:#a9bed7}
+  .btn.ok{background:linear-gradient(180deg,#22c55e,#179a46)}
+  .btn.warn{background:linear-gradient(180deg,#f59e0b,#d97706)}
+
+  /* Progress */
+  .progress{margin-top:14px;height:12px;background:#0e1522;border:1px solid #22324a;border-radius:999px;overflow:hidden}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#58a6ff)}
+  .stats{display:flex;gap:14px;margin-top:8px;font-size:13px;color:var(--sub)}
+
+  /* Phases list */
+  .phases{display:grid;grid-template-columns:1fr;gap:12px}
+  .phase{border:1px solid #1f2a3a;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#0f1726,#0b1220)}
+  .phase header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #1b2940}
+  .phase header .dot{width:10px;height:10px;border-radius:3px}
+  .phase header h3{margin:0;font-size:15px}
+  .phase .body{max-height:280px;overflow:auto}
+  .row{display:grid;grid-template-columns:82px 1fr 110px 92px;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #142033}
+  .row:last-child{border-bottom:none}
+  .row .pill{font-size:11px;padding:3px 8px;border-radius:999px;background:#1a2740;color:#a8c2df;border:1px solid #2a3b5a;display:inline-block}
+  .row .dose{font-size:12px;color:#c6ddf9}
+  .row .date{font-size:12px;color:#9fb2c7}
+  .row .status{display:flex;align-items:center;gap:6px}
+  .square{width:12px;height:12px;border-radius:3px;border:1px solid #22324a;background:#0e1522}
+  .square.ok{background:#22c55e;border-color:#1a7b45}
+  .row.sel{outline:2px solid #2b72ff;outline-offset:-2px;background:linear-gradient(180deg,#0c1830,#0b1426)}
+  .row.today{box-shadow:inset 0 0 0 2px #3b82f6}
+  .row.done{background:linear-gradient(180deg,#0e1f15,#0b1611)}
+
+  /* Agenda table (journal) */
+  .agenda{display:flex;flex-direction:column;gap:10px}
+  .log{max-height:260px;overflow:auto;border:1px solid #243650;border-radius:12px;background:#0b1220}
+  .log table{width:100%;border-collapse:collapse;font-size:13px}
+  .log th,.log td{padding:8px 10px;border-bottom:1px solid #1b2940;color:#cfe1ff}
+  .log tr:last-child td{border-bottom:none}
+  .tiny{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid #243650;background:#0e1522;vertical-align:middle}
+  .tiny.ok{background:#22c55e;border-color:#1a7b45}
+
+  .foot{margin:18px 0 8px;text-align:center;color:#7790a8;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <!-- LEFT: Controls + progress -->
+    <div class="card">
+      <div class="inner">
+        <h1>Suivi Cap·Actifs — 120 jours</h1>
+
+        <div class="legend" id="legend"></div>
+
+        <div class="controls">
+          <div>
+            <label for="start">Date de début</label>
+            <input type="date" id="start" />
+          </div>
+          <div>
+            <label for="pickDay">Sélection manuelle d'un jour</label>
+            <select id="pickDay"></select>
+          </div>
+
+          <div class="right">
+            <button class="btn ok" id="validateSelected">Valider le jour sélectionné</button>
+          </div>
+          <div class="right">
+            <button class="btn secondary" id="validateToday">Valider aujourd'hui</button>
+            <button class="btn ghost" id="reset">Réinitialiser</button>
+          </div>
+        </div>
+
+        <div class="progress" title="Progression">
+          <div class="bar" id="bar"></div>
+        </div>
+        <div class="stats" id="stats"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Agenda / Journal -->
+    <div class="card">
+      <div class="inner agenda">
+        <h2 style="margin:0 0 6px;font-size:18px">Agenda / Journal</h2>
+        <div class="log">
+          <table>
+            <thead>
+              <tr><th style="width:86px">Jour</th><th>Phase</th><th style="width:90px">Dose</th><th style="width:120px">Statut</th></tr>
+            </thead>
+            <tbody id="journal"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE LISTS -->
+  <div class="card">
+    <div class="inner">
+      <div id="phases" class="phases"></div>
+    </div>
+  </div>
+
+  <div class="foot">Astuce : clique une ligne pour la sélectionner. Utilise « Valider aujourd’hui » ou « Valider le jour sélectionné » en cas d’oubli.</div>
+</div>
+
+<script>
+(function(){
+  const KEY = 'capactifs_cure_v2_phaseRows';
+  const plan = [
+    { name:'P1 Attaque', dose:2, days:15, color:'#6aa6ff' },
+    { name:'P2 Attaque', dose:3, days:30, color:'#7be495' },
+    { name:'P1 Entretien', dose:1, days:30, color:'#f6c453' },
+    { name:'P2 Entretien', dose:2, days:45, color:'#b388ff' },
+  ];
+  const totalDays = plan.reduce((a,p)=>a+p.days,0); // 120
+
+  // Elements
+  const els = {
+    phases: document.getElementById('phases'),
+    start: document.getElementById('start'),
+    pickDay: document.getElementById('pickDay'),
+    bar: document.getElementById('bar'),
+    stats: document.getElementById('stats'),
+    journal: document.getElementById('journal'),
+    validateSelected: document.getElementById('validateSelected'),
+    validateToday: document.getElementById('validateToday'),
+    reset: document.getElementById('reset'),
+    legend: document.getElementById('legend'),
+  };
+
+  // State
+  let state = load() || defaultState();
+
+  // Legend
+  plan.forEach(p=>{
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${p.color};margin-right:6px"></span>${p.name} — ${p.dose} gél./j · ${p.days} j`;
+    els.legend.appendChild(tag);
+  });
+
+  // Init inputs
+  els.start.value = state.startDate;
+  els.start.addEventListener('change', ()=>{ state.startDate = els.start.value; save(); render(); });
+
+  // Handlers
+  els.validateSelected.addEventListener('click',()=> markDone(state.selectedDay));
+  els.validateToday.addEventListener('click',()=>{
+    const todayIndex = dayIndexFromDate(new Date());
+    if (todayIndex>=1 && todayIndex<=totalDays) {
+      state.selectedDay = todayIndex; els.pickDay.value = todayIndex;
+      markDone(todayIndex);
+    } else {
+      alert("La date du jour est hors de la plage de la cure (vérifie la date de début).");
+    }
+  });
+  els.reset.addEventListener('click',()=>{
+    if(confirm('Réinitialiser toute la cure (statuts effacés) ?')){
+      state = defaultState(); els.start.value = state.startDate; save(); render();
+    }
+  });
+
+  function defaultState(){
+    const today = new Date();
+    const iso = today.toISOString().slice(0,10);
+    return { startDate: iso, selectedDay: 1, days: Array.from({length:totalDays}, _=>({done:false, ts:null})) };
+  }
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+  // Helpers
+  function metaForDay(idx){
+    let n=idx;
+    for(const p of plan){
+      if(n<=p.days) return {phase:p.name, dose:p.dose, color:p.color};
+      n-=p.days;
+    }
+    return {phase:'', dose:0, color:'#444'};
+  }
+  function phaseIndexForDay(idx){
+    let n=idx, pi=0;
+    for(const p of plan){ if(n<=p.days) return pi; n-=p.days; pi++; }
+    return plan.length-1;
+  }
+  function positionInPhase(idx){
+    let n=idx;
+    for(const p of plan){ if(n<=p.days) return n; n-=p.days; }
+    return 1;
+  }
+  function dateForIndex(idx){
+    const start = new Date(state.startDate+'T00:00:00');
+    const d = new Date(start.getTime() + (idx-1)*86400000);
+    return d.toLocaleDateString('fr-FR', { weekday:'short', day:'2-digit', month:'2-digit' });
+  }
+  function dayIndexFromDate(d){
+    const start = new Date(state.startDate+'T00:00:00');
+    const diff = Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()) - Date.UTC(start.getFullYear(),start.getMonth(),start.getDate()))/86400000);
+    return diff+1;
+  }
+
+  function populateSelect(){
+    els.pickDay.innerHTML = '';
+    for(let i=1;i<=totalDays;i++){
+      const m = metaForDay(i);
+      const o = document.createElement('option');
+      o.value = i;
+      o.textContent = `Jour ${i} · ${m.phase} · ${m.dose} gél.`;
+      els.pickDay.appendChild(o);
+    }
+    els.pickDay.value = state.selectedDay;
+  }
+
+  function markDone(idx){
+    const i = idx-1;
+    if(i<0 || i>=state.days.length) return;
+    if(!state.days[i].done){ state.days[i].done = true; state.days[i].ts = Date.now(); }
+    save(); render();
+  }
+
+  function selectDay(idx){
+    state.selectedDay = idx; els.pickDay.value = idx; save(); render();
+  }
+
+  // Render
+  function render(){
+    // Build phases
+    els.phases.innerHTML = '';
+    let cursor = 1;
+    plan.forEach((p,pi)=>{
+      const box = document.createElement('section');
+      box.className = 'phase';
+      box.innerHTML = `
+        <header>
+          <div class="dot" style="background:${p.color}"></div>
+          <h3>${p.name} — <span style="color:#cfe1ff">${p.dose} gélules/j</span> • <span style="color:#9fb2c7">${p.days} jours</span></h3>
+        </header>
+        <div class="body" id="phaseBody_${pi}"></div>
+      `;
+      els.phases.appendChild(box);
+
+      const body = box.querySelector('.body');
+      for(let k=1;k<=p.days;k++){
+        const idx = cursor;
+        const d = state.days[idx-1];
+        const isSel = state.selectedDay===idx;
+        const todayIdx = dayIndexFromDate(new Date());
+        const isToday = todayIdx===idx;
+        const row = document.createElement('div');
+        row.className = 'row'+(d.done?' done':'')+(isSel?' sel':'')+(isToday?' today':'');
+        row.title = `Jour ${idx}`;
+        row.innerHTML = `
+          <div><span class="pill">Jour ${idx}</span></div>
+          <div class="date">${dateForIndex(idx)}</div>
+          <div class="dose">Dose cible : <b>${p.dose} gélules</b></div>
+          <div class="status"><span class="square ${d.done?'ok':''}"></span><span>${d.done?'Validé':'À faire'}</span></div>
+        `;
+        row.addEventListener('click', ()=> selectDay(idx));
+        body.appendChild(row);
+        cursor++;
+      }
+    });
+
+    // Journal (agenda-style pastille verte)
+    const rows = state.days.map((d,idx)=>{
+      const m = metaForDay(idx+1);
+      return `<tr>
+        <td>Jour ${idx+1}</td>
+        <td>${m.phase}</td>
+        <td style="text-align:center">${m.dose}</td>
+        <td><span class="tiny ${d.done?'ok':''}"></span> ${d.done?' Validé':' À faire'}</td>
+      </tr>`;
+    }).join('');
+    els.journal.innerHTML = rows;
+
+    // Progress
+    const done = state.days.filter(d=>d.done).length;
+    const pct = Math.round((done/totalDays)*100);
+    els.bar.style.width = pct+'%';
+    els.stats.innerHTML = `<div><b>${done}/${totalDays}</b> jours validés</div><div>${pct}% complété</div>`;
+
+    // Select
+    populateSelect();
+  }
+
+  els.pickDay.addEventListener('change', ()=>{ state.selectedDay = parseInt(els.pickDay.value,10); save(); render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
