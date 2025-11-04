@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cap·Actifs — Cure 120 jours (phases + agenda)</title>
+<title>Cap·Actifs — Cure 120 jours (compact + agenda top)</title>
 <style>
   :root{
-    --bg:#0b0f14;--panel:#121821;--panel2:#0f1726;--muted:#1a2433;--line:#1b2940;
-    --text:#e6edf3;--sub:#9fb2c7;--accent:#58a6ff;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;
+    --bg:#0b0f14;--panel:#121821;--panel2:#0f1726;--line:#1b2940;
+    --text:#e6edf3;--sub:#9fb2c7;--accent:#58a6ff;--ok:#22c55e;
     --radius:14px;--shadow:0 8px 24px rgba(0,0,0,.25);
   }
   html,body{height:100%}
@@ -22,13 +22,11 @@
   .wrap{max-width:1100px;margin:32px auto;padding:0 16px}
 
   /* Cards & layout */
-  .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-  @media (max-width:960px){.grid{grid-template-columns:1fr}}
-
+  .top{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px}
+  @media (max-width:960px){.top{grid-template-columns:1fr}}
   .card{background:linear-gradient(180deg,#121a27,#0f1520);border:1px solid #1f2a3a;border-radius:var(--radius);box-shadow:var(--shadow)}
-  .card .inner{padding:16px 18px}
+  .inner{padding:16px 18px}
   h1{font-size:22px;margin:0 0 8px}
-  h2{font-size:18px;margin:0 0 8px}
 
   /* Controls */
   .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
@@ -42,7 +40,6 @@
   .btn.primary{background:linear-gradient(180deg,#2b72ff,#1a56db);color:#fff;box-shadow:0 6px 16px rgba(35,109,255,.28)}
   .btn.ok{background:linear-gradient(180deg,#22c55e,#179a46);color:#fff}
   .btn.secondary{background:#1b2535;color:#e2e8f0;border:1px solid #2a3a53}
-  .btn.ghost{background:transparent;border:1px dashed #2b3d57;color:#a9bed7}
 
   /* Progress */
   .progress{margin-top:10px;height:12px;background:#0e1522;border:1px solid #22324a;border-radius:999px;overflow:hidden}
@@ -55,7 +52,6 @@
   .ph-summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
   .ph-summary::-webkit-details-marker{display:none}
   .dot{width:10px;height:10px;border-radius:3px}
-  .ph-title{margin:0;font-size:15px}
   .ph-body{padding:6px 0} /* pas de scroll interne */
 
   .row{display:grid;grid-template-columns:90px 1fr 170px 110px;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #142033}
@@ -70,32 +66,30 @@
   .row.today{box-shadow:inset 0 0 0 2px #3b82f6}
   .row.done{background:linear-gradient(180deg,#0e1f15,#0b1611)}
 
-  /* Agenda (calendrier mensuel) */
-  .agenda{background:linear-gradient(180deg,#121a27,#0f1520);border:1px solid #1f2a3a;border-radius:var(--radius);box-shadow:var(--shadow)}
-  .ag-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line)}
-  .ag-title{font-weight:800}
-  .ag-nav{display:flex;gap:8px}
-  .navbtn{width:34px;height:34px;border-radius:10px;background:#0f1726;border:1px solid #22324a;color:#cfe1ff;cursor:pointer}
-  .ag-legend{display:flex;gap:12px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);color:#a9bed7;font-size:12px}
-  .ag-grid{padding:10px 12px}
-  .weekrow{display:grid;grid-template-columns:38px repeat(7,1fr);gap:8px;margin-bottom:8px}
-  .wcell{display:flex;align-items:center;justify-content:center;font-size:11px;color:#9fb2c7}
-  .cell{aspect-ratio:1/1;border-radius:10px;border:1px solid #22324a;background:#0e1522;display:flex;align-items:center;justify-content:center;font-weight:700;position:relative}
-  .cell.muted{opacity:.4}
+  /* Small agenda (top-right) */
+  .agenda .ag-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line)}
+  .agenda .title{font-weight:800}
+  .agenda .nav{display:flex;gap:6px}
+  .agenda .navbtn{width:30px;height:30px;border-radius:10px;background:#0f1726;border:1px solid #22324a;color:#cfe1ff;cursor:pointer}
+  .agenda .legend{display:flex;gap:10px;align-items:center;padding:6px 12px;border-bottom:1px solid var(--line);color:#a9bed7;font-size:12px}
+  .agenda .grid{padding:10px 10px}
+  .week{display:grid;grid-template-columns:28px repeat(7,1fr);gap:6px;margin-bottom:6px}
+  .wcell{display:flex;align-items:center;justify-content:center;font-size:10px;color:#9fb2c7}
+  .cell{height:28px;border-radius:9px;border:1px solid #22324a;background:#0e1522;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;position:relative}
+  .cell.muted{opacity:.45}
   .cell.sel{outline:2px solid #3b82f6;outline-offset:-2px}
   .cell.ok{background:var(--ok);color:#03210f;border-color:#1a7b45}
-  .cell.today::after{content:"";position:absolute;bottom:6px;right:6px;width:6px;height:6px;border-radius:50%;background:#3b82f6}
-  .cell.disabled{opacity:.25;filter:grayscale(.6)}
-  .weeknum{font-size:11px;color:#8aa4be}
+  .cell.disabled{opacity:.22;filter:grayscale(.6)}
+  .weeknum{font-size:10px;color:#8aa4be}
 
-  .foot{margin:14px 0 4px;text-align:center;color:#7790a8;font-size:12px}
+  .foot{margin:10px 0 4px;text-align:center;color:#7790a8;font-size:12px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="grid">
-    <!-- LEFT: Controls + phases -->
+  <!-- TOP: réglages + petit agenda -->
+  <div class="top">
     <div class="card">
       <div class="inner">
         <h1>Suivi Cap·Actifs — 120 jours</h1>
@@ -123,48 +117,45 @@
           <div class="bar" id="bar"></div>
         </div>
         <div class="stats" id="stats"></div>
-
-        <!-- Collapsible phases -->
-        <div id="phases"></div>
-
       </div>
     </div>
 
-    <!-- RIGHT: Agenda -->
-    <div class="agenda">
+    <div class="card agenda">
       <div class="ag-head">
-        <div class="ag-title" id="agTitle">Agenda</div>
-        <div class="ag-nav">
+        <div class="title" id="agTitle">Agenda</div>
+        <div class="nav">
           <button class="navbtn" id="prevM">◀</button>
           <button class="navbtn" id="todayM">•</button>
           <button class="navbtn" id="nextM">▶</button>
         </div>
       </div>
-      <div class="ag-legend">
-        <span class="weeknum"># = numéro de semaine</span>
+      <div class="legend">
+        <span class="weeknum">#</span>
         <span><span class="cell" style="width:12px;height:12px;border-radius:3px;margin-right:6px"></span> À faire</span>
         <span><span class="cell ok" style="width:12px;height:12px;border-radius:3px;margin-right:6px"></span> Validé</span>
         <span><span class="cell sel" style="width:12px;height:12px;border-radius:3px;margin-right:6px"></span> Sélectionné</span>
       </div>
-      <div class="ag-grid" id="agenda"></div>
+      <div class="grid" id="agenda"></div>
     </div>
   </div>
 
-  <div class="foot">Astuce : clique une ligne d’une phase pour la sélectionner. La phase active s’ouvre automatiquement.</div>
+  <!-- PHASES (collapsible, accordéon exclusif) -->
+  <div id="phases"></div>
+
+  <div class="foot">Astuce : clique une ligne pour la sélectionner. La phase active s’ouvre automatiquement (sans bouger l’écran).</div>
 </div>
 
 <script>
 (function(){
-  const KEY = 'capactifs_cure_v3';
+  const KEY = 'capactifs_cure_v4';
   const plan = [
     { name:'P1 Attaque', dose:2, days:15, color:'#6aa6ff' },
     { name:'P2 Attaque', dose:3, days:30, color:'#7be495' },
     { name:'P1 Entretien', dose:1, days:30, color:'#f6c453' },
     { name:'P2 Entretien', dose:2, days:45, color:'#b388ff' },
   ];
-  const totalDays = plan.reduce((a,p)=>a+p.days,0); // 120
+  const totalDays = plan.reduce((a,p)=>a+p.days,0);
 
-  // Elements
   const els = {
     legend: document.getElementById('legend'),
     phases: document.getElementById('phases'),
@@ -182,29 +173,28 @@
     nextM: document.getElementById('nextM')
   };
 
-  // State
   let state = load() || defaultState();
 
   function defaultState(){
-    const today = new Date();
-    const iso = today.toISOString().slice(0,10);
+    const t = new Date();
+    const iso = t.toISOString().slice(0,10);
     return {
       startDate: iso,
       selectedDay: 1,
       days: Array.from({length:totalDays}, _=>({done:false, ts:null})),
-      calYear: today.getFullYear(),
-      calMonth: today.getMonth()
+      calYear: t.getFullYear(),
+      calMonth: t.getMonth()
     };
   }
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
   function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
-  // Legend pills
+  // Legend
   plan.forEach(p=>{
-    const div = document.createElement('div');
-    div.className = 'tag';
-    div.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${p.color};margin-right:6px"></span>${p.name} — ${p.dose} gél./j · ${p.days} j`;
-    els.legend.appendChild(div);
+    const item = document.createElement('div');
+    item.className = 'tag';
+    item.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${p.color};margin-right:6px"></span>${p.name} — ${p.dose} gél./j · ${p.days} j`;
+    els.legend.appendChild(item);
   });
 
   // Inputs
@@ -235,13 +225,11 @@
     return {phase:'', dose:0, color:'#444'};
   }
   function phaseIdxForDay(idx){ let n=idx, i=0; for(const p of plan){ if(n<=p.days) return i; n-=p.days; i++; } return 0; }
-  function positionInPhase(idx){ let n=idx; for(const p of plan){ if(n<=p.days) return n; n-=p.days; } return 1; }
   function dateForIndex(idx){
     const start = new Date(state.startDate+'T00:00:00');
     const d = new Date(start.getTime() + (idx-1)*86400000);
     return d.toLocaleDateString('fr-FR', { weekday:'short', day:'2-digit', month:'2-digit' });
   }
-  function dateObjForIndex(idx){ const start=new Date(state.startDate+'T00:00:00'); return new Date(start.getTime()+(idx-1)*86400000); }
   function dayIndexFromDate(d){
     const s = new Date(state.startDate+'T00:00:00');
     const diff = Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()) - Date.UTC(s.getFullYear(),s.getMonth(),s.getDate()))/86400000);
@@ -258,7 +246,6 @@
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
     return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
   }
-
   function populateSelect(){
     els.pickDay.innerHTML = '';
     for(let i=1;i<=totalDays;i++){
@@ -275,15 +262,13 @@
     const i = idx-1;
     if(i<0 || i>=state.days.length) return;
     if(!state.days[i].done){ state.days[i].done = true; state.days[i].ts = Date.now(); }
-    save();
-    renderAll();
+    save(); renderAll();
   }
 
   function openPhaseFor(idx){
     const pIdx = phaseIdxForDay(idx);
     document.querySelectorAll('details.phase').forEach((d,i)=>{ d.open = (i===pIdx); });
-    const target = document.getElementById('phase_'+pIdx);
-    if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    /* IMPORTANT : pas de scrollIntoView ici pour éviter tout “saut” visuel */
   }
 
   // Render phases
@@ -294,12 +279,12 @@
       const details = document.createElement('details');
       details.className = 'phase';
       details.id = 'phase_'+pi;
-      details.open = (pi===0); // défaut
+      details.open = (pi===0);
 
       const sum = document.createElement('summary');
       sum.className = 'ph-summary';
       sum.innerHTML = `<div class="dot" style="background:${p.color}"></div>
-        <h3 class="ph-title">${p.name} — <span style="color:#cfe1ff">${p.dose} gélules/j</span> • <span style="color:#9fb2c7">${p.days} jours</span></h3>`;
+        <h3 style="margin:0;font-size:15px">${p.name} — <span style="color:#cfe1ff">${p.dose} gélules/j</span> • <span style="color:#9fb2c7">${p.days} jours</span></h3>`;
       details.appendChild(sum);
 
       const body = document.createElement('div');
@@ -332,11 +317,11 @@
         }
       });
     });
-    // ouvrir la bonne phase selon sélection
+    // ouvrir la bonne phase selon sélection, sans scroll
     openPhaseFor(state.selectedDay);
   }
 
-  // Render progress
+  // Progress
   function renderProgress(){
     const done = state.days.filter(d=>d.done).length;
     const pct = Math.round((done/totalDays)*100);
@@ -344,30 +329,27 @@
     els.stats.innerHTML = `<div><b>${done}/${totalDays}</b> jours validés</div><div>${pct}% complété</div>`;
   }
 
-  // Render agenda (monthly)
+  // Small agenda
   function renderAgenda(){
     const y = state.calYear, m = state.calMonth;
-    els.agTitle.textContent = `Agenda — ${new Date(y,m,1).toLocaleDateString('fr-FR',{month:'long', year:'numeric'})}`;
+    els.agTitle.textContent = `${new Date(y,m,1).toLocaleDateString('fr-FR',{month:'long', year:'numeric'})}`;
 
-    // Header row (week label + days)
-    const headRow = document.createElement('div');
-    headRow.className = 'weekrow';
-    const lab = document.createElement('div'); lab.className='wcell'; lab.textContent = '#'; headRow.appendChild(lab);
-    ['L','M','M','J','V','S','D'].forEach(d=>{ const c=document.createElement('div'); c.className='wcell'; c.textContent=d; headRow.appendChild(c); });
+    const head = document.createElement('div');
+    head.className = 'week';
+    const h0 = document.createElement('div'); h0.className='wcell'; h0.textContent='#'; head.appendChild(h0);
+    ['L','M','M','J','V','S','D'].forEach(d=>{ const c=document.createElement('div'); c.className='wcell'; c.textContent=d; head.appendChild(c); });
 
-    // Build all weeks covering the month
     const first = new Date(y,m,1);
     const start = new Date(first);
-    const day = (first.getDay()||7); // 1..7 (Mon..Sun)
-    start.setDate(first.getDate() - (day-1)); // Monday of first week grid
+    const day = (first.getDay()||7); // Monday=1..Sunday=7
+    start.setDate(first.getDate() - (day-1));
 
-    const grid = document.createElement('div');
-    grid.appendChild(headRow);
+    const wrap = document.createElement('div');
+    wrap.appendChild(head);
 
     let d = new Date(start);
     for(let w=0; w<6; w++){
-      const row = document.createElement('div'); row.className='weekrow';
-      // week number
+      const row = document.createElement('div'); row.className='week';
       const wk = document.createElement('div'); wk.className='wcell weeknum'; wk.textContent = isoWeekNumber(d);
       row.appendChild(wk);
 
@@ -376,7 +358,6 @@
         const inMonth = (d.getMonth()===m);
         if(!inMonth) cell.classList.add('muted');
 
-        // status vs cure
         const idx = inCureRange(d);
         if(idx){
           if(state.days[idx-1].done) cell.classList.add('ok');
@@ -385,25 +366,21 @@
           cell.classList.add('disabled');
         }
 
-        const today = new Date(); if(d.toDateString()===today.toDateString()) cell.classList.add('today');
-
         cell.textContent = d.getDate();
-        cell.title = inMonth ? d.toLocaleDateString('fr-FR') : '';
+        const clickDate = new Date(d.getTime());
         cell.addEventListener('click', ()=>{
-          const testIdx = inCureRange(d);
+          const testIdx = inCureRange(clickDate);
           if(testIdx){ state.selectedDay = testIdx; save(); renderAll(); }
         });
 
         row.appendChild(cell);
         d.setDate(d.getDate()+1);
       }
-      grid.appendChild(row);
-      // stop if next month fully passed and week starts beyond month end
+      wrap.appendChild(row);
       if(d.getMonth()!==m && d.getDate()>=7) break;
     }
-
     els.agenda.innerHTML = '';
-    els.agenda.appendChild(grid);
+    els.agenda.appendChild(wrap);
   }
 
   function renderAll(){
@@ -413,7 +390,7 @@
     renderAgenda();
   }
 
-  // First render
+  // Init
   renderAll();
 })();
 </script>
