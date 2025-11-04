@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cap·Actifs — Cure 120 jours (compact + agenda top) + Export/Import</title>
+<title>Cap·Actifs — Cure 120 jours (agenda top) + Export/Import — fix dates</title>
 <style>
   :root{
     --bg:#0b0f14;--panel:#121821;--panel2:#0f1726;--line:#1f2a3a;
@@ -34,7 +34,7 @@
   .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
   @media (max-width:640px){.controls{grid-template-columns:1fr}}
   label{display:block;font-size:12px;color:var(--sub);margin:0 0 6px}
-  input[type=date],select{width:100%;background:#0e1522;border:1px solid #233045;border-radius:12px;padding:10px;color:var(--text)}
+  input[type=date],select{width:100%;background:#0e1522;border:1px solid #233045;border-radius:12px;padding:10px;color:#e6edf3}
 
   .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
   .btn{appearance:none;border:none;border-radius:12px;padding:11px 14px;font-weight:700;letter-spacing:.2px;cursor:pointer}
@@ -45,7 +45,7 @@
 
   .progress{margin-top:10px;height:12px;background:#0e1522;border:1px solid #22324a;border-radius:999px;overflow:hidden}
   .bar{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#58a6ff)}
-  .stats{display:flex;gap:14px;margin-top:8px;font-size:13px;color:var(--sub)}
+  .stats{display:flex;gap:14px;margin-top:8px;font-size:13px;color:#9fb2c7}
 
   details.phase{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#0f1726,#0b1220);margin-bottom:12px}
   details.phase[open]{background:linear-gradient(180deg,#101a31,#0b1323)}
@@ -142,13 +142,13 @@
 
   <div id="phases"></div>
 
-  <div class="foot">Astuce : clique une ligne pour la sélectionner. La phase active s’ouvre automatiquement (sans bouger l’écran).</div>
+  <div class="foot">Export/Import robustes — formats de date ISO et FR acceptés, toujours normalisés en ISO.</div>
 </div>
 
 <script>
 (function(){
-  const SCHEMA_VERSION = 1;
-  const KEY = 'capactifs_cure_v5';
+  const SCHEMA_VERSION = 2;                 // ⇦ bump version
+  const KEY = 'capactifs_cure_v6';          // ⇦ nouvelle clé (pour éviter l’ancien état durant test)
   const plan = [
     { name:'P1 Attaque', dose:2, days:15, color:'#6aa6ff' },
     { name:'P2 Attaque', dose:3, days:30, color:'#7be495' },
@@ -157,6 +157,31 @@
   ];
   const totalDays = plan.reduce((a,p)=>a+p.days,0);
 
+  // --- Utils: date normalization ---
+  function normalizeDate(input){
+    if(typeof input !== 'string') return null;
+    // ISO: YYYY-MM-DD
+    const iso = input.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(iso){
+      const y=+iso[1], m=+iso[2], d=+iso[3];
+      if(y<2000 || y>2100) return null;
+      const dt = new Date(Date.UTC(y,m-1,d));
+      if(dt.getUTCMonth()+1!==m || dt.getUTCDate()!==d) return null;
+      return `${y.toString().padStart(4,'0')}-${iso[2]}-${iso[3]}`;
+    }
+    // FR: DD/MM/YYYY
+    const fr = input.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if(fr){
+      const d=+fr[1], m=+fr[2], y=+fr[3];
+      if(y<2000 || y>2100) return null;
+      const dt = new Date(Date.UTC(y,m-1,d));
+      if(dt.getUTCMonth()+1!==m || dt.getUTCDate()!==d) return null;
+      return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+    return null;
+  }
+
+  // --- Elements ---
   const els = {
     legend: document.getElementById('legend'),
     phases: document.getElementById('phases'),
@@ -177,14 +202,15 @@
     nextM: document.getElementById('nextM')
   };
 
-  let state = load() || defaultState();
+  // --- State ---
+  let state = migrate(load()) || defaultState();
 
   function defaultState(){
     const t = new Date();
     const iso = t.toISOString().slice(0,10);
     return {
       _schema: SCHEMA_VERSION,
-      startDate: iso,
+      startDate: iso,           // toujours ISO
       selectedDay: 1,
       days: Array.from({length:totalDays}, _=>({done:false, ts:null})),
       calYear: t.getFullYear(),
@@ -194,7 +220,25 @@
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
   function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
-  // Legend
+  // Migration/normalisation : accepte anciens schémas et dates FR
+  function migrate(data){
+    if(!data) return null;
+    if(typeof data !== 'object') return null;
+    const iso = normalizeDate(data.startDate);
+    if(!iso) return null; // on repartira sur défaut
+    data.startDate = iso;
+    if(!Array.isArray(data.days) || data.days.length!==totalDays){
+      data.days = Array.from({length:totalDays}, _=>({done:false, ts:null}));
+    }
+    if(typeof data.selectedDay!=='number') data.selectedDay=1;
+    if(typeof data.calYear!=='number' || typeof data.calMonth!=='number'){
+      const t=new Date(); data.calYear=t.getFullYear(); data.calMonth=t.getMonth();
+    }
+    data._schema = SCHEMA_VERSION;
+    return data;
+  }
+
+  // --- UI legend ---
   plan.forEach(p=>{
     const item = document.createElement('div');
     item.className = 'tag';
@@ -202,12 +246,16 @@
     els.legend.appendChild(item);
   });
 
-  // Inputs
+  // --- Inputs ---
   els.start.value = state.startDate;
-  els.start.addEventListener('change', ()=>{ state.startDate = els.start.value; save(); renderAll(); });
+  els.start.addEventListener('change', ()=>{
+    const iso = normalizeDate(els.start.value) || normalizeDate(els.start.value.split('-').reverse().join('/')); // fallback
+    if(!iso){ alert("Date invalide. Utilise le sélecteur."); els.start.value = state.startDate; return; }
+    state.startDate = iso; save(); renderAll();
+  });
   els.pickDay.addEventListener('change', ()=>{ state.selectedDay = parseInt(els.pickDay.value,10); save(); renderAll(); });
 
-  // Buttons
+  // --- Buttons ---
   els.validateSelected.addEventListener('click',()=> markDone(state.selectedDay));
   els.validateToday.addEventListener('click',()=>{
     const idx = dayIndexFromDate(new Date());
@@ -218,30 +266,69 @@
     if(confirm('Réinitialiser toute la cure ?')){ state = defaultState(); els.start.value = state.startDate; save(); renderAll(); }
   });
 
-  // Export / Import
+  // --- Export / Import ---
   els.exportBtn.addEventListener('click', exportData);
   els.importBtn.addEventListener('click', ()=> els.importFile.click());
   els.importFile.addEventListener('change', handleImportFile);
 
-  // Agenda navigation
-  els.prevM.addEventListener('click',()=>{ const d=new Date(state.calYear,state.calMonth-1,1); state.calYear=d.getFullYear(); state.calMonth=d.getMonth(); save(); renderAgenda(); });
-  els.nextM.addEventListener('click',()=>{ const d=new Date(state.calYear,state.calMonth+1,1); state.calYear=d.getFullYear(); state.calMonth=d.getMonth(); save(); renderAgenda(); });
-  els.todayM.addEventListener('click',()=>{ const t=new Date(); state.calYear=t.getFullYear(); state.calMonth=t.getMonth(); save(); renderAgenda(); });
-
-  // Helpers
-  function metaForDay(idx){
-    let n=idx;
-    for(const p of plan){ if(n<=p.days) return {phase:p.name, dose:p.dose, color:p.color}; n-=p.days; }
-    return {phase:'', dose:0, color:'#444'};
+  function exportData(){
+    // force ISO avant export
+    state.startDate = normalizeDate(state.startDate) || state.startDate;
+    const clean = JSON.stringify(state, null, 2);
+    const blob = new Blob([clean], {type:'application/json'});
+    const a = document.createElement('a');
+    const pad = n=>String(n).padStart(2,'0');
+    const now = new Date();
+    a.href = URL.createObjectURL(blob);
+    a.download = `capactifs_backup_${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}.json`;
+    document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); a.remove();
   }
+
+  function handleImportFile(ev){
+    const file = ev.target.files[0];
+    ev.target.value = '';
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(reader.result);
+        const ok = validateSchema(data);
+        if(!ok.ok){ alert('Fichier invalide : '+ok.reason); return; }
+        const iso = normalizeDate(data.startDate);
+        const done = data.days.filter(x=>x.done).length;
+        const go = confirm(`Importer ?\n\nDébut: ${iso}\nJours validés: ${done}/${totalDays}\nSélection: jour ${data.selectedDay}`);
+        if(!go) return;
+        data.startDate = iso;
+        state = migrate(data) || defaultState();
+        save(); renderAll();
+      }catch(e){ alert('Impossible de lire ce fichier JSON.'); }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  function validateSchema(d){
+    if(typeof d!=='object' || !d) return {ok:false, reason:'format JSON absent/incorrect'};
+    // accepte ISO ou FR
+    if(!normalizeDate(d.startDate)) return {ok:false, reason:'date de début invalide'};
+    if(typeof d.selectedDay!=='number' || d.selectedDay<1 || d.selectedDay>totalDays) return {ok:false, reason:'selectedDay invalide'};
+    if(!Array.isArray(d.days) || d.days.length!==totalDays) return {ok:false, reason:'taille des jours incorrecte (doit être 120)'};
+    for(const it of d.days){
+      if(typeof it.done!=='boolean') return {ok:false, reason:'champ "done" manquant/incorrect'};
+      if(!(it.ts===null || typeof it.ts==='number')) return {ok:false, reason:'champ "ts" invalide'};
+    }
+    if(typeof d.calYear!=='number' || typeof d.calMonth!=='number') return {ok:false, reason:'infos agenda manquantes'};
+    return {ok:true};
+  }
+
+  // --- Helpers ---
   function phaseIdxForDay(idx){ let n=idx, i=0; for(const p of plan){ if(n<=p.days) return i; n-=p.days; i++; } return 0; }
   function dateForIndex(idx){
-    const start = new Date(state.startDate+'T00:00:00');
+    const start = new Date((state.startDate)+'T00:00:00');
     const d = new Date(start.getTime() + (idx-1)*86400000);
-    return d.toLocaleDateString('fr-FR', { weekday:'short', day:'2-digit', month:'2-digit' });
+    return d.toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit'});
   }
   function dayIndexFromDate(d){
-    const s = new Date(state.startDate+'T00:00:00');
+    const s = new Date((state.startDate)+'T00:00:00');
     const diff = Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()) - Date.UTC(s.getFullYear(),s.getMonth(),s.getDate()))/86400000);
     return diff+1;
   }
@@ -257,15 +344,14 @@
     return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
   }
   function populateSelect(){
-    els.pickDay.innerHTML = '';
+    const sel = els.pickDay;
+    sel.innerHTML = '';
     for(let i=1;i<=totalDays;i++){
-      const m = metaForDay(i);
-      const o = document.createElement('option');
-      o.value = i;
-      o.textContent = `Jour ${i} · ${m.phase} · ${m.dose} gél.`;
-      els.pickDay.appendChild(o);
+      const o=document.createElement('option');
+      o.value=i;o.textContent=`Jour ${i}`;
+      sel.appendChild(o);
     }
-    els.pickDay.value = state.selectedDay;
+    sel.value = state.selectedDay;
   }
 
   function markDone(idx){
@@ -274,123 +360,43 @@
     if(!state.days[i].done){ state.days[i].done = true; state.days[i].ts = Date.now(); }
     save(); renderAll();
   }
-
   function openPhaseFor(idx){
     const pIdx = phaseIdxForDay(idx);
     document.querySelectorAll('details.phase').forEach((d,i)=>{ d.open = (i===pIdx); });
-    /* aucun scrollIntoView pour éviter les “sauts” */
   }
 
-  // Exporter JSON
-  function exportData(){
-    const clean = JSON.stringify(state, null, 2);
-    const blob = new Blob([clean], {type:'application/json'});
-    const a = document.createElement('a');
-    const pad = n=>String(n).padStart(2,'0');
-    const now = new Date();
-    const name = `capactifs_backup_${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}.json`;
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(a.href);
-    a.remove();
-  }
-
-  // Importer JSON (sécurisé)
-  function handleImportFile(ev){
-    const file = ev.target.files[0];
-    ev.target.value = ''; // reset input pour prochains imports
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try{
-        const data = JSON.parse(reader.result);
-        const ok = validateSchema(data);
-        if(!ok.ok){
-          alert('Fichier invalide : ' + ok.reason);
-          return;
-        }
-        const preview = summarize(data);
-        const go = confirm('Importer cette sauvegarde ?\\n\\n'+preview+'\\n\\nCette action remplacera l’état actuel.');
-        if(!go) return;
-        state = data;
-        // s’assure que les champs manquants sont recréés si besoin
-        state._schema = SCHEMA_VERSION;
-        if(!Array.isArray(state.days) || state.days.length!==totalDays){
-          state.days = Array.from({length:totalDays}, _=>({done:false, ts:null}));
-        }
-        save(); renderAll();
-      }catch(e){
-        alert('Impossible de lire ce fichier JSON.');
-      }
-    };
-    reader.readAsText(file, 'utf-8');
-  }
-
-  function validateSchema(d){
-    if(typeof d!=='object' || !d) return {ok:false, reason:'format JSON absent/incorrect'};
-    if(typeof d.startDate!=='string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(d.startDate)) return {ok:false, reason:'date de début invalide'};
-    if(typeof d.selectedDay!=='number' || d.selectedDay<1 || d.selectedDay>totalDays) return {ok:false, reason:'selectedDay invalide'};
-    if(!Array.isArray(d.days) || d.days.length!==totalDays) return {ok:false, reason:'taille des jours incorrecte (doit être 120)'};
-    for(const it of d.days){
-      if(typeof it.done!=='boolean') return {ok:false, reason:'champ "done" manquant/incorrect'};
-      if(!(it.ts===null || typeof it.ts==='number')) return {ok:false, reason:'champ "ts" invalide'};
-    }
-    if(typeof d.calYear!=='number' || typeof d.calMonth!=='number') return {ok:false, reason:'infos agenda manquantes'};
-    return {ok:true};
-  }
-  function summarize(d){
-    const done = d.days.filter(x=>x.done).length;
-    return `Début: ${d.startDate}\\nJours validés: ${done}/${totalDays}\\nSélection: jour ${d.selectedDay}`;
-  }
-
-  // Renders
+  // --- Renders ---
   function renderPhases(){
     els.phases.innerHTML = '';
     let cursor = 1;
     plan.forEach((p,pi)=>{
       const details = document.createElement('details');
-      details.className = 'phase';
-      details.id = 'phase_'+pi;
-      details.open = (pi===0);
-
+      details.className='phase'; details.id='phase_'+pi; details.open=(pi===0);
       const sum = document.createElement('summary');
-      sum.className = 'ph-summary';
+      sum.className='ph-summary';
       sum.innerHTML = `<div class="dot" style="background:${p.color}"></div>
         <h3 style="margin:0;font-size:15px">${p.name} — <span style="color:#cfe1ff">${p.dose} gélules/j</span> • <span style="color:#9fb2c7">${p.days} jours</span></h3>`;
       details.appendChild(sum);
-
-      const body = document.createElement('div');
-      body.className = 'ph-body';
+      const body = document.createElement('div'); body.className='ph-body';
 
       for(let k=1;k<=p.days;k++){
-        const idx = cursor;
-        const d = state.days[idx-1];
-        const isSel = state.selectedDay===idx;
+        const idx = cursor, d = state.days[idx-1];
         const todayIdx = dayIndexFromDate(new Date());
         const row = document.createElement('div');
-        row.className = 'row'+(d.done?' done':'')+(isSel?' sel':'')+(todayIdx===idx?' today':'');
+        row.className = 'row'+(d.done?' done':'')+(state.selectedDay===idx?' sel':'')+(todayIdx===idx?' today':'');
         row.innerHTML = `
           <div><span class="pill">Jour ${idx}</span></div>
           <div class="date">${dateForIndex(idx)}</div>
           <div class="dose">Dose cible : <b>${p.dose} gélules</b></div>
-          <div class="status"><span class="square ${d.done?'ok':''}"></span><span>${d.done?'Validé':'À faire'}</span></div>
-        `;
+          <div class="status"><span class="square ${d.done?'ok':''}"></span><span>${d.done?'Validé':'À faire'}</span></div>`;
         row.addEventListener('click', ()=>{ state.selectedDay = idx; save(); renderAll(); });
-        body.appendChild(row);
-        cursor++;
+        body.appendChild(row); cursor++;
       }
       details.appendChild(body);
       els.phases.appendChild(details);
-
-      details.addEventListener('toggle', ()=>{
-        if(details.open){
-          document.querySelectorAll('details.phase').forEach(d=>{ if(d!==details) d.open=false; });
-        }
-      });
+      details.addEventListener('toggle', ()=>{ if(details.open){ document.querySelectorAll('details.phase').forEach(d=>{ if(d!==details) d.open=false; }); }});
     });
-    openPhaseFor(state.selectedDay); // sans scroll
+    openPhaseFor(state.selectedDay);
   }
 
   function renderProgress(){
@@ -425,16 +431,12 @@
 
       for(let i=0;i<7;i++){
         const cell = document.createElement('div'); cell.className='cell';
-        const inMonth = (d.getMonth()===m);
-        if(!inMonth) cell.classList.add('muted');
-
+        const inMonth = (d.getMonth()===m); if(!inMonth) cell.classList.add('muted');
         const idx = inCureRange(d);
         if(idx){
           if(state.days[idx-1].done) cell.classList.add('ok');
           if(state.selectedDay===idx) cell.classList.add('sel');
-        } else {
-          cell.classList.add('disabled');
-        }
+        } else cell.classList.add('disabled');
 
         cell.textContent = d.getDate();
         const clickDate = new Date(d.getTime());
@@ -449,16 +451,10 @@
       wrap.appendChild(row);
       if(d.getMonth()!==m && d.getDate()>=7) break;
     }
-    els.agenda.innerHTML = '';
-    els.agenda.appendChild(wrap);
+    els.agenda.innerHTML = ''; els.agenda.appendChild(wrap);
   }
 
-  function renderAll(){
-    populateSelect();
-    renderPhases();
-    renderProgress();
-    renderAgenda();
-  }
+  function renderAll(){ populateSelect(); renderPhases(); renderProgress(); renderAgenda(); }
 
   // Init
   renderAll();
