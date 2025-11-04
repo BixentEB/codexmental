@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cap·Actifs — Cure 120 jours (compact + agenda top)</title>
+<title>Cap·Actifs — Cure 120 jours (compact + agenda top) + Export/Import</title>
 <style>
   :root{
-    --bg:#0b0f14;--panel:#121821;--panel2:#0f1726;--line:#1b2940;
+    --bg:#0b0f14;--panel:#121821;--panel2:#0f1726;--line:#1f2a3a;
     --text:#e6edf3;--sub:#9fb2c7;--accent:#58a6ff;--ok:#22c55e;
     --radius:14px;--shadow:0 8px 24px rgba(0,0,0,.25);
   }
@@ -21,38 +21,38 @@
   }
   .wrap{max-width:1100px;margin:32px auto;padding:0 16px}
 
-  /* Cards & layout */
   .top{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px}
   @media (max-width:960px){.top{grid-template-columns:1fr}}
-  .card{background:linear-gradient(180deg,#121a27,#0f1520);border:1px solid #1f2a3a;border-radius:var(--radius);box-shadow:var(--shadow)}
+
+  .card{background:linear-gradient(180deg,#121a27,#0f1520);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
   .inner{padding:16px 18px}
   h1{font-size:22px;margin:0 0 8px}
 
-  /* Controls */
   .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
   .tag{font-size:12px;padding:6px 8px;border-radius:10px;border:1px solid #263750;background:#0f1726;color:#cfe1ff}
+
   .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
   @media (max-width:640px){.controls{grid-template-columns:1fr}}
   label{display:block;font-size:12px;color:var(--sub);margin:0 0 6px}
   input[type=date],select{width:100%;background:#0e1522;border:1px solid #233045;border-radius:12px;padding:10px;color:var(--text)}
+
   .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
   .btn{appearance:none;border:none;border-radius:12px;padding:11px 14px;font-weight:700;letter-spacing:.2px;cursor:pointer}
   .btn.primary{background:linear-gradient(180deg,#2b72ff,#1a56db);color:#fff;box-shadow:0 6px 16px rgba(35,109,255,.28)}
   .btn.ok{background:linear-gradient(180deg,#22c55e,#179a46);color:#fff}
   .btn.secondary{background:#1b2535;color:#e2e8f0;border:1px solid #2a3a53}
+  .btn.ghost{background:transparent;border:1px dashed #2b3d57;color:#a9bed7}
 
-  /* Progress */
   .progress{margin-top:10px;height:12px;background:#0e1522;border:1px solid #22324a;border-radius:999px;overflow:hidden}
   .bar{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#58a6ff)}
   .stats{display:flex;gap:14px;margin-top:8px;font-size:13px;color:var(--sub)}
 
-  /* Collapsible phases */
   details.phase{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#0f1726,#0b1220);margin-bottom:12px}
   details.phase[open]{background:linear-gradient(180deg,#101a31,#0b1323)}
   .ph-summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
   .ph-summary::-webkit-details-marker{display:none}
   .dot{width:10px;height:10px;border-radius:3px}
-  .ph-body{padding:6px 0} /* pas de scroll interne */
+  .ph-body{padding:6px 0}
 
   .row{display:grid;grid-template-columns:90px 1fr 170px 110px;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid #142033}
   .row:last-child{border-bottom:none}
@@ -66,7 +66,6 @@
   .row.today{box-shadow:inset 0 0 0 2px #3b82f6}
   .row.done{background:linear-gradient(180deg,#0e1f15,#0b1611)}
 
-  /* Small agenda (top-right) */
   .agenda .ag-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line)}
   .agenda .title{font-weight:800}
   .agenda .nav{display:flex;gap:6px}
@@ -88,7 +87,6 @@
 <body>
 <div class="wrap">
 
-  <!-- TOP: réglages + petit agenda -->
   <div class="top">
     <div class="card">
       <div class="inner">
@@ -111,6 +109,9 @@
           <button class="btn ok" id="validateSelected">Valider le jour sélectionné</button>
           <button class="btn primary" id="validateToday">Valider aujourd'hui</button>
           <button class="btn secondary" id="reset">Réinitialiser</button>
+          <button class="btn ghost" id="exportBtn">Exporter</button>
+          <button class="btn ghost" id="importBtn">Importer</button>
+          <input type="file" id="importFile" accept="application/json" style="display:none" />
         </div>
 
         <div class="progress" title="Progression">
@@ -139,7 +140,6 @@
     </div>
   </div>
 
-  <!-- PHASES (collapsible, accordéon exclusif) -->
   <div id="phases"></div>
 
   <div class="foot">Astuce : clique une ligne pour la sélectionner. La phase active s’ouvre automatiquement (sans bouger l’écran).</div>
@@ -147,7 +147,8 @@
 
 <script>
 (function(){
-  const KEY = 'capactifs_cure_v4';
+  const SCHEMA_VERSION = 1;
+  const KEY = 'capactifs_cure_v5';
   const plan = [
     { name:'P1 Attaque', dose:2, days:15, color:'#6aa6ff' },
     { name:'P2 Attaque', dose:3, days:30, color:'#7be495' },
@@ -164,6 +165,9 @@
     validateSelected: document.getElementById('validateSelected'),
     validateToday: document.getElementById('validateToday'),
     reset: document.getElementById('reset'),
+    exportBtn: document.getElementById('exportBtn'),
+    importBtn: document.getElementById('importBtn'),
+    importFile: document.getElementById('importFile'),
     bar: document.getElementById('bar'),
     stats: document.getElementById('stats'),
     agenda: document.getElementById('agenda'),
@@ -179,6 +183,7 @@
     const t = new Date();
     const iso = t.toISOString().slice(0,10);
     return {
+      _schema: SCHEMA_VERSION,
       startDate: iso,
       selectedDay: 1,
       days: Array.from({length:totalDays}, _=>({done:false, ts:null})),
@@ -212,6 +217,11 @@
   els.reset.addEventListener('click',()=>{
     if(confirm('Réinitialiser toute la cure ?')){ state = defaultState(); els.start.value = state.startDate; save(); renderAll(); }
   });
+
+  // Export / Import
+  els.exportBtn.addEventListener('click', exportData);
+  els.importBtn.addEventListener('click', ()=> els.importFile.click());
+  els.importFile.addEventListener('change', handleImportFile);
 
   // Agenda navigation
   els.prevM.addEventListener('click',()=>{ const d=new Date(state.calYear,state.calMonth-1,1); state.calYear=d.getFullYear(); state.calMonth=d.getMonth(); save(); renderAgenda(); });
@@ -268,10 +278,74 @@
   function openPhaseFor(idx){
     const pIdx = phaseIdxForDay(idx);
     document.querySelectorAll('details.phase').forEach((d,i)=>{ d.open = (i===pIdx); });
-    /* IMPORTANT : pas de scrollIntoView ici pour éviter tout “saut” visuel */
+    /* aucun scrollIntoView pour éviter les “sauts” */
   }
 
-  // Render phases
+  // Exporter JSON
+  function exportData(){
+    const clean = JSON.stringify(state, null, 2);
+    const blob = new Blob([clean], {type:'application/json'});
+    const a = document.createElement('a');
+    const pad = n=>String(n).padStart(2,'0');
+    const now = new Date();
+    const name = `capactifs_backup_${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}.json`;
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }
+
+  // Importer JSON (sécurisé)
+  function handleImportFile(ev){
+    const file = ev.target.files[0];
+    ev.target.value = ''; // reset input pour prochains imports
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(reader.result);
+        const ok = validateSchema(data);
+        if(!ok.ok){
+          alert('Fichier invalide : ' + ok.reason);
+          return;
+        }
+        const preview = summarize(data);
+        const go = confirm('Importer cette sauvegarde ?\\n\\n'+preview+'\\n\\nCette action remplacera l’état actuel.');
+        if(!go) return;
+        state = data;
+        // s’assure que les champs manquants sont recréés si besoin
+        state._schema = SCHEMA_VERSION;
+        if(!Array.isArray(state.days) || state.days.length!==totalDays){
+          state.days = Array.from({length:totalDays}, _=>({done:false, ts:null}));
+        }
+        save(); renderAll();
+      }catch(e){
+        alert('Impossible de lire ce fichier JSON.');
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  function validateSchema(d){
+    if(typeof d!=='object' || !d) return {ok:false, reason:'format JSON absent/incorrect'};
+    if(typeof d.startDate!=='string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(d.startDate)) return {ok:false, reason:'date de début invalide'};
+    if(typeof d.selectedDay!=='number' || d.selectedDay<1 || d.selectedDay>totalDays) return {ok:false, reason:'selectedDay invalide'};
+    if(!Array.isArray(d.days) || d.days.length!==totalDays) return {ok:false, reason:'taille des jours incorrecte (doit être 120)'};
+    for(const it of d.days){
+      if(typeof it.done!=='boolean') return {ok:false, reason:'champ "done" manquant/incorrect'};
+      if(!(it.ts===null || typeof it.ts==='number')) return {ok:false, reason:'champ "ts" invalide'};
+    }
+    if(typeof d.calYear!=='number' || typeof d.calMonth!=='number') return {ok:false, reason:'infos agenda manquantes'};
+    return {ok:true};
+  }
+  function summarize(d){
+    const done = d.days.filter(x=>x.done).length;
+    return `Début: ${d.startDate}\\nJours validés: ${done}/${totalDays}\\nSélection: jour ${d.selectedDay}`;
+  }
+
+  // Renders
   function renderPhases(){
     els.phases.innerHTML = '';
     let cursor = 1;
@@ -310,18 +384,15 @@
       details.appendChild(body);
       els.phases.appendChild(details);
 
-      // Accordéon exclusif
       details.addEventListener('toggle', ()=>{
         if(details.open){
           document.querySelectorAll('details.phase').forEach(d=>{ if(d!==details) d.open=false; });
         }
       });
     });
-    // ouvrir la bonne phase selon sélection, sans scroll
-    openPhaseFor(state.selectedDay);
+    openPhaseFor(state.selectedDay); // sans scroll
   }
 
-  // Progress
   function renderProgress(){
     const done = state.days.filter(d=>d.done).length;
     const pct = Math.round((done/totalDays)*100);
@@ -329,7 +400,6 @@
     els.stats.innerHTML = `<div><b>${done}/${totalDays}</b> jours validés</div><div>${pct}% complété</div>`;
   }
 
-  // Small agenda
   function renderAgenda(){
     const y = state.calYear, m = state.calMonth;
     els.agTitle.textContent = `${new Date(y,m,1).toLocaleDateString('fr-FR',{month:'long', year:'numeric'})}`;
@@ -341,7 +411,7 @@
 
     const first = new Date(y,m,1);
     const start = new Date(first);
-    const day = (first.getDay()||7); // Monday=1..Sunday=7
+    const day = (first.getDay()||7);
     start.setDate(first.getDate() - (day-1));
 
     const wrap = document.createElement('div');
