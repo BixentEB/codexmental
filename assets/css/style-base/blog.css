@@ -510,15 +510,20 @@ body.theme-lunaire .share-menu a {
   color: var(--text-secondary, #ccd6f6);
 }
 
-/* === Sommaire (details.note-collapsible) : toujours en "carte" dans le blog === */
+/* === Sommaire (details.note-collapsible) : carte theme-aware === */
 #article-viewer details.note-collapsible{
   display: block;
   margin: 1.2rem 0 1.6rem;
-  padding: 1.1rem 1.2rem;
+  padding: 1.05rem 1.15rem;
   border-radius: 14px;
-  background: rgba(255,255,255,0.92);
-  border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+
+  background: var(--bloc-bg);
+  border: 1px solid var(--bloc-border);
+  box-shadow: 0 10px 22px var(--bloc-shadow);
+
+  /* petit rendu "verre" si tes thèmes sont sombres */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 #article-viewer details.note-collapsible > summary{
@@ -527,21 +532,34 @@ body.theme-lunaire .share-menu a {
   user-select: none;
 }
 
-/* (Optionnel) enlever le petit triangle natif */
 #article-viewer details.note-collapsible > summary::-webkit-details-marker{
   display: none;
 }
 
+/* titre */
 #article-viewer details.note-collapsible .note-title{
   margin: 0;
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
+  gap: .55rem;
+  color: var(--text-primary);
 }
 
+/* contenu */
 #article-viewer details.note-collapsible .note-body{
-  margin-top: .8rem;
+  margin-top: .85rem;
+  color: var(--text-secondary);
 }
+
+/* liens sommaire */
+#article-viewer details.note-collapsible a{
+  color: var(--text-accent, var(--color-accent));
+  text-decoration: none;
+}
+#article-viewer details.note-collapsible a:hover{
+  text-decoration: underline;
+}
+
 
 
 @keyframes haloFlash {
