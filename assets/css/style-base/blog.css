@@ -491,6 +491,26 @@ body.theme-lunaire .share-menu a {
   text-align: left;
 }
 
+/* === FIX: afficher codex-note et note-small dans le viewer du blog === */
+#article-viewer .codex-note{
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Optionnel: si tu utilises note-small dans tes articles */
+#article-viewer .note-small{
+  display: block;
+  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--color-accent, #4e89ff);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #ccd6f6);
+}
+
+
 @keyframes haloFlash {
   0% { transform: scale(1); box-shadow: 0 0 0 transparent; }
   40% { transform: scale(1.05); box-shadow: 0 0 15px var(--btn-color, #fff); }
