@@ -510,6 +510,39 @@ body.theme-lunaire .share-menu a {
   color: var(--text-secondary, #ccd6f6);
 }
 
+/* === Sommaire (details.note-collapsible) : toujours en "carte" dans le blog === */
+#article-viewer details.note-collapsible{
+  display: block;
+  margin: 1.2rem 0 1.6rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+}
+
+#article-viewer details.note-collapsible > summary{
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+/* (Optionnel) enlever le petit triangle natif */
+#article-viewer details.note-collapsible > summary::-webkit-details-marker{
+  display: none;
+}
+
+#article-viewer details.note-collapsible .note-title{
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+#article-viewer details.note-collapsible .note-body{
+  margin-top: .8rem;
+}
+
 
 @keyframes haloFlash {
   0% { transform: scale(1); box-shadow: 0 0 0 transparent; }
