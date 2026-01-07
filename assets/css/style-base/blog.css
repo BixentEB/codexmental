@@ -307,7 +307,7 @@ body.theme-galactique .section-new-dot {
   position: absolute;
   right: 0;
   top: calc(100% + 10px);
-  background-color: var(--share-bg, rgba(0, 0, 0, 0.95)) 
+  background-color: var(--share-bg, rgba(0, 0, 0, 0.95));
   border: 1px solid var(--share-border, rgba(255, 255, 255, 0.3));
   border-radius: 12px;
   padding: 0.8rem;
@@ -510,20 +510,31 @@ body.theme-lunaire .share-menu a {
   color: var(--text-secondary, #ccd6f6);
 }
 
-/* === Sommaire (details.note-collapsible) : carte theme-aware === */
+/* === Liens : visibles dans tous les thèmes (ne dépend pas que de la couleur) === */
+#article-viewer a{
+  color: var(--link-color, var(--text-accent, var(--color-accent, #4ea3ff)));
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+#article-viewer a:hover{
+  filter: brightness(1.15);
+}
+#article-viewer a:visited{
+  opacity: .92;
+}
+
+/* === Sommaire (details.note-collapsible) : évite "card dans card" (le viewer crée déjà un bloc) === */
 #article-viewer details.note-collapsible{
-  display: block;
-  margin: 1.2rem 0 1.6rem;
-  padding: 1.05rem 1.15rem;
-  border-radius: 14px;
-
-  background: var(--bloc-bg);
-  border: 1px solid var(--bloc-border);
-  box-shadow: 0 10px 22px var(--bloc-shadow);
-
-  /* petit rendu "verre" si tes thèmes sont sombres */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 #article-viewer details.note-collapsible > summary{
@@ -551,13 +562,20 @@ body.theme-lunaire .share-menu a {
   color: var(--text-secondary);
 }
 
-/* liens sommaire */
-#article-viewer details.note-collapsible a{
-  color: var(--text-accent, var(--color-accent));
-  text-decoration: none;
-}
-#article-viewer details.note-collapsible a:hover{
-  text-decoration: underline;
+/* Variante optionnelle si tu veux un sommaire "standalone" sans wrapper du viewer :
+   <details class="note-collapsible is-standalone"> */
+#article-viewer details.note-collapsible.is-standalone{
+  display: block;
+  margin: 1.2rem 0 1.6rem !important;
+  padding: 1.05rem 1.15rem !important;
+  border-radius: 14px !important;
+
+  background: var(--bloc-bg, rgba(255,255,255,0.04)) !important;
+  border: 1px solid var(--bloc-border, rgba(255,255,255,0.15)) !important;
+  box-shadow: 0 10px 22px var(--bloc-shadow, rgba(0,0,0,0.2)) !important;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 
